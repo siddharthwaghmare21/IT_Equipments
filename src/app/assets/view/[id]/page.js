@@ -1,15 +1,143 @@
-export default function Page() {
-  return (
-    <main className="min-h-screen bg-gray-100 p-4 sm:p-6">
-      <section className="mx-auto max-w-7xl">
-        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-          View Asset Details
-        </h1>
+"use client";
 
-        <p className="mt-2 text-sm text-gray-600 sm:text-base">
-          This page is ready for development.
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import LayoutWrapper from "@/components/common/LayoutWrapper";
+import PageHeader from "@/components/common/PageHeader";
+import StatusBadge from "@/components/common/StatusBadge";
+
+const assets = [
+  {
+    id: "1",
+    assetTag: "IT-LAP-001",
+    name: "Dell Latitude 5420",
+    category: "Laptop",
+    brand: "Dell",
+    model: "Latitude 5420",
+    serialNumber: "DL5420-9821",
+    purchaseDate: "2024-04-12",
+    warrantyExpiry: "2027-04-12",
+    assignedTo: "Rahul Patil",
+    department: "IT Department",
+    location: "Main Office",
+    status: "Assigned",
+    condition: "Good",
+    remarks: "Assigned for software development work.",
+  },
+  {
+    id: "2",
+    assetTag: "IT-LAP-002",
+    name: "HP EliteBook 840",
+    category: "Laptop",
+    brand: "HP",
+    model: "EliteBook 840",
+    serialNumber: "HP840-4421",
+    purchaseDate: "2024-06-20",
+    warrantyExpiry: "2027-06-20",
+    assignedTo: "-",
+    department: "-",
+    location: "Store Room",
+    status: "Available",
+    condition: "New",
+    remarks: "Ready for assignment.",
+  },
+];
+
+function DetailItem({ label, value }) {
+  return (
+    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-semibold text-gray-900">
+        {value || "-"}
+      </p>
+    </div>
+  );
+}
+
+export default function ViewAssetPage() {
+  const params = useParams();
+  const assetId = params.id;
+
+  const asset = assets.find((item) => item.id === assetId) || assets[0];
+
+  return (
+    <LayoutWrapper>
+      <PageHeader
+        title="Asset Details"
+        description="View complete information about this IT asset, assignment and warranty status."
+      />
+
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Link
+          href="/assets"
+          className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+        >
+          ← Back to Assets
+        </Link>
+
+        <Link
+          href={`/assets/edit/${asset.id}`}
+          className="inline-flex justify-center rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
+        >
+          Edit Asset
+        </Link>
+      </div>
+
+      <section className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+        <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-500">
+              {asset.assetTag}
+            </p>
+
+            <h2 className="mt-1 text-2xl font-bold text-gray-900">
+              {asset.name}
+            </h2>
+
+            <p className="mt-1 text-sm text-gray-600">
+              {asset.category} • {asset.brand} • {asset.model}
+            </p>
+          </div>
+
+          <StatusBadge status={asset.status} />
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <DetailItem label="Asset Tag" value={asset.assetTag} />
+          <DetailItem label="Asset Name" value={asset.name} />
+          <DetailItem label="Category" value={asset.category} />
+          <DetailItem label="Brand" value={asset.brand} />
+          <DetailItem label="Model" value={asset.model} />
+          <DetailItem label="Serial Number" value={asset.serialNumber} />
+          <DetailItem label="Purchase Date" value={asset.purchaseDate} />
+          <DetailItem label="Warranty Expiry" value={asset.warrantyExpiry} />
+          <DetailItem label="Condition" value={asset.condition} />
+          <DetailItem label="Assigned To" value={asset.assignedTo} />
+          <DetailItem label="Department" value={asset.department} />
+          <DetailItem label="Location" value={asset.location} />
+        </div>
+
+        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            Remarks
+          </p>
+          <p className="mt-2 text-sm text-gray-700">
+            {asset.remarks}
+          </p>
+        </div>
+      </section>
+
+      <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+        <h3 className="text-lg font-bold text-gray-900">
+          Maintenance History
+        </h3>
+
+        <p className="mt-2 text-sm text-gray-600">
+          No maintenance records available yet. Backend records will be connected later.
         </p>
       </section>
-    </main>
+    </LayoutWrapper>
   );
 }
