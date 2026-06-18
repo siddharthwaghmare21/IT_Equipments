@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import StatusBadge from "@/components/common/StatusBadge";
@@ -67,7 +68,14 @@ export default function AssetsPage() {
 
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
-      const searchText = `${asset.assetTag} ${asset.name} ${asset.category} ${asset.serialNumber} ${asset.assignedTo} ${asset.location}`.toLowerCase();
+      const searchText = `
+        ${asset.assetTag}
+        ${asset.name}
+        ${asset.category}
+        ${asset.serialNumber}
+        ${asset.assignedTo}
+        ${asset.location}
+      `.toLowerCase();
 
       const matchesSearch = searchText.includes(search.toLowerCase());
 
@@ -147,7 +155,7 @@ export default function AssetsPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-[900px] w-full text-sm">
+        <table className="min-w-[1050px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -171,6 +179,9 @@ export default function AssetsPage() {
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
               </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Actions
+              </th>
             </tr>
           </thead>
 
@@ -183,23 +194,41 @@ export default function AssetsPage() {
                 <td className="px-4 py-4 font-semibold text-gray-900">
                   {asset.assetTag}
                 </td>
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.name}
-                </td>
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.category}
-                </td>
+
+                <td className="px-4 py-4 text-gray-700">{asset.name}</td>
+
+                <td className="px-4 py-4 text-gray-700">{asset.category}</td>
+
                 <td className="px-4 py-4 text-gray-700">
                   {asset.serialNumber}
                 </td>
+
                 <td className="px-4 py-4 text-gray-700">
                   {asset.assignedTo}
                 </td>
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.location}
-                </td>
+
+                <td className="px-4 py-4 text-gray-700">{asset.location}</td>
+
                 <td className="px-4 py-4">
                   <StatusBadge status={asset.status} />
+                </td>
+
+                <td className="px-4 py-4">
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/assets/view/${asset.id}`}
+                      className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+                    >
+                      View
+                    </Link>
+
+                    <Link
+                      href={`/assets/edit/${asset.id}`}
+                      className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800"
+                    >
+                      Edit
+                    </Link>
+                  </div>
                 </td>
               </tr>
             ))}
