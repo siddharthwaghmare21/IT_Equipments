@@ -5,6 +5,7 @@ import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
 import TableWrapper from "@/components/common/TableWrapper";
 import StatusBadge from "@/components/common/StatusBadge";
+import ReportExportButtons from "@/components/common/ReportExportButtons";
 
 const assetReportData = [
   {
@@ -71,15 +72,19 @@ const assetReportData = [
 
 export default function AssetsReportPage() {
   const totalAssets = assetReportData.length;
+
   const assignedAssets = assetReportData.filter(
     (asset) => asset.status === "Assigned"
   ).length;
+
   const availableAssets = assetReportData.filter(
     (asset) => asset.status === "Available"
   ).length;
+
   const maintenanceAssets = assetReportData.filter(
     (asset) => asset.status === "Maintenance"
   ).length;
+
   const damagedAssets = assetReportData.filter(
     (asset) => asset.status === "Damaged"
   ).length;
@@ -91,8 +96,13 @@ export default function AssetsReportPage() {
         description="View asset-wise summary, category details, assigned users, warranty and current asset status."
       />
 
-      <div className="mb-6">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <BackButton href="/reports" label="Reports" />
+
+        <ReportExportButtons
+          data={assetReportData}
+          fileName="assets-report"
+        />
       </div>
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
@@ -141,14 +151,17 @@ export default function AssetsReportPage() {
               <span className="text-gray-600">Laptop</span>
               <span className="font-semibold text-gray-900">1</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Printer</span>
               <span className="font-semibold text-gray-900">1</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Accessory</span>
               <span className="font-semibold text-gray-900">2</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Network</span>
               <span className="font-semibold text-gray-900">1</span>
@@ -164,14 +177,17 @@ export default function AssetsReportPage() {
               <span className="text-gray-600">IT Department</span>
               <span className="font-semibold text-gray-900">1</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Accounts</span>
               <span className="font-semibold text-gray-900">1</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Admin</span>
               <span className="font-semibold text-gray-900">1</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">HR</span>
               <span className="font-semibold text-gray-900">2</span>
@@ -197,25 +213,33 @@ export default function AssetsReportPage() {
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Asset Tag
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Asset Name
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Category
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">Brand</th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Department
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Assigned To
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Purchase Date
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Warranty Expiry
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">Status</th>
             </tr>
           </thead>
@@ -229,23 +253,31 @@ export default function AssetsReportPage() {
                 <td className="px-4 py-4 font-semibold text-gray-900">
                   {asset.assetTag}
                 </td>
+
                 <td className="px-4 py-4 text-gray-700">
                   {asset.assetName}
                 </td>
+
                 <td className="px-4 py-4 text-gray-700">{asset.category}</td>
+
                 <td className="px-4 py-4 text-gray-700">{asset.brand}</td>
+
                 <td className="px-4 py-4 text-gray-700">
                   {asset.department}
                 </td>
+
                 <td className="px-4 py-4 text-gray-700">
                   {asset.assignedTo}
                 </td>
+
                 <td className="px-4 py-4 text-gray-700">
                   {asset.purchaseDate}
                 </td>
+
                 <td className="px-4 py-4 text-gray-700">
                   {asset.warrantyExpiry}
                 </td>
+
                 <td className="px-4 py-4">
                   <StatusBadge status={asset.status} />
                 </td>
