@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import ActionButtons from "@/components/common/ActionButtons";
 
 const purchases = [
   {
@@ -94,6 +94,16 @@ export default function PurchasesPage() {
     });
   }, [search, activeFilter]);
 
+  function handleDelete(purchase) {
+    const confirmed = confirm(
+      `Are you sure you want to delete ${purchase.poNumber}?`
+    );
+
+    if (confirmed) {
+      alert("Purchase delete action added. Backend will be connected later.");
+    }
+  }
+
   return (
     <LayoutWrapper>
       <PageHeader
@@ -114,21 +124,30 @@ export default function PurchasesPage() {
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Received</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {purchases.filter((purchase) => purchase.status === "Received").length}
+            {
+              purchases.filter((purchase) => purchase.status === "Received")
+                .length
+            }
           </h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Pending</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {purchases.filter((purchase) => purchase.status === "Pending").length}
+            {
+              purchases.filter((purchase) => purchase.status === "Pending")
+                .length
+            }
           </h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Ordered</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {purchases.filter((purchase) => purchase.status === "Ordered").length}
+            {
+              purchases.filter((purchase) => purchase.status === "Ordered")
+                .length
+            }
           </h2>
         </div>
       </section>
@@ -163,7 +182,7 @@ export default function PurchasesPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1000px] w-full text-sm">
+        <table className="min-w-[1150px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -215,9 +234,7 @@ export default function PurchasesPage() {
                   {purchase.purchaseDate}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {purchase.items}
-                </td>
+                <td className="px-4 py-4 text-gray-700">{purchase.items}</td>
 
                 <td className="px-4 py-4 font-semibold text-gray-900">
                   {purchase.totalAmount}
@@ -228,12 +245,11 @@ export default function PurchasesPage() {
                 </td>
 
                 <td className="px-4 py-4">
-                  <Link
-                    href={`/purchases/view/${purchase.id}`}
-                    className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100"
-                  >
-                    View
-                  </Link>
+                  <ActionButtons
+                    viewHref={`/purchases/view/${purchase.id}`}
+                    updateHref={`/purchases/edit/${purchase.id}`}
+                    onDelete={() => handleDelete(purchase)}
+                  />
                 </td>
               </tr>
             ))}
