@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import ActionButtons from "@/components/common/ActionButtons";
 
 const deliveries = [
   {
@@ -270,22 +270,11 @@ export default function DeliveriesPage() {
                 </td>
 
                 <td className="px-4 py-4">
-                  <div className="flex flex-wrap gap-2">
-                    <Link
-                      href={`/deliveries/view/${delivery.id}`}
-                      className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100"
-                    >
-                      View
-                    </Link>
-
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(delivery)}
-                      className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  <ActionButtons
+                    viewHref={`/deliveries/view/${delivery.id}`}
+                    updateHref={`/deliveries/edit/${delivery.id}`}
+                    onDelete={() => handleDelete(delivery)}
+                  />
                 </td>
               </tr>
             ))}
