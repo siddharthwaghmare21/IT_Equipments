@@ -114,30 +114,21 @@ export default function PurchasesPage() {
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Received</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {
-              purchases.filter((purchase) => purchase.status === "Received")
-                .length
-            }
+            {purchases.filter((purchase) => purchase.status === "Received").length}
           </h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Pending</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {
-              purchases.filter((purchase) => purchase.status === "Pending")
-                .length
-            }
+            {purchases.filter((purchase) => purchase.status === "Pending").length}
           </h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Ordered</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {
-              purchases.filter((purchase) => purchase.status === "Ordered")
-                .length
-            }
+            {purchases.filter((purchase) => purchase.status === "Ordered").length}
           </h2>
         </div>
       </section>
@@ -237,21 +228,12 @@ export default function PurchasesPage() {
                 </td>
 
                 <td className="px-4 py-4">
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/purchases/view/${purchase.id}`}
-                      className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100"
-                    >
-                      View
-                    </Link>
-
-                    <Link
-                      href="/purchases/add"
-                      className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800"
-                    >
-                      Add
-                    </Link>
-                  </div>
+                  <Link
+                    href={`/purchases/view/${purchase.id}`}
+                    className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+                  >
+                    View
+                  </Link>
                 </td>
               </tr>
             ))}
