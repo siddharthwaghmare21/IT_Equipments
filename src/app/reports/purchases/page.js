@@ -4,6 +4,7 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
 import TableWrapper from "@/components/common/TableWrapper";
+import ReportExportButtons from "@/components/common/ReportExportButtons";
 
 const purchaseReportData = [
   {
@@ -98,8 +99,13 @@ export default function PurchasesReportPage() {
         description="View purchase order summary, vendor-wise records, invoice details and purchase status."
       />
 
-      <div className="mb-6">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <BackButton href="/reports" label="Reports" />
+
+        <ReportExportButtons
+          data={purchaseReportData}
+          fileName="purchases-report"
+        />
       </div>
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -141,14 +147,17 @@ export default function PurchasesReportPage() {
               <span className="text-gray-600">Dell Technologies</span>
               <span className="font-semibold text-gray-900">₹5,80,000</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">HP World</span>
               <span className="font-semibold text-gray-900">₹3,25,000</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Canon India</span>
               <span className="font-semibold text-gray-900">₹78,000</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Network Solutions</span>
               <span className="font-semibold text-gray-900">₹1,42,000</span>
@@ -164,14 +173,17 @@ export default function PurchasesReportPage() {
               <span className="text-gray-600">Laptop</span>
               <span className="font-semibold text-gray-900">8</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Printer</span>
               <span className="font-semibold text-gray-900">5</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Scanner</span>
               <span className="font-semibold text-gray-900">3</span>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Network</span>
               <span className="font-semibold text-gray-900">12</span>
@@ -197,27 +209,35 @@ export default function PurchasesReportPage() {
               <th className="px-4 py-3 font-semibold text-gray-700">
                 PO Number
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Vendor
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Invoice No.
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Purchase Date
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Item Name
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Category
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Quantity
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Total Amount
               </th>
+
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
               </th>
