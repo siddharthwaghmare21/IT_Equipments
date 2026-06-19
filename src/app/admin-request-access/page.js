@@ -7,6 +7,14 @@ const ACCESS_CODE = "DataCenterSMKC";
 const USERS_KEY = "itAssetUsers";
 const REQUESTS_KEY = "itAssetAccessRequests";
 
+function isStrongPassword(password) {
+  const hasMinimumLength = password.length >= 8;
+  const hasCapitalLetter = /[A-Z]/.test(password);
+  const hasSymbol = /[^A-Za-z0-9]/.test(password);
+
+  return hasMinimumLength && hasCapitalLetter && hasSymbol;
+}
+
 export default function AdminRequestAccessPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasSuperAdmin, setHasSuperAdmin] = useState(false);
@@ -17,8 +25,15 @@ export default function AdminRequestAccessPage() {
     email: "",
     phone: "",
     requestedRole: "IT Support",
+    password: "",
+    confirmPassword: "",
     accessCode: "",
     reason: "",
+  });
+
+  const [errors, setErrors] = useState({
+    password: "",
+    confirmPassword: "",
   });
 
   useEffect(() => {
@@ -39,10 +54,34 @@ export default function AdminRequestAccessPage() {
       ...previousData,
       [name]: value,
     }));
+
+    if (name === "password" || name === "confirmPassword") {
+      setErrors({
+        password: "",
+        confirmPassword: "",
+      });
+    }
   }
 
   function handleSubmit(event) {
     event.preventDefault();
+
+    if (!isStrongPassword(formData.password)) {
+      setErrors((previousErrors) => ({
+        ...previousErrors,
+        password:
+          "Password must contain at least 8 characters, 1 capital letter and 1 symbol.",
+      }));
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrors((previousErrors) => ({
+        ...previousErrors,
+        confirmPassword: "Password does not match",
+      }));
+      return;
+    }
 
     if (formData.accessCode !== ACCESS_CODE) {
       alert("Invalid access code. Access request denied.");
@@ -82,6 +121,7 @@ export default function AdminRequestAccessPage() {
       phone: formData.phone,
       department: "IT Department",
       requestedRole: formData.requestedRole,
+      password: formData.password,
       reason: formData.reason,
       status: "Pending",
       requestedAt: new Date().toISOString(),
@@ -199,7 +239,7 @@ export default function AdminRequestAccessPage() {
               <li>• Internal access code is required</li>
               <li>• Existing Super Admin approval is required</li>
               <li>• Multiple Super Admin accounts are supported</li>
-              <li>• Requested role will be assigned after verification</li>
+              <li>• Password must contain 8 characters, 1 capital letter and 1 symbol</li>
             </ul>
           </div>
         </section>
@@ -287,6 +327,55 @@ export default function AdminRequestAccessPage() {
               </p>
             </div>
 
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Create Password
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Minimum 8 characters"
+                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                  required
+                />
+
+                <p className="mt-2 text-xs leading-5 text-gray-500">
+                  Password must contain at least 8 characters, 1 capital letter
+                  and 1 symbol.
+                </p>
+
+                {errors.password && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">
+                    {errors.password}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Re-enter password"
+                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                  required
+                />
+
+                {errors.confirmPassword && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">
+                    {errors.confirmPassword}
+                  </p>
+                )}
+              </div>
+            </div>
+
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">
                 Access Code
@@ -333,6 +422,11 @@ export default function AdminRequestAccessPage() {
               Already approved? Login
             </Link>
           </div>
+
+          <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
+            Note: Password is stored only for frontend demo. Backend integration
+            later will use secure password hashing and email OTP verification.
+          </p>
         </section>
       </div>
     </main>
