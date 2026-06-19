@@ -1,6 +1,11 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 
 export default function DashboardPage() {
+  const router = useRouter();
+
   const stats = [
     {
       title: "Total Assets",
@@ -34,7 +39,7 @@ export default function DashboardPage() {
   return (
     <LayoutWrapper>
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
           Dashboard
         </h1>
         <p className="mt-1 text-sm text-gray-600">
@@ -42,7 +47,7 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4">
         {stats.map((item) => (
           <div
             key={item.title}
@@ -54,16 +59,14 @@ export default function DashboardPage() {
               {item.value}
             </h2>
 
-            <p className="mt-2 text-xs text-gray-500">
-              {item.description}
-            </p>
+            <p className="mt-2 text-xs text-gray-500">{item.description}</p>
           </div>
         ))}
       </section>
 
-      <section className="mt-6 grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm xl:col-span-2">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-lg font-bold text-gray-900">
                 Asset Summary
@@ -73,7 +76,11 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            <button className="w-full sm:w-auto rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
+            <button
+              type="button"
+              onClick={() => router.push("/assets")}
+              className="inline-flex w-full justify-center rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 sm:w-auto"
+            >
               View Assets
             </button>
           </div>
@@ -119,9 +126,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900">
-            Recent Activity
-          </h2>
+          <h2 className="text-lg font-bold text-gray-900">Recent Activity</h2>
 
           <div className="mt-4 space-y-3">
             {recentActivities.map((activity) => (
