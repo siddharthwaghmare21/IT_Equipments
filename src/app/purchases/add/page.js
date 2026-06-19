@@ -18,6 +18,8 @@ export default function AddPurchasePage() {
     unitPrice: "",
     warranty: "",
     status: "Pending",
+    specifications: "",
+    description: "",
     remarks: "",
   });
 
@@ -51,7 +53,7 @@ export default function AddPurchasePage() {
     <LayoutWrapper>
       <PageHeader
         title="Add Purchase"
-        description="Create a new purchase entry with vendor, invoice, equipment items and cost details."
+        description="Create a new purchase entry with vendor, invoice, equipment items, specifications, description and cost details."
       />
 
       <form
@@ -251,6 +253,34 @@ export default function AddPurchasePage() {
             <div className="flex h-[42px] items-center rounded-xl border border-gray-300 bg-gray-100 px-4 text-sm font-bold text-gray-900">
               ₹{totalAmount.toLocaleString("en-IN")}
             </div>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Specifications (optional)
+            </label>
+            <textarea
+              name="specifications"
+              value={formData.specifications}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Example: Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Description (optional)
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Add item details, included accessories, purchase purpose or extra information..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
           </div>
 
           <div className="md:col-span-2">
