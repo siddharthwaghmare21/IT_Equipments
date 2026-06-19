@@ -15,7 +15,7 @@ const returnRecords = [
     assetName: "Logitech Keyboard",
     returnedBy: "Amit Shinde",
     department: "Admin",
-    assignedDate: "2026-02-01",
+    deliveryDate: "2026-02-01",
     returnDate: "2026-08-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
@@ -29,7 +29,7 @@ const returnRecords = [
     assetName: "Dell Mouse",
     returnedBy: "Priya More",
     department: "HR",
-    assignedDate: "2026-01-10",
+    deliveryDate: "2026-01-10",
     returnDate: "2026-07-20",
     returnCondition: "Damaged",
     receivedBy: "IT Admin",
@@ -43,7 +43,7 @@ const returnRecords = [
     assetName: "HP Monitor",
     returnedBy: "Sneha Jadhav",
     department: "Accounts",
-    assignedDate: "2026-03-05",
+    deliveryDate: "2026-03-05",
     returnDate: "2026-09-10",
     returnCondition: "Needs Inspection",
     receivedBy: "IT Support",
@@ -57,7 +57,7 @@ const returnRecords = [
     assetName: "Lenovo Laptop",
     returnedBy: "Rahul Patil",
     department: "IT Department",
-    assignedDate: "2026-02-15",
+    deliveryDate: "2026-02-15",
     returnDate: "2026-10-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
@@ -225,7 +225,7 @@ export default function ReturnsPage() {
                 Department
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
-                Assigned Date
+                Delivery Date
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Return Date
@@ -276,7 +276,7 @@ export default function ReturnsPage() {
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
-                  {returnItem.assignedDate}
+                  {returnItem.deliveryDate}
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
