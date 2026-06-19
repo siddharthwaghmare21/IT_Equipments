@@ -18,7 +18,7 @@ const employees = [
     location: "Main Office",
     joiningDate: "2024-06-10",
     status: "Active",
-    assignedAssets: "3",
+    deliveredAssets: "3",
     remarks: "Uses laptop, monitor and keyboard for development work.",
   },
   {
@@ -32,8 +32,8 @@ const employees = [
     location: "Accounts Office",
     joiningDate: "2023-09-18",
     status: "Active",
-    assignedAssets: "2",
-    remarks: "Assigned desktop and printer access.",
+    deliveredAssets: "2",
+    remarks: "Delivered desktop and printer access.",
   },
 ];
 
@@ -78,7 +78,7 @@ export default function ViewEmployeePage() {
     <LayoutWrapper>
       <PageHeader
         title="Employee Details"
-        description="View employee profile, department, contact information and assigned asset summary."
+        description="View employee profile, department, contact information and delivered asset summary."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -122,8 +122,8 @@ export default function ViewEmployeePage() {
           <DetailItem label="Joining Date" value={employee.joiningDate} />
           <DetailItem label="Status" value={employee.status} />
           <DetailItem
-            label="Assigned Assets"
-            value={employee.assignedAssets}
+            label="Delivered Assets"
+            value={employee.deliveredAssets}
           />
         </div>
 
@@ -137,11 +137,11 @@ export default function ViewEmployeePage() {
 
       <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
         <h3 className="text-lg font-bold text-gray-900">
-          Assigned Asset History
+          Delivered Asset History
         </h3>
 
         <p className="mt-2 text-sm text-gray-600">
-          Employee-wise asset assignment records will be connected after backend integration.
+          Employee-wise asset delivery records will be connected after backend integration.
         </p>
       </section>
     </LayoutWrapper>
