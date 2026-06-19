@@ -8,6 +8,10 @@ const ACCESS_CODE = "DataCenterSMKC";
 const USERS_KEY = "itAssetUsers";
 const SESSION_KEY = "itAssetUserSession";
 
+// Backend येईपर्यंत true ठेवा.
+// Backend/login final झाल्यावर false करा.
+const TEMP_AUTH_BYPASS = true;
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -21,6 +25,11 @@ export default function LoginPage() {
   });
 
   useEffect(() => {
+    if (TEMP_AUTH_BYPASS) {
+      router.replace("/dashboard");
+      return;
+    }
+
     const savedSession = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
 
     if (savedSession) {
