@@ -131,8 +131,8 @@ function getPermissions(role) {
           : "No Access",
     },
     {
-      title: "Asset Assignments",
-      description: "Assign IT equipment to employees and manage deliveries.",
+      title: "Deliveries Management",
+      description: "Deliver IT equipment to employees and manage delivery records.",
       access:
         role === "Viewer"
           ? "Read Only"
@@ -258,7 +258,10 @@ export default function ProfilePage() {
           <DetailItem label="Account Status" value={userStatus} />
           <DetailItem label="Email Address" value={currentUser?.email} />
           <DetailItem label="Phone Number" value={currentUser?.phone} />
-          <DetailItem label="Last Login" value={formatDate(currentUser?.loginAt)} />
+          <DetailItem
+            label="Last Login"
+            value={formatDate(currentUser?.loginAt)}
+          />
           <DetailItem label="System Access" value="IT Department Only" />
         </div>
       </section>
