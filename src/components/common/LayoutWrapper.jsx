@@ -1,16 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 
+const SESSION_KEY = "itAssetUserSession";
+
 export default function LayoutWrapper({ children }) {
+  const router = useRouter();
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const savedSession = JSON.parse(
+      localStorage.getItem(SESSION_KEY) || "null"
+    );
+
+    setCurrentUser(savedSession);
+  }, []);
+
+  const isSuperAdmin = currentUser?.role === "Super Admin";
+
+  function handleLogout() {
+    const confirmed = confirm("Are you sure you want to logout?");
+
+    if (!confirmed) return;
+
+    localStorage.removeItem(SESSION_KEY);
+    setCurrentUser(null);
+    router.push("/login");
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:block">
-        <Sidebar />
+        <Sidebar
+          currentUser={currentUser}
+          isSuperAdmin={isSuperAdmin}
+          onLogout={handleLogout}
+        />
       </div>
 
       {isSidebarOpen && (
@@ -23,17 +53,25 @@ export default function LayoutWrapper({ children }) {
           />
 
           <div className="relative h-full">
-            <Sidebar onClose={() => setIsSidebarOpen(false)} />
+            <Sidebar
+              currentUser={currentUser}
+              isSuperAdmin={isSuperAdmin}
+              onLogout={handleLogout}
+              onClose={() => setIsSidebarOpen(false)}
+            />
           </div>
         </div>
       )}
 
       <div className="lg:pl-72">
-        <Header onMenuClick={() => setIsSidebarOpen(true)} />
+        <Header
+          currentUser={currentUser}
+          isSuperAdmin={isSuperAdmin}
+          onLogout={handleLogout}
+          onMenuClick={() => setIsSidebarOpen(true)}
+        />
 
-        <main className="p-4 sm:p-6 lg:p-8">
-          {children}
-        </main>
+        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );
