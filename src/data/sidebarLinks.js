@@ -2,32 +2,32 @@ export const sidebarLinks = [
   {
     label: "Dashboard",
     path: "/dashboard",
-    short: "D",
+    short: "DB",
   },
   {
     label: "Assets",
     path: "/assets",
-    short: "A",
+    short: "AS",
   },
   {
     label: "Purchases",
     path: "/purchases",
-    short: "P",
+    short: "PU",
   },
   {
     label: "Vendors",
     path: "/vendors",
-    short: "V",
+    short: "VE",
   },
   {
     label: "Employees",
     path: "/employees",
-    short: "E",
+    short: "EM",
   },
   {
     label: "Departments",
     path: "/departments",
-    short: "D",
+    short: "DP",
   },
   {
     label: "Deliveries",
@@ -37,12 +37,12 @@ export const sidebarLinks = [
   {
     label: "Returns",
     path: "/returns",
-    short: "R",
+    short: "RT",
   },
   {
     label: "Maintenance",
     path: "/maintenance",
-    short: "M",
+    short: "MT",
   },
   {
     label: "Reports",
@@ -57,6 +57,11 @@ export const sidebarLinks = [
   {
     label: "Settings",
     path: "/settings",
-    short: "S",
+    short: "ST",
+  },
+  {
+    label: "Profile",
+    path: "/profile",
+    short: "PR",
   },
 ];
