@@ -8,6 +8,14 @@ const ACCESS_CODE = "DataCenterSMKC";
 const USERS_KEY = "itAssetUsers";
 const SESSION_KEY = "itAssetUserSession";
 
+function isStrongPassword(password) {
+  const hasMinimumLength = password.length >= 8;
+  const hasCapitalLetter = /[A-Z]/.test(password);
+  const hasSymbol = /[^A-Za-z0-9]/.test(password);
+
+  return hasMinimumLength && hasCapitalLetter && hasSymbol;
+}
+
 export default function AdminSetupPage() {
   const router = useRouter();
 
@@ -20,6 +28,11 @@ export default function AdminSetupPage() {
     password: "",
     confirmPassword: "",
     accessCode: "",
+  });
+
+  const [errors, setErrors] = useState({
+    password: "",
+    confirmPassword: "",
   });
 
   useEffect(() => {
@@ -39,23 +52,37 @@ export default function AdminSetupPage() {
       ...previousData,
       [name]: value,
     }));
+
+    if (name === "password" || name === "confirmPassword") {
+      setErrors({
+        password: "",
+        confirmPassword: "",
+      });
+    }
   }
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    if (formData.accessCode !== ACCESS_CODE) {
-      alert("Invalid access code. Super Admin setup denied.");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      alert("Password must be at least 6 characters.");
+    if (!isStrongPassword(formData.password)) {
+      setErrors((previousErrors) => ({
+        ...previousErrors,
+        password:
+          "Password must contain at least 8 characters, 1 capital letter and 1 symbol.",
+      }));
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Password and confirm password do not match.");
+      setErrors((previousErrors) => ({
+        ...previousErrors,
+        confirmPassword: "Password does not match",
+      }));
+      return;
+    }
+
+    if (formData.accessCode !== ACCESS_CODE) {
+      alert("Invalid access code. Super Admin setup denied.");
       return;
     }
 
@@ -160,7 +187,7 @@ export default function AdminSetupPage() {
             <ul className="mt-3 space-y-2 text-sm text-gray-600">
               <li>• Full access to all IT asset modules</li>
               <li>• Approve or reject new IT staff access requests</li>
-              <li>• Manage IT Admin, IT Manager, IT Support and Viewer roles</li>
+              <li>• Manage Super Admin, IT Admin, IT Manager and IT Support roles</li>
               <li>• View reports, activity logs and system settings</li>
             </ul>
           </div>
@@ -234,10 +261,21 @@ export default function AdminSetupPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Minimum 6 characters"
+                  placeholder="Minimum 8 characters"
                   className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
                   required
                 />
+
+                <p className="mt-2 text-xs leading-5 text-gray-500">
+                  Password must contain at least 8 characters, 1 capital letter
+                  and 1 symbol.
+                </p>
+
+                {errors.password && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">
+                    {errors.password}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -253,6 +291,12 @@ export default function AdminSetupPage() {
                   className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
                   required
                 />
+
+                {errors.confirmPassword && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">
+                    {errors.confirmPassword}
+                  </p>
+                )}
               </div>
             </div>
 
