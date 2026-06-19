@@ -13,38 +13,44 @@ const deliveries = [
     deliveryCode: "DLV-001",
     assetTag: "AST-001",
     assetName: "Dell Latitude 5420",
-    assignedTo: "Rahul Patil",
+    deliveredTo: "Rahul Patil",
     department: "IT Department",
-    assignedDate: "2026-01-15",
+    deliveryDate: "2026-01-15",
     expectedReturnDate: "2026-12-31",
     condition: "Good",
-    status: "Assigned",
-    remarks: "Laptop assigned for development work.",
+    status: "Delivered",
+    specifications: "Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro",
+    description: "Laptop delivered for development work with charger and bag.",
+    remarks: "Delivery completed successfully.",
   },
   {
     id: "2",
     deliveryCode: "DLV-002",
     assetTag: "AST-002",
     assetName: "HP LaserJet Printer",
-    assignedTo: "Sneha Jadhav",
+    deliveredTo: "Sneha Jadhav",
     department: "Accounts",
-    assignedDate: "2026-01-20",
+    deliveryDate: "2026-01-20",
     expectedReturnDate: "2026-12-31",
     condition: "New",
-    status: "Assigned",
-    remarks: "Printer assigned to accounts department.",
+    status: "Delivered",
+    specifications: "Laser printer, black and white, network printing support",
+    description: "Printer delivered to accounts department for daily printing.",
+    remarks: "Printer delivered with power cable.",
   },
   {
     id: "3",
     deliveryCode: "DLV-003",
     assetTag: "AST-003",
     assetName: "Logitech Keyboard",
-    assignedTo: "Amit Shinde",
+    deliveredTo: "Amit Shinde",
     department: "Admin",
-    assignedDate: "2026-02-01",
+    deliveryDate: "2026-02-01",
     expectedReturnDate: "2026-08-01",
     condition: "Good",
     status: "Returned",
+    specifications: "USB keyboard, standard layout",
+    description: "Keyboard delivered to admin department.",
     remarks: "Keyboard returned in working condition.",
   },
   {
@@ -52,12 +58,14 @@ const deliveries = [
     deliveryCode: "DLV-004",
     assetTag: "AST-004",
     assetName: "Cisco Router",
-    assignedTo: "Priya More",
+    deliveredTo: "Priya More",
     department: "HR",
-    assignedDate: "2026-02-10",
+    deliveryDate: "2026-02-10",
     expectedReturnDate: "2026-09-10",
     condition: "Working",
     status: "Pending Return",
+    specifications: "Cisco router, gigabit ports, enterprise network support",
+    description: "Router delivered for HR department network setup.",
     remarks: "Return confirmation is pending.",
   },
 ];
@@ -73,12 +81,14 @@ export default function EditDeliveryPage() {
     deliveryCode: selectedDelivery.deliveryCode,
     assetTag: selectedDelivery.assetTag,
     assetName: selectedDelivery.assetName,
-    assignedTo: selectedDelivery.assignedTo,
+    deliveredTo: selectedDelivery.deliveredTo,
     department: selectedDelivery.department,
-    assignedDate: selectedDelivery.assignedDate,
+    deliveryDate: selectedDelivery.deliveryDate,
     expectedReturnDate: selectedDelivery.expectedReturnDate,
     condition: selectedDelivery.condition,
     status: selectedDelivery.status,
+    specifications: selectedDelivery.specifications,
+    description: selectedDelivery.description,
     remarks: selectedDelivery.remarks,
   });
 
@@ -96,14 +106,14 @@ export default function EditDeliveryPage() {
 
     console.log("Updated Delivery Data:", formData);
 
-    alert("Delivery changes saved successfully. Backend will be connected later.");
+    alert("Delivery saved successfully. Backend will be connected later.");
   }
 
   return (
     <LayoutWrapper>
       <PageHeader
         title="Edit Delivery"
-        description="Modify asset assignment details, return date, condition and delivery status."
+        description="Modify equipment/material delivery details, return date, condition and delivery status."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -155,7 +165,7 @@ export default function EditDeliveryPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Asset Name
+              Asset / Material Name
             </label>
             <input
               type="text"
@@ -170,11 +180,11 @@ export default function EditDeliveryPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Assigned To
+              Delivered To
             </label>
             <select
-              name="assignedTo"
-              value={formData.assignedTo}
+              name="deliveredTo"
+              value={formData.deliveredTo}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
@@ -210,12 +220,12 @@ export default function EditDeliveryPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Assigned Date
+              Delivery Date
             </label>
             <input
               type="date"
-              name="assignedDate"
-              value={formData.assignedDate}
+              name="deliveryDate"
+              value={formData.deliveryDate}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
@@ -255,7 +265,7 @@ export default function EditDeliveryPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Status
+              Delivery Status
             </label>
             <select
               name="status"
@@ -263,10 +273,38 @@ export default function EditDeliveryPage() {
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
-              <option value="Assigned">Assigned</option>
+              <option value="Delivered">Delivered</option>
               <option value="Returned">Returned</option>
               <option value="Pending Return">Pending Return</option>
             </select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Specifications (optional)
+            </label>
+            <textarea
+              name="specifications"
+              value={formData.specifications}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Example: Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Description (optional)
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Add extra delivery details, included accessories or usage purpose..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
           </div>
 
           <div className="md:col-span-2">
@@ -278,7 +316,7 @@ export default function EditDeliveryPage() {
               value={formData.remarks}
               onChange={handleChange}
               rows="4"
-              placeholder="Assignment notes, handover remarks or return comments..."
+              placeholder="Delivery notes, handover remarks or return comments..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>
@@ -296,7 +334,7 @@ export default function EditDeliveryPage() {
             type="submit"
             className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
           >
-            Save Changes
+            Save Delivery
           </button>
         </div>
       </form>
