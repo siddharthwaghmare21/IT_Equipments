@@ -2,76 +2,68 @@
 
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
-import BackButton from "@/components/common/BackButton";
 import TableWrapper from "@/components/common/TableWrapper";
+import BackButton from "@/components/common/BackButton";
 import ReportExportButtons from "@/components/common/ReportExportButtons";
 
-const assignmentReportData = [
+const deliveryReportData = [
   {
-    id: 1,
-    assignmentCode: "DLV-001",
-    assetTag: "AST-001",
-    assetName: "Dell Latitude 5420",
-    assignedTo: "Rahul Patil",
-    department: "IT Department",
-    designation: "Software Developer",
-    assignedDate: "2026-01-15",
-    expectedReturnDate: "2026-12-31",
+    deliveryId: "DEL-001",
+    assetName: "Dell Latitude 5420 Laptop",
+    category: "Laptop",
+    deliveredTo: "Rahul Patil",
+    department: "HR Department",
+    deliveryDate: "2026-02-01",
     condition: "Good",
-    status: "Assigned",
+    deliveredBy: "IT Admin",
+    status: "Delivered",
   },
   {
-    id: 2,
-    assignmentCode: "DLV-002",
-    assetTag: "AST-002",
+    deliveryId: "DEL-002",
     assetName: "HP LaserJet Printer",
-    assignedTo: "Sneha Jadhav",
-    department: "Accounts",
-    designation: "Account Executive",
-    assignedDate: "2026-01-20",
-    expectedReturnDate: "2026-12-31",
+    category: "Printer",
+    deliveredTo: "Accounts Team",
+    department: "Accounts Department",
+    deliveryDate: "2026-02-04",
     condition: "New",
-    status: "Assigned",
+    deliveredBy: "IT Support",
+    status: "Delivered",
   },
   {
-    id: 3,
-    assignmentCode: "DLV-003",
-    assetTag: "AST-003",
-    assetName: "Logitech Keyboard",
-    assignedTo: "Amit Shinde",
-    department: "Admin",
-    designation: "Admin Manager",
-    assignedDate: "2026-02-01",
-    expectedReturnDate: "2026-08-01",
+    deliveryId: "DEL-003",
+    assetName: "Lenovo ThinkCentre Desktop",
+    category: "Desktop",
+    deliveredTo: "Amit Jadhav",
+    department: "Sales Department",
+    deliveryDate: "2026-02-08",
     condition: "Good",
-    status: "Returned",
+    deliveredBy: "IT Admin",
+    status: "Delivered",
   },
   {
-    id: 4,
-    assignmentCode: "DLV-004",
-    assetTag: "AST-004",
-    assetName: "Cisco Router",
-    assignedTo: "Priya More",
-    department: "HR",
-    designation: "HR Executive",
-    assignedDate: "2026-02-10",
-    expectedReturnDate: "2026-09-10",
-    condition: "Working",
-    status: "Pending Return",
+    deliveryId: "DEL-004",
+    assetName: "Dell Monitor 24 inch",
+    category: "Monitor",
+    deliveredTo: "Priya Sharma",
+    department: "Admin Department",
+    deliveryDate: "2026-02-12",
+    condition: "Good",
+    deliveredBy: "IT Support",
+    status: "Pending",
   },
 ];
 
-function AssignmentStatusBadge({ status }) {
-  const statusStyles = {
-    Assigned: "bg-blue-100 text-blue-700 border-blue-200",
-    Returned: "bg-green-100 text-green-700 border-green-200",
-    "Pending Return": "bg-yellow-100 text-yellow-700 border-yellow-200",
+function StatusBadge({ status }) {
+  const styles = {
+    Delivered: "border-green-200 bg-green-100 text-green-700",
+    Pending: "border-yellow-200 bg-yellow-100 text-yellow-700",
+    Cancelled: "border-red-200 bg-red-100 text-red-700",
   };
 
   return (
     <span
       className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
-        statusStyles[status] || "bg-gray-100 text-gray-700 border-gray-200"
+        styles[status] || "border-gray-200 bg-gray-100 text-gray-700"
       }`}
     >
       {status}
@@ -79,226 +71,150 @@ function AssignmentStatusBadge({ status }) {
   );
 }
 
-export default function AssignmentsReportPage() {
-  const totalAssignments = assignmentReportData.length;
+export default function DeliveryReportPage() {
+  const totalDeliveries = deliveryReportData.length;
 
-  const assignedCount = assignmentReportData.filter(
-    (assignment) => assignment.status === "Assigned"
+  const deliveredCount = deliveryReportData.filter(
+    (item) => item.status === "Delivered"
   ).length;
 
-  const returnedCount = assignmentReportData.filter(
-    (assignment) => assignment.status === "Returned"
+  const pendingCount = deliveryReportData.filter(
+    (item) => item.status === "Pending"
   ).length;
 
-  const pendingReturnCount = assignmentReportData.filter(
-    (assignment) => assignment.status === "Pending Return"
-  ).length;
+  const departmentsCovered = new Set(
+    deliveryReportData.map((item) => item.department)
+  ).size;
 
   return (
     <LayoutWrapper>
       <PageHeader
-        title="Assignments Report"
-        description="View employee-wise and department-wise IT asset assignment records with return status."
+        title="Delivery Report"
+        description="View employee-wise and department-wise equipment/material delivery records."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <BackButton href="/reports" label="Reports" />
 
         <ReportExportButtons
-          data={assignmentReportData}
-          fileName="assignments-report"
+          data={deliveryReportData}
+          fileName="delivery-report"
         />
       </div>
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Assignments</p>
+          <p className="text-sm text-gray-500">Total Deliveries</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {totalAssignments}
+            {totalDeliveries}
           </h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Currently Assigned</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {assignedCount}
+          <p className="text-sm text-gray-500">Delivered</p>
+          <h2 className="mt-2 text-3xl font-bold text-green-700">
+            {deliveredCount}
           </h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Returned</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {returnedCount}
+          <p className="text-sm text-gray-500">Pending</p>
+          <h2 className="mt-2 text-3xl font-bold text-yellow-700">
+            {pendingCount}
           </h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Pending Return</p>
+          <p className="text-sm text-gray-500">Departments Covered</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {pendingReturnCount}
+            {departmentsCovered}
           </h2>
-        </div>
-      </section>
-
-      <section className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900">
-            Department Assignment Summary
-          </h3>
-
-          <div className="mt-4 space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-600">IT Department</span>
-              <span className="font-semibold text-gray-900">1</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Accounts</span>
-              <span className="font-semibold text-gray-900">1</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Admin</span>
-              <span className="font-semibold text-gray-900">1</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">HR</span>
-              <span className="font-semibold text-gray-900">1</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900">
-            Asset Condition Summary
-          </h3>
-
-          <div className="mt-4 space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-600">New</span>
-              <span className="font-semibold text-gray-900">1</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Good</span>
-              <span className="font-semibold text-gray-900">2</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Working</span>
-              <span className="font-semibold text-gray-900">1</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900">Report Summary</h3>
-
-          <p className="mt-4 text-sm leading-6 text-gray-600">
-            This assignment report shows sample frontend data. After backend
-            integration, it will show real-time employee-wise asset allocation,
-            department usage and return tracking records.
-          </p>
         </div>
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1350px] w-full text-sm">
-          <thead className="bg-gray-50 text-left">
-            <tr className="border-b border-gray-200">
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Assignment Code
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Delivery ID
               </th>
-
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Asset Tag
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Asset / Material
               </th>
-
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Asset Name
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Category
               </th>
-
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Assigned To
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Delivered To
               </th>
-
-              <th className="px-4 py-3 font-semibold text-gray-700">
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
                 Department
               </th>
-
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Designation
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Delivery Date
               </th>
-
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Assigned Date
-              </th>
-
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Expected Return
-              </th>
-
-              <th className="px-4 py-3 font-semibold text-gray-700">
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
                 Condition
               </th>
-
-              <th className="px-4 py-3 font-semibold text-gray-700">
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Delivered By
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
                 Status
               </th>
             </tr>
           </thead>
 
-          <tbody>
-            {assignmentReportData.map((assignment) => (
-              <tr
-                key={assignment.id}
-                className="border-b border-gray-100 hover:bg-gray-50"
-              >
-                <td className="px-4 py-4 font-semibold text-gray-900">
-                  {assignment.assignmentCode}
+          <tbody className="divide-y divide-gray-200 bg-white">
+            {deliveryReportData.map((item) => (
+              <tr key={item.deliveryId} className="hover:bg-gray-50">
+                <td className="whitespace-nowrap px-4 py-4 font-semibold text-gray-900">
+                  {item.deliveryId}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {assignment.assetTag}
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.assetName}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {assignment.assetName}
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.category}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {assignment.assignedTo}
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.deliveredTo}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {assignment.department}
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.department}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {assignment.designation}
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.deliveryDate}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {assignment.assignedDate}
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.condition}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {assignment.expectedReturnDate}
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.deliveredBy}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {assignment.condition}
-                </td>
-
-                <td className="px-4 py-4">
-                  <AssignmentStatusBadge status={assignment.status} />
+                <td className="whitespace-nowrap px-4 py-4">
+                  <StatusBadge status={item.status} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </TableWrapper>
+
+      <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
+        Note: This delivery report currently uses sample frontend data. After
+        SQL Server backend integration, this report will show real delivery,
+        assignment and issued equipment/material records.
+      </p>
     </LayoutWrapper>
   );
 }
