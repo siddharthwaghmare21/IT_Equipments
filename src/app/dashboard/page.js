@@ -13,14 +13,14 @@ export default function DashboardPage() {
       description: "All registered IT equipment",
     },
     {
-      title: "Assigned Assets",
+      title: "Delivered Assets",
       value: "156",
-      description: "Currently assigned to employees",
+      description: "Currently delivered to employees",
     },
     {
       title: "Available Assets",
       value: "64",
-      description: "Ready for allocation",
+      description: "Ready for delivery",
     },
     {
       title: "Under Maintenance",
@@ -30,7 +30,7 @@ export default function DashboardPage() {
   ];
 
   const recentActivities = [
-    "Laptop assigned to Rahul Patil",
+    "Laptop delivered to Rahul Patil",
     "New purchase entry added",
     "Printer marked under maintenance",
     "Warranty report generated",
@@ -43,7 +43,7 @@ export default function DashboardPage() {
           Dashboard
         </h1>
         <p className="mt-1 text-sm text-gray-600">
-          Overview of IT assets, equipment allocation and maintenance activity.
+          Overview of IT assets, equipment delivery and maintenance activity.
         </p>
       </div>
 
@@ -96,7 +96,7 @@ export default function DashboardPage() {
                     Total
                   </th>
                   <th className="px-4 py-3 font-semibold text-gray-700">
-                    Assigned
+                    Delivered
                   </th>
                   <th className="px-4 py-3 font-semibold text-gray-700">
                     Available
