@@ -20,11 +20,18 @@ const reportCards = [
     tag: "Purchases",
   },
   {
-    title: "Assignments Report",
+    title: "Delivery Report",
     description:
-      "View employee-wise and department-wise asset assignment records.",
-    href: "/reports/assignments",
-    tag: "Assignments",
+      "View employee-wise and department-wise equipment/material delivery records.",
+    href: "/reports/deliveries",
+    tag: "Deliveries",
+  },
+  {
+    title: "Returns Report",
+    description:
+      "Track returned equipments/materials, return condition, returned by and received details.",
+    href: "/reports/returns",
+    tag: "Returns",
   },
   {
     title: "Warranty Report",
@@ -54,13 +61,13 @@ export default function ReportsPage() {
     <LayoutWrapper>
       <PageHeader
         title="Reports"
-        description="View IT asset reports, purchase summaries, assignments, warranty, maintenance and damaged asset records."
+        description="View IT asset reports, purchase summaries, deliveries, returns, warranty, maintenance and damaged asset records."
       />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Total Reports</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">6</h2>
+          <h2 className="mt-2 text-3xl font-bold text-gray-900">7</h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -70,7 +77,7 @@ export default function ReportsPage() {
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Operational Reports</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">3</h2>
+          <h2 className="mt-2 text-3xl font-bold text-gray-900">4</h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -121,7 +128,7 @@ export default function ReportsPage() {
         <p className="mt-2 text-sm leading-6 text-gray-600">
           These reports are currently using sample frontend data. After SQL
           Server backend integration, all reports will show real-time asset,
-          purchase, assignment, warranty and maintenance records.
+          purchase, delivery, return, warranty and maintenance records.
         </p>
       </section>
     </LayoutWrapper>
