@@ -17,6 +17,8 @@ export default function AddAssetPage() {
     warrantyExpiry: "",
     location: "",
     status: "Available",
+    specifications: "",
+    description: "",
     remarks: "",
   });
 
@@ -41,12 +43,12 @@ export default function AddAssetPage() {
     <LayoutWrapper>
       <PageHeader
         title="Add Asset"
-        description="Register a new IT asset with serial number, warranty, location and status."
+        description="Register a new IT asset with serial number, warranty, specifications, description, location and status."
       />
 
       <form
         onSubmit={handleSubmit}
-        className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm"
+        className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
       >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
@@ -201,6 +203,34 @@ export default function AddAssetPage() {
               <option value="Damaged">Damaged</option>
               <option value="Scrapped">Scrapped</option>
             </select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Specifications (optional)
+            </label>
+            <textarea
+              name="specifications"
+              value={formData.specifications}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Example: Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Description (optional)
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Add asset details, included accessories, usage purpose or extra information..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
           </div>
 
           <div className="md:col-span-2">
