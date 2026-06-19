@@ -12,33 +12,33 @@ const deliveries = [
     deliveryCode: "DLV-001",
     assetTag: "AST-001",
     assetName: "Dell Latitude 5420",
-    assignedTo: "Rahul Patil",
+    deliveredTo: "Rahul Patil",
     department: "IT Department",
-    assignedDate: "2026-01-15",
+    deliveryDate: "2026-01-15",
     expectedReturnDate: "2026-12-31",
     condition: "Good",
-    status: "Assigned",
+    status: "Delivered",
   },
   {
     id: 2,
     deliveryCode: "DLV-002",
     assetTag: "AST-002",
     assetName: "HP LaserJet Printer",
-    assignedTo: "Sneha Jadhav",
+    deliveredTo: "Sneha Jadhav",
     department: "Accounts",
-    assignedDate: "2026-01-20",
+    deliveryDate: "2026-01-20",
     expectedReturnDate: "2026-12-31",
     condition: "New",
-    status: "Assigned",
+    status: "Delivered",
   },
   {
     id: 3,
     deliveryCode: "DLV-003",
     assetTag: "AST-003",
     assetName: "Logitech Keyboard",
-    assignedTo: "Amit Shinde",
+    deliveredTo: "Amit Shinde",
     department: "Admin",
-    assignedDate: "2026-02-01",
+    deliveryDate: "2026-02-01",
     expectedReturnDate: "2026-08-01",
     condition: "Good",
     status: "Returned",
@@ -48,20 +48,20 @@ const deliveries = [
     deliveryCode: "DLV-004",
     assetTag: "AST-004",
     assetName: "Cisco Router",
-    assignedTo: "Priya More",
+    deliveredTo: "Priya More",
     department: "HR",
-    assignedDate: "2026-02-10",
+    deliveryDate: "2026-02-10",
     expectedReturnDate: "2026-09-10",
     condition: "Working",
     status: "Pending Return",
   },
 ];
 
-const filters = ["All", "Assigned", "Returned", "Pending Return"];
+const filters = ["All", "Delivered", "Returned", "Pending Return"];
 
 function DeliveryStatusBadge({ status }) {
   const statusStyles = {
-    Assigned: "bg-blue-100 text-blue-700 border-blue-200",
+    Delivered: "bg-blue-100 text-blue-700 border-blue-200",
     Returned: "bg-green-100 text-green-700 border-green-200",
     "Pending Return": "bg-yellow-100 text-yellow-700 border-yellow-200",
   };
@@ -87,7 +87,7 @@ export default function DeliveriesPage() {
         ${delivery.deliveryCode}
         ${delivery.assetTag}
         ${delivery.assetName}
-        ${delivery.assignedTo}
+        ${delivery.deliveredTo}
         ${delivery.department}
         ${delivery.condition}
         ${delivery.status}
@@ -104,7 +104,7 @@ export default function DeliveriesPage() {
 
   function handleDelete(delivery) {
     const confirmed = confirm(
-      `Are you sure you want to delete assignment ${delivery.deliveryCode}?`
+      `Are you sure you want to delete delivery ${delivery.deliveryCode}?`
     );
 
     if (confirmed) {
@@ -116,8 +116,8 @@ export default function DeliveriesPage() {
     <LayoutWrapper>
       <PageHeader
         title="Deliveries"
-        description="Track IT asset assignments, delivery records, employee allocation and return status."
-        buttonText="Assign Asset"
+        description="Track IT equipment/material delivery records, employee allocation and return status."
+        buttonText="Add Delivery"
         buttonHref="/deliveries/assign"
       />
 
@@ -130,10 +130,10 @@ export default function DeliveriesPage() {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Assigned Assets</p>
+          <p className="text-sm text-gray-500">Delivered Assets</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
             {
-              deliveries.filter((delivery) => delivery.status === "Assigned")
+              deliveries.filter((delivery) => delivery.status === "Delivered")
                 .length
             }
           </h2>
@@ -204,13 +204,13 @@ export default function DeliveriesPage() {
                 Asset Name
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
-                Assigned To
+                Delivered To
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Department
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
-                Assigned Date
+                Delivery Date
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Expected Return
@@ -246,7 +246,7 @@ export default function DeliveriesPage() {
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
-                  {delivery.assignedTo}
+                  {delivery.deliveredTo}
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
@@ -254,7 +254,7 @@ export default function DeliveriesPage() {
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
-                  {delivery.assignedDate}
+                  {delivery.deliveryDate}
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
