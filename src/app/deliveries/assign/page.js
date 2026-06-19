@@ -6,17 +6,19 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
 
-export default function AssignDeliveryPage() {
+export default function AddDeliveryPage() {
   const [formData, setFormData] = useState({
     deliveryCode: "",
     assetTag: "",
     assetName: "",
-    assignedTo: "",
+    deliveredTo: "",
     department: "",
-    assignedDate: "",
+    deliveryDate: "",
     expectedReturnDate: "",
     condition: "Good",
-    status: "Assigned",
+    status: "Delivered",
+    specifications: "",
+    description: "",
     remarks: "",
   });
 
@@ -32,16 +34,16 @@ export default function AssignDeliveryPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    console.log("Delivery Assignment Data:", formData);
+    console.log("Delivery Data:", formData);
 
-    alert("Asset assigned successfully. Backend will be connected later.");
+    alert("Delivery saved successfully. Backend will be connected later.");
   }
 
   return (
     <LayoutWrapper>
       <PageHeader
-        title="Assign Asset"
-        description="Assign IT asset or equipment to an employee or department with delivery details."
+        title="Add Delivery"
+        description="Add IT equipment/material delivery details for an employee or department."
       />
 
       <div className="mb-6">
@@ -89,7 +91,7 @@ export default function AssignDeliveryPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Asset Name
+              Asset / Material Name
             </label>
             <input
               type="text"
@@ -104,11 +106,11 @@ export default function AssignDeliveryPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Assigned To
+              Delivered To
             </label>
             <select
-              name="assignedTo"
-              value={formData.assignedTo}
+              name="deliveredTo"
+              value={formData.deliveredTo}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
@@ -144,12 +146,12 @@ export default function AssignDeliveryPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Assigned Date
+              Delivery Date
             </label>
             <input
               type="date"
-              name="assignedDate"
-              value={formData.assignedDate}
+              name="deliveryDate"
+              value={formData.deliveryDate}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
@@ -189,7 +191,7 @@ export default function AssignDeliveryPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Status
+              Delivery Status
             </label>
             <select
               name="status"
@@ -197,10 +199,38 @@ export default function AssignDeliveryPage() {
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
-              <option value="Assigned">Assigned</option>
+              <option value="Delivered">Delivered</option>
               <option value="Pending Return">Pending Return</option>
               <option value="Returned">Returned</option>
             </select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Specifications (optional)
+            </label>
+            <textarea
+              name="specifications"
+              value={formData.specifications}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Example: Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Description (optional)
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Add extra delivery details, included accessories or usage purpose..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
           </div>
 
           <div className="md:col-span-2">
@@ -212,7 +242,7 @@ export default function AssignDeliveryPage() {
               value={formData.remarks}
               onChange={handleChange}
               rows="4"
-              placeholder="Handover notes, employee acknowledgement or assignment remarks..."
+              placeholder="Handover notes, employee acknowledgement or delivery remarks..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>
@@ -230,7 +260,7 @@ export default function AssignDeliveryPage() {
             type="submit"
             className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
           >
-            Save Assignment
+            Save Delivery
           </button>
         </div>
       </form>
