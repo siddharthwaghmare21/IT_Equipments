@@ -239,7 +239,7 @@ export default function LoginPage() {
 
           <div className="mt-5 flex flex-col gap-3 text-center sm:flex-row sm:justify-between">
             <Link
-              href="/request-access"
+              href="/admin-request-access"
               className="text-sm font-semibold text-gray-700 hover:text-gray-900"
             >
               Request Access
