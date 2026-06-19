@@ -198,7 +198,7 @@ export default function AddAssetPage() {
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
               <option value="Available">Available</option>
-              <option value="Assigned">Assigned</option>
+              <option value="Delivered">Delivered</option>
               <option value="Maintenance">Maintenance</option>
               <option value="Damaged">Damaged</option>
               <option value="Scrapped">Scrapped</option>
