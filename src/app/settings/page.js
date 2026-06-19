@@ -18,7 +18,7 @@ export default function SettingsPage() {
     lowStockAlert: true,
     warrantyExpiryAlert: true,
     maintenanceAlert: true,
-    assignmentAlert: true,
+    deliveryAlert: true,
 
     csvExport: true,
     printReport: true,
@@ -212,10 +212,10 @@ export default function SettingsPage() {
               />
 
               <SettingToggle
-                title="Assignment Alert"
-                description="Notify when asset is assigned or returned."
-                name="assignmentAlert"
-                checked={settings.assignmentAlert}
+                title="Delivery Alert"
+                description="Notify when asset is delivered or returned."
+                name="deliveryAlert"
+                checked={settings.deliveryAlert}
                 onChange={handleChange}
               />
             </div>
@@ -318,7 +318,9 @@ export default function SettingsPage() {
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button
             type="button"
-            onClick={() => alert("Settings reset action will be connected later.")}
+            onClick={() =>
+              alert("Settings reset action will be connected later.")
+            }
             className="inline-flex justify-center rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
           >
             Reset
