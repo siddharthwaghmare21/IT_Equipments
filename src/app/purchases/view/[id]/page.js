@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import BackButton from "@/components/common/BackButton";
 
 const purchases = [
   {
@@ -19,6 +20,8 @@ const purchases = [
     unitPrice: "72500",
     warranty: "3 Years",
     status: "Received",
+    specifications: "Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro",
+    description: "Dell laptops purchased for IT department staff allocation.",
     remarks: "Laptops received and ready for asset registration.",
   },
   {
@@ -34,6 +37,8 @@ const purchases = [
     unitPrice: "65000",
     warranty: "3 Years",
     status: "Pending",
+    specifications: "Intel i7, 16GB RAM, 512GB SSD, Windows 11 Pro",
+    description: "HP laptops ordered for upcoming employee requirements.",
     remarks: "Awaiting delivery from vendor.",
   },
 ];
@@ -85,16 +90,11 @@ export default function ViewPurchasePage() {
     <LayoutWrapper>
       <PageHeader
         title="Purchase Details"
-        description="View complete purchase order, vendor invoice, item and cost information."
+        description="View complete purchase order, vendor invoice, item, specifications, description and cost information."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Link
-          href="/purchases"
-          className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-        >
-          ← Back to Purchases
-        </Link>
+        <BackButton href="/purchases" label="Purchases" />
 
         <Link
           href={`/purchases/edit/${purchase.id}`}
@@ -144,11 +144,33 @@ export default function ViewPurchasePage() {
           <DetailItem label="Warranty" value={purchase.warranty} />
         </div>
 
+        <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Specifications
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-700">
+              {purchase.specifications || "-"}
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Description
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-700">
+              {purchase.description || "-"}
+            </p>
+          </div>
+        </div>
+
         <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
           <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
             Remarks
           </p>
-          <p className="mt-2 text-sm text-gray-700">{purchase.remarks}</p>
+          <p className="mt-2 text-sm text-gray-700">
+            {purchase.remarks || "-"}
+          </p>
         </div>
       </section>
     </LayoutWrapper>
