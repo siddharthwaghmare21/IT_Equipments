@@ -14,7 +14,7 @@ export default function AddReturnPage() {
     assetName: "",
     returnedBy: "",
     department: "",
-    assignedDate: "",
+    deliveryDate: "",
     returnDate: "",
     returnCondition: "Good",
     receivedBy: "",
@@ -161,12 +161,12 @@ export default function AddReturnPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Assigned Date
+              Delivery Date
             </label>
             <input
               type="date"
-              name="assignedDate"
-              value={formData.assignedDate}
+              name="deliveryDate"
+              value={formData.deliveryDate}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
