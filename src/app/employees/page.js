@@ -112,7 +112,7 @@ export default function EmployeesPage() {
     <LayoutWrapper>
       <PageHeader
         title="Employees"
-        description="Manage employees, departments, designations and asset assignment users."
+        description="Manage employees, departments, designations and asset delivery users."
         buttonText="Add Employee"
         buttonHref="/employees/add"
       />
