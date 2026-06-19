@@ -16,7 +16,7 @@ const departments = [
     phone: "+91 98765 12345",
     location: "Main Office",
     totalEmployees: 12,
-    assignedAssets: 34,
+    deliveredAssets: 34,
     status: "Active",
   },
   {
@@ -28,7 +28,7 @@ const departments = [
     phone: "+91 99887 45678",
     location: "Accounts Office",
     totalEmployees: 8,
-    assignedAssets: 18,
+    deliveredAssets: 18,
     status: "Active",
   },
   {
@@ -40,7 +40,7 @@ const departments = [
     phone: "+91 91234 56789",
     location: "Admin Office",
     totalEmployees: 6,
-    assignedAssets: 14,
+    deliveredAssets: 14,
     status: "Active",
   },
   {
@@ -52,7 +52,7 @@ const departments = [
     phone: "+91 90123 45678",
     location: "HR Office",
     totalEmployees: 4,
-    assignedAssets: 9,
+    deliveredAssets: 9,
     status: "Inactive",
   },
 ];
@@ -115,7 +115,7 @@ export default function DepartmentsPage() {
     <LayoutWrapper>
       <PageHeader
         title="Departments"
-        description="Manage company departments, department heads and asset allocation structure."
+        description="Manage company departments, department heads and asset delivery structure."
         buttonText="Add Department"
         buttonHref="/departments/add"
       />
@@ -150,10 +150,10 @@ export default function DepartmentsPage() {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Assigned Assets</p>
+          <p className="text-sm text-gray-500">Delivered Assets</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
             {departments.reduce(
-              (total, department) => total + department.assignedAssets,
+              (total, department) => total + department.deliveredAssets,
               0
             )}
           </h2>
@@ -215,7 +215,7 @@ export default function DepartmentsPage() {
                 Employees
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
-                Assets
+                Delivered Assets
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
@@ -261,7 +261,7 @@ export default function DepartmentsPage() {
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
-                  {department.assignedAssets}
+                  {department.deliveredAssets}
                 </td>
 
                 <td className="px-4 py-4">
