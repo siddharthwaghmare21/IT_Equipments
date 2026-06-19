@@ -18,14 +18,14 @@ const assets = [
     serialNumber: "DL5420-9821",
     purchaseDate: "2024-04-12",
     warrantyExpiry: "2027-04-12",
-    assignedTo: "Rahul Patil",
+    deliveredTo: "Rahul Patil",
     department: "IT Department",
     location: "Main Office",
-    status: "Assigned",
+    status: "Delivered",
     condition: "Good",
     specifications: "Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro",
     description: "Laptop used for software development and office work.",
-    remarks: "Assigned for software development work.",
+    remarks: "Delivered for software development work.",
   },
   {
     id: "2",
@@ -37,14 +37,14 @@ const assets = [
     serialNumber: "HP840-4421",
     purchaseDate: "2024-06-20",
     warrantyExpiry: "2027-06-20",
-    assignedTo: "-",
+    deliveredTo: "-",
     department: "-",
     location: "Store Room",
     status: "Available",
     condition: "New",
     specifications: "Intel i7, 16GB RAM, 512GB SSD, Windows 11 Pro",
-    description: "Laptop available in store room for future allocation.",
-    remarks: "Ready for assignment.",
+    description: "Laptop available in store room for future delivery.",
+    remarks: "Ready for delivery.",
   },
 ];
 
@@ -71,7 +71,7 @@ export default function ViewAssetPage() {
     <LayoutWrapper>
       <PageHeader
         title="Asset Details"
-        description="View complete information about this IT asset, specifications, assignment and warranty status."
+        description="View complete information about this IT asset, specifications, delivery and warranty status."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -114,7 +114,7 @@ export default function ViewAssetPage() {
           <DetailItem label="Purchase Date" value={asset.purchaseDate} />
           <DetailItem label="Warranty Expiry" value={asset.warrantyExpiry} />
           <DetailItem label="Condition" value={asset.condition} />
-          <DetailItem label="Assigned To" value={asset.assignedTo} />
+          <DetailItem label="Delivered To" value={asset.deliveredTo} />
           <DetailItem label="Department" value={asset.department} />
           <DetailItem label="Location" value={asset.location} />
         </div>
