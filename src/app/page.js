@@ -5,10 +5,19 @@ import { useRouter } from "next/navigation";
 
 const SESSION_KEY = "itAssetUserSession";
 
+// Backend येईपर्यंत true ठेवा.
+// Backend/login final झाल्यावर false करा.
+const TEMP_AUTH_BYPASS = true;
+
 export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
+    if (TEMP_AUTH_BYPASS) {
+      router.replace("/dashboard");
+      return;
+    }
+
     const savedSession = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
 
     router.replace(savedSession ? "/dashboard" : "/login");

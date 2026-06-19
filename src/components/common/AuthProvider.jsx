@@ -5,6 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 
 const SESSION_KEY = "itAssetUserSession";
 
+// Backend येईपर्यंत true ठेवा.
+// Backend/login final झाल्यावर false करा.
+const TEMP_AUTH_BYPASS = true;
+
 const publicRoutes = ["/login", "/admin-setup", "/admin-request-access"];
 
 export default function AuthProvider({ children }) {
@@ -15,6 +19,16 @@ export default function AuthProvider({ children }) {
 
   useEffect(() => {
     const savedSession = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+
+    if (TEMP_AUTH_BYPASS) {
+      if (pathname === "/") {
+        router.replace("/dashboard");
+        return;
+      }
+
+      setIsChecking(false);
+      return;
+    }
 
     if (pathname === "/") {
       router.replace(savedSession ? "/dashboard" : "/login");
