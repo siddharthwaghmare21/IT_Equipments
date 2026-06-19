@@ -1,15 +1,17 @@
 import "./globals.css";
+import AuthProvider from "@/components/common/AuthProvider";
 
 export const metadata = {
-  title: "IT Assets Management",
-  description: "IT Assets and Equipment Management System",
+  title: "IT Assets & Equipment Management",
+  description:
+    "IT Department system for managing assets, equipment, purchases, assignments, returns, maintenance and reports.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-100 text-gray-900">
-        {children}
+      <body>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

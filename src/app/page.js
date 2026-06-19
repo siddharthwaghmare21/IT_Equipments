@@ -1,16 +1,22 @@
-export default function Home() {
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-100 px-6">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900">
-          IT Assets & Equipment Management
-        </h1>
+"use client";
 
-        <p className="mt-4 text-gray-600">
-          Manage assets, purchases, deliveries, maintenance and reports.
-        </p>
-      </div>
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+const SESSION_KEY = "itAssetUserSession";
+
+export default function HomePage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const savedSession = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+
+    router.replace(savedSession ? "/dashboard" : "/login");
+  }, [router]);
+
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+      <p className="text-sm font-semibold text-gray-700">Redirecting...</p>
     </main>
   );
 }
-
