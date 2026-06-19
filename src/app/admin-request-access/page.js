@@ -113,13 +113,12 @@ export default function AdminRequestAccessPage() {
             </div>
 
             <h1 className="mt-6 text-2xl font-bold text-gray-900">
-              Super Admin Required
+              First Super Admin Required
             </h1>
 
             <p className="mt-3 text-sm leading-6 text-gray-600">
-              First Super Admin profile is not created yet. New IT staff access
-              requests can be submitted only after Super Admin setup is
-              completed.
+              First Super Admin profile is not created yet. Access requests can
+              be submitted only after first Super Admin setup is completed.
             </p>
 
             <Link
@@ -156,7 +155,8 @@ export default function AdminRequestAccessPage() {
 
             <p className="mt-3 text-sm leading-6 text-gray-600">
               Your IT staff access request has been submitted successfully.
-              Super Admin approval is required before login access is activated.
+              Existing Super Admin approval is required before login access is
+              activated.
             </p>
 
             <Link
@@ -185,8 +185,8 @@ export default function AdminRequestAccessPage() {
 
           <p className="mt-3 text-sm leading-6 text-gray-600">
             This system is only for IT Department staff. New users cannot create
-            accounts directly. Submit an access request and wait for Super Admin
-            approval.
+            accounts directly. Submit an access request and wait for existing
+            Super Admin approval.
           </p>
 
           <div className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
@@ -197,8 +197,9 @@ export default function AdminRequestAccessPage() {
             <ul className="mt-3 space-y-2 text-sm text-gray-600">
               <li>• Only IT Department staff can request access</li>
               <li>• Internal access code is required</li>
-              <li>• Super Admin approval is required</li>
-              <li>• Role will be assigned after verification</li>
+              <li>• Existing Super Admin approval is required</li>
+              <li>• Multiple Super Admin accounts are supported</li>
+              <li>• Requested role will be assigned after verification</li>
             </ul>
           </div>
         </section>
@@ -273,11 +274,17 @@ export default function AdminRequestAccessPage() {
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
                 required
               >
+                <option value="Super Admin">Super Admin</option>
                 <option value="IT Admin">IT Admin</option>
                 <option value="IT Manager">IT Manager</option>
                 <option value="IT Support">IT Support</option>
                 <option value="Viewer">Viewer</option>
               </select>
+
+              <p className="mt-2 text-xs leading-5 text-gray-500">
+                Super Admin request will require approval from an existing Super
+                Admin.
+              </p>
             </div>
 
             <div>
