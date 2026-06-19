@@ -10,6 +10,11 @@ const superAdminOnlyLinks = [
     path: "/admin-request-management",
     short: "AR",
   },
+  {
+    label: "Admin Users Management",
+    path: "/admin-users-management",
+    short: "AU",
+  },
 ];
 
 export default function Sidebar({
