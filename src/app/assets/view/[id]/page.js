@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import StatusBadge from "@/components/common/StatusBadge";
+import BackButton from "@/components/common/BackButton";
 
 const assets = [
   {
@@ -22,6 +23,8 @@ const assets = [
     location: "Main Office",
     status: "Assigned",
     condition: "Good",
+    specifications: "Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro",
+    description: "Laptop used for software development and office work.",
     remarks: "Assigned for software development work.",
   },
   {
@@ -39,6 +42,8 @@ const assets = [
     location: "Store Room",
     status: "Available",
     condition: "New",
+    specifications: "Intel i7, 16GB RAM, 512GB SSD, Windows 11 Pro",
+    description: "Laptop available in store room for future allocation.",
     remarks: "Ready for assignment.",
   },
 ];
@@ -66,16 +71,11 @@ export default function ViewAssetPage() {
     <LayoutWrapper>
       <PageHeader
         title="Asset Details"
-        description="View complete information about this IT asset, assignment and warranty status."
+        description="View complete information about this IT asset, specifications, assignment and warranty status."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Link
-          href="/assets"
-          className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-        >
-          ← Back to Assets
-        </Link>
+        <BackButton href="/assets" label="Assets" />
 
         <Link
           href={`/assets/edit/${asset.id}`}
@@ -85,7 +85,7 @@ export default function ViewAssetPage() {
         </Link>
       </div>
 
-      <section className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+      <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
         <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500">
@@ -119,23 +119,42 @@ export default function ViewAssetPage() {
           <DetailItem label="Location" value={asset.location} />
         </div>
 
+        <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Specifications
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-700">
+              {asset.specifications || "-"}
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Description
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-700">
+              {asset.description || "-"}
+            </p>
+          </div>
+        </div>
+
         <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
           <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
             Remarks
           </p>
-          <p className="mt-2 text-sm text-gray-700">
-            {asset.remarks}
-          </p>
+          <p className="mt-2 text-sm text-gray-700">{asset.remarks || "-"}</p>
         </div>
       </section>
 
-      <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+      <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
         <h3 className="text-lg font-bold text-gray-900">
           Maintenance History
         </h3>
 
         <p className="mt-2 text-sm text-gray-600">
-          No maintenance records available yet. Backend records will be connected later.
+          No maintenance records available yet. Backend records will be
+          connected later.
         </p>
       </section>
     </LayoutWrapper>
