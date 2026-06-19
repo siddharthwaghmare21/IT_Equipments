@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import BackButton from "@/components/common/BackButton";
 
 const assets = [
   {
@@ -19,6 +20,8 @@ const assets = [
     warrantyExpiry: "2027-04-12",
     location: "IT Department",
     status: "Assigned",
+    specifications: "Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro",
+    description: "Laptop used for software development and office work.",
     remarks: "Assigned for software development work.",
   },
   {
@@ -33,6 +36,8 @@ const assets = [
     warrantyExpiry: "2027-06-20",
     location: "Store Room",
     status: "Available",
+    specifications: "Intel i7, 16GB RAM, 512GB SSD, Windows 11 Pro",
+    description: "Laptop available in store room for future allocation.",
     remarks: "Ready for assignment.",
   },
 ];
@@ -60,23 +65,18 @@ export default function EditAssetPage() {
 
     console.log("Updated Asset Data:", formData);
 
-    alert("Asset updated successfully. Backend will be connected later.");
+    alert("Asset changes saved successfully. Backend will be connected later.");
   }
 
   return (
     <LayoutWrapper>
       <PageHeader
         title="Edit Asset"
-        description="Update asset information, serial number, warranty, location and current status."
+        description="Update asset information, serial number, warranty, specifications, description, location and current status."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Link
-          href="/assets"
-          className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-        >
-          ← Back to Assets
-        </Link>
+        <BackButton href="/assets" label="Assets" />
 
         <Link
           href={`/assets/view/${selectedAsset.id}`}
@@ -241,6 +241,34 @@ export default function EditAssetPage() {
 
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Specifications (optional)
+            </label>
+            <textarea
+              name="specifications"
+              value={formData.specifications}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Example: Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Description (optional)
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Add asset details, included accessories, usage purpose or extra information..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Remarks
             </label>
             <textarea
@@ -265,7 +293,7 @@ export default function EditAssetPage() {
             type="submit"
             className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
           >
-            Update Asset
+            Save Changes
           </button>
         </div>
       </form>
