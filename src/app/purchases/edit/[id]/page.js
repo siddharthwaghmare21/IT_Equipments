@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import BackButton from "@/components/common/BackButton";
 
 const purchases = [
   {
@@ -20,6 +21,8 @@ const purchases = [
     unitPrice: "72500",
     warranty: "3 Years",
     status: "Received",
+    specifications: "Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro",
+    description: "Dell laptops purchased for IT department staff allocation.",
     remarks: "Laptops received and ready for asset registration.",
   },
   {
@@ -35,6 +38,8 @@ const purchases = [
     unitPrice: "65000",
     warranty: "3 Years",
     status: "Pending",
+    specifications: "Intel i7, 16GB RAM, 512GB SSD, Windows 11 Pro",
+    description: "HP laptops ordered for upcoming employee requirements.",
     remarks: "Awaiting delivery from vendor.",
   },
 ];
@@ -71,23 +76,18 @@ export default function EditPurchasePage() {
 
     console.log("Updated Purchase Data:", updatedPurchase);
 
-    alert("Purchase updated successfully. Backend will be connected later.");
+    alert("Purchase changes saved successfully. Backend will be connected later.");
   }
 
   return (
     <LayoutWrapper>
       <PageHeader
         title="Edit Purchase"
-        description="Update purchase order, vendor invoice, item details, status and cost."
+        description="Update purchase order, vendor invoice, item details, specifications, description, status and cost."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Link
-          href="/purchases"
-          className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-        >
-          ← Back to Purchases
-        </Link>
+        <BackButton href="/purchases" label="Purchases" />
 
         <Link
           href={`/purchases/view/${selectedPurchase.id}`}
@@ -195,7 +195,8 @@ export default function EditPurchasePage() {
               </h2>
 
               <p className="mt-1 text-sm text-gray-600">
-                Update item, quantity, unit price and warranty information.
+                Update item, quantity, unit price, warranty, specifications and
+                description information.
               </p>
             </div>
           </div>
@@ -291,6 +292,34 @@ export default function EditPurchasePage() {
 
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Specifications (optional)
+            </label>
+            <textarea
+              name="specifications"
+              value={formData.specifications}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Example: Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Description (optional)
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Add item details, included accessories, purchase purpose or extra information..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Remarks
             </label>
             <textarea
@@ -315,7 +344,7 @@ export default function EditPurchasePage() {
             type="submit"
             className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
           >
-            Update Purchase
+            Save Changes
           </button>
         </div>
       </form>
