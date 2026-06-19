@@ -84,7 +84,6 @@ export default function LoginPage() {
         fullName: matchedUser.fullName,
         email: matchedUser.email,
         phone: matchedUser.phone,
-        employeeCode: matchedUser.employeeCode,
         department: matchedUser.department || "IT Department",
         role: matchedUser.role,
         status: matchedUser.status,

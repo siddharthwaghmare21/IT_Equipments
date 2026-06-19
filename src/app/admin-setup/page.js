@@ -8,7 +8,7 @@ const ACCESS_CODE = "DataCenterSMKC";
 const USERS_KEY = "itAssetUsers";
 const SESSION_KEY = "itAssetUserSession";
 
-export default function SetupAdminPage() {
+export default function AdminSetupPage() {
   const router = useRouter();
 
   const [adminAlreadyExists, setAdminAlreadyExists] = useState(false);
@@ -17,7 +17,6 @@ export default function SetupAdminPage() {
     fullName: "",
     email: "",
     phone: "",
-    employeeCode: "",
     password: "",
     confirmPassword: "",
     accessCode: "",
@@ -77,7 +76,6 @@ export default function SetupAdminPage() {
       fullName: formData.fullName,
       email: formData.email,
       phone: formData.phone,
-      employeeCode: formData.employeeCode,
       department: "IT Department",
       role: "Super Admin",
       status: "Active",
@@ -93,6 +91,7 @@ export default function SetupAdminPage() {
         id: superAdminUser.id,
         fullName: superAdminUser.fullName,
         email: superAdminUser.email,
+        phone: superAdminUser.phone,
         role: superAdminUser.role,
         department: superAdminUser.department,
         status: superAdminUser.status,
@@ -223,21 +222,6 @@ export default function SetupAdminPage() {
                   required
                 />
               </div>
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Employee Code
-              </label>
-              <input
-                type="text"
-                name="employeeCode"
-                value={formData.employeeCode}
-                onChange={handleChange}
-                placeholder="IT-001"
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-                required
-              />
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
