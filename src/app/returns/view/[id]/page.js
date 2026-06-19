@@ -15,7 +15,7 @@ const returnRecords = [
     assetName: "Logitech Keyboard",
     returnedBy: "Amit Shinde",
     department: "Admin",
-    assignedDate: "2026-02-01",
+    deliveryDate: "2026-02-01",
     returnDate: "2026-08-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
@@ -30,7 +30,7 @@ const returnRecords = [
     assetName: "Dell Mouse",
     returnedBy: "Priya More",
     department: "HR",
-    assignedDate: "2026-01-10",
+    deliveryDate: "2026-01-10",
     returnDate: "2026-07-20",
     returnCondition: "Damaged",
     receivedBy: "IT Admin",
@@ -45,7 +45,7 @@ const returnRecords = [
     assetName: "HP Monitor",
     returnedBy: "Sneha Jadhav",
     department: "Accounts",
-    assignedDate: "2026-03-05",
+    deliveryDate: "2026-03-05",
     returnDate: "2026-09-10",
     returnCondition: "Needs Inspection",
     receivedBy: "IT Support",
@@ -60,7 +60,7 @@ const returnRecords = [
     assetName: "Lenovo Laptop",
     returnedBy: "Rahul Patil",
     department: "IT Department",
-    assignedDate: "2026-02-15",
+    deliveryDate: "2026-02-15",
     returnDate: "2026-10-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
@@ -152,7 +152,7 @@ export default function ViewReturnPage() {
           <DetailItem label="Asset Name" value={returnRecord.assetName} />
           <DetailItem label="Returned By" value={returnRecord.returnedBy} />
           <DetailItem label="Department" value={returnRecord.department} />
-          <DetailItem label="Assigned Date" value={returnRecord.assignedDate} />
+          <DetailItem label="Delivery Date" value={returnRecord.deliveryDate} />
           <DetailItem label="Return Date" value={returnRecord.returnDate} />
           <DetailItem
             label="Return Condition"
