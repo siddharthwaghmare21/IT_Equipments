@@ -45,8 +45,8 @@ const activityLogs = [
     date: "2026-03-02",
     time: "12:45 PM",
     module: "Deliveries",
-    action: "Asset Assigned",
-    description: "Asset AST-001 was assigned to Rahul Patil.",
+    action: "Asset Delivered",
+    description: "Asset AST-001 was delivered to Rahul Patil.",
     performedBy: "IT Admin",
     role: "Admin",
     status: "Success",
@@ -237,10 +237,7 @@ export default function ActivityLogsPage() {
           activity log records
         </p>
 
-        <ReportExportButtons
-          data={filteredLogs}
-          fileName="activity-logs"
-        />
+        <ReportExportButtons data={filteredLogs} fileName="activity-logs" />
       </div>
 
       <TableWrapper>
@@ -317,7 +314,7 @@ export default function ActivityLogsPage() {
         <p className="mt-2 text-sm leading-6 text-gray-600">
           Activity logs are read-only audit records. After backend integration,
           logs will be automatically created whenever users add, edit, delete,
-          assign, return or update IT asset records.
+          deliver, return or update IT asset records.
         </p>
       </section>
     </LayoutWrapper>
