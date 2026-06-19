@@ -12,38 +12,44 @@ const deliveries = [
     deliveryCode: "DLV-001",
     assetTag: "AST-001",
     assetName: "Dell Latitude 5420",
-    assignedTo: "Rahul Patil",
+    deliveredTo: "Rahul Patil",
     department: "IT Department",
-    assignedDate: "2026-01-15",
+    deliveryDate: "2026-01-15",
     expectedReturnDate: "2026-12-31",
     condition: "Good",
-    status: "Assigned",
-    remarks: "Laptop assigned for development work.",
+    status: "Delivered",
+    specifications: "Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro",
+    description: "Laptop delivered for development work with charger and bag.",
+    remarks: "Delivery completed successfully.",
   },
   {
     id: "2",
     deliveryCode: "DLV-002",
     assetTag: "AST-002",
     assetName: "HP LaserJet Printer",
-    assignedTo: "Sneha Jadhav",
+    deliveredTo: "Sneha Jadhav",
     department: "Accounts",
-    assignedDate: "2026-01-20",
+    deliveryDate: "2026-01-20",
     expectedReturnDate: "2026-12-31",
     condition: "New",
-    status: "Assigned",
-    remarks: "Printer assigned to accounts department.",
+    status: "Delivered",
+    specifications: "Laser printer, black and white, network printing support",
+    description: "Printer delivered to accounts department for daily printing.",
+    remarks: "Printer delivered with power cable.",
   },
   {
     id: "3",
     deliveryCode: "DLV-003",
     assetTag: "AST-003",
     assetName: "Logitech Keyboard",
-    assignedTo: "Amit Shinde",
+    deliveredTo: "Amit Shinde",
     department: "Admin",
-    assignedDate: "2026-02-01",
+    deliveryDate: "2026-02-01",
     expectedReturnDate: "2026-08-01",
     condition: "Good",
     status: "Returned",
+    specifications: "USB keyboard, standard layout",
+    description: "Keyboard delivered to admin department.",
     remarks: "Keyboard returned in working condition.",
   },
   {
@@ -51,12 +57,14 @@ const deliveries = [
     deliveryCode: "DLV-004",
     assetTag: "AST-004",
     assetName: "Cisco Router",
-    assignedTo: "Priya More",
+    deliveredTo: "Priya More",
     department: "HR",
-    assignedDate: "2026-02-10",
+    deliveryDate: "2026-02-10",
     expectedReturnDate: "2026-09-10",
     condition: "Working",
     status: "Pending Return",
+    specifications: "Cisco router, gigabit ports, enterprise network support",
+    description: "Router delivered for HR department network setup.",
     remarks: "Return confirmation is pending.",
   },
 ];
@@ -76,7 +84,7 @@ function DetailItem({ label, value }) {
 
 function DeliveryStatusBadge({ status }) {
   const statusStyles = {
-    Assigned: "bg-blue-100 text-blue-700 border-blue-200",
+    Delivered: "bg-blue-100 text-blue-700 border-blue-200",
     Returned: "bg-green-100 text-green-700 border-green-200",
     "Pending Return": "bg-yellow-100 text-yellow-700 border-yellow-200",
   };
@@ -103,7 +111,7 @@ export default function ViewDeliveryPage() {
     <LayoutWrapper>
       <PageHeader
         title="Delivery Details"
-        description="View asset assignment information, employee allocation, condition and return status."
+        description="View equipment/material delivery information, employee details, condition and return status."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -130,7 +138,7 @@ export default function ViewDeliveryPage() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-600">
-              {delivery.assetTag} • Assigned to {delivery.assignedTo}
+              {delivery.assetTag} • Delivered to {delivery.deliveredTo}
             </p>
           </div>
 
@@ -140,16 +148,36 @@ export default function ViewDeliveryPage() {
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <DetailItem label="Delivery Code" value={delivery.deliveryCode} />
           <DetailItem label="Asset Tag" value={delivery.assetTag} />
-          <DetailItem label="Asset Name" value={delivery.assetName} />
-          <DetailItem label="Assigned To" value={delivery.assignedTo} />
+          <DetailItem label="Asset / Material Name" value={delivery.assetName} />
+          <DetailItem label="Delivered To" value={delivery.deliveredTo} />
           <DetailItem label="Department" value={delivery.department} />
-          <DetailItem label="Assigned Date" value={delivery.assignedDate} />
+          <DetailItem label="Delivery Date" value={delivery.deliveryDate} />
           <DetailItem
             label="Expected Return Date"
             value={delivery.expectedReturnDate}
           />
           <DetailItem label="Asset Condition" value={delivery.condition} />
-          <DetailItem label="Status" value={delivery.status} />
+          <DetailItem label="Delivery Status" value={delivery.status} />
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Specifications
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-700">
+              {delivery.specifications || "-"}
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Description
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-700">
+              {delivery.description || "-"}
+            </p>
+          </div>
         </div>
 
         <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
@@ -162,12 +190,12 @@ export default function ViewDeliveryPage() {
 
       <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Assignment Summary</p>
+          <p className="text-sm text-gray-500">Delivery Summary</p>
           <h3 className="mt-2 text-lg font-bold text-gray-900">
             {delivery.assetName}
           </h3>
           <p className="mt-2 text-sm text-gray-600">
-            This asset is assigned to {delivery.assignedTo} from{" "}
+            This equipment/material is delivered to {delivery.deliveredTo} from{" "}
             {delivery.department}.
           </p>
         </div>
