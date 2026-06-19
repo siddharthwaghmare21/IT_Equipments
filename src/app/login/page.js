@@ -158,7 +158,7 @@ export default function LoginPage() {
 
           <p className="mt-3 text-sm leading-6 text-gray-600">
             This system is only for IT Department staff to save, manage and
-            maintain IT assets, purchases, assignments, returns, maintenance,
+            maintain IT assets, purchases, deliveries, returns, maintenance,
             reports and activity logs.
           </p>
 
