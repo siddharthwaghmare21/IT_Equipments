@@ -19,10 +19,10 @@ const assets = [
     purchaseDate: "2024-04-12",
     warrantyExpiry: "2027-04-12",
     location: "IT Department",
-    status: "Assigned",
+    status: "Delivered",
     specifications: "Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro",
     description: "Laptop used for software development and office work.",
-    remarks: "Assigned for software development work.",
+    remarks: "Delivered for software development work.",
   },
   {
     id: "2",
@@ -37,8 +37,8 @@ const assets = [
     location: "Store Room",
     status: "Available",
     specifications: "Intel i7, 16GB RAM, 512GB SSD, Windows 11 Pro",
-    description: "Laptop available in store room for future allocation.",
-    remarks: "Ready for assignment.",
+    description: "Laptop available in store room for future delivery.",
+    remarks: "Ready for delivery.",
   },
 ];
 
@@ -232,7 +232,7 @@ export default function EditAssetPage() {
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
               <option value="Available">Available</option>
-              <option value="Assigned">Assigned</option>
+              <option value="Delivered">Delivered</option>
               <option value="Maintenance">Maintenance</option>
               <option value="Damaged">Damaged</option>
               <option value="Scrapped">Scrapped</option>
