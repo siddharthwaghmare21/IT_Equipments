@@ -16,7 +16,7 @@ const returnRecords = [
     assetName: "Logitech Keyboard",
     returnedBy: "Amit Shinde",
     department: "Admin",
-    assignedDate: "2026-02-01",
+    deliveryDate: "2026-02-01",
     returnDate: "2026-08-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
@@ -31,7 +31,7 @@ const returnRecords = [
     assetName: "Dell Mouse",
     returnedBy: "Priya More",
     department: "HR",
-    assignedDate: "2026-01-10",
+    deliveryDate: "2026-01-10",
     returnDate: "2026-07-20",
     returnCondition: "Damaged",
     receivedBy: "IT Admin",
@@ -46,7 +46,7 @@ const returnRecords = [
     assetName: "HP Monitor",
     returnedBy: "Sneha Jadhav",
     department: "Accounts",
-    assignedDate: "2026-03-05",
+    deliveryDate: "2026-03-05",
     returnDate: "2026-09-10",
     returnCondition: "Needs Inspection",
     receivedBy: "IT Support",
@@ -61,7 +61,7 @@ const returnRecords = [
     assetName: "Lenovo Laptop",
     returnedBy: "Rahul Patil",
     department: "IT Department",
-    assignedDate: "2026-02-15",
+    deliveryDate: "2026-02-15",
     returnDate: "2026-10-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
@@ -85,7 +85,7 @@ export default function EditReturnPage() {
     assetName: selectedReturn.assetName,
     returnedBy: selectedReturn.returnedBy,
     department: selectedReturn.department,
-    assignedDate: selectedReturn.assignedDate,
+    deliveryDate: selectedReturn.deliveryDate,
     returnDate: selectedReturn.returnDate,
     returnCondition: selectedReturn.returnCondition,
     receivedBy: selectedReturn.receivedBy,
@@ -243,12 +243,12 @@ export default function EditReturnPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Assigned Date
+              Delivery Date
             </label>
             <input
               type="date"
-              name="assignedDate"
-              value={formData.assignedDate}
+              name="deliveryDate"
+              value={formData.deliveryDate}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
