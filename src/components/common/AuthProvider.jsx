@@ -5,9 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 
 const SESSION_KEY = "itAssetUserSession";
 
-// Keep this true until backend login is ready.
-// Set it to false after final backend authentication is connected.
-const TEMP_AUTH_BYPASS = true;
+// Keep false so all protected routes go through login/setup flow.
+const TEMP_AUTH_BYPASS = false;
 
 const publicRoutes = ["/login", "/admin-setup", "/admin-request-access"];
 

@@ -24,7 +24,7 @@ export default function AdminRequestAccessPage() {
     fullName: "",
     email: "",
     phone: "",
-    requestedRole: "IT Support",
+    requestedRole: "Employee",
     password: "",
     confirmPassword: "",
     accessCode: "",
@@ -317,9 +317,8 @@ export default function AdminRequestAccessPage() {
                 required
               >
                 <option value="Super Admin">Super Admin</option>
-                <option value="IT Admin">IT Admin</option>
-                <option value="IT Manager">IT Manager</option>
-                <option value="IT Support">IT Support</option>
+                <option value="Admin">Admin</option>
+                <option value="Employee">Employee</option>
                 <option value="Viewer">Viewer</option>
               </select>
 

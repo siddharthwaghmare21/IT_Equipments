@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 
 const SESSION_KEY = "itAssetUserSession";
 
-// Backend येईपर्यंत true ठेवा.
-// Backend/login final झाल्यावर false करा.
-const TEMP_AUTH_BYPASS = true;
+// Keep false so first website load goes through login/setup flow.
+const TEMP_AUTH_BYPASS = false;
 
 export default function HomePage() {
   const router = useRouter();

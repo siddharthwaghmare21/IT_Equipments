@@ -1,17 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 
+const SESSION_KEY = "itAssetUserSession";
+
 export default function SettingsPage() {
+  const [currentUser, setCurrentUser] = useState(null);
   const [settings, setSettings] = useState({
     companyName: "IT Assets Management",
     companyEmail: "admin@company.com",
     companyPhone: "+91 98765 43210",
     companyAddress: "Main Office, Maharashtra, India",
 
-    adminName: "IT Admin",
+    adminName: "Admin",
     adminEmail: "itadmin@company.com",
     adminPhone: "+91 98765 12345",
     defaultRole: "Viewer",
@@ -37,6 +40,16 @@ export default function SettingsPage() {
     backupFrequency: "Weekly",
     auditRetention: "365",
   });
+
+  useEffect(() => {
+    const savedSession = JSON.parse(
+      localStorage.getItem(SESSION_KEY) || "null"
+    );
+
+    setTimeout(() => setCurrentUser(savedSession), 0);
+  }, []);
+
+  const canUseBackup = currentUser?.role !== "Viewer";
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
@@ -130,7 +143,7 @@ export default function SettingsPage() {
         <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
           <div className="mb-5">
             <h2 className="text-lg font-bold text-gray-900">
-              IT Admin Details
+              System Admin Details
             </h2>
             <p className="mt-1 text-sm text-gray-600">
               Main IT department contact details for asset management.
@@ -189,9 +202,8 @@ export default function SettingsPage() {
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               >
                 <option value="Viewer">Viewer</option>
-                <option value="IT Support">IT Support</option>
-                <option value="IT Manager">IT Manager</option>
-                <option value="IT Admin">IT Admin</option>
+                <option value="Employee">Employee</option>
+                <option value="Admin">Admin</option>
               </select>
             </div>
 
@@ -372,11 +384,15 @@ export default function SettingsPage() {
 
             <SettingToggle
               title="Data Backup"
-              description="Automatic backup will be connected after backend integration."
+              description={
+                canUseBackup
+                  ? "Allowed for Super Admin, Admin and Employee. Backend backup job will be connected later."
+                  : "Viewer role cannot access backup controls."
+              }
               name="dataBackup"
               checked={settings.dataBackup}
               onChange={handleChange}
-              disabled
+              disabled={!canUseBackup}
             />
           </div>
 

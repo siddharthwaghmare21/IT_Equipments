@@ -176,8 +176,7 @@ export default function LoginPage() {
             <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
               <h2 className="text-sm font-bold text-gray-900">Role Based</h2>
               <p className="mt-2 text-sm leading-6 text-gray-600">
-                Super Admin, IT Admin, IT Manager, IT Support and Viewer roles
-                are supported.
+                Super Admin, Admin, Employee and Viewer roles are supported.
               </p>
             </div>
           </div>

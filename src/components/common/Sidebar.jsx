@@ -4,12 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sidebarLinks } from "@/data/sidebarLinks";
 
-const superAdminOnlyLinks = [
+const accessManagementLinks = [
   {
     label: "Admin Request Management",
     path: "/admin-request-management",
     short: "AR",
   },
+];
+
+const superAdminOnlyLinks = [
   {
     label: "Admin Users Management",
     path: "/admin-user-management",
@@ -21,13 +24,16 @@ export default function Sidebar({
   onClose,
   currentUser,
   isSuperAdmin = false,
+  canManageAccessRequests = false,
   onLogout,
 }) {
   const pathname = usePathname();
 
-  const visibleLinks = isSuperAdmin
-    ? [...sidebarLinks, ...superAdminOnlyLinks]
-    : sidebarLinks;
+  const visibleLinks = [
+    ...sidebarLinks,
+    ...(canManageAccessRequests ? accessManagementLinks : []),
+    ...(isSuperAdmin ? superAdminOnlyLinks : []),
+  ];
 
   return (
     <aside className="flex h-full w-72 flex-col bg-gray-950 text-white">

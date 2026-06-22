@@ -7,11 +7,11 @@ import PageHeader from "@/components/common/PageHeader";
 const SESSION_KEY = "itAssetUserSession";
 
 const fallbackProfile = {
-  fullName: "IT Admin",
+  fullName: "Admin",
   email: "itadmin@company.com",
   phone: "+91 98765 12345",
   department: "IT Department",
-  role: "IT Admin",
+  role: "Admin",
   status: "Active",
   loginAt: "2026-03-05T10:30:00.000Z",
 };

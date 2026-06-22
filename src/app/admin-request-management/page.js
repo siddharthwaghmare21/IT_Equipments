@@ -34,9 +34,8 @@ function StatusBadge({ status }) {
 function RoleBadge({ role }) {
   const styles = {
     "Super Admin": "bg-purple-100 text-purple-700 border-purple-200",
-    "IT Admin": "bg-blue-100 text-blue-700 border-blue-200",
-    "IT Manager": "bg-indigo-100 text-indigo-700 border-indigo-200",
-    "IT Support": "bg-gray-100 text-gray-700 border-gray-200",
+    Admin: "bg-blue-100 text-blue-700 border-blue-200",
+    Employee: "bg-gray-100 text-gray-700 border-gray-200",
     Viewer: "bg-orange-100 text-orange-700 border-orange-200",
   };
 
@@ -81,6 +80,8 @@ export default function AdminRequestManagementPage() {
   }, []);
 
   const isSuperAdmin = currentUser?.role === "Super Admin";
+  const canApproveAccess =
+    currentUser?.role === "Super Admin" || currentUser?.role === "Admin";
 
   const filteredRequests = useMemo(() => {
     if (statusFilter === "All") return requests;
@@ -105,8 +106,8 @@ export default function AdminRequestManagementPage() {
   }
 
   function approveRequest(requestId) {
-    if (!isSuperAdmin) {
-      alert("Only Super Admin can approve access requests.");
+    if (!canApproveAccess) {
+      alert("Only Super Admin or Admin can approve access requests.");
       return;
     }
 
@@ -119,6 +120,11 @@ export default function AdminRequestManagementPage() {
 
     if (selectedRequest.status !== "Pending") {
       alert("Only pending requests can be approved.");
+      return;
+    }
+
+    if (selectedRequest.requestedRole === "Super Admin" && !isSuperAdmin) {
+      alert("Only an existing Super Admin can approve Super Admin requests.");
       return;
     }
 
@@ -180,8 +186,8 @@ export default function AdminRequestManagementPage() {
   }
 
   function rejectRequest(requestId) {
-    if (!isSuperAdmin) {
-      alert("Only Super Admin can reject access requests.");
+    if (!canApproveAccess) {
+      alert("Only Super Admin or Admin can reject access requests.");
       return;
     }
 
@@ -223,13 +229,14 @@ export default function AdminRequestManagementPage() {
     <LayoutWrapper>
       <PageHeader
         title="Admin Request Management"
-        description="Review, approve or reject IT staff access requests. Only Super Admin can approve Super Admin, IT Admin, IT Manager, IT Support and Viewer accounts."
+        description="Review, approve or reject IT staff access requests. Super Admin can approve all roles; Admin can approve Admin, Employee and Viewer requests."
       />
 
-      {!isSuperAdmin && (
+      {!canApproveAccess && (
         <section className="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm sm:p-5">
-          You are not logged in as Super Admin. Approval and rejection actions
-          are disabled. Backend authentication will handle this securely later.
+          You are not logged in as Super Admin or Admin. Approval and rejection
+          actions are disabled. Backend authentication will handle this securely
+          later.
         </section>
       )}
 
@@ -366,7 +373,7 @@ export default function AdminRequestManagementPage() {
                         <button
                           type="button"
                           onClick={() => approveRequest(request.id)}
-                          disabled={!isSuperAdmin}
+                          disabled={!canApproveAccess}
                           className="rounded-lg bg-green-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-800 disabled:cursor-not-allowed disabled:bg-gray-300"
                         >
                           Approve
@@ -375,7 +382,7 @@ export default function AdminRequestManagementPage() {
                         <button
                           type="button"
                           onClick={() => rejectRequest(request.id)}
-                          disabled={!isSuperAdmin}
+                          disabled={!canApproveAccess}
                           className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-400"
                         >
                           Reject

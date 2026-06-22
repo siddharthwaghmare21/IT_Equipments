@@ -187,7 +187,7 @@ export default function AdminSetupPage() {
             <ul className="mt-3 space-y-2 text-sm text-gray-600">
               <li>- Full access to all IT asset modules</li>
               <li>- Approve or reject new IT staff access requests</li>
-              <li>- Manage Super Admin, IT Admin, IT Manager and IT Support roles</li>
+              <li>- Manage Super Admin, Admin, Employee and Viewer roles</li>
               <li>- View reports, activity logs and system settings</li>
             </ul>
           </div>

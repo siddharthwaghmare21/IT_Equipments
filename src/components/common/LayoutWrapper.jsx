@@ -22,6 +22,8 @@ export default function LayoutWrapper({ children }) {
   }, []);
 
   const isSuperAdmin = currentUser?.role === "Super Admin";
+  const canManageAccessRequests =
+    currentUser?.role === "Super Admin" || currentUser?.role === "Admin";
 
   function handleLogout() {
     const confirmed = confirm("Are you sure you want to logout?");
@@ -39,6 +41,7 @@ export default function LayoutWrapper({ children }) {
         <Sidebar
           currentUser={currentUser}
           isSuperAdmin={isSuperAdmin}
+          canManageAccessRequests={canManageAccessRequests}
           onLogout={handleLogout}
         />
       </div>
@@ -56,6 +59,7 @@ export default function LayoutWrapper({ children }) {
             <Sidebar
               currentUser={currentUser}
               isSuperAdmin={isSuperAdmin}
+              canManageAccessRequests={canManageAccessRequests}
               onLogout={handleLogout}
               onClose={() => setIsSidebarOpen(false)}
             />

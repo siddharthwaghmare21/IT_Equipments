@@ -8,14 +8,13 @@ import TableWrapper from "@/components/common/TableWrapper";
 const USERS_KEY = "itAssetUsers";
 const SESSION_KEY = "itAssetUserSession";
 
-const roles = ["Super Admin", "IT Admin", "IT Manager", "IT Support", "Viewer"];
+const roles = ["Super Admin", "Admin", "Employee", "Viewer"];
 
 function RoleBadge({ role }) {
   const styles = {
     "Super Admin": "bg-purple-100 text-purple-700 border-purple-200",
-    "IT Admin": "bg-blue-100 text-blue-700 border-blue-200",
-    "IT Manager": "bg-indigo-100 text-indigo-700 border-indigo-200",
-    "IT Support": "bg-gray-100 text-gray-700 border-gray-200",
+    Admin: "bg-blue-100 text-blue-700 border-blue-200",
+    Employee: "bg-gray-100 text-gray-700 border-gray-200",
     Viewer: "bg-orange-100 text-orange-700 border-orange-200",
   };
 
