@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 function getInitials(name) {
   if (!name) return "IT";
 
@@ -18,9 +21,65 @@ export default function Header({
   isSuperAdmin = false,
   onLogout,
 }) {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const notifications = [
+    {
+      title: "Warranty Expiring",
+      detail: "3 assets need warranty review",
+      href: "/reports/warranty",
+    },
+    {
+      title: "Pending Approvals",
+      detail: "5 access or workflow approvals pending",
+      href: "/admin-request-management",
+    },
+    {
+      title: "Maintenance Follow-up",
+      detail: "4 high priority service records",
+      href: "/maintenance",
+    },
+  ];
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("itAssetTheme");
+    const shouldUseDark = savedTheme === "dark";
+
+    document.documentElement.classList.toggle("dark", shouldUseDark);
+    setIsDarkMode(shouldUseDark);
+  }, []);
+
+  function handleSearchSubmit(event) {
+    event.preventDefault();
+
+    const query = searchTerm.trim().toLowerCase();
+
+    if (!query) return;
+
+    if (query.startsWith("po")) router.push("/purchases");
+    else if (query.startsWith("ven")) router.push("/vendors");
+    else if (query.startsWith("mnt")) router.push("/maintenance");
+    else if (query.startsWith("ast") || query.startsWith("it-"))
+      router.push("/assets");
+    else router.push(`/reports?search=${encodeURIComponent(query)}`);
+  }
+
+  function toggleDarkMode() {
+    const nextValue = !isDarkMode;
+
+    document.documentElement.classList.toggle("dark", nextValue);
+    localStorage.setItem("itAssetTheme", nextValue ? "dark" : "light");
+    setIsDarkMode(nextValue);
+  }
+
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 sm:px-6">
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-30 border-b border-gray-200 bg-white px-4 py-3 sm:px-6">
+      <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={onMenuClick}
@@ -45,7 +104,60 @@ export default function Header({
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 xl:hidden">
+          <button
+            type="button"
+            onClick={() => setShowNotifications((value) => !value)}
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100"
+            aria-label="Open notifications"
+          >
+            N
+            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
+          </button>
+          <button
+            type="button"
+            onClick={toggleDarkMode}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100"
+            aria-label="Toggle dark mode"
+          >
+            {isDarkMode ? "L" : "D"}
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+        <form onSubmit={handleSearchSubmit} className="w-full xl:w-80">
+          <input
+            type="search"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder="Search asset, PO, vendor, maintenance..."
+            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+          />
+        </form>
+
+        <div className="relative hidden xl:block">
+          <button
+            type="button"
+            onClick={() => setShowNotifications((value) => !value)}
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100"
+            aria-label="Open notifications"
+          >
+            N
+            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={toggleDarkMode}
+          className="hidden h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100 xl:inline-flex"
+          aria-label="Toggle dark mode"
+        >
+          {isDarkMode ? "L" : "D"}
+        </button>
+
+      <div className="flex items-center justify-between gap-3 xl:justify-end">
         <div className="hidden text-right sm:block">
           <div className="flex items-center justify-end gap-2">
             <p className="text-sm font-semibold text-gray-900">
@@ -77,6 +189,42 @@ export default function Header({
             Logout
           </button>
         )}
+      </div>
+      </div>
+
+      {showNotifications && (
+        <div className="mt-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-lg xl:absolute xl:right-28 xl:top-16 xl:mt-0 xl:w-96">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-gray-900">Notifications</h2>
+            <button
+              type="button"
+              onClick={() => setShowNotifications(false)}
+              className="text-xs font-semibold text-gray-500 hover:text-gray-900"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="mt-3 space-y-2">
+            {notifications.map((item) => (
+              <button
+                key={item.title}
+                type="button"
+                onClick={() => {
+                  setShowNotifications(false);
+                  router.push(item.href);
+                }}
+                className="w-full rounded-xl border border-gray-100 bg-gray-50 p-3 text-left hover:bg-white"
+              >
+                <p className="text-sm font-semibold text-gray-900">
+                  {item.title}
+                </p>
+                <p className="mt-1 text-xs text-gray-500">{item.detail}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       </div>
     </header>
   );

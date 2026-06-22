@@ -64,6 +64,19 @@ export default function DashboardPage() {
     },
   ];
 
+  const chartData = [
+    { label: "Assets", value: 248, width: "100%" },
+    { label: "Delivered", value: 156, width: "63%" },
+    { label: "Available", value: 64, width: "26%" },
+    { label: "Maintenance", value: 18, width: "8%" },
+  ];
+
+  const lowStockItems = [
+    { item: "USB Keyboard", stock: "4", minimum: "10" },
+    { item: "Wireless Mouse", stock: "6", minimum: "15" },
+    { item: "HDMI Cable", stock: "3", minimum: "8" },
+  ];
+
   const workflowSummary = [
     {
       title: "Pending Deliveries",
@@ -302,6 +315,53 @@ export default function DashboardPage() {
               <span className="text-gray-600">Database</span>
               <span className="font-semibold text-yellow-700">MySQL Pending</span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm xl:col-span-2">
+          <h2 className="text-lg font-bold text-gray-900">
+            Asset Distribution Chart
+          </h2>
+
+          <div className="mt-5 space-y-4">
+            {chartData.map((item) => (
+              <div key={item.label}>
+                <div className="mb-1 flex justify-between text-sm">
+                  <span className="font-medium text-gray-700">{item.label}</span>
+                  <span className="font-semibold text-gray-900">
+                    {item.value}
+                  </span>
+                </div>
+                <div className="h-3 rounded-full bg-gray-100">
+                  <div
+                    className="h-3 rounded-full bg-gray-900"
+                    style={{ width: item.width }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-red-100 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">Low Stock Alerts</h2>
+
+          <div className="mt-4 space-y-3">
+            {lowStockItems.map((item) => (
+              <div
+                key={item.item}
+                className="rounded-xl border border-red-100 bg-red-50 p-3"
+              >
+                <p className="text-sm font-semibold text-red-800">
+                  {item.item}
+                </p>
+                <p className="mt-1 text-xs text-red-700">
+                  Stock {item.stock} / Minimum {item.minimum}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

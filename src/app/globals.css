@@ -1,2 +1,58 @@
 @import "tailwindcss";
 
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.dark body,
+.dark main,
+.dark header,
+.dark aside,
+.dark section,
+.dark div,
+.dark table,
+.dark thead,
+.dark tbody,
+.dark tr,
+.dark form {
+  border-color: #374151;
+}
+
+.dark body,
+.dark .bg-gray-100,
+.dark .bg-gray-50 {
+  background-color: #111827;
+}
+
+.dark .bg-white {
+  background-color: #1f2937;
+}
+
+.dark .bg-gray-900,
+.dark .bg-gray-950 {
+  background-color: #030712;
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700 {
+  color: #f9fafb;
+}
+
+.dark .text-gray-600,
+.dark .text-gray-500,
+.dark .text-gray-400 {
+  color: #d1d5db;
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #111827;
+  color: #f9fafb;
+  border-color: #4b5563;
+}

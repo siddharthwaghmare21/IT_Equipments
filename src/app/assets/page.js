@@ -120,6 +120,10 @@ const filters = ["All", "Available", "Assigned", "Maintenance", "Damaged"];
 export default function AssetsPage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [departmentFilter, setDepartmentFilter] = useState("All");
+  const [conditionFilter, setConditionFilter] = useState("All");
+  const [selectedAssets, setSelectedAssets] = useState([]);
 
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
@@ -144,9 +148,37 @@ export default function AssetsPage() {
       const matchesFilter =
         activeFilter === "All" || asset.status === activeFilter;
 
-      return matchesSearch && matchesFilter;
+      const matchesCategory =
+        categoryFilter === "All" || asset.category === categoryFilter;
+
+      const matchesDepartment =
+        departmentFilter === "All" ||
+        asset.custodianDepartment === departmentFilter;
+
+      const matchesCondition =
+        conditionFilter === "All" || asset.condition === conditionFilter;
+
+      return (
+        matchesSearch &&
+        matchesFilter &&
+        matchesCategory &&
+        matchesDepartment &&
+        matchesCondition
+      );
     });
-  }, [search, activeFilter]);
+  }, [search, activeFilter, categoryFilter, departmentFilter, conditionFilter]);
+
+  function toggleAssetSelection(assetId) {
+    setSelectedAssets((previousAssets) =>
+      previousAssets.includes(assetId)
+        ? previousAssets.filter((id) => id !== assetId)
+        : [...previousAssets, assetId]
+    );
+  }
+
+  function clearSelectedAssets() {
+    setSelectedAssets([]);
+  }
 
   function handleArchive(asset) {
     const confirmed = confirm(
@@ -198,13 +230,13 @@ export default function AssetsPage() {
       </section>
 
       <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-4">
           <input
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by asset tag, name, serial number, employee, purchase ref, QR or location..."
-            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
+            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
 
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -223,13 +255,85 @@ export default function AssetsPage() {
               </button>
             ))}
           </div>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <select
+              value={categoryFilter}
+              onChange={(event) => setCategoryFilter(event.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="All">All Categories</option>
+              <option value="Laptop">Laptop</option>
+              <option value="Monitor">Monitor</option>
+              <option value="Printer">Printer</option>
+              <option value="Network">Network</option>
+            </select>
+
+            <select
+              value={departmentFilter}
+              onChange={(event) => setDepartmentFilter(event.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="All">All Departments</option>
+              <option value="IT Department">IT Department</option>
+              <option value="IT Store">IT Store</option>
+              <option value="Accounts">Accounts</option>
+              <option value="Admin">Admin</option>
+              <option value="IT Infrastructure">IT Infrastructure</option>
+            </select>
+
+            <select
+              value={conditionFilter}
+              onChange={(event) => setConditionFilter(event.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="All">All Conditions</option>
+              <option value="New">New</option>
+              <option value="Good">Good</option>
+              <option value="Needs Repair">Needs Repair</option>
+            </select>
+          </div>
         </div>
       </section>
+
+      {selectedAssets.length > 0 && (
+        <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm font-semibold text-gray-900">
+              {selectedAssets.length} assets selected
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+              >
+                Export Selected
+              </button>
+              <button
+                type="button"
+                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+              >
+                Create Maintenance
+              </button>
+              <button
+                type="button"
+                onClick={clearSelectedAssets}
+                className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       <TableWrapper>
         <table className="min-w-[1700px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Select
+              </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Asset Tag
               </th>
@@ -275,6 +379,16 @@ export default function AssetsPage() {
                 key={asset.id}
                 className="border-b border-gray-100 hover:bg-gray-50"
               >
+                <td className="px-4 py-4">
+                  <input
+                    type="checkbox"
+                    checked={selectedAssets.includes(asset.id)}
+                    onChange={() => toggleAssetSelection(asset.id)}
+                    className="h-4 w-4 rounded border-gray-300 accent-gray-900"
+                    aria-label={`Select ${asset.assetTag}`}
+                  />
+                </td>
+
                 <td className="px-4 py-4 font-semibold text-gray-900">
                   {asset.assetTag}
                 </td>

@@ -50,6 +50,16 @@ export const sidebarLinks = [
     short: "RP",
   },
   {
+    label: "Import Data",
+    path: "/import-data",
+    short: "IM",
+  },
+  {
+    label: "Help / SOP",
+    path: "/help",
+    short: "HP",
+  },
+  {
     label: "Activity Logs",
     path: "/activity-logs",
     short: "AL",
