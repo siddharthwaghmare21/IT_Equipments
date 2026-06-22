@@ -138,7 +138,7 @@ export default function ViewDeliveryPage() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-600">
-              {delivery.assetTag} • Delivered to {delivery.deliveredTo}
+              {delivery.assetTag} - Delivered to {delivery.deliveredTo}
             </p>
           </div>
 

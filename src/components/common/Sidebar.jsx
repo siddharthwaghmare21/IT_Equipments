@@ -12,7 +12,7 @@ const superAdminOnlyLinks = [
   },
   {
     label: "Admin Users Management",
-    path: "/admin-users-management",
+    path: "/admin-user-management",
     short: "AU",
   },
 ];
@@ -43,7 +43,7 @@ export default function Sidebar({
           className="h-9 w-9 rounded-lg border border-gray-700 text-gray-300 hover:bg-gray-800 lg:hidden"
           aria-label="Close menu"
         >
-          ×
+          x
         </button>
       </div>
 

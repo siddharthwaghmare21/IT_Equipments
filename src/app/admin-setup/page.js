@@ -42,7 +42,7 @@ export default function AdminSetupPage() {
       (user) => user.role === "Super Admin"
     );
 
-    setAdminAlreadyExists(hasSuperAdmin);
+    setTimeout(() => setAdminAlreadyExists(hasSuperAdmin), 0);
   }, []);
 
   function handleChange(event) {

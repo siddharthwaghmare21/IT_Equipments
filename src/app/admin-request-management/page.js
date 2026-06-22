@@ -9,6 +9,10 @@ const USERS_KEY = "itAssetUsers";
 const REQUESTS_KEY = "itAssetAccessRequests";
 const SESSION_KEY = "itAssetUserSession";
 
+function createClientId() {
+  return globalThis.crypto?.randomUUID?.() || String(Date.now());
+}
+
 function StatusBadge({ status }) {
   const styles = {
     Pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
@@ -70,8 +74,10 @@ export default function AdminRequestManagementPage() {
       localStorage.getItem(SESSION_KEY) || "null"
     );
 
-    setRequests(savedRequests);
-    setCurrentUser(savedSession);
+    setTimeout(() => {
+      setRequests(savedRequests);
+      setCurrentUser(savedSession);
+    }, 0);
   }, []);
 
   const isSuperAdmin = currentUser?.role === "Super Admin";
@@ -142,7 +148,7 @@ export default function AdminRequestManagementPage() {
     }
 
     const newUser = {
-      id: Date.now(),
+      id: createClientId(),
       fullName: selectedRequest.fullName,
       email: selectedRequest.email,
       phone: selectedRequest.phone,

@@ -70,8 +70,10 @@ export default function AdminUsersManagementPage() {
       localStorage.getItem(SESSION_KEY) || "null"
     );
 
-    setUsers(savedUsers);
-    setCurrentUser(savedSession);
+    setTimeout(() => {
+      setUsers(savedUsers);
+      setCurrentUser(savedSession);
+    }, 0);
   }, []);
 
   const isSuperAdmin = currentUser?.role === "Super Admin";

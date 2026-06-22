@@ -5,8 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 
 const SESSION_KEY = "itAssetUserSession";
 
-// Backend येईपर्यंत true ठेवा.
-// Backend/login final झाल्यावर false करा.
+// Keep this true until backend login is ready.
+// Set it to false after final backend authentication is connected.
 const TEMP_AUTH_BYPASS = true;
 
 const publicRoutes = ["/login", "/admin-setup", "/admin-request-access"];
@@ -26,7 +26,7 @@ export default function AuthProvider({ children }) {
         return;
       }
 
-      setIsChecking(false);
+      setTimeout(() => setIsChecking(false), 0);
       return;
     }
 
@@ -43,7 +43,7 @@ export default function AuthProvider({ children }) {
         return;
       }
 
-      setIsChecking(false);
+      setTimeout(() => setIsChecking(false), 0);
       return;
     }
 
@@ -52,7 +52,7 @@ export default function AuthProvider({ children }) {
       return;
     }
 
-    setIsChecking(false);
+    setTimeout(() => setIsChecking(false), 0);
   }, [pathname, router]);
 
   if (isChecking) {

@@ -18,7 +18,7 @@ export default function LayoutWrapper({ children }) {
       localStorage.getItem(SESSION_KEY) || "null"
     );
 
-    setCurrentUser(savedSession);
+    setTimeout(() => setCurrentUser(savedSession), 0);
   }, []);
 
   const isSuperAdmin = currentUser?.role === "Super Admin";

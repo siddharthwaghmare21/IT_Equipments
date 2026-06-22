@@ -43,8 +43,10 @@ export default function AdminRequestAccessPage() {
       (user) => user.role === "Super Admin"
     );
 
-    setHasSuperAdmin(superAdminExists);
-    setIsLoading(false);
+    setTimeout(() => {
+      setHasSuperAdmin(superAdminExists);
+      setIsLoading(false);
+    }, 0);
   }, []);
 
   function handleChange(event) {

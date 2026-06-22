@@ -8,7 +8,7 @@ import ActionButtons from "@/components/common/ActionButtons";
 
 const deliveries = [
   {
-    id: 1,
+    id: "1",
     deliveryCode: "DLV-001",
     assetTag: "AST-001",
     assetName: "Dell Latitude 5420",
@@ -20,7 +20,7 @@ const deliveries = [
     status: "Delivered",
   },
   {
-    id: 2,
+    id: "2",
     deliveryCode: "DLV-002",
     assetTag: "AST-002",
     assetName: "HP LaserJet Printer",
@@ -32,7 +32,7 @@ const deliveries = [
     status: "Delivered",
   },
   {
-    id: 3,
+    id: "3",
     deliveryCode: "DLV-003",
     assetTag: "AST-003",
     assetName: "Logitech Keyboard",
@@ -44,7 +44,7 @@ const deliveries = [
     status: "Returned",
   },
   {
-    id: 4,
+    id: "4",
     deliveryCode: "DLV-004",
     assetTag: "AST-004",
     assetName: "Cisco Router",
@@ -118,7 +118,7 @@ export default function DeliveriesPage() {
         title="Deliveries"
         description="Track IT equipment/material delivery records, employee allocation and return status."
         buttonText="Add Delivery"
-        buttonHref="/deliveries/assign"
+        buttonHref="/deliveries/delivery"
       />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

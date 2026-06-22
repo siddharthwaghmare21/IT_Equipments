@@ -104,8 +104,6 @@ export default function EditDeliveryPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    console.log("Updated Delivery Data:", formData);
-
     alert("Delivery saved successfully. Backend will be connected later.");
   }
 

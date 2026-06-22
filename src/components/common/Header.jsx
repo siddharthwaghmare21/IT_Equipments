@@ -24,10 +24,10 @@ export default function Header({
         <button
           type="button"
           onClick={onMenuClick}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 lg:hidden"
+          className="inline-flex h-10 min-w-10 items-center justify-center rounded-lg border border-gray-200 px-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 lg:hidden"
           aria-label="Open menu"
         >
-          ☰
+          Menu
         </button>
 
         <div>
