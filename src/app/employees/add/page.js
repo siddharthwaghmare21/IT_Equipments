@@ -14,6 +14,10 @@ export default function AddEmployeePage() {
     email: "",
     phone: "",
     location: "",
+    reportingManager: "",
+    employmentType: "Full Time",
+    assetEligibility: "Eligible",
+    securityAcknowledgement: "Pending",
     joiningDate: "",
     status: "Active",
     remarks: "",
@@ -30,8 +34,6 @@ export default function AddEmployeePage() {
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    console.log("Employee Form Data:", formData);
 
     alert("Employee saved successfully. Backend will be connected later.");
   }
@@ -159,6 +161,70 @@ export default function AddEmployeePage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Reporting Manager
+            </label>
+            <input
+              type="text"
+              name="reportingManager"
+              value={formData.reportingManager}
+              onChange={handleChange}
+              placeholder="Nikhil Deshmukh"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Employment Type
+            </label>
+            <select
+              name="employmentType"
+              value={formData.employmentType}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Full Time">Full Time</option>
+              <option value="Contract">Contract</option>
+              <option value="Intern">Intern</option>
+              <option value="Consultant">Consultant</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Asset Eligibility
+            </label>
+            <select
+              name="assetEligibility"
+              value={formData.assetEligibility}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Eligible">Eligible</option>
+              <option value="Approval Required">Approval Required</option>
+              <option value="Hold">Hold</option>
+              <option value="Not Eligible">Not Eligible</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Security Acknowledgement
+            </label>
+            <select
+              name="securityAcknowledgement"
+              value={formData.securityAcknowledgement}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Signed">Signed</option>
+              <option value="Not Required">Not Required</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Joining Date
             </label>
             <input
@@ -197,6 +263,13 @@ export default function AddEmployeePage() {
               placeholder="Additional employee notes..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+              Delivered Assets, Created By and Updated By will be captured
+              automatically after delivery and backend integration.
+            </div>
           </div>
         </div>
 

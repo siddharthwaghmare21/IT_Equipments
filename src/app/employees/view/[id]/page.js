@@ -16,9 +16,18 @@ const employees = [
     email: "rahul.patil@company.com",
     phone: "+91 98765 12345",
     location: "Main Office",
+    reportingManager: "Nikhil Deshmukh",
+    employmentType: "Full Time",
+    assetEligibility: "Eligible",
+    securityAcknowledgement: "Signed",
     joiningDate: "2024-06-10",
     status: "Active",
     deliveredAssets: "3",
+    lastAssetIssueDate: "2026-01-15",
+    createdBy: "HR Admin",
+    createdAt: "2024-06-10 09:30 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-15 04:15 PM",
     remarks: "Uses laptop, monitor and keyboard for development work.",
   },
   {
@@ -30,9 +39,18 @@ const employees = [
     email: "sneha.jadhav@company.com",
     phone: "+91 99887 45678",
     location: "Accounts Office",
+    reportingManager: "Meera Kulkarni",
+    employmentType: "Full Time",
+    assetEligibility: "Eligible",
+    securityAcknowledgement: "Signed",
     joiningDate: "2023-09-18",
     status: "Active",
     deliveredAssets: "2",
+    lastAssetIssueDate: "2026-01-20",
+    createdBy: "HR Admin",
+    createdAt: "2023-09-18 10:15 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-20 12:10 PM",
     remarks: "Delivered desktop and printer access.",
   },
 ];
@@ -104,7 +122,7 @@ export default function ViewEmployeePage() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-600">
-              {employee.department} • {employee.designation}
+              {employee.department} | {employee.designation}
             </p>
           </div>
 
@@ -119,11 +137,28 @@ export default function ViewEmployeePage() {
           <DetailItem label="Email Address" value={employee.email} />
           <DetailItem label="Phone Number" value={employee.phone} />
           <DetailItem label="Location" value={employee.location} />
+          <DetailItem
+            label="Reporting Manager"
+            value={employee.reportingManager}
+          />
+          <DetailItem label="Employment Type" value={employee.employmentType} />
+          <DetailItem
+            label="Asset Eligibility"
+            value={employee.assetEligibility}
+          />
+          <DetailItem
+            label="Security Acknowledgement"
+            value={employee.securityAcknowledgement}
+          />
           <DetailItem label="Joining Date" value={employee.joiningDate} />
           <DetailItem label="Status" value={employee.status} />
           <DetailItem
             label="Delivered Assets"
             value={employee.deliveredAssets}
+          />
+          <DetailItem
+            label="Last Asset Issue"
+            value={employee.lastAssetIssueDate}
           />
         </div>
 
@@ -132,6 +167,13 @@ export default function ViewEmployeePage() {
             Remarks
           </p>
           <p className="mt-2 text-sm text-gray-700">{employee.remarks}</p>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <DetailItem label="Created By" value={employee.createdBy} />
+          <DetailItem label="Created At" value={employee.createdAt} />
+          <DetailItem label="Updated By" value={employee.updatedBy} />
+          <DetailItem label="Updated At" value={employee.updatedAt} />
         </div>
       </section>
 

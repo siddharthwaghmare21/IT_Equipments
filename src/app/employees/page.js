@@ -8,7 +8,7 @@ import ActionButtons from "@/components/common/ActionButtons";
 
 const employees = [
   {
-    id: 1,
+    id: "1",
     employeeCode: "EMP-001",
     employeeName: "Rahul Patil",
     department: "IT Department",
@@ -16,10 +16,20 @@ const employees = [
     email: "rahul.patil@company.com",
     phone: "+91 98765 12345",
     location: "Main Office",
+    reportingManager: "Nikhil Deshmukh",
+    employmentType: "Full Time",
+    assetEligibility: "Eligible",
+    securityAcknowledgement: "Signed",
+    deliveredAssets: "3",
+    lastAssetIssueDate: "2026-01-15",
+    createdBy: "HR Admin",
+    createdAt: "2024-06-10 09:30 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-15 04:15 PM",
     status: "Active",
   },
   {
-    id: 2,
+    id: "2",
     employeeCode: "EMP-002",
     employeeName: "Sneha Jadhav",
     department: "Accounts",
@@ -27,10 +37,20 @@ const employees = [
     email: "sneha.jadhav@company.com",
     phone: "+91 99887 45678",
     location: "Accounts Office",
+    reportingManager: "Meera Kulkarni",
+    employmentType: "Full Time",
+    assetEligibility: "Eligible",
+    securityAcknowledgement: "Signed",
+    deliveredAssets: "2",
+    lastAssetIssueDate: "2026-01-20",
+    createdBy: "HR Admin",
+    createdAt: "2023-09-18 10:15 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-20 12:10 PM",
     status: "Active",
   },
   {
-    id: 3,
+    id: "3",
     employeeCode: "EMP-003",
     employeeName: "Amit Shinde",
     department: "Admin",
@@ -38,10 +58,20 @@ const employees = [
     email: "amit.shinde@company.com",
     phone: "+91 91234 56789",
     location: "Admin Office",
+    reportingManager: "Sanjay Pawar",
+    employmentType: "Full Time",
+    assetEligibility: "Eligible",
+    securityAcknowledgement: "Signed",
+    deliveredAssets: "1",
+    lastAssetIssueDate: "2026-02-04",
+    createdBy: "HR Admin",
+    createdAt: "2024-01-08 11:00 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-04 03:20 PM",
     status: "Active",
   },
   {
-    id: 4,
+    id: "4",
     employeeCode: "EMP-004",
     employeeName: "Priya More",
     department: "HR",
@@ -49,6 +79,16 @@ const employees = [
     email: "priya.more@company.com",
     phone: "+91 90123 45678",
     location: "HR Office",
+    reportingManager: "Meera Kulkarni",
+    employmentType: "Full Time",
+    assetEligibility: "Hold",
+    securityAcknowledgement: "Pending",
+    deliveredAssets: "0",
+    lastAssetIssueDate: "-",
+    createdBy: "HR Admin",
+    createdAt: "2024-03-01 02:30 PM",
+    updatedBy: "HR Admin",
+    updatedAt: "2026-01-30 05:00 PM",
     status: "Inactive",
   },
 ];
@@ -86,6 +126,10 @@ export default function EmployeesPage() {
         ${employee.email}
         ${employee.phone}
         ${employee.location}
+        ${employee.reportingManager}
+        ${employee.employmentType}
+        ${employee.assetEligibility}
+        ${employee.securityAcknowledgement}
         ${employee.status}
       `.toLowerCase();
 
@@ -98,13 +142,13 @@ export default function EmployeesPage() {
     });
   }, [search, activeFilter]);
 
-  function handleDelete(employee) {
+  function handleArchive(employee) {
     const confirmed = confirm(
-      `Are you sure you want to delete ${employee.employeeName}?`
+      `Are you sure you want to archive ${employee.employeeName}?`
     );
 
     if (confirmed) {
-      alert("Employee delete action added. Backend will be connected later.");
+      alert("Employee archive action added. Backend will be connected later.");
     }
   }
 
@@ -156,7 +200,7 @@ export default function EmployeesPage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by employee code, name, department, email or location..."
+            placeholder="Search by name, department, manager, eligibility, email or location..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
           />
 
@@ -180,7 +224,7 @@ export default function EmployeesPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1200px] w-full text-sm">
+        <table className="min-w-[1550px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -203,6 +247,18 @@ export default function EmployeesPage() {
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Location
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Manager
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Type
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Asset Eligibility
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Assets
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
@@ -243,6 +299,22 @@ export default function EmployeesPage() {
                   {employee.location}
                 </td>
 
+                <td className="px-4 py-4 text-gray-700">
+                  {employee.reportingManager}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {employee.employmentType}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {employee.assetEligibility}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {employee.deliveredAssets}
+                </td>
+
                 <td className="px-4 py-4">
                   <EmployeeStatusBadge status={employee.status} />
                 </td>
@@ -251,7 +323,8 @@ export default function EmployeesPage() {
                   <ActionButtons
                     viewHref={`/employees/view/${employee.id}`}
                     updateHref={`/employees/edit/${employee.id}`}
-                    onDelete={() => handleDelete(employee)}
+                    onDelete={() => handleArchive(employee)}
+                    deleteLabel="Archive"
                   />
                 </td>
               </tr>

@@ -19,6 +19,17 @@ const returnRecords = [
     returnDate: "2026-08-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Completed",
+    inspectionBy: "IT Admin",
+    damageDecision: "No Damage",
+    qrCode: "QR-RET-001",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-08-01 11:00",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-08-01 11:00",
     status: "Returned",
     remarks: "Keyboard returned in good working condition.",
   },
@@ -34,6 +45,17 @@ const returnRecords = [
     returnDate: "2026-07-20",
     returnCondition: "Damaged",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Damage Review",
+    inspectionBy: "IT Manager",
+    damageDecision: "Repair Required",
+    qrCode: "QR-RET-002",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-07-20 12:30",
+    updatedBy: "IT Manager",
+    updatedAt: "2026-07-21 10:00",
     status: "Damaged",
     remarks: "Mouse returned with physical damage. Repair decision pending.",
   },
@@ -49,6 +71,17 @@ const returnRecords = [
     returnDate: "2026-09-10",
     returnCondition: "Needs Inspection",
     receivedBy: "IT Support",
+    receivedLocation: "Inspection Desk",
+    acknowledgementStatus: "Pending",
+    inspectionStatus: "Pending",
+    inspectionBy: "IT Support",
+    damageDecision: "Pending",
+    qrCode: "QR-RET-003",
+    attachmentStatus: "Pending",
+    createdBy: "IT Support",
+    createdAt: "2026-09-10 15:15",
+    updatedBy: "IT Support",
+    updatedAt: "2026-09-10 15:15",
     status: "Pending Inspection",
     remarks: "Monitor received. Technical inspection is pending.",
   },
@@ -64,6 +97,17 @@ const returnRecords = [
     returnDate: "2026-10-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Completed",
+    inspectionBy: "IT Admin",
+    damageDecision: "No Damage",
+    qrCode: "QR-RET-004",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-10-01 10:40",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-10-01 10:40",
     status: "Returned",
     remarks: "Laptop returned with charger and bag.",
   },
@@ -138,7 +182,7 @@ export default function ViewReturnPage() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-600">
-              {returnRecord.assetTag} • Returned by {returnRecord.returnedBy}
+              {returnRecord.assetTag} - Returned by {returnRecord.returnedBy}
             </p>
           </div>
 
@@ -159,6 +203,28 @@ export default function ViewReturnPage() {
             value={returnRecord.returnCondition}
           />
           <DetailItem label="Received By" value={returnRecord.receivedBy} />
+          <DetailItem
+            label="Received Location"
+            value={returnRecord.receivedLocation}
+          />
+          <DetailItem
+            label="Acknowledgement Status"
+            value={returnRecord.acknowledgementStatus}
+          />
+          <DetailItem
+            label="Inspection Status"
+            value={returnRecord.inspectionStatus}
+          />
+          <DetailItem label="Inspection By" value={returnRecord.inspectionBy} />
+          <DetailItem
+            label="Damage Decision"
+            value={returnRecord.damageDecision}
+          />
+          <DetailItem label="QR Code Reference" value={returnRecord.qrCode} />
+          <DetailItem
+            label="Attachment Status"
+            value={returnRecord.attachmentStatus}
+          />
           <DetailItem label="Status" value={returnRecord.status} />
         </div>
 
@@ -167,6 +233,38 @@ export default function ViewReturnPage() {
             Remarks
           </p>
           <p className="mt-2 text-sm text-gray-700">{returnRecord.remarks}</p>
+        </div>
+
+        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            Audit Trail
+          </p>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div>
+              <p className="text-xs font-medium text-gray-500">Created By</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {returnRecord.createdBy}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500">Created At</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {returnRecord.createdAt}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500">Updated By</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {returnRecord.updatedBy}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500">Updated At</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {returnRecord.updatedAt}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -14,6 +14,9 @@ export default function SettingsPage() {
     adminName: "IT Admin",
     adminEmail: "itadmin@company.com",
     adminPhone: "+91 98765 12345",
+    defaultRole: "Viewer",
+    sessionTimeout: "30",
+    passwordExpiryDays: "90",
 
     lowStockAlert: true,
     warrantyExpiryAlert: true,
@@ -26,9 +29,13 @@ export default function SettingsPage() {
     excelExport: false,
 
     loginSecurity: true,
+    roleBasedAccess: true,
+    requestApproval: true,
     activityLogs: true,
     deleteConfirmation: true,
     dataBackup: false,
+    backupFrequency: "Weekly",
+    auditRetention: "365",
   });
 
   function handleChange(event) {
@@ -42,8 +49,6 @@ export default function SettingsPage() {
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    console.log("System Settings:", settings);
 
     alert("Settings saved successfully. Backend will be connected later.");
   }
@@ -172,6 +177,51 @@ export default function SettingsPage() {
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               />
             </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Default New User Role
+              </label>
+              <select
+                name="defaultRole"
+                value={settings.defaultRole}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              >
+                <option value="Viewer">Viewer</option>
+                <option value="IT Support">IT Support</option>
+                <option value="IT Manager">IT Manager</option>
+                <option value="IT Admin">IT Admin</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Session Timeout
+              </label>
+              <input
+                type="number"
+                name="sessionTimeout"
+                value={settings.sessionTimeout}
+                onChange={handleChange}
+                min="5"
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Password Expiry Days
+              </label>
+              <input
+                type="number"
+                name="passwordExpiryDays"
+                value={settings.passwordExpiryDays}
+                onChange={handleChange}
+                min="30"
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              />
+            </div>
           </div>
         </section>
 
@@ -289,6 +339,22 @@ export default function SettingsPage() {
             />
 
             <SettingToggle
+              title="Role Based Access"
+              description="Control module access using user roles."
+              name="roleBasedAccess"
+              checked={settings.roleBasedAccess}
+              onChange={handleChange}
+            />
+
+            <SettingToggle
+              title="Access Request Approval"
+              description="Require Super Admin approval before new users can login."
+              name="requestApproval"
+              checked={settings.requestApproval}
+              onChange={handleChange}
+            />
+
+            <SettingToggle
               title="Activity Logs"
               description="Maintain audit history for system actions."
               name="activityLogs"
@@ -312,6 +378,38 @@ export default function SettingsPage() {
               onChange={handleChange}
               disabled
             />
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Backup Frequency
+              </label>
+              <select
+                name="backupFrequency"
+                value={settings.backupFrequency}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              >
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Audit Retention Days
+              </label>
+              <input
+                type="number"
+                name="auditRetention"
+                value={settings.auditRetention}
+                onChange={handleChange}
+                min="90"
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              />
+            </div>
           </div>
         </section>
 

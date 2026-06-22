@@ -17,6 +17,10 @@ const warrantyReportData = [
     purchaseDate: "2026-01-12",
     warrantyExpiry: "2029-01-12",
     remainingDays: "1095",
+    warrantyType: "Onsite",
+    alertLevel: "Normal",
+    claimStatus: "No Claim",
+    supportContact: "Dell Support",
     status: "Active",
   },
   {
@@ -29,6 +33,10 @@ const warrantyReportData = [
     purchaseDate: "2026-01-18",
     warrantyExpiry: "2028-01-18",
     remainingDays: "730",
+    warrantyType: "Carry-in",
+    alertLevel: "Normal",
+    claimStatus: "No Claim",
+    supportContact: "HP World",
     status: "Active",
   },
   {
@@ -41,6 +49,10 @@ const warrantyReportData = [
     purchaseDate: "2026-02-01",
     warrantyExpiry: "2027-02-01",
     remainingDays: "365",
+    warrantyType: "Replacement",
+    alertLevel: "Review",
+    claimStatus: "No Claim",
+    supportContact: "Local Vendor",
     status: "Expiring Soon",
   },
   {
@@ -53,6 +65,10 @@ const warrantyReportData = [
     purchaseDate: "2026-02-10",
     warrantyExpiry: "2029-02-10",
     remainingDays: "1124",
+    warrantyType: "Onsite",
+    alertLevel: "Normal",
+    claimStatus: "No Claim",
+    supportContact: "Network Solutions",
     status: "Active",
   },
   {
@@ -65,6 +81,10 @@ const warrantyReportData = [
     purchaseDate: "2025-01-10",
     warrantyExpiry: "2026-01-10",
     remainingDays: "0",
+    warrantyType: "Replacement",
+    alertLevel: "Expired",
+    claimStatus: "Closed",
+    supportContact: "Dell Technologies",
     status: "Expired",
   },
 ];
@@ -208,15 +228,15 @@ export default function WarrantyReportPage() {
           <h3 className="text-lg font-bold text-gray-900">Report Summary</h3>
 
           <p className="mt-4 text-sm leading-6 text-gray-600">
-            This warranty report currently uses sample frontend data. After SQL
-            Server backend integration, it will show real-time warranty expiry
+            This warranty report currently uses sample frontend data. After MySQL
+            backend integration, it will show real-time warranty expiry
             alerts, expired assets and vendor support records.
           </p>
         </div>
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1350px] w-full text-sm">
+        <table className="min-w-[1650px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -245,6 +265,22 @@ export default function WarrantyReportPage() {
 
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Remaining Days
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Warranty Type
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Alert Level
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Claim Status
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Support Contact
               </th>
 
               <th className="px-4 py-3 font-semibold text-gray-700">Status</th>
@@ -281,6 +317,22 @@ export default function WarrantyReportPage() {
 
                 <td className="px-4 py-4 text-gray-700">
                   {asset.remainingDays}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.warrantyType}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.alertLevel}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.claimStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.supportContact}
                 </td>
 
                 <td className="px-4 py-4">

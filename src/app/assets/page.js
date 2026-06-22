@@ -9,7 +9,7 @@ import ActionButtons from "@/components/common/ActionButtons";
 
 const assets = [
   {
-    id: 1,
+    id: "1",
     assetTag: "IT-LAP-001",
     name: "Dell Latitude 5420",
     category: "Laptop",
@@ -17,9 +17,20 @@ const assets = [
     assignedTo: "Rahul Patil",
     location: "IT Department",
     status: "Assigned",
+    lifecycleStatus: "In Use",
+    purchaseRef: "PO-2024-0412",
+    warrantyExpiry: "2027-04-12",
+    qrCode: "QR-IT-LAP-001",
+    condition: "Good",
+    custodianDepartment: "IT Department",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2024-04-12 10:00",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-15 10:30",
   },
   {
-    id: 2,
+    id: "2",
     assetTag: "IT-LAP-002",
     name: "HP EliteBook 840",
     category: "Laptop",
@@ -27,9 +38,20 @@ const assets = [
     assignedTo: "-",
     location: "Store Room",
     status: "Available",
+    lifecycleStatus: "In Stock",
+    purchaseRef: "PO-2024-0620",
+    warrantyExpiry: "2027-06-20",
+    qrCode: "QR-IT-LAP-002",
+    condition: "New",
+    custodianDepartment: "IT Store",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2024-06-20 11:00",
+    updatedBy: "IT Admin",
+    updatedAt: "2024-06-20 11:00",
   },
   {
-    id: 3,
+    id: "3",
     assetTag: "IT-MON-001",
     name: "Dell 24 Inch Monitor",
     category: "Monitor",
@@ -37,9 +59,20 @@ const assets = [
     assignedTo: "Sneha Jadhav",
     location: "Accounts",
     status: "Assigned",
+    lifecycleStatus: "In Use",
+    purchaseRef: "PO-2024-0705",
+    warrantyExpiry: "2027-07-05",
+    qrCode: "QR-IT-MON-001",
+    condition: "Good",
+    custodianDepartment: "Accounts",
+    attachmentStatus: "Pending",
+    createdBy: "IT Support",
+    createdAt: "2024-07-05 12:15",
+    updatedBy: "IT Support",
+    updatedAt: "2026-01-20 09:30",
   },
   {
-    id: 4,
+    id: "4",
     assetTag: "IT-PRN-001",
     name: "Canon Laser Printer",
     category: "Printer",
@@ -47,9 +80,20 @@ const assets = [
     assignedTo: "-",
     location: "Admin Office",
     status: "Maintenance",
+    lifecycleStatus: "Under Maintenance",
+    purchaseRef: "PO-2024-0830",
+    warrantyExpiry: "2027-08-30",
+    qrCode: "QR-IT-PRN-001",
+    condition: "Needs Repair",
+    custodianDepartment: "Admin",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2024-08-30 16:00",
+    updatedBy: "IT Support",
+    updatedAt: "2026-02-10 14:45",
   },
   {
-    id: 5,
+    id: "5",
     assetTag: "IT-RTR-001",
     name: "TP-Link Router",
     category: "Network",
@@ -57,6 +101,17 @@ const assets = [
     assignedTo: "-",
     location: "Server Room",
     status: "Available",
+    lifecycleStatus: "In Stock",
+    purchaseRef: "PO-2024-0915",
+    warrantyExpiry: "2027-09-15",
+    qrCode: "QR-IT-RTR-001",
+    condition: "Good",
+    custodianDepartment: "IT Infrastructure",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Manager",
+    createdAt: "2024-09-15 15:30",
+    updatedBy: "IT Manager",
+    updatedAt: "2024-09-15 15:30",
   },
 ];
 
@@ -75,6 +130,13 @@ export default function AssetsPage() {
         ${asset.serialNumber}
         ${asset.assignedTo}
         ${asset.location}
+        ${asset.lifecycleStatus}
+        ${asset.purchaseRef}
+        ${asset.warrantyExpiry}
+        ${asset.qrCode}
+        ${asset.condition}
+        ${asset.custodianDepartment}
+        ${asset.attachmentStatus}
       `.toLowerCase();
 
       const matchesSearch = searchText.includes(search.toLowerCase());
@@ -86,13 +148,13 @@ export default function AssetsPage() {
     });
   }, [search, activeFilter]);
 
-  function handleDelete(asset) {
+  function handleArchive(asset) {
     const confirmed = confirm(
-      `Are you sure you want to delete ${asset.assetTag}?`
+      `Archive asset ${asset.assetTag}? This keeps lifecycle history for audit and reporting.`
     );
 
     if (confirmed) {
-      alert("Asset delete action added. Backend will be connected later.");
+      alert("Asset archive action added. Backend will be connected later.");
     }
   }
 
@@ -141,7 +203,7 @@ export default function AssetsPage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by asset tag, name, serial number, employee or location..."
+            placeholder="Search by asset tag, name, serial number, employee, purchase ref, QR or location..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
           />
 
@@ -165,7 +227,7 @@ export default function AssetsPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1150px] w-full text-sm">
+        <table className="min-w-[1700px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -185,6 +247,18 @@ export default function AssetsPage() {
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Location
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Lifecycle
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Warranty
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                QR Code
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Documents
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
@@ -219,6 +293,22 @@ export default function AssetsPage() {
 
                 <td className="px-4 py-4 text-gray-700">{asset.location}</td>
 
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.lifecycleStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.warrantyExpiry}
+                </td>
+
+                <td className="px-4 py-4 font-medium text-gray-700">
+                  {asset.qrCode}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.attachmentStatus}
+                </td>
+
                 <td className="px-4 py-4">
                   <StatusBadge status={asset.status} />
                 </td>
@@ -227,7 +317,8 @@ export default function AssetsPage() {
                   <ActionButtons
                     viewHref={`/assets/view/${asset.id}`}
                     updateHref={`/assets/edit/${asset.id}`}
-                    onDelete={() => handleDelete(asset)}
+                    onDelete={() => handleArchive(asset)}
+                    deleteLabel="Archive"
                   />
                 </td>
               </tr>

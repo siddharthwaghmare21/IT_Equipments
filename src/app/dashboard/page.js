@@ -10,30 +10,122 @@ export default function DashboardPage() {
     {
       title: "Total Assets",
       value: "248",
-      description: "All registered IT equipment",
+      description: "Registered IT equipment",
+      trend: "12 added this month",
     },
     {
       title: "Delivered Assets",
       value: "156",
-      description: "Currently delivered to employees",
+      description: "Issued to employees",
+      trend: "63% allocation",
     },
     {
       title: "Available Assets",
       value: "64",
       description: "Ready for delivery",
+      trend: "24 laptops available",
     },
     {
       title: "Under Maintenance",
       value: "18",
-      description: "Repair or service in progress",
+      description: "Repair or service active",
+      trend: "4 high priority",
+    },
+  ];
+
+  const assetSummary = [
+    {
+      category: "Laptops",
+      total: "95",
+      delivered: "72",
+      available: "23",
+      maintenance: "6",
+    },
+    {
+      category: "Desktops",
+      total: "48",
+      delivered: "35",
+      available: "13",
+      maintenance: "2",
+    },
+    {
+      category: "Monitors",
+      total: "61",
+      delivered: "38",
+      available: "23",
+      maintenance: "4",
+    },
+    {
+      category: "Printers",
+      total: "14",
+      delivered: "6",
+      available: "8",
+      maintenance: "3",
+    },
+  ];
+
+  const workflowSummary = [
+    {
+      title: "Pending Deliveries",
+      value: "9",
+      description: "Approved but not issued",
+      href: "/deliveries",
+    },
+    {
+      title: "Return Inspections",
+      value: "5",
+      description: "Awaiting condition check",
+      href: "/returns",
+    },
+    {
+      title: "Purchase Approvals",
+      value: "3",
+      description: "Pending procurement review",
+      href: "/purchases",
+    },
+    {
+      title: "Vendor Reviews",
+      value: "2",
+      description: "Compliance needs attention",
+      href: "/vendors",
+    },
+  ];
+
+  const alerts = [
+    {
+      title: "Warranty Expiring Soon",
+      detail: "3 assets need warranty review",
+      href: "/reports/warranty",
+    },
+    {
+      title: "High Priority Maintenance",
+      detail: "4 repair records require follow-up",
+      href: "/maintenance",
+    },
+    {
+      title: "Damaged Asset Decisions",
+      detail: "2 inspection decisions pending",
+      href: "/reports/damaged",
     },
   ];
 
   const recentActivities = [
-    "Laptop delivered to Rahul Patil",
-    "New purchase entry added",
-    "Printer marked under maintenance",
-    "Warranty report generated",
+    {
+      title: "Laptop delivered to Rahul Patil",
+      meta: "Delivery | Today 10:30 AM",
+    },
+    {
+      title: "Purchase PO-2026-004 submitted",
+      meta: "Purchases | Pending approval",
+    },
+    {
+      title: "HP LaserJet maintenance completed",
+      meta: "Maintenance | Service report attached",
+    },
+    {
+      title: "Dell Mouse marked damaged",
+      meta: "Damaged Assets | Repair approved",
+    },
   ];
 
   return (
@@ -60,7 +152,27 @@ export default function DashboardPage() {
             </h2>
 
             <p className="mt-2 text-xs text-gray-500">{item.description}</p>
+            <p className="mt-3 text-xs font-semibold text-gray-700">
+              {item.trend}
+            </p>
           </div>
+        ))}
+      </section>
+
+      <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {workflowSummary.map((item) => (
+          <button
+            key={item.title}
+            type="button"
+            onClick={() => router.push(item.href)}
+            className="rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm hover:border-gray-300 hover:bg-gray-50"
+          >
+            <p className="text-sm font-medium text-gray-500">{item.title}</p>
+            <h2 className="mt-3 text-3xl font-bold text-gray-900">
+              {item.value}
+            </h2>
+            <p className="mt-2 text-xs text-gray-500">{item.description}</p>
+          </button>
         ))}
       </section>
 
@@ -101,23 +213,28 @@ export default function DashboardPage() {
                   <th className="px-4 py-3 font-semibold text-gray-700">
                     Available
                   </th>
+                  <th className="px-4 py-3 font-semibold text-gray-700">
+                    Maintenance
+                  </th>
                 </tr>
               </thead>
 
               <tbody>
-                {[
-                  ["Laptops", "95", "72", "23"],
-                  ["Desktops", "48", "35", "13"],
-                  ["Monitors", "61", "38", "23"],
-                  ["Printers", "14", "6", "8"],
-                ].map((row) => (
-                  <tr key={row[0]} className="border-b border-gray-100">
+                {assetSummary.map((row) => (
+                  <tr key={row.category} className="border-b border-gray-100">
                     <td className="px-4 py-3 font-medium text-gray-900">
-                      {row[0]}
+                      {row.category}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{row[1]}</td>
-                    <td className="px-4 py-3 text-gray-600">{row[2]}</td>
-                    <td className="px-4 py-3 text-gray-600">{row[3]}</td>
+                    <td className="px-4 py-3 text-gray-600">{row.total}</td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {row.delivered}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {row.available}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {row.maintenance}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -131,12 +248,60 @@ export default function DashboardPage() {
           <div className="mt-4 space-y-3">
             {recentActivities.map((activity) => (
               <div
-                key={activity}
+                key={activity.title}
                 className="rounded-xl border border-gray-100 bg-gray-50 p-3"
               >
-                <p className="text-sm text-gray-700">{activity}</p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {activity.title}
+                </p>
+                <p className="mt-1 text-xs text-gray-500">{activity.meta}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
+          <h2 className="text-lg font-bold text-gray-900">
+            Operational Alerts
+          </h2>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {alerts.map((alert) => (
+              <button
+                key={alert.title}
+                type="button"
+                onClick={() => router.push(alert.href)}
+                className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-left hover:border-gray-300 hover:bg-white"
+              >
+                <p className="text-sm font-semibold text-gray-900">
+                  {alert.title}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-gray-500">
+                  {alert.detail}
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">System Readiness</h2>
+
+          <div className="mt-4 space-y-3 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Frontend Build</span>
+              <span className="font-semibold text-green-700">Passing</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Backend</span>
+              <span className="font-semibold text-yellow-700">Pending</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Database</span>
+              <span className="font-semibold text-yellow-700">MySQL Pending</span>
+            </div>
           </div>
         </div>
       </section>

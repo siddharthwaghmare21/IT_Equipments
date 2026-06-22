@@ -16,8 +16,14 @@ const assetReportData = [
     brand: "Dell",
     department: "IT Department",
     assignedTo: "Rahul Patil",
+    custodianDepartment: "IT Department",
+    purchaseRef: "PO-2026-0112",
     purchaseDate: "2026-01-12",
     warrantyExpiry: "2029-01-12",
+    lifecycleStatus: "In Use",
+    condition: "Good",
+    qrCode: "QR-AST-001",
+    attachmentStatus: "Uploaded",
     status: "Assigned",
   },
   {
@@ -28,8 +34,14 @@ const assetReportData = [
     brand: "HP",
     department: "Accounts",
     assignedTo: "Sneha Jadhav",
+    custodianDepartment: "Accounts",
+    purchaseRef: "PO-2026-0118",
     purchaseDate: "2026-01-18",
     warrantyExpiry: "2028-01-18",
+    lifecycleStatus: "In Use",
+    condition: "New",
+    qrCode: "QR-AST-002",
+    attachmentStatus: "Uploaded",
     status: "Assigned",
   },
   {
@@ -40,8 +52,14 @@ const assetReportData = [
     brand: "Logitech",
     department: "Admin",
     assignedTo: "Amit Shinde",
+    custodianDepartment: "IT Store",
+    purchaseRef: "PO-2026-0201",
     purchaseDate: "2026-02-01",
     warrantyExpiry: "2027-02-01",
+    lifecycleStatus: "In Stock",
+    condition: "Good",
+    qrCode: "QR-AST-003",
+    attachmentStatus: "Pending",
     status: "Available",
   },
   {
@@ -52,8 +70,14 @@ const assetReportData = [
     brand: "Cisco",
     department: "HR",
     assignedTo: "Priya More",
+    custodianDepartment: "IT Infrastructure",
+    purchaseRef: "PO-2026-0210",
     purchaseDate: "2026-02-10",
     warrantyExpiry: "2029-02-10",
+    lifecycleStatus: "Under Maintenance",
+    condition: "Needs Repair",
+    qrCode: "QR-AST-004",
+    attachmentStatus: "Uploaded",
     status: "Maintenance",
   },
   {
@@ -64,8 +88,14 @@ const assetReportData = [
     brand: "Dell",
     department: "HR",
     assignedTo: "Priya More",
+    custodianDepartment: "HR",
+    purchaseRef: "PO-2026-0110",
     purchaseDate: "2026-01-10",
     warrantyExpiry: "2027-01-10",
+    lifecycleStatus: "Damage Review",
+    condition: "Damaged",
+    qrCode: "QR-AST-005",
+    attachmentStatus: "Uploaded",
     status: "Damaged",
   },
 ];
@@ -200,14 +230,14 @@ export default function AssetsReportPage() {
 
           <p className="mt-4 text-sm leading-6 text-gray-600">
             This report shows sample asset data. After backend integration, it
-            will display real-time asset records from SQL Server with filters,
+              will display real-time asset records from MySQL with filters,
             export and printable report options.
           </p>
         </div>
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1300px] w-full text-sm">
+        <table className="min-w-[1800px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -233,11 +263,31 @@ export default function AssetsReportPage() {
               </th>
 
               <th className="px-4 py-3 font-semibold text-gray-700">
+                Custodian
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Purchase Ref
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
                 Purchase Date
               </th>
 
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Warranty Expiry
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Lifecycle
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                QR Code
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Documents
               </th>
 
               <th className="px-4 py-3 font-semibold text-gray-700">Status</th>
@@ -271,11 +321,31 @@ export default function AssetsReportPage() {
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
+                  {asset.custodianDepartment}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.purchaseRef}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
                   {asset.purchaseDate}
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
                   {asset.warrantyExpiry}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.lifecycleStatus}
+                </td>
+
+                <td className="px-4 py-4 font-medium text-gray-700">
+                  {asset.qrCode}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.attachmentStatus}
                 </td>
 
                 <td className="px-4 py-4">

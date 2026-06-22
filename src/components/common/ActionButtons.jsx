@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 
-export default function ActionButtons({ viewHref, updateHref, onDelete }) {
+export default function ActionButtons({
+  viewHref,
+  updateHref,
+  onDelete,
+  deleteLabel = "Delete",
+}) {
   return (
     <div className="flex flex-wrap gap-2">
       <Link
@@ -24,7 +29,7 @@ export default function ActionButtons({ viewHref, updateHref, onDelete }) {
         onClick={onDelete}
         className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100"
       >
-        Delete
+        {deleteLabel}
       </button>
     </div>
   );

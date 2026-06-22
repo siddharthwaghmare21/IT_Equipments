@@ -15,9 +15,21 @@ const maintenanceRecords = [
     issueType: "Battery Issue",
     reportedBy: "Rahul Patil",
     vendor: "Dell Service Center",
+    serviceType: "Warranty Repair",
+    priority: "High",
     serviceDate: "2026-03-10",
     expectedCompletion: "2026-03-15",
-    cost: "₹4,500",
+    completionDate: "",
+    downtimeHours: "48",
+    warrantyClaim: "Yes",
+    approvalStatus: "Approved",
+    attachmentStatus: "Service Request",
+    finalCondition: "Under Repair",
+    createdBy: "IT Admin",
+    createdAt: "2026-03-10 10:25 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-03-11 02:30 PM",
+    cost: "INR 4,500",
     status: "In Progress",
     remarks:
       "Battery backup is very low. Laptop sent to Dell Service Center for battery diagnosis and replacement.",
@@ -30,9 +42,21 @@ const maintenanceRecords = [
     issueType: "Paper Jam",
     reportedBy: "Sneha Jadhav",
     vendor: "HP World",
+    serviceType: "Corrective Repair",
+    priority: "Medium",
     serviceDate: "2026-02-18",
     expectedCompletion: "2026-02-20",
-    cost: "₹1,200",
+    completionDate: "2026-02-20",
+    downtimeHours: "8",
+    warrantyClaim: "No",
+    approvalStatus: "Approved",
+    attachmentStatus: "Invoice + Service Report",
+    finalCondition: "Working",
+    createdBy: "IT Admin",
+    createdAt: "2026-02-18 09:45 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-20 04:10 PM",
+    cost: "INR 1,200",
     status: "Completed",
     remarks:
       "Printer roller cleaned and paper jam issue resolved. Printer is working properly.",
@@ -45,9 +69,21 @@ const maintenanceRecords = [
     issueType: "Network Drop",
     reportedBy: "Priya More",
     vendor: "Network Solutions",
+    serviceType: "Inspection",
+    priority: "High",
     serviceDate: "2026-03-05",
     expectedCompletion: "2026-03-12",
-    cost: "₹2,800",
+    completionDate: "",
+    downtimeHours: "24",
+    warrantyClaim: "No",
+    approvalStatus: "Pending",
+    attachmentStatus: "Pending",
+    finalCondition: "Pending Inspection",
+    createdBy: "IT Admin",
+    createdAt: "2026-03-05 11:20 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-03-05 11:20 AM",
+    cost: "INR 2,800",
     status: "Pending",
     remarks:
       "Router frequently disconnects. Vendor inspection is pending.",
@@ -60,9 +96,21 @@ const maintenanceRecords = [
     issueType: "Display Problem",
     reportedBy: "Amit Shinde",
     vendor: "Lenovo Care",
+    serviceType: "Replacement Review",
+    priority: "Low",
     serviceDate: "2026-01-25",
     expectedCompletion: "2026-02-01",
-    cost: "₹6,000",
+    completionDate: "",
+    downtimeHours: "0",
+    warrantyClaim: "No",
+    approvalStatus: "Rejected",
+    attachmentStatus: "Review Note",
+    finalCondition: "Cancelled",
+    createdBy: "IT Admin",
+    createdAt: "2026-01-25 03:00 PM",
+    updatedBy: "IT Manager",
+    updatedAt: "2026-01-28 05:15 PM",
+    cost: "INR 6,000",
     status: "Cancelled",
     remarks:
       "Display replacement request was cancelled after internal review.",
@@ -140,7 +188,7 @@ export default function ViewMaintenancePage() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-600">
-              {maintenanceRecord.assetTag} • {maintenanceRecord.issueType}
+              {maintenanceRecord.assetTag} | {maintenanceRecord.issueType}
             </p>
           </div>
 
@@ -161,6 +209,11 @@ export default function ViewMaintenancePage() {
             value={maintenanceRecord.vendor}
           />
           <DetailItem
+            label="Service Type"
+            value={maintenanceRecord.serviceType}
+          />
+          <DetailItem label="Priority" value={maintenanceRecord.priority} />
+          <DetailItem
             label="Service Date"
             value={maintenanceRecord.serviceDate}
           />
@@ -168,7 +221,31 @@ export default function ViewMaintenancePage() {
             label="Expected Completion"
             value={maintenanceRecord.expectedCompletion}
           />
+          <DetailItem
+            label="Completion Date"
+            value={maintenanceRecord.completionDate}
+          />
           <DetailItem label="Cost" value={maintenanceRecord.cost} />
+          <DetailItem
+            label="Downtime Hours"
+            value={maintenanceRecord.downtimeHours}
+          />
+          <DetailItem
+            label="Warranty Claim"
+            value={maintenanceRecord.warrantyClaim}
+          />
+          <DetailItem
+            label="Approval Status"
+            value={maintenanceRecord.approvalStatus}
+          />
+          <DetailItem
+            label="Documents"
+            value={maintenanceRecord.attachmentStatus}
+          />
+          <DetailItem
+            label="Final Condition"
+            value={maintenanceRecord.finalCondition}
+          />
           <DetailItem label="Status" value={maintenanceRecord.status} />
         </div>
 
@@ -179,6 +256,13 @@ export default function ViewMaintenancePage() {
           <p className="mt-2 text-sm text-gray-700">
             {maintenanceRecord.remarks}
           </p>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <DetailItem label="Created By" value={maintenanceRecord.createdBy} />
+          <DetailItem label="Created At" value={maintenanceRecord.createdAt} />
+          <DetailItem label="Updated By" value={maintenanceRecord.updatedBy} />
+          <DetailItem label="Updated At" value={maintenanceRecord.updatedAt} />
         </div>
       </section>
 

@@ -188,7 +188,7 @@ export default function AdminRequestAccessPage() {
         <div className="mx-auto flex min-h-[80vh] max-w-xl items-center justify-center">
           <section className="w-full rounded-3xl border border-gray-200 bg-white p-6 text-center shadow-sm sm:p-8">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-green-700 text-xl font-bold text-white">
-              ✓
+              OK
             </div>
 
             <h1 className="mt-6 text-2xl font-bold text-gray-900">
@@ -237,11 +237,11 @@ export default function AdminRequestAccessPage() {
             </h2>
 
             <ul className="mt-3 space-y-2 text-sm text-gray-600">
-              <li>• Only IT Department staff can request access</li>
-              <li>• Internal access code is required</li>
-              <li>• Existing Super Admin approval is required</li>
-              <li>• Multiple Super Admin accounts are supported</li>
-              <li>• Password must contain 8 characters, 1 capital letter and 1 symbol</li>
+              <li>- Only IT Department staff can request access</li>
+              <li>- Internal access code is required</li>
+              <li>- Existing Super Admin approval is required</li>
+              <li>- Multiple Super Admin accounts are supported</li>
+              <li>- Password must contain 8 characters, 1 capital letter and 1 symbol</li>
             </ul>
           </div>
         </section>

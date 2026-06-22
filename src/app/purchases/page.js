@@ -8,43 +8,91 @@ import ActionButtons from "@/components/common/ActionButtons";
 
 const purchases = [
   {
-    id: 1,
+    id: "1",
     poNumber: "PO-2026-001",
     vendorName: "Dell Technologies",
     invoiceNumber: "INV-DL-4587",
     purchaseDate: "2026-01-12",
+    expectedDeliveryDate: "2026-01-18",
+    receivedDate: "2026-01-15",
     items: 8,
-    totalAmount: "₹5,80,000",
+    approvalStatus: "Approved",
+    approvedBy: "IT Head",
+    paymentStatus: "Paid",
+    receivedStatus: "Fully Received",
+    invoiceStatus: "Verified",
+    attachmentStatus: "PO + Invoice",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-12 10:30 AM",
+    updatedBy: "Stores Team",
+    updatedAt: "2026-01-15 04:15 PM",
+    totalAmount: "INR 5,80,000",
     status: "Received",
   },
   {
-    id: 2,
+    id: "2",
     poNumber: "PO-2026-002",
     vendorName: "HP World",
     invoiceNumber: "INV-HP-7821",
     purchaseDate: "2026-01-18",
+    expectedDeliveryDate: "2026-01-28",
+    receivedDate: "",
     items: 5,
-    totalAmount: "₹3,25,000",
+    approvalStatus: "Approved",
+    approvedBy: "IT Head",
+    paymentStatus: "Pending",
+    receivedStatus: "Awaiting Delivery",
+    invoiceStatus: "Pending",
+    attachmentStatus: "PO Uploaded",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-18 11:10 AM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-01-18 11:10 AM",
+    totalAmount: "INR 3,25,000",
     status: "Pending",
   },
   {
-    id: 3,
+    id: "3",
     poNumber: "PO-2026-003",
     vendorName: "Canon India",
     invoiceNumber: "INV-CN-2190",
     purchaseDate: "2026-02-02",
+    expectedDeliveryDate: "2026-02-07",
+    receivedDate: "2026-02-06",
     items: 3,
-    totalAmount: "₹78,000",
+    approvalStatus: "Approved",
+    approvedBy: "IT Manager",
+    paymentStatus: "Paid",
+    receivedStatus: "Fully Received",
+    invoiceStatus: "Verified",
+    attachmentStatus: "PO + Invoice",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-02-02 09:40 AM",
+    updatedBy: "Stores Team",
+    updatedAt: "2026-02-06 03:20 PM",
+    totalAmount: "INR 78,000",
     status: "Received",
   },
   {
-    id: 4,
+    id: "4",
     poNumber: "PO-2026-004",
     vendorName: "Network Solutions",
     invoiceNumber: "INV-NS-1002",
     purchaseDate: "2026-02-10",
+    expectedDeliveryDate: "2026-02-18",
+    receivedDate: "",
     items: 12,
-    totalAmount: "₹1,42,000",
+    approvalStatus: "Pending",
+    approvedBy: "-",
+    paymentStatus: "Not Started",
+    receivedStatus: "Not Received",
+    invoiceStatus: "Awaiting Invoice",
+    attachmentStatus: "Pending",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-02-10 02:05 PM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-02-10 02:05 PM",
+    totalAmount: "INR 1,42,000",
     status: "Ordered",
   },
 ];
@@ -81,7 +129,13 @@ export default function PurchasesPage() {
         ${purchase.vendorName}
         ${purchase.invoiceNumber}
         ${purchase.purchaseDate}
+        ${purchase.expectedDeliveryDate}
+        ${purchase.receivedDate}
         ${purchase.totalAmount}
+        ${purchase.approvalStatus}
+        ${purchase.paymentStatus}
+        ${purchase.receivedStatus}
+        ${purchase.invoiceStatus}
         ${purchase.status}
       `.toLowerCase();
 
@@ -94,13 +148,13 @@ export default function PurchasesPage() {
     });
   }, [search, activeFilter]);
 
-  function handleDelete(purchase) {
+  function handleArchive(purchase) {
     const confirmed = confirm(
-      `Are you sure you want to delete ${purchase.poNumber}?`
+      `Are you sure you want to archive ${purchase.poNumber}?`
     );
 
     if (confirmed) {
-      alert("Purchase delete action added. Backend will be connected later.");
+      alert("Purchase archive action added. Backend will be connected later.");
     }
   }
 
@@ -158,7 +212,7 @@ export default function PurchasesPage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by PO number, vendor, invoice number or status..."
+            placeholder="Search by PO, vendor, invoice, approval, payment or status..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
           />
 
@@ -182,7 +236,7 @@ export default function PurchasesPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1150px] w-full text-sm">
+        <table className="min-w-[1550px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -198,10 +252,25 @@ export default function PurchasesPage() {
                 Purchase Date
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
+                Expected Delivery
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Received Status
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
                 Items
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Total Amount
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Approval
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Payment
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Invoice
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
@@ -234,10 +303,30 @@ export default function PurchasesPage() {
                   {purchase.purchaseDate}
                 </td>
 
+                <td className="px-4 py-4 text-gray-700">
+                  {purchase.expectedDeliveryDate}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {purchase.receivedStatus}
+                </td>
+
                 <td className="px-4 py-4 text-gray-700">{purchase.items}</td>
 
                 <td className="px-4 py-4 font-semibold text-gray-900">
                   {purchase.totalAmount}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {purchase.approvalStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {purchase.paymentStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {purchase.invoiceStatus}
                 </td>
 
                 <td className="px-4 py-4">
@@ -248,7 +337,8 @@ export default function PurchasesPage() {
                   <ActionButtons
                     viewHref={`/purchases/view/${purchase.id}`}
                     updateHref={`/purchases/edit/${purchase.id}`}
-                    onDelete={() => handleDelete(purchase)}
+                    onDelete={() => handleArchive(purchase)}
+                    deleteLabel="Archive"
                   />
                 </td>
               </tr>

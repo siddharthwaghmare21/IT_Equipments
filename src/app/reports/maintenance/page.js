@@ -15,9 +15,15 @@ const maintenanceReportData = [
     issueType: "Battery Issue",
     reportedBy: "Rahul Patil",
     vendor: "Dell Service Center",
+    serviceType: "Warranty Repair",
+    priority: "High",
     serviceDate: "2026-03-10",
     expectedCompletion: "2026-03-15",
-    cost: "₹4,500",
+    completionDate: "",
+    downtimeHours: "48",
+    warrantyClaim: "Yes",
+    approvalStatus: "Approved",
+    cost: "INR 4,500",
     status: "In Progress",
   },
   {
@@ -28,9 +34,15 @@ const maintenanceReportData = [
     issueType: "Paper Jam",
     reportedBy: "Sneha Jadhav",
     vendor: "HP World",
+    serviceType: "Corrective Repair",
+    priority: "Medium",
     serviceDate: "2026-02-18",
     expectedCompletion: "2026-02-20",
-    cost: "₹1,200",
+    completionDate: "2026-02-20",
+    downtimeHours: "8",
+    warrantyClaim: "No",
+    approvalStatus: "Approved",
+    cost: "INR 1,200",
     status: "Completed",
   },
   {
@@ -41,9 +53,15 @@ const maintenanceReportData = [
     issueType: "Network Drop",
     reportedBy: "Priya More",
     vendor: "Network Solutions",
+    serviceType: "Inspection",
+    priority: "High",
     serviceDate: "2026-03-05",
     expectedCompletion: "2026-03-12",
-    cost: "₹2,800",
+    completionDate: "",
+    downtimeHours: "24",
+    warrantyClaim: "No",
+    approvalStatus: "Pending",
+    cost: "INR 2,800",
     status: "Pending",
   },
   {
@@ -54,9 +72,15 @@ const maintenanceReportData = [
     issueType: "Display Problem",
     reportedBy: "Amit Shinde",
     vendor: "Lenovo Care",
+    serviceType: "Replacement Review",
+    priority: "Low",
     serviceDate: "2026-01-25",
     expectedCompletion: "2026-02-01",
-    cost: "₹6,000",
+    completionDate: "",
+    downtimeHours: "0",
+    warrantyClaim: "No",
+    approvalStatus: "Rejected",
+    cost: "INR 6,000",
     status: "Cancelled",
   },
 ];
@@ -209,14 +233,14 @@ export default function MaintenanceReportPage() {
 
           <p className="mt-4 text-sm leading-6 text-gray-600">
             This maintenance report currently uses sample frontend data. After
-            SQL Server backend integration, it will show real-time repair
+            MySQL backend integration, it will show real-time repair
             records, service cost, technician details and maintenance status.
           </p>
         </div>
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1350px] w-full text-sm">
+        <table className="min-w-[1700px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -244,6 +268,14 @@ export default function MaintenanceReportPage() {
               </th>
 
               <th className="px-4 py-3 font-semibold text-gray-700">
+                Service Type
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Priority
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
                 Service Date
               </th>
 
@@ -253,6 +285,18 @@ export default function MaintenanceReportPage() {
 
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Cost
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Downtime
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Warranty
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Approval
               </th>
 
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -292,6 +336,14 @@ export default function MaintenanceReportPage() {
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
+                  {record.serviceType}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {record.priority}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
                   {record.serviceDate}
                 </td>
 
@@ -301,6 +353,18 @@ export default function MaintenanceReportPage() {
 
                 <td className="px-4 py-4 font-semibold text-gray-900">
                   {record.cost}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {record.downtimeHours}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {record.warrantyClaim}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {record.approvalStatus}
                 </td>
 
                 <td className="px-4 py-4">

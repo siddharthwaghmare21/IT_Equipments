@@ -15,8 +15,17 @@ const departments = [
     email: "it@company.com",
     phone: "+91 98765 12345",
     location: "Main Office",
+    costCenter: "CC-IT-001",
+    businessUnit: "Corporate",
+    assetBudget: "INR 12,00,000",
+    approvalRequired: "Yes",
+    assetPolicy: "Standard IT Policy",
     totalEmployees: 12,
     assignedAssets: 34,
+    createdBy: "Admin",
+    createdAt: "2026-01-01 10:00 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-15 04:15 PM",
     status: "Active",
     description:
       "Responsible for IT infrastructure, software systems, hardware support and equipment management.",
@@ -29,8 +38,17 @@ const departments = [
     email: "accounts@company.com",
     phone: "+91 99887 45678",
     location: "Accounts Office",
+    costCenter: "CC-ACC-002",
+    businessUnit: "Finance",
+    assetBudget: "INR 6,50,000",
+    approvalRequired: "Yes",
+    assetPolicy: "Finance Asset Policy",
     totalEmployees: 8,
     assignedAssets: 18,
+    createdBy: "Admin",
+    createdAt: "2026-01-01 10:10 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-20 12:10 PM",
     status: "Active",
     description:
       "Handles billing, finance records, purchase invoices and payment documentation.",
@@ -43,8 +61,17 @@ const departments = [
     email: "admin@company.com",
     phone: "+91 91234 56789",
     location: "Admin Office",
+    costCenter: "CC-ADM-003",
+    businessUnit: "Operations",
+    assetBudget: "INR 4,00,000",
+    approvalRequired: "Yes",
+    assetPolicy: "Admin Asset Policy",
     totalEmployees: 6,
     assignedAssets: 14,
+    createdBy: "Admin",
+    createdAt: "2026-01-01 10:20 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-04 03:20 PM",
     status: "Active",
     description:
       "Manages office administration, internal coordination and resource allocation.",
@@ -57,8 +84,17 @@ const departments = [
     email: "hr@company.com",
     phone: "+91 90123 45678",
     location: "HR Office",
+    costCenter: "CC-HR-004",
+    businessUnit: "People",
+    assetBudget: "INR 2,50,000",
+    approvalRequired: "No",
+    assetPolicy: "Basic Asset Policy",
     totalEmployees: 4,
     assignedAssets: 9,
+    createdBy: "Admin",
+    createdAt: "2026-01-01 10:30 AM",
+    updatedBy: "Admin",
+    updatedAt: "2026-01-30 05:00 PM",
     status: "Inactive",
     description:
       "Handles employee records, recruitment coordination and HR documentation.",
@@ -155,6 +191,13 @@ export default function ViewDepartmentPage() {
           <DetailItem label="Email Address" value={department.email} />
           <DetailItem label="Phone Number" value={department.phone} />
           <DetailItem label="Location" value={department.location} />
+          <DetailItem label="Cost Center" value={department.costCenter} />
+          <DetailItem label="Business Unit" value={department.businessUnit} />
+          <DetailItem label="Asset Budget" value={department.assetBudget} />
+          <DetailItem
+            label="Approval Required"
+            value={department.approvalRequired}
+          />
           <DetailItem
             label="Total Employees"
             value={department.totalEmployees}
@@ -168,11 +211,27 @@ export default function ViewDepartmentPage() {
 
         <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
           <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            Asset Policy
+          </p>
+          <p className="mt-2 text-sm text-gray-700">
+            {department.assetPolicy}
+          </p>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
             Description
           </p>
           <p className="mt-2 text-sm text-gray-700">
             {department.description}
           </p>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <DetailItem label="Created By" value={department.createdBy} />
+          <DetailItem label="Created At" value={department.createdAt} />
+          <DetailItem label="Updated By" value={department.updatedBy} />
+          <DetailItem label="Updated At" value={department.updatedAt} />
         </div>
       </section>
 

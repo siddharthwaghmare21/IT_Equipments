@@ -16,6 +16,13 @@ const returnsReportData = [
     department: "Admin",
     returnDate: "2026-02-15",
     receivedBy: "IT Support",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Completed",
+    inspectionBy: "IT Support",
+    damageDecision: "No Damage",
+    qrCode: "QR-RET-001",
+    attachmentStatus: "Uploaded",
     condition: "Good",
     status: "Returned",
   },
@@ -28,6 +35,13 @@ const returnsReportData = [
     department: "Accounts",
     returnDate: "2026-02-18",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Completed",
+    inspectionBy: "IT Admin",
+    damageDecision: "No Damage",
+    qrCode: "QR-RET-002",
+    attachmentStatus: "Uploaded",
     condition: "Working",
     status: "Returned",
   },
@@ -40,6 +54,13 @@ const returnsReportData = [
     department: "IT Department",
     returnDate: "2026-02-21",
     receivedBy: "IT Support",
+    receivedLocation: "Inspection Desk",
+    acknowledgementStatus: "Pending",
+    inspectionStatus: "Pending",
+    inspectionBy: "IT Support",
+    damageDecision: "Repair Required",
+    qrCode: "QR-RET-003",
+    attachmentStatus: "Pending",
     condition: "Needs Repair",
     status: "Received for Check",
   },
@@ -52,6 +73,13 @@ const returnsReportData = [
     department: "HR",
     returnDate: "2026-02-24",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Damage Review",
+    inspectionBy: "IT Manager",
+    damageDecision: "Write-off Required",
+    qrCode: "QR-RET-004",
+    attachmentStatus: "Uploaded",
     condition: "Damaged",
     status: "Under Review",
   },
@@ -138,7 +166,7 @@ export default function ReturnsReportPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1200px] w-full text-sm">
+        <table className="min-w-[1750px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -166,7 +194,25 @@ export default function ReturnsReportPage() {
                 Received By
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
+                Location
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
                 Condition
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Inspection
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Damage Decision
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Acknowledgement
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                QR Code
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Documents
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
@@ -200,7 +246,31 @@ export default function ReturnsReportPage() {
 
                 <td className="px-4 py-4 text-gray-700">{item.receivedBy}</td>
 
+                <td className="px-4 py-4 text-gray-700">
+                  {item.receivedLocation}
+                </td>
+
                 <td className="px-4 py-4 text-gray-700">{item.condition}</td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {item.inspectionStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {item.damageDecision}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {item.acknowledgementStatus}
+                </td>
+
+                <td className="px-4 py-4 font-medium text-gray-700">
+                  {item.qrCode}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {item.attachmentStatus}
+                </td>
 
                 <td className="px-4 py-4">
                   <ReturnStatusBadge status={item.status} />

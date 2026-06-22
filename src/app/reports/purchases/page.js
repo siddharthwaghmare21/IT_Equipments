@@ -13,10 +13,16 @@ const purchaseReportData = [
     vendorName: "Dell Technologies",
     invoiceNumber: "INV-DL-4587",
     purchaseDate: "2026-01-12",
+    expectedDeliveryDate: "2026-01-18",
+    receivedDate: "2026-01-15",
     itemName: "Dell Latitude 5420",
     category: "Laptop",
     quantity: 8,
-    totalAmount: "₹5,80,000",
+    approvalStatus: "Approved",
+    paymentStatus: "Paid",
+    receivedStatus: "Fully Received",
+    invoiceStatus: "Verified",
+    totalAmount: "INR 5,80,000",
     status: "Received",
   },
   {
@@ -25,10 +31,16 @@ const purchaseReportData = [
     vendorName: "HP World",
     invoiceNumber: "INV-HP-7821",
     purchaseDate: "2026-01-18",
+    expectedDeliveryDate: "2026-01-28",
+    receivedDate: "",
     itemName: "HP LaserJet Printer",
     category: "Printer",
     quantity: 5,
-    totalAmount: "₹3,25,000",
+    approvalStatus: "Approved",
+    paymentStatus: "Pending",
+    receivedStatus: "Awaiting Delivery",
+    invoiceStatus: "Pending",
+    totalAmount: "INR 3,25,000",
     status: "Pending",
   },
   {
@@ -37,10 +49,16 @@ const purchaseReportData = [
     vendorName: "Canon India",
     invoiceNumber: "INV-CN-2190",
     purchaseDate: "2026-02-02",
+    expectedDeliveryDate: "2026-02-07",
+    receivedDate: "2026-02-06",
     itemName: "Canon Scanner",
     category: "Scanner",
     quantity: 3,
-    totalAmount: "₹78,000",
+    approvalStatus: "Approved",
+    paymentStatus: "Paid",
+    receivedStatus: "Fully Received",
+    invoiceStatus: "Verified",
+    totalAmount: "INR 78,000",
     status: "Received",
   },
   {
@@ -49,10 +67,16 @@ const purchaseReportData = [
     vendorName: "Network Solutions",
     invoiceNumber: "INV-NS-1002",
     purchaseDate: "2026-02-10",
+    expectedDeliveryDate: "2026-02-18",
+    receivedDate: "",
     itemName: "Cisco Router",
     category: "Network",
     quantity: 12,
-    totalAmount: "₹1,42,000",
+    approvalStatus: "Pending",
+    paymentStatus: "Not Started",
+    receivedStatus: "Not Received",
+    invoiceStatus: "Awaiting Invoice",
+    totalAmount: "INR 1,42,000",
     status: "Ordered",
   },
 ];
@@ -145,22 +169,22 @@ export default function PurchasesReportPage() {
           <div className="mt-4 space-y-3 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Dell Technologies</span>
-              <span className="font-semibold text-gray-900">₹5,80,000</span>
+              <span className="font-semibold text-gray-900">INR 5,80,000</span>
             </div>
 
             <div className="flex justify-between">
               <span className="text-gray-600">HP World</span>
-              <span className="font-semibold text-gray-900">₹3,25,000</span>
+              <span className="font-semibold text-gray-900">INR 3,25,000</span>
             </div>
 
             <div className="flex justify-between">
               <span className="text-gray-600">Canon India</span>
-              <span className="font-semibold text-gray-900">₹78,000</span>
+              <span className="font-semibold text-gray-900">INR 78,000</span>
             </div>
 
             <div className="flex justify-between">
               <span className="text-gray-600">Network Solutions</span>
-              <span className="font-semibold text-gray-900">₹1,42,000</span>
+              <span className="font-semibold text-gray-900">INR 1,42,000</span>
             </div>
           </div>
         </div>
@@ -195,15 +219,15 @@ export default function PurchasesReportPage() {
           <h3 className="text-lg font-bold text-gray-900">Report Summary</h3>
 
           <p className="mt-4 text-sm leading-6 text-gray-600">
-            This purchase report currently uses sample frontend data. After SQL
-            Server backend integration, it will show real-time purchase totals,
+            This purchase report currently uses sample frontend data. After
+            MySQL backend integration, it will show real-time purchase totals,
             vendor-wise amounts, invoices and exportable purchase reports.
           </p>
         </div>
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1250px] w-full text-sm">
+        <table className="min-w-[1650px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -223,6 +247,14 @@ export default function PurchasesReportPage() {
               </th>
 
               <th className="px-4 py-3 font-semibold text-gray-700">
+                Expected Delivery
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Received Status
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
                 Item Name
               </th>
 
@@ -236,6 +268,18 @@ export default function PurchasesReportPage() {
 
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Total Amount
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Approval
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Payment
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Invoice
               </th>
 
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -267,6 +311,14 @@ export default function PurchasesReportPage() {
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
+                  {purchase.expectedDeliveryDate}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {purchase.receivedStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
                   {purchase.itemName}
                 </td>
 
@@ -280,6 +332,18 @@ export default function PurchasesReportPage() {
 
                 <td className="px-4 py-4 font-semibold text-gray-900">
                   {purchase.totalAmount}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {purchase.approvalStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {purchase.paymentStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {purchase.invoiceStatus}
                 </td>
 
                 <td className="px-4 py-4">

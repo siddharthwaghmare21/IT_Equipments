@@ -17,12 +17,21 @@ const assets = [
     model: "Latitude 5420",
     serialNumber: "DL5420-9821",
     purchaseDate: "2024-04-12",
+    purchaseRef: "PO-2024-0412",
     warrantyExpiry: "2027-04-12",
     deliveredTo: "Rahul Patil",
     department: "IT Department",
     location: "Main Office",
+    custodianDepartment: "IT Department",
     status: "Delivered",
     condition: "Good",
+    lifecycleStatus: "In Use",
+    qrCode: "QR-IT-LAP-001",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2024-04-12 10:00",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-15 10:30",
     specifications: "Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro",
     description: "Laptop used for software development and office work.",
     remarks: "Delivered for software development work.",
@@ -36,12 +45,21 @@ const assets = [
     model: "EliteBook 840",
     serialNumber: "HP840-4421",
     purchaseDate: "2024-06-20",
+    purchaseRef: "PO-2024-0620",
     warrantyExpiry: "2027-06-20",
     deliveredTo: "-",
     department: "-",
     location: "Store Room",
+    custodianDepartment: "IT Store",
     status: "Available",
     condition: "New",
+    lifecycleStatus: "In Stock",
+    qrCode: "QR-IT-LAP-002",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2024-06-20 11:00",
+    updatedBy: "IT Admin",
+    updatedAt: "2024-06-20 11:00",
     specifications: "Intel i7, 16GB RAM, 512GB SSD, Windows 11 Pro",
     description: "Laptop available in store room for future delivery.",
     remarks: "Ready for delivery.",
@@ -97,7 +115,7 @@ export default function ViewAssetPage() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-600">
-              {asset.category} • {asset.brand} • {asset.model}
+              {asset.category} - {asset.brand} - {asset.model}
             </p>
           </div>
 
@@ -111,12 +129,23 @@ export default function ViewAssetPage() {
           <DetailItem label="Brand" value={asset.brand} />
           <DetailItem label="Model" value={asset.model} />
           <DetailItem label="Serial Number" value={asset.serialNumber} />
+          <DetailItem label="Purchase Reference" value={asset.purchaseRef} />
           <DetailItem label="Purchase Date" value={asset.purchaseDate} />
           <DetailItem label="Warranty Expiry" value={asset.warrantyExpiry} />
           <DetailItem label="Condition" value={asset.condition} />
+          <DetailItem label="Lifecycle Status" value={asset.lifecycleStatus} />
           <DetailItem label="Delivered To" value={asset.deliveredTo} />
           <DetailItem label="Department" value={asset.department} />
+          <DetailItem
+            label="Custodian Department"
+            value={asset.custodianDepartment}
+          />
           <DetailItem label="Location" value={asset.location} />
+          <DetailItem label="QR Code Reference" value={asset.qrCode} />
+          <DetailItem
+            label="Attachment Status"
+            value={asset.attachmentStatus}
+          />
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -144,6 +173,38 @@ export default function ViewAssetPage() {
             Remarks
           </p>
           <p className="mt-2 text-sm text-gray-700">{asset.remarks || "-"}</p>
+        </div>
+
+        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            Audit Trail
+          </p>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div>
+              <p className="text-xs font-medium text-gray-500">Created By</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {asset.createdBy}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500">Created At</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {asset.createdAt}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500">Updated By</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {asset.updatedBy}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500">Updated At</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {asset.updatedAt}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

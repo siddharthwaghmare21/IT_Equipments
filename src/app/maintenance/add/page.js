@@ -14,9 +14,16 @@ export default function AddMaintenancePage() {
     issueType: "",
     reportedBy: "",
     vendor: "",
+    serviceType: "Corrective Repair",
+    priority: "Medium",
     serviceDate: "",
     expectedCompletion: "",
+    completionDate: "",
     cost: "",
+    downtimeHours: "",
+    warrantyClaim: "No",
+    approvalStatus: "Pending",
+    finalCondition: "",
     status: "Pending",
     remarks: "",
   });
@@ -32,8 +39,6 @@ export default function AddMaintenancePage() {
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    console.log("Maintenance Form Data:", formData);
 
     alert("Maintenance record saved successfully. Backend will be connected later.");
   }
@@ -163,6 +168,41 @@ export default function AddMaintenancePage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Service Type
+            </label>
+            <select
+              name="serviceType"
+              value={formData.serviceType}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Corrective Repair">Corrective Repair</option>
+              <option value="Preventive Service">Preventive Service</option>
+              <option value="Warranty Repair">Warranty Repair</option>
+              <option value="Inspection">Inspection</option>
+              <option value="Replacement Review">Replacement Review</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Priority
+            </label>
+            <select
+              name="priority"
+              value={formData.priority}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Critical">Critical</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Service Date
             </label>
             <input
@@ -190,6 +230,19 @@ export default function AddMaintenancePage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Completion Date
+            </label>
+            <input
+              type="date"
+              name="completionDate"
+              value={formData.completionDate}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Estimated / Actual Cost
             </label>
             <input
@@ -201,6 +254,54 @@ export default function AddMaintenancePage() {
               min="0"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Downtime Hours
+            </label>
+            <input
+              type="number"
+              name="downtimeHours"
+              value={formData.downtimeHours}
+              onChange={handleChange}
+              placeholder="8"
+              min="0"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Warranty Claim
+            </label>
+            <select
+              name="warrantyClaim"
+              value={formData.warrantyClaim}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+              <option value="Not Applicable">Not Applicable</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Approval Status
+            </label>
+            <select
+              name="approvalStatus"
+              value={formData.approvalStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+              <option value="Not Required">Not Required</option>
+            </select>
           </div>
 
           <div>
@@ -220,6 +321,34 @@ export default function AddMaintenancePage() {
             </select>
           </div>
 
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Final Condition
+            </label>
+            <input
+              type="text"
+              name="finalCondition"
+              value={formData.finalCondition}
+              onChange={handleChange}
+              placeholder="Working / Under Repair / Replacement Needed"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Maintenance Documents
+            </label>
+            <input
+              type="file"
+              multiple
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white focus:border-gray-900"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Upload service report, invoice, warranty claim or before/after photos.
+            </p>
+          </div>
+
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
               Remarks
@@ -232,6 +361,13 @@ export default function AddMaintenancePage() {
               placeholder="Issue details, service notes, parts replaced or technician remarks..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+              Created By and Updated By will be captured automatically after
+              login and backend integration.
+            </div>
           </div>
         </div>
 

@@ -11,7 +11,14 @@ export default function AddPurchasePage() {
     vendorName: "",
     invoiceNumber: "",
     purchaseDate: "",
+    expectedDeliveryDate: "",
     receivedDate: "",
+    approvalStatus: "Pending",
+    approvedBy: "",
+    paymentStatus: "Not Started",
+    receivedStatus: "Not Received",
+    invoiceStatus: "Pending",
+    attachmentStatus: "Pending",
     itemName: "",
     category: "",
     quantity: "",
@@ -38,13 +45,6 @@ export default function AddPurchasePage() {
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    const purchaseData = {
-      ...formData,
-      totalAmount,
-    };
-
-    console.log("Purchase Form Data:", purchaseData);
 
     alert("Purchase saved successfully. Backend will be connected later.");
   }
@@ -131,6 +131,101 @@ export default function AddPurchasePage() {
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Expected Delivery Date
+            </label>
+            <input
+              type="date"
+              name="expectedDeliveryDate"
+              value={formData.expectedDeliveryDate}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Approval Status
+            </label>
+            <select
+              name="approvalStatus"
+              value={formData.approvalStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+              <option value="On Hold">On Hold</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Approved By
+            </label>
+            <input
+              type="text"
+              name="approvedBy"
+              value={formData.approvedBy}
+              onChange={handleChange}
+              placeholder="IT Head / Finance Manager"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Payment Status
+            </label>
+            <select
+              name="paymentStatus"
+              value={formData.paymentStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Not Started">Not Started</option>
+              <option value="Pending">Pending</option>
+              <option value="Partially Paid">Partially Paid</option>
+              <option value="Paid">Paid</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Received Status
+            </label>
+            <select
+              name="receivedStatus"
+              value={formData.receivedStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Not Received">Not Received</option>
+              <option value="Awaiting Delivery">Awaiting Delivery</option>
+              <option value="Partially Received">Partially Received</option>
+              <option value="Fully Received">Fully Received</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Invoice Status
+            </label>
+            <select
+              name="invoiceStatus"
+              value={formData.invoiceStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Received">Received</option>
+              <option value="Verified">Verified</option>
+              <option value="Mismatch">Mismatch</option>
+            </select>
           </div>
 
           <div>
@@ -251,8 +346,22 @@ export default function AddPurchasePage() {
               Total Amount
             </label>
             <div className="flex h-[42px] items-center rounded-xl border border-gray-300 bg-gray-100 px-4 text-sm font-bold text-gray-900">
-              ₹{totalAmount.toLocaleString("en-IN")}
+              INR {totalAmount.toLocaleString("en-IN")}
             </div>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Purchase Documents
+            </label>
+            <input
+              type="file"
+              multiple
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white focus:border-gray-900"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Upload purchase order, invoice, quotation or warranty documents.
+            </p>
           </div>
 
           <div className="md:col-span-2">
@@ -295,6 +404,13 @@ export default function AddPurchasePage() {
               placeholder="Additional purchase notes..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+              Created By and Updated By will be captured automatically after
+              login and backend integration.
+            </div>
           </div>
         </div>
 

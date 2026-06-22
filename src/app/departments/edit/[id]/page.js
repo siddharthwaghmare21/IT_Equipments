@@ -16,7 +16,17 @@ const departments = [
     email: "it@company.com",
     phone: "+91 98765 12345",
     location: "Main Office",
+    costCenter: "CC-IT-001",
+    businessUnit: "Corporate",
+    assetBudget: "INR 12,00,000",
+    approvalRequired: "Yes",
+    assetPolicy: "Standard IT Policy",
     totalEmployees: "12",
+    deliveredAssets: "34",
+    createdBy: "Admin",
+    createdAt: "2026-01-01 10:00 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-15 04:15 PM",
     status: "Active",
     description:
       "Responsible for IT infrastructure, software systems, hardware support and equipment management.",
@@ -29,7 +39,17 @@ const departments = [
     email: "accounts@company.com",
     phone: "+91 99887 45678",
     location: "Accounts Office",
+    costCenter: "CC-ACC-002",
+    businessUnit: "Finance",
+    assetBudget: "INR 6,50,000",
+    approvalRequired: "Yes",
+    assetPolicy: "Finance Asset Policy",
     totalEmployees: "8",
+    deliveredAssets: "18",
+    createdBy: "Admin",
+    createdAt: "2026-01-01 10:10 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-20 12:10 PM",
     status: "Active",
     description:
       "Handles billing, finance records, purchase invoices and payment documentation.",
@@ -42,7 +62,17 @@ const departments = [
     email: "admin@company.com",
     phone: "+91 91234 56789",
     location: "Admin Office",
+    costCenter: "CC-ADM-003",
+    businessUnit: "Operations",
+    assetBudget: "INR 4,00,000",
+    approvalRequired: "Yes",
+    assetPolicy: "Admin Asset Policy",
     totalEmployees: "6",
+    deliveredAssets: "14",
+    createdBy: "Admin",
+    createdAt: "2026-01-01 10:20 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-04 03:20 PM",
     status: "Active",
     description:
       "Manages office administration, internal coordination and resource allocation.",
@@ -55,7 +85,17 @@ const departments = [
     email: "hr@company.com",
     phone: "+91 90123 45678",
     location: "HR Office",
+    costCenter: "CC-HR-004",
+    businessUnit: "People",
+    assetBudget: "INR 2,50,000",
+    approvalRequired: "No",
+    assetPolicy: "Basic Asset Policy",
     totalEmployees: "4",
+    deliveredAssets: "9",
+    createdBy: "Admin",
+    createdAt: "2026-01-01 10:30 AM",
+    updatedBy: "Admin",
+    updatedAt: "2026-01-30 05:00 PM",
     status: "Inactive",
     description:
       "Handles employee records, recruitment coordination and HR documentation.",
@@ -77,7 +117,17 @@ export default function EditDepartmentPage() {
     email: selectedDepartment.email,
     phone: selectedDepartment.phone,
     location: selectedDepartment.location,
+    costCenter: selectedDepartment.costCenter,
+    businessUnit: selectedDepartment.businessUnit,
+    assetBudget: selectedDepartment.assetBudget,
+    approvalRequired: selectedDepartment.approvalRequired,
+    assetPolicy: selectedDepartment.assetPolicy,
     totalEmployees: selectedDepartment.totalEmployees,
+    deliveredAssets: selectedDepartment.deliveredAssets,
+    createdBy: selectedDepartment.createdBy,
+    createdAt: selectedDepartment.createdAt,
+    updatedBy: selectedDepartment.updatedBy,
+    updatedAt: selectedDepartment.updatedAt,
     status: selectedDepartment.status,
     description: selectedDepartment.description,
   });
@@ -93,8 +143,6 @@ export default function EditDepartmentPage() {
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    console.log("Updated Department Data:", formData);
 
     alert("Department changes saved successfully. Backend will be connected later.");
   }
@@ -210,6 +258,63 @@ export default function EditDepartmentPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Cost Center
+            </label>
+            <input
+              type="text"
+              name="costCenter"
+              value={formData.costCenter}
+              onChange={handleChange}
+              placeholder="CC-IT-001"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Business Unit
+            </label>
+            <input
+              type="text"
+              name="businessUnit"
+              value={formData.businessUnit}
+              onChange={handleChange}
+              placeholder="Corporate / Finance / Operations"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Asset Budget
+            </label>
+            <input
+              type="text"
+              name="assetBudget"
+              value={formData.assetBudget}
+              onChange={handleChange}
+              placeholder="INR 12,00,000"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Asset Approval Required
+            </label>
+            <select
+              name="approvalRequired"
+              value={formData.approvalRequired}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Total Employees
             </label>
             <input
@@ -240,6 +345,20 @@ export default function EditDepartmentPage() {
 
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Asset Policy
+            </label>
+            <textarea
+              name="assetPolicy"
+              value={formData.assetPolicy}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Department-wise asset issue rules or approval notes..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Description
             </label>
             <textarea
@@ -250,6 +369,14 @@ export default function EditDepartmentPage() {
               placeholder="Department purpose, responsibilities or notes..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+              Delivered assets: {formData.deliveredAssets}. Created by{" "}
+              {formData.createdBy} on {formData.createdAt}. Last updated by{" "}
+              {formData.updatedBy} on {formData.updatedAt}.
+            </div>
           </div>
         </div>
 

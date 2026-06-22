@@ -13,7 +13,18 @@ const purchases = [
     vendorName: "Dell Technologies",
     invoiceNumber: "INV-DL-4587",
     purchaseDate: "2026-01-12",
+    expectedDeliveryDate: "2026-01-18",
     receivedDate: "2026-01-15",
+    approvalStatus: "Approved",
+    approvedBy: "IT Head",
+    paymentStatus: "Paid",
+    receivedStatus: "Fully Received",
+    invoiceStatus: "Verified",
+    attachmentStatus: "PO + Invoice",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-12 10:30 AM",
+    updatedBy: "Stores Team",
+    updatedAt: "2026-01-15 04:15 PM",
     itemName: "Dell Latitude 5420",
     category: "Laptop",
     quantity: "8",
@@ -30,7 +41,18 @@ const purchases = [
     vendorName: "HP World",
     invoiceNumber: "INV-HP-7821",
     purchaseDate: "2026-01-18",
+    expectedDeliveryDate: "2026-01-28",
     receivedDate: "-",
+    approvalStatus: "Approved",
+    approvedBy: "IT Head",
+    paymentStatus: "Pending",
+    receivedStatus: "Awaiting Delivery",
+    invoiceStatus: "Pending",
+    attachmentStatus: "PO Uploaded",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-18 11:10 AM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-01-18 11:10 AM",
     itemName: "HP EliteBook 840",
     category: "Laptop",
     quantity: "5",
@@ -128,18 +150,28 @@ export default function ViewPurchasePage() {
           <DetailItem label="Vendor Name" value={purchase.vendorName} />
           <DetailItem label="Invoice Number" value={purchase.invoiceNumber} />
           <DetailItem label="Purchase Date" value={purchase.purchaseDate} />
+          <DetailItem
+            label="Expected Delivery"
+            value={purchase.expectedDeliveryDate}
+          />
           <DetailItem label="Received Date" value={purchase.receivedDate} />
           <DetailItem label="Status" value={purchase.status} />
+          <DetailItem label="Approval Status" value={purchase.approvalStatus} />
+          <DetailItem label="Approved By" value={purchase.approvedBy} />
+          <DetailItem label="Payment Status" value={purchase.paymentStatus} />
+          <DetailItem label="Received Status" value={purchase.receivedStatus} />
+          <DetailItem label="Invoice Status" value={purchase.invoiceStatus} />
+          <DetailItem label="Documents" value={purchase.attachmentStatus} />
           <DetailItem label="Item Name" value={purchase.itemName} />
           <DetailItem label="Category" value={purchase.category} />
           <DetailItem label="Quantity" value={purchase.quantity} />
           <DetailItem
             label="Unit Price"
-            value={`₹${unitPrice.toLocaleString("en-IN")}`}
+            value={`INR ${unitPrice.toLocaleString("en-IN")}`}
           />
           <DetailItem
             label="Total Amount"
-            value={`₹${totalAmount.toLocaleString("en-IN")}`}
+            value={`INR ${totalAmount.toLocaleString("en-IN")}`}
           />
           <DetailItem label="Warranty" value={purchase.warranty} />
         </div>
@@ -171,6 +203,13 @@ export default function ViewPurchasePage() {
           <p className="mt-2 text-sm text-gray-700">
             {purchase.remarks || "-"}
           </p>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <DetailItem label="Created By" value={purchase.createdBy} />
+          <DetailItem label="Created At" value={purchase.createdAt} />
+          <DetailItem label="Updated By" value={purchase.updatedBy} />
+          <DetailItem label="Updated At" value={purchase.updatedAt} />
         </div>
       </section>
     </LayoutWrapper>

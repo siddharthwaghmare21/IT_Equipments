@@ -15,6 +15,17 @@ const deliveries = [
     assetName: "Dell Latitude 5420",
     deliveredTo: "Rahul Patil",
     department: "IT Department",
+    issuedBy: "IT Admin",
+    location: "Pune Office - IT Bay",
+    accessoriesIncluded: "Charger, laptop bag",
+    acknowledgementStatus: "Acknowledged",
+    qrCode: "QR-DLV-001",
+    returnStatus: "Not Due",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-01-15 10:30",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-15 10:30",
     deliveryDate: "2026-01-15",
     expectedReturnDate: "2026-12-31",
     condition: "Good",
@@ -30,6 +41,17 @@ const deliveries = [
     assetName: "HP LaserJet Printer",
     deliveredTo: "Sneha Jadhav",
     department: "Accounts",
+    issuedBy: "IT Support",
+    location: "Pune Office - Accounts",
+    accessoriesIncluded: "Power cable, USB cable",
+    acknowledgementStatus: "Acknowledged",
+    qrCode: "QR-DLV-002",
+    returnStatus: "Not Due",
+    attachmentStatus: "Pending",
+    createdBy: "IT Support",
+    createdAt: "2026-01-20 11:15",
+    updatedBy: "IT Support",
+    updatedAt: "2026-01-20 11:15",
     deliveryDate: "2026-01-20",
     expectedReturnDate: "2026-12-31",
     condition: "New",
@@ -45,6 +67,17 @@ const deliveries = [
     assetName: "Logitech Keyboard",
     deliveredTo: "Amit Shinde",
     department: "Admin",
+    issuedBy: "IT Support",
+    location: "Admin Desk",
+    accessoriesIncluded: "USB receiver",
+    acknowledgementStatus: "Returned",
+    qrCode: "QR-DLV-003",
+    returnStatus: "Returned",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Support",
+    createdAt: "2026-02-01 15:45",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-10 16:20",
     deliveryDate: "2026-02-01",
     expectedReturnDate: "2026-08-01",
     condition: "Good",
@@ -60,6 +93,17 @@ const deliveries = [
     assetName: "Cisco Router",
     deliveredTo: "Priya More",
     department: "HR",
+    issuedBy: "IT Admin",
+    location: "HR Network Rack",
+    accessoriesIncluded: "Power adapter, patch cable",
+    acknowledgementStatus: "Pending",
+    qrCode: "QR-DLV-004",
+    returnStatus: "Pending Return",
+    attachmentStatus: "Pending",
+    createdBy: "IT Admin",
+    createdAt: "2026-02-10 12:10",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-10 12:10",
     deliveryDate: "2026-02-10",
     expectedReturnDate: "2026-09-10",
     condition: "Working",
@@ -83,6 +127,17 @@ export default function EditDeliveryPage() {
     assetName: selectedDelivery.assetName,
     deliveredTo: selectedDelivery.deliveredTo,
     department: selectedDelivery.department,
+    issuedBy: selectedDelivery.issuedBy,
+    location: selectedDelivery.location,
+    accessoriesIncluded: selectedDelivery.accessoriesIncluded,
+    acknowledgementStatus: selectedDelivery.acknowledgementStatus,
+    qrCode: selectedDelivery.qrCode,
+    returnStatus: selectedDelivery.returnStatus,
+    attachmentStatus: selectedDelivery.attachmentStatus,
+    createdBy: selectedDelivery.createdBy,
+    createdAt: selectedDelivery.createdAt,
+    updatedBy: selectedDelivery.updatedBy,
+    updatedAt: selectedDelivery.updatedAt,
     deliveryDate: selectedDelivery.deliveryDate,
     expectedReturnDate: selectedDelivery.expectedReturnDate,
     condition: selectedDelivery.condition,
@@ -218,6 +273,39 @@ export default function EditDeliveryPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Issued By
+            </label>
+            <select
+              name="issuedBy"
+              value={formData.issuedBy}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              required
+            >
+              <option value="">Select issuer</option>
+              <option value="IT Admin">IT Admin</option>
+              <option value="IT Support">IT Support</option>
+              <option value="IT Manager">IT Manager</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Location
+            </label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="Pune Office - IT Bay"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Delivery Date
             </label>
             <input
@@ -277,6 +365,94 @@ export default function EditDeliveryPage() {
             </select>
           </div>
 
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Acknowledgement Status
+            </label>
+            <select
+              name="acknowledgementStatus"
+              value={formData.acknowledgementStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Acknowledged">Acknowledged</option>
+              <option value="Returned">Returned</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Return Status
+            </label>
+            <select
+              name="returnStatus"
+              value={formData.returnStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Not Due">Not Due</option>
+              <option value="Pending Return">Pending Return</option>
+              <option value="Returned">Returned</option>
+              <option value="Overdue">Overdue</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              QR Code Reference
+            </label>
+            <input
+              type="text"
+              name="qrCode"
+              value={formData.qrCode}
+              onChange={handleChange}
+              placeholder="QR-DLV-001"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Accessories Included
+            </label>
+            <textarea
+              name="accessoriesIncluded"
+              value={formData.accessoriesIncluded}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Example: charger, laptop bag, mouse, keyboard, power cable..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Attachment Status
+            </label>
+            <select
+              name="attachmentStatus"
+              value={formData.attachmentStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Uploaded">Uploaded</option>
+              <option value="Not Required">Not Required</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Delivery Documents
+            </label>
+            <input
+              type="file"
+              multiple
+              className="w-full rounded-xl border border-gray-300 px-4 py-2 text-sm outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white focus:border-gray-900"
+            />
+          </div>
+
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
               Specifications (optional)
@@ -319,6 +495,44 @@ export default function EditDeliveryPage() {
             />
           </div>
         </div>
+
+        <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+          <h2 className="text-sm font-bold text-gray-900">System Tracking</h2>
+          <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div>
+              <p className="text-xs font-medium uppercase text-gray-500">
+                Created By
+              </p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {formData.createdBy}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase text-gray-500">
+                Created At
+              </p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {formData.createdAt}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase text-gray-500">
+                Updated By
+              </p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {formData.updatedBy}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase text-gray-500">
+                Updated At
+              </p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {formData.updatedAt}
+              </p>
+            </div>
+          </div>
+        </section>
 
         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Link

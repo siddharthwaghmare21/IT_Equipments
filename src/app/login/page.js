@@ -8,9 +8,9 @@ const ACCESS_CODE = "DataCenterSMKC";
 const USERS_KEY = "itAssetUsers";
 const SESSION_KEY = "itAssetUserSession";
 
-// Backend येईपर्यंत true ठेवा.
-// Backend/login final झाल्यावर false करा.
-const TEMP_AUTH_BYPASS = true;
+// Keep true while backend authentication is pending.
+// Set this to false after API login is connected.
+const TEMP_AUTH_BYPASS = false;
 
 export default function LoginPage() {
   const router = useRouter();

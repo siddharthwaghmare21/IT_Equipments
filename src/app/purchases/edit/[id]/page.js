@@ -14,7 +14,18 @@ const purchases = [
     vendorName: "Dell Technologies",
     invoiceNumber: "INV-DL-4587",
     purchaseDate: "2026-01-12",
+    expectedDeliveryDate: "2026-01-18",
     receivedDate: "2026-01-15",
+    approvalStatus: "Approved",
+    approvedBy: "IT Head",
+    paymentStatus: "Paid",
+    receivedStatus: "Fully Received",
+    invoiceStatus: "Verified",
+    attachmentStatus: "PO + Invoice",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-12 10:30 AM",
+    updatedBy: "Stores Team",
+    updatedAt: "2026-01-15 04:15 PM",
     itemName: "Dell Latitude 5420",
     category: "Laptop",
     quantity: "8",
@@ -31,7 +42,18 @@ const purchases = [
     vendorName: "HP World",
     invoiceNumber: "INV-HP-7821",
     purchaseDate: "2026-01-18",
+    expectedDeliveryDate: "2026-01-28",
     receivedDate: "",
+    approvalStatus: "Approved",
+    approvedBy: "IT Head",
+    paymentStatus: "Pending",
+    receivedStatus: "Awaiting Delivery",
+    invoiceStatus: "Pending",
+    attachmentStatus: "PO Uploaded",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-18 11:10 AM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-01-18 11:10 AM",
     itemName: "HP EliteBook 840",
     category: "Laptop",
     quantity: "5",
@@ -68,13 +90,6 @@ export default function EditPurchasePage() {
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    const updatedPurchase = {
-      ...formData,
-      totalAmount,
-    };
-
-    console.log("Updated Purchase Data:", updatedPurchase);
 
     alert("Purchase changes saved successfully. Backend will be connected later.");
   }
@@ -169,6 +184,101 @@ export default function EditPurchasePage() {
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Expected Delivery Date
+            </label>
+            <input
+              type="date"
+              name="expectedDeliveryDate"
+              value={formData.expectedDeliveryDate}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Approval Status
+            </label>
+            <select
+              name="approvalStatus"
+              value={formData.approvalStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+              <option value="On Hold">On Hold</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Approved By
+            </label>
+            <input
+              type="text"
+              name="approvedBy"
+              value={formData.approvedBy}
+              onChange={handleChange}
+              placeholder="IT Head / Finance Manager"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Payment Status
+            </label>
+            <select
+              name="paymentStatus"
+              value={formData.paymentStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Not Started">Not Started</option>
+              <option value="Pending">Pending</option>
+              <option value="Partially Paid">Partially Paid</option>
+              <option value="Paid">Paid</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Received Status
+            </label>
+            <select
+              name="receivedStatus"
+              value={formData.receivedStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Not Received">Not Received</option>
+              <option value="Awaiting Delivery">Awaiting Delivery</option>
+              <option value="Partially Received">Partially Received</option>
+              <option value="Fully Received">Fully Received</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Invoice Status
+            </label>
+            <select
+              name="invoiceStatus"
+              value={formData.invoiceStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Received">Received</option>
+              <option value="Verified">Verified</option>
+              <option value="Mismatch">Mismatch</option>
+            </select>
           </div>
 
           <div>
@@ -286,8 +396,22 @@ export default function EditPurchasePage() {
               Total Amount
             </label>
             <div className="flex h-[42px] items-center rounded-xl border border-gray-300 bg-gray-100 px-4 text-sm font-bold text-gray-900">
-              ₹{totalAmount.toLocaleString("en-IN")}
+              INR {totalAmount.toLocaleString("en-IN")}
             </div>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Purchase Documents
+            </label>
+            <input
+              type="file"
+              multiple
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white focus:border-gray-900"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Current document status: {formData.attachmentStatus}
+            </p>
           </div>
 
           <div className="md:col-span-2">
@@ -329,6 +453,13 @@ export default function EditPurchasePage() {
               rows="4"
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+              Created by {formData.createdBy} on {formData.createdAt}. Last
+              updated by {formData.updatedBy} on {formData.updatedAt}.
+            </div>
           </div>
         </div>
 

@@ -8,7 +8,7 @@ import ActionButtons from "@/components/common/ActionButtons";
 
 const returnRecords = [
   {
-    id: 1,
+    id: "1",
     returnCode: "RET-001",
     deliveryCode: "DLV-003",
     assetTag: "AST-003",
@@ -19,10 +19,21 @@ const returnRecords = [
     returnDate: "2026-08-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Completed",
+    inspectionBy: "IT Admin",
+    damageDecision: "No Damage",
+    qrCode: "QR-RET-001",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-08-01 11:00",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-08-01 11:00",
     status: "Returned",
   },
   {
-    id: 2,
+    id: "2",
     returnCode: "RET-002",
     deliveryCode: "DLV-005",
     assetTag: "AST-005",
@@ -33,10 +44,21 @@ const returnRecords = [
     returnDate: "2026-07-20",
     returnCondition: "Damaged",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Damage Review",
+    inspectionBy: "IT Manager",
+    damageDecision: "Repair Required",
+    qrCode: "QR-RET-002",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-07-20 12:30",
+    updatedBy: "IT Manager",
+    updatedAt: "2026-07-21 10:00",
     status: "Damaged",
   },
   {
-    id: 3,
+    id: "3",
     returnCode: "RET-003",
     deliveryCode: "DLV-006",
     assetTag: "AST-006",
@@ -47,10 +69,21 @@ const returnRecords = [
     returnDate: "2026-09-10",
     returnCondition: "Needs Inspection",
     receivedBy: "IT Support",
+    receivedLocation: "Inspection Desk",
+    acknowledgementStatus: "Pending",
+    inspectionStatus: "Pending",
+    inspectionBy: "IT Support",
+    damageDecision: "Pending",
+    qrCode: "QR-RET-003",
+    attachmentStatus: "Pending",
+    createdBy: "IT Support",
+    createdAt: "2026-09-10 15:15",
+    updatedBy: "IT Support",
+    updatedAt: "2026-09-10 15:15",
     status: "Pending Inspection",
   },
   {
-    id: 4,
+    id: "4",
     returnCode: "RET-004",
     deliveryCode: "DLV-007",
     assetTag: "AST-007",
@@ -61,6 +94,17 @@ const returnRecords = [
     returnDate: "2026-10-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Completed",
+    inspectionBy: "IT Admin",
+    damageDecision: "No Damage",
+    qrCode: "QR-RET-004",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-10-01 10:40",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-10-01 10:40",
     status: "Returned",
   },
 ];
@@ -100,6 +144,13 @@ export default function ReturnsPage() {
         ${returnItem.department}
         ${returnItem.returnCondition}
         ${returnItem.receivedBy}
+        ${returnItem.receivedLocation}
+        ${returnItem.acknowledgementStatus}
+        ${returnItem.inspectionStatus}
+        ${returnItem.inspectionBy}
+        ${returnItem.damageDecision}
+        ${returnItem.qrCode}
+        ${returnItem.attachmentStatus}
         ${returnItem.status}
       `.toLowerCase();
 
@@ -112,13 +163,13 @@ export default function ReturnsPage() {
     });
   }, [search, activeFilter]);
 
-  function handleDelete(returnItem) {
+  function handleArchive(returnItem) {
     const confirmed = confirm(
-      `Are you sure you want to delete return record ${returnItem.returnCode}?`
+      `Archive return record ${returnItem.returnCode}? This keeps history for audit and reporting.`
     );
 
     if (confirmed) {
-      alert("Return delete action added. Backend will be connected later.");
+      alert("Return archive action added. Backend will be connected later.");
     }
   }
 
@@ -179,7 +230,7 @@ export default function ReturnsPage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by return code, asset tag, asset name, employee, department or status..."
+            placeholder="Search by return code, asset tag, asset name, employee, inspection, location or status..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
           />
 
@@ -203,7 +254,7 @@ export default function ReturnsPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1300px] w-full text-sm">
+        <table className="min-w-[1850px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -237,7 +288,25 @@ export default function ReturnsPage() {
                 Received By
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
+                Location
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Inspection
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Damage Decision
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Acknowledgement
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                QR Code
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Documents
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Actions
@@ -291,15 +360,40 @@ export default function ReturnsPage() {
                   {returnItem.receivedBy}
                 </td>
 
+                <td className="px-4 py-4 text-gray-700">
+                  {returnItem.receivedLocation}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {returnItem.inspectionStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {returnItem.damageDecision}
+                </td>
+
                 <td className="px-4 py-4">
                   <ReturnStatusBadge status={returnItem.status} />
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {returnItem.acknowledgementStatus}
+                </td>
+
+                <td className="px-4 py-4 font-medium text-gray-700">
+                  {returnItem.qrCode}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {returnItem.attachmentStatus}
                 </td>
 
                 <td className="px-4 py-4">
                   <ActionButtons
                     viewHref={`/returns/view/${returnItem.id}`}
                     updateHref={`/returns/edit/${returnItem.id}`}
-                    onDelete={() => handleDelete(returnItem)}
+                    onDelete={() => handleArchive(returnItem)}
+                    deleteLabel="Archive"
                   />
                 </td>
               </tr>

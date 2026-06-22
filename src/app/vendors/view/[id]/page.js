@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import BackButton from "@/components/common/BackButton";
 
 const vendors = [
   {
@@ -17,6 +18,17 @@ const vendors = [
     state: "Maharashtra",
     address: "Baner Road, Pune, Maharashtra",
     gstNumber: "27ABCDE1234F1Z5",
+    panNumber: "ABCDE1234F",
+    paymentTerms: "30 Days",
+    bankAccountStatus: "Verified",
+    complianceStatus: "Compliant",
+    documentStatus: "GST + PAN + Bank",
+    rating: "4.8",
+    lastPurchaseDate: "2026-01-12",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-05 10:00 AM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-01-12 10:30 AM",
     category: "Laptop Supplier",
     status: "Active",
     remarks: "Primary supplier for Dell laptops and accessories.",
@@ -32,6 +44,17 @@ const vendors = [
     state: "Maharashtra",
     address: "Andheri East, Mumbai, Maharashtra",
     gstNumber: "27HPWLD5678K1Z8",
+    panNumber: "HPWLD5678K",
+    paymentTerms: "45 Days",
+    bankAccountStatus: "Pending",
+    complianceStatus: "Compliant",
+    documentStatus: "GST + PAN",
+    rating: "4.5",
+    lastPurchaseDate: "2026-01-18",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-08 11:15 AM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-01-18 11:10 AM",
     category: "Laptop Supplier",
     status: "Active",
     remarks: "Preferred vendor for HP laptops and desktops.",
@@ -83,12 +106,7 @@ export default function ViewVendorPage() {
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Link
-          href="/vendors"
-          className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-        >
-          ← Back to Vendors
-        </Link>
+        <BackButton href="/vendors" label="Vendors" />
 
         <Link
           href={`/vendors/edit/${vendor.id}`}
@@ -110,7 +128,7 @@ export default function ViewVendorPage() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-600">
-              {vendor.category} • {vendor.city}
+              {vendor.category} | {vendor.city}
             </p>
           </div>
 
@@ -127,6 +145,22 @@ export default function ViewVendorPage() {
           <DetailItem label="City" value={vendor.city} />
           <DetailItem label="State" value={vendor.state} />
           <DetailItem label="GST Number" value={vendor.gstNumber} />
+          <DetailItem label="PAN Number" value={vendor.panNumber} />
+          <DetailItem label="Payment Terms" value={vendor.paymentTerms} />
+          <DetailItem
+            label="Bank Account"
+            value={vendor.bankAccountStatus}
+          />
+          <DetailItem
+            label="Compliance Status"
+            value={vendor.complianceStatus}
+          />
+          <DetailItem label="Documents" value={vendor.documentStatus} />
+          <DetailItem label="Vendor Rating" value={vendor.rating} />
+          <DetailItem
+            label="Last Purchase Date"
+            value={vendor.lastPurchaseDate}
+          />
           <DetailItem label="Status" value={vendor.status} />
         </div>
 
@@ -142,6 +176,13 @@ export default function ViewVendorPage() {
             Remarks
           </p>
           <p className="mt-2 text-sm text-gray-700">{vendor.remarks}</p>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <DetailItem label="Created By" value={vendor.createdBy} />
+          <DetailItem label="Created At" value={vendor.createdAt} />
+          <DetailItem label="Updated By" value={vendor.updatedBy} />
+          <DetailItem label="Updated At" value={vendor.updatedAt} />
         </div>
       </section>
     </LayoutWrapper>

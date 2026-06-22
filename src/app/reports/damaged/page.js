@@ -17,7 +17,11 @@ const damagedReportData = [
     assignedTo: "Priya More",
     damageType: "Physical Damage",
     reportedDate: "2026-07-20",
-    estimatedRepairCost: "₹800",
+    estimatedRepairCost: "INR 800",
+    inspectionBy: "IT Admin",
+    decisionStatus: "Repair Approved",
+    approvalStatus: "Approved",
+    documentStatus: "Damage Photo",
     actionTaken: "Repair Required",
     status: "Damaged",
   },
@@ -31,7 +35,11 @@ const damagedReportData = [
     assignedTo: "Sneha Jadhav",
     damageType: "Display Issue",
     reportedDate: "2026-08-05",
-    estimatedRepairCost: "₹3,500",
+    estimatedRepairCost: "INR 3,500",
+    inspectionBy: "IT Admin",
+    decisionStatus: "Inspection Pending",
+    approvalStatus: "Pending",
+    documentStatus: "Pending",
     actionTaken: "Inspection Pending",
     status: "Under Inspection",
   },
@@ -45,7 +53,11 @@ const damagedReportData = [
     assignedTo: "Amit Shinde",
     damageType: "Motherboard Failure",
     reportedDate: "2026-09-12",
-    estimatedRepairCost: "₹12,000",
+    estimatedRepairCost: "INR 12,000",
+    inspectionBy: "IT Manager",
+    decisionStatus: "Scrap Approved",
+    approvalStatus: "Approved",
+    documentStatus: "Inspection Report",
     actionTaken: "Scrap Recommended",
     status: "Scrapped",
   },
@@ -59,7 +71,11 @@ const damagedReportData = [
     assignedTo: "Rahul Patil",
     damageType: "Keys Not Working",
     reportedDate: "2026-10-01",
-    estimatedRepairCost: "₹500",
+    estimatedRepairCost: "INR 500",
+    inspectionBy: "IT Admin",
+    decisionStatus: "Replacement Approved",
+    approvalStatus: "Approved",
+    documentStatus: "Damage Photo",
     actionTaken: "Replacement Required",
     status: "Damaged",
   },
@@ -202,7 +218,7 @@ export default function DamagedAssetsReportPage() {
 
           <p className="mt-4 text-sm leading-6 text-gray-600">
             This damaged assets report currently uses sample frontend data.
-            After SQL Server backend integration, it will show real-time damage
+            After MySQL backend integration, it will show real-time damage
             reports, inspection records, repair decisions and scrapped asset
             history.
           </p>
@@ -210,7 +226,7 @@ export default function DamagedAssetsReportPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1400px] w-full text-sm">
+        <table className="min-w-[1700px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -245,6 +261,18 @@ export default function DamagedAssetsReportPage() {
 
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Repair Cost
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Inspection By
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Decision
+              </th>
+
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Approval
               </th>
 
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -293,6 +321,18 @@ export default function DamagedAssetsReportPage() {
 
                 <td className="px-4 py-4 font-semibold text-gray-900">
                   {asset.estimatedRepairCost}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.inspectionBy}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.decisionStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.approvalStatus}
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">

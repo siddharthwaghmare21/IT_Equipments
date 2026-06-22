@@ -8,7 +8,7 @@ import ActionButtons from "@/components/common/ActionButtons";
 
 const vendors = [
   {
-    id: 1,
+    id: "1",
     vendorCode: "VEN-001",
     vendorName: "Dell Technologies",
     contactPerson: "Amit Sharma",
@@ -16,10 +16,21 @@ const vendors = [
     email: "sales@dellvendor.com",
     city: "Pune",
     category: "Laptop Supplier",
+    gstNumber: "27ABCDE1234F1Z5",
+    panNumber: "ABCDE1234F",
+    paymentTerms: "30 Days",
+    complianceStatus: "Compliant",
+    documentStatus: "GST + PAN + Bank",
+    rating: "4.8",
+    lastPurchaseDate: "2026-01-12",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-05 10:00 AM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-01-12 10:30 AM",
     status: "Active",
   },
   {
-    id: 2,
+    id: "2",
     vendorCode: "VEN-002",
     vendorName: "HP World",
     contactPerson: "Rohit Patil",
@@ -27,10 +38,21 @@ const vendors = [
     email: "orders@hpworld.com",
     city: "Mumbai",
     category: "Laptop Supplier",
+    gstNumber: "27HPWLD5678K1Z8",
+    panNumber: "HPWLD5678K",
+    paymentTerms: "45 Days",
+    complianceStatus: "Compliant",
+    documentStatus: "GST + PAN",
+    rating: "4.5",
+    lastPurchaseDate: "2026-01-18",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-08 11:15 AM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-01-18 11:10 AM",
     status: "Active",
   },
   {
-    id: 3,
+    id: "3",
     vendorCode: "VEN-003",
     vendorName: "Canon India",
     contactPerson: "Sneha Kulkarni",
@@ -38,10 +60,21 @@ const vendors = [
     email: "support@canonvendor.com",
     city: "Bengaluru",
     category: "Printer Supplier",
+    gstNumber: "29CANON2190L1Z3",
+    panNumber: "CANON2190L",
+    paymentTerms: "30 Days",
+    complianceStatus: "Compliant",
+    documentStatus: "GST + PAN + Bank",
+    rating: "4.2",
+    lastPurchaseDate: "2026-02-02",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-20 09:30 AM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-02-02 09:40 AM",
     status: "Active",
   },
   {
-    id: 4,
+    id: "4",
     vendorCode: "VEN-004",
     vendorName: "Network Solutions",
     contactPerson: "Kiran Jadhav",
@@ -49,6 +82,17 @@ const vendors = [
     email: "network@solutions.com",
     city: "Nashik",
     category: "Network Equipment",
+    gstNumber: "27NETWK1002N1Z9",
+    panNumber: "NETWK1002N",
+    paymentTerms: "Advance",
+    complianceStatus: "Review Required",
+    documentStatus: "Pending",
+    rating: "3.6",
+    lastPurchaseDate: "2026-02-10",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-02-01 02:00 PM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-02-10 02:05 PM",
     status: "Inactive",
   },
 ];
@@ -87,6 +131,11 @@ export default function VendorsPage() {
         ${vendor.email}
         ${vendor.city}
         ${vendor.category}
+        ${vendor.gstNumber}
+        ${vendor.panNumber}
+        ${vendor.paymentTerms}
+        ${vendor.complianceStatus}
+        ${vendor.documentStatus}
         ${vendor.status}
       `.toLowerCase();
 
@@ -99,13 +148,13 @@ export default function VendorsPage() {
     });
   }, [search, activeFilter]);
 
-  function handleDelete(vendor) {
+  function handleArchive(vendor) {
     const confirmed = confirm(
-      `Are you sure you want to delete ${vendor.vendorName}?`
+      `Are you sure you want to archive ${vendor.vendorName}?`
     );
 
     if (confirmed) {
-      alert("Vendor delete action added. Backend will be connected later.");
+      alert("Vendor archive action added. Backend will be connected later.");
     }
   }
 
@@ -154,7 +203,7 @@ export default function VendorsPage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by vendor code, name, contact person, phone, city or category..."
+            placeholder="Search by vendor, GST, PAN, payment terms, compliance or status..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
           />
 
@@ -178,7 +227,7 @@ export default function VendorsPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1200px] w-full text-sm">
+        <table className="min-w-[1600px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -201,6 +250,18 @@ export default function VendorsPage() {
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Category
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                GST
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Payment Terms
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Compliance
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Rating
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
@@ -239,6 +300,20 @@ export default function VendorsPage() {
                   {vendor.category}
                 </td>
 
+                <td className="px-4 py-4 text-gray-700">
+                  {vendor.gstNumber}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {vendor.paymentTerms}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {vendor.complianceStatus}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">{vendor.rating}</td>
+
                 <td className="px-4 py-4">
                   <VendorStatusBadge status={vendor.status} />
                 </td>
@@ -247,7 +322,8 @@ export default function VendorsPage() {
                   <ActionButtons
                     viewHref={`/vendors/view/${vendor.id}`}
                     updateHref={`/vendors/edit/${vendor.id}`}
-                    onDelete={() => handleDelete(vendor)}
+                    onDelete={() => handleArchive(vendor)}
+                    deleteLabel="Archive"
                   />
                 </td>
               </tr>

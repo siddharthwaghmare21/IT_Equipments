@@ -14,6 +14,17 @@ const deliveries = [
     assetName: "Dell Latitude 5420",
     deliveredTo: "Rahul Patil",
     department: "IT Department",
+    issuedBy: "IT Admin",
+    location: "Pune Office - IT Bay",
+    accessoriesIncluded: "Charger, laptop bag",
+    acknowledgementStatus: "Acknowledged",
+    qrCode: "QR-DLV-001",
+    returnStatus: "Not Due",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-01-15 10:30",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-01-15 10:30",
     deliveryDate: "2026-01-15",
     expectedReturnDate: "2026-12-31",
     condition: "Good",
@@ -29,6 +40,17 @@ const deliveries = [
     assetName: "HP LaserJet Printer",
     deliveredTo: "Sneha Jadhav",
     department: "Accounts",
+    issuedBy: "IT Support",
+    location: "Pune Office - Accounts",
+    accessoriesIncluded: "Power cable, USB cable",
+    acknowledgementStatus: "Acknowledged",
+    qrCode: "QR-DLV-002",
+    returnStatus: "Not Due",
+    attachmentStatus: "Pending",
+    createdBy: "IT Support",
+    createdAt: "2026-01-20 11:15",
+    updatedBy: "IT Support",
+    updatedAt: "2026-01-20 11:15",
     deliveryDate: "2026-01-20",
     expectedReturnDate: "2026-12-31",
     condition: "New",
@@ -44,6 +66,17 @@ const deliveries = [
     assetName: "Logitech Keyboard",
     deliveredTo: "Amit Shinde",
     department: "Admin",
+    issuedBy: "IT Support",
+    location: "Admin Desk",
+    accessoriesIncluded: "USB receiver",
+    acknowledgementStatus: "Returned",
+    qrCode: "QR-DLV-003",
+    returnStatus: "Returned",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Support",
+    createdAt: "2026-02-01 15:45",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-10 16:20",
     deliveryDate: "2026-02-01",
     expectedReturnDate: "2026-08-01",
     condition: "Good",
@@ -59,6 +92,17 @@ const deliveries = [
     assetName: "Cisco Router",
     deliveredTo: "Priya More",
     department: "HR",
+    issuedBy: "IT Admin",
+    location: "HR Network Rack",
+    accessoriesIncluded: "Power adapter, patch cable",
+    acknowledgementStatus: "Pending",
+    qrCode: "QR-DLV-004",
+    returnStatus: "Pending Return",
+    attachmentStatus: "Pending",
+    createdBy: "IT Admin",
+    createdAt: "2026-02-10 12:10",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-10 12:10",
     deliveryDate: "2026-02-10",
     expectedReturnDate: "2026-09-10",
     condition: "Working",
@@ -151,6 +195,8 @@ export default function ViewDeliveryPage() {
           <DetailItem label="Asset / Material Name" value={delivery.assetName} />
           <DetailItem label="Delivered To" value={delivery.deliveredTo} />
           <DetailItem label="Department" value={delivery.department} />
+          <DetailItem label="Issued By" value={delivery.issuedBy} />
+          <DetailItem label="Location" value={delivery.location} />
           <DetailItem label="Delivery Date" value={delivery.deliveryDate} />
           <DetailItem
             label="Expected Return Date"
@@ -158,6 +204,16 @@ export default function ViewDeliveryPage() {
           />
           <DetailItem label="Asset Condition" value={delivery.condition} />
           <DetailItem label="Delivery Status" value={delivery.status} />
+          <DetailItem
+            label="Acknowledgement Status"
+            value={delivery.acknowledgementStatus}
+          />
+          <DetailItem label="Return Status" value={delivery.returnStatus} />
+          <DetailItem label="QR Code Reference" value={delivery.qrCode} />
+          <DetailItem
+            label="Attachment Status"
+            value={delivery.attachmentStatus}
+          />
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -167,6 +223,15 @@ export default function ViewDeliveryPage() {
             </p>
             <p className="mt-2 text-sm leading-6 text-gray-700">
               {delivery.specifications || "-"}
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Accessories Included
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-700">
+              {delivery.accessoriesIncluded || "-"}
             </p>
           </div>
 
@@ -185,6 +250,38 @@ export default function ViewDeliveryPage() {
             Remarks
           </p>
           <p className="mt-2 text-sm text-gray-700">{delivery.remarks}</p>
+        </div>
+
+        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            Audit Trail
+          </p>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div>
+              <p className="text-xs font-medium text-gray-500">Created By</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {delivery.createdBy}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500">Created At</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {delivery.createdAt}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500">Updated By</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {delivery.updatedBy}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500">Updated At</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {delivery.updatedAt}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

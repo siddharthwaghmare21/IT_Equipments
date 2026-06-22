@@ -109,7 +109,7 @@ export default function ReportsPage() {
               </div>
 
               <span className="rounded-full bg-gray-100 px-3 py-2 text-sm font-bold text-gray-700 group-hover:bg-gray-900 group-hover:text-white">
-                →
+                Open
               </span>
             </div>
 
@@ -126,8 +126,8 @@ export default function ReportsPage() {
         <h3 className="text-lg font-bold text-gray-900">Report Note</h3>
 
         <p className="mt-2 text-sm leading-6 text-gray-600">
-          These reports are currently using sample frontend data. After SQL
-          Server backend integration, all reports will show real-time asset,
+          These reports are currently using sample frontend data. After MySQL
+          backend integration, all reports will show real-time asset,
           purchase, delivery, return, warranty and maintenance records.
         </p>
       </section>

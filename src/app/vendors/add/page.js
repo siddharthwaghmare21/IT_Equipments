@@ -16,6 +16,12 @@ export default function AddVendorPage() {
     state: "",
     address: "",
     gstNumber: "",
+    panNumber: "",
+    paymentTerms: "",
+    bankAccountStatus: "Pending",
+    complianceStatus: "Pending",
+    documentStatus: "Pending",
+    rating: "",
     category: "",
     status: "Active",
     remarks: "",
@@ -32,8 +38,6 @@ export default function AddVendorPage() {
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    console.log("Vendor Form Data:", formData);
 
     alert("Vendor saved successfully. Backend will be connected later.");
   }
@@ -190,6 +194,89 @@ export default function AddVendorPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              PAN Number
+            </label>
+            <input
+              type="text"
+              name="panNumber"
+              value={formData.panNumber}
+              onChange={handleChange}
+              placeholder="ABCDE1234F"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm uppercase outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Payment Terms
+            </label>
+            <select
+              name="paymentTerms"
+              value={formData.paymentTerms}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="">Select payment terms</option>
+              <option value="Advance">Advance</option>
+              <option value="15 Days">15 Days</option>
+              <option value="30 Days">30 Days</option>
+              <option value="45 Days">45 Days</option>
+              <option value="60 Days">60 Days</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Bank Account Status
+            </label>
+            <select
+              name="bankAccountStatus"
+              value={formData.bankAccountStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Verified">Verified</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Compliance Status
+            </label>
+            <select
+              name="complianceStatus"
+              value={formData.complianceStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Compliant">Compliant</option>
+              <option value="Review Required">Review Required</option>
+              <option value="Non-Compliant">Non-Compliant</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Vendor Rating
+            </label>
+            <input
+              type="number"
+              name="rating"
+              value={formData.rating}
+              onChange={handleChange}
+              placeholder="4.5"
+              min="0"
+              max="5"
+              step="0.1"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Status
             </label>
             <select
@@ -202,6 +289,20 @@ export default function AddVendorPage() {
               <option value="Inactive">Inactive</option>
               <option value="Blacklisted">Blacklisted</option>
             </select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Vendor Documents
+            </label>
+            <input
+              type="file"
+              multiple
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white focus:border-gray-900"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Upload GST certificate, PAN, bank proof, quotation or agreement.
+            </p>
           </div>
 
           <div className="md:col-span-2">
@@ -230,6 +331,13 @@ export default function AddVendorPage() {
               placeholder="Additional notes about vendor..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+              Created By and Updated By will be captured automatically after
+              login and backend integration.
+            </div>
           </div>
         </div>
 

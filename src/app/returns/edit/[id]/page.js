@@ -20,6 +20,17 @@ const returnRecords = [
     returnDate: "2026-08-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Completed",
+    inspectionBy: "IT Admin",
+    damageDecision: "No Damage",
+    qrCode: "QR-RET-001",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-08-01 11:00",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-08-01 11:00",
     status: "Returned",
     remarks: "Keyboard returned in good working condition.",
   },
@@ -35,6 +46,17 @@ const returnRecords = [
     returnDate: "2026-07-20",
     returnCondition: "Damaged",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Damage Review",
+    inspectionBy: "IT Manager",
+    damageDecision: "Repair Required",
+    qrCode: "QR-RET-002",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-07-20 12:30",
+    updatedBy: "IT Manager",
+    updatedAt: "2026-07-21 10:00",
     status: "Damaged",
     remarks: "Mouse returned with physical damage. Repair decision pending.",
   },
@@ -50,6 +72,17 @@ const returnRecords = [
     returnDate: "2026-09-10",
     returnCondition: "Needs Inspection",
     receivedBy: "IT Support",
+    receivedLocation: "Inspection Desk",
+    acknowledgementStatus: "Pending",
+    inspectionStatus: "Pending",
+    inspectionBy: "IT Support",
+    damageDecision: "Pending",
+    qrCode: "QR-RET-003",
+    attachmentStatus: "Pending",
+    createdBy: "IT Support",
+    createdAt: "2026-09-10 15:15",
+    updatedBy: "IT Support",
+    updatedAt: "2026-09-10 15:15",
     status: "Pending Inspection",
     remarks: "Monitor received. Technical inspection is pending.",
   },
@@ -65,6 +98,17 @@ const returnRecords = [
     returnDate: "2026-10-01",
     returnCondition: "Good",
     receivedBy: "IT Admin",
+    receivedLocation: "IT Store",
+    acknowledgementStatus: "Acknowledged",
+    inspectionStatus: "Completed",
+    inspectionBy: "IT Admin",
+    damageDecision: "No Damage",
+    qrCode: "QR-RET-004",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-10-01 10:40",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-10-01 10:40",
     status: "Returned",
     remarks: "Laptop returned with charger and bag.",
   },
@@ -89,6 +133,17 @@ export default function EditReturnPage() {
     returnDate: selectedReturn.returnDate,
     returnCondition: selectedReturn.returnCondition,
     receivedBy: selectedReturn.receivedBy,
+    receivedLocation: selectedReturn.receivedLocation,
+    acknowledgementStatus: selectedReturn.acknowledgementStatus,
+    inspectionStatus: selectedReturn.inspectionStatus,
+    inspectionBy: selectedReturn.inspectionBy,
+    damageDecision: selectedReturn.damageDecision,
+    qrCode: selectedReturn.qrCode,
+    attachmentStatus: selectedReturn.attachmentStatus,
+    createdBy: selectedReturn.createdBy,
+    createdAt: selectedReturn.createdAt,
+    updatedBy: selectedReturn.updatedBy,
+    updatedAt: selectedReturn.updatedAt,
     status: selectedReturn.status,
     remarks: selectedReturn.remarks,
   });
@@ -104,8 +159,6 @@ export default function EditReturnPage() {
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    console.log("Updated Return Data:", formData);
 
     alert("Return changes saved successfully. Backend will be connected later.");
   }
@@ -304,6 +357,21 @@ export default function EditReturnPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Received Location
+            </label>
+            <input
+              type="text"
+              name="receivedLocation"
+              value={formData.receivedLocation}
+              onChange={handleChange}
+              placeholder="IT Store / Inspection Desk"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Status
             </label>
             <select
@@ -316,6 +384,110 @@ export default function EditReturnPage() {
               <option value="Damaged">Damaged</option>
               <option value="Pending Inspection">Pending Inspection</option>
             </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Acknowledgement Status
+            </label>
+            <select
+              name="acknowledgementStatus"
+              value={formData.acknowledgementStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Acknowledged">Acknowledged</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Inspection Status
+            </label>
+            <select
+              name="inspectionStatus"
+              value={formData.inspectionStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Completed">Completed</option>
+              <option value="Damage Review">Damage Review</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Inspection By
+            </label>
+            <input
+              type="text"
+              name="inspectionBy"
+              value={formData.inspectionBy}
+              onChange={handleChange}
+              placeholder="IT Admin / IT Support"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Damage Decision
+            </label>
+            <select
+              name="damageDecision"
+              value={formData.damageDecision}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="No Damage">No Damage</option>
+              <option value="Repair Required">Repair Required</option>
+              <option value="Write-off Required">Write-off Required</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              QR Code Reference
+            </label>
+            <input
+              type="text"
+              name="qrCode"
+              value={formData.qrCode}
+              onChange={handleChange}
+              placeholder="QR-RET-001"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Attachment Status
+            </label>
+            <select
+              name="attachmentStatus"
+              value={formData.attachmentStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Uploaded">Uploaded</option>
+              <option value="Not Required">Not Required</option>
+            </select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Return Documents
+            </label>
+            <input
+              type="file"
+              multiple
+              className="w-full rounded-xl border border-gray-300 px-4 py-2 text-sm outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white focus:border-gray-900"
+            />
           </div>
 
           <div className="md:col-span-2">
@@ -332,6 +504,44 @@ export default function EditReturnPage() {
             />
           </div>
         </div>
+
+        <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+          <h2 className="text-sm font-bold text-gray-900">System Tracking</h2>
+          <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div>
+              <p className="text-xs font-medium uppercase text-gray-500">
+                Created By
+              </p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {formData.createdBy}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase text-gray-500">
+                Created At
+              </p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {formData.createdAt}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase text-gray-500">
+                Updated By
+              </p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {formData.updatedBy}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase text-gray-500">
+                Updated At
+              </p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">
+                {formData.updatedAt}
+              </p>
+            </div>
+          </div>
+        </section>
 
         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Link

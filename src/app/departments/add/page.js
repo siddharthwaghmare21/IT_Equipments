@@ -14,6 +14,11 @@ export default function AddDepartmentPage() {
     email: "",
     phone: "",
     location: "",
+    costCenter: "",
+    businessUnit: "",
+    assetBudget: "",
+    approvalRequired: "Yes",
+    assetPolicy: "",
     totalEmployees: "",
     status: "Active",
     description: "",
@@ -30,8 +35,6 @@ export default function AddDepartmentPage() {
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    console.log("Department Form Data:", formData);
 
     alert("Department saved successfully. Backend will be connected later.");
   }
@@ -140,6 +143,63 @@ export default function AddDepartmentPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Cost Center
+            </label>
+            <input
+              type="text"
+              name="costCenter"
+              value={formData.costCenter}
+              onChange={handleChange}
+              placeholder="CC-IT-001"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Business Unit
+            </label>
+            <input
+              type="text"
+              name="businessUnit"
+              value={formData.businessUnit}
+              onChange={handleChange}
+              placeholder="Corporate / Finance / Operations"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Asset Budget
+            </label>
+            <input
+              type="text"
+              name="assetBudget"
+              value={formData.assetBudget}
+              onChange={handleChange}
+              placeholder="INR 12,00,000"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Asset Approval Required
+            </label>
+            <select
+              name="approvalRequired"
+              value={formData.approvalRequired}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Total Employees
             </label>
             <input
@@ -170,6 +230,20 @@ export default function AddDepartmentPage() {
 
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              Asset Policy
+            </label>
+            <textarea
+              name="assetPolicy"
+              value={formData.assetPolicy}
+              onChange={handleChange}
+              rows="3"
+              placeholder="Department-wise asset issue rules or approval notes..."
+              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Description
             </label>
             <textarea
@@ -180,6 +254,13 @@ export default function AddDepartmentPage() {
               placeholder="Department purpose, responsibilities or notes..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+              Created By and Updated By will be captured automatically after
+              login and backend integration.
+            </div>
           </div>
         </div>
 

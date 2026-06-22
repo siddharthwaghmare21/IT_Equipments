@@ -8,7 +8,7 @@ import ActionButtons from "@/components/common/ActionButtons";
 
 const maintenanceRecords = [
   {
-    id: 1,
+    id: "1",
     maintenanceCode: "MNT-001",
     assetTag: "AST-001",
     assetName: "Dell Latitude 5420",
@@ -17,11 +17,23 @@ const maintenanceRecords = [
     vendor: "Dell Service Center",
     serviceDate: "2026-03-10",
     expectedCompletion: "2026-03-15",
-    cost: "₹4,500",
+    completionDate: "",
+    serviceType: "Warranty Repair",
+    priority: "High",
+    downtimeHours: "48",
+    warrantyClaim: "Yes",
+    approvalStatus: "Approved",
+    attachmentStatus: "Service Request",
+    finalCondition: "Under Repair",
+    createdBy: "IT Admin",
+    createdAt: "2026-03-10 10:25 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-03-11 02:30 PM",
+    cost: "INR 4,500",
     status: "In Progress",
   },
   {
-    id: 2,
+    id: "2",
     maintenanceCode: "MNT-002",
     assetTag: "AST-002",
     assetName: "HP LaserJet Printer",
@@ -30,11 +42,23 @@ const maintenanceRecords = [
     vendor: "HP World",
     serviceDate: "2026-02-18",
     expectedCompletion: "2026-02-20",
-    cost: "₹1,200",
+    completionDate: "2026-02-20",
+    serviceType: "Corrective Repair",
+    priority: "Medium",
+    downtimeHours: "8",
+    warrantyClaim: "No",
+    approvalStatus: "Approved",
+    attachmentStatus: "Invoice + Service Report",
+    finalCondition: "Working",
+    createdBy: "IT Admin",
+    createdAt: "2026-02-18 09:45 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-20 04:10 PM",
+    cost: "INR 1,200",
     status: "Completed",
   },
   {
-    id: 3,
+    id: "3",
     maintenanceCode: "MNT-003",
     assetTag: "AST-004",
     assetName: "Cisco Router",
@@ -43,11 +67,23 @@ const maintenanceRecords = [
     vendor: "Network Solutions",
     serviceDate: "2026-03-05",
     expectedCompletion: "2026-03-12",
-    cost: "₹2,800",
+    completionDate: "",
+    serviceType: "Inspection",
+    priority: "High",
+    downtimeHours: "24",
+    warrantyClaim: "No",
+    approvalStatus: "Pending",
+    attachmentStatus: "Pending",
+    finalCondition: "Pending Inspection",
+    createdBy: "IT Admin",
+    createdAt: "2026-03-05 11:20 AM",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-03-05 11:20 AM",
+    cost: "INR 2,800",
     status: "Pending",
   },
   {
-    id: 4,
+    id: "4",
     maintenanceCode: "MNT-004",
     assetTag: "AST-007",
     assetName: "Lenovo Laptop",
@@ -56,7 +92,19 @@ const maintenanceRecords = [
     vendor: "Lenovo Care",
     serviceDate: "2026-01-25",
     expectedCompletion: "2026-02-01",
-    cost: "₹6,000",
+    completionDate: "",
+    serviceType: "Replacement Review",
+    priority: "Low",
+    downtimeHours: "0",
+    warrantyClaim: "No",
+    approvalStatus: "Rejected",
+    attachmentStatus: "Review Note",
+    finalCondition: "Cancelled",
+    createdBy: "IT Admin",
+    createdAt: "2026-01-25 03:00 PM",
+    updatedBy: "IT Manager",
+    updatedAt: "2026-01-28 05:15 PM",
+    cost: "INR 6,000",
     status: "Cancelled",
   },
 ];
@@ -95,6 +143,11 @@ export default function MaintenancePage() {
         ${record.issueType}
         ${record.reportedBy}
         ${record.vendor}
+        ${record.serviceType}
+        ${record.priority}
+        ${record.warrantyClaim}
+        ${record.approvalStatus}
+        ${record.finalCondition}
         ${record.status}
       `.toLowerCase();
 
@@ -107,13 +160,13 @@ export default function MaintenancePage() {
     });
   }, [search, activeFilter]);
 
-  function handleDelete(record) {
+  function handleArchive(record) {
     const confirmed = confirm(
-      `Are you sure you want to delete maintenance record ${record.maintenanceCode}?`
+      `Are you sure you want to archive maintenance record ${record.maintenanceCode}?`
     );
 
     if (confirmed) {
-      alert("Maintenance delete action added. Backend will be connected later.");
+      alert("Maintenance archive action added. Backend will be connected later.");
     }
   }
 
@@ -173,7 +226,7 @@ export default function MaintenancePage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by maintenance code, asset tag, asset name, issue, vendor or status..."
+            placeholder="Search by code, asset, issue, vendor, priority, warranty or status..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
           />
 
@@ -197,7 +250,7 @@ export default function MaintenancePage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-[1300px] w-full text-sm">
+        <table className="min-w-[1650px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -219,6 +272,12 @@ export default function MaintenancePage() {
                 Vendor / Technician
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
+                Service Type
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Priority
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
                 Service Date
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
@@ -226,6 +285,12 @@ export default function MaintenancePage() {
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Cost
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Warranty
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Approval
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
@@ -265,6 +330,12 @@ export default function MaintenancePage() {
                 <td className="px-4 py-4 text-gray-700">{record.vendor}</td>
 
                 <td className="px-4 py-4 text-gray-700">
+                  {record.serviceType}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">{record.priority}</td>
+
+                <td className="px-4 py-4 text-gray-700">
                   {record.serviceDate}
                 </td>
 
@@ -274,6 +345,14 @@ export default function MaintenancePage() {
 
                 <td className="px-4 py-4 text-gray-700">{record.cost}</td>
 
+                <td className="px-4 py-4 text-gray-700">
+                  {record.warrantyClaim}
+                </td>
+
+                <td className="px-4 py-4 text-gray-700">
+                  {record.approvalStatus}
+                </td>
+
                 <td className="px-4 py-4">
                   <MaintenanceStatusBadge status={record.status} />
                 </td>
@@ -282,7 +361,8 @@ export default function MaintenancePage() {
                   <ActionButtons
                     viewHref={`/maintenance/view/${record.id}`}
                     updateHref={`/maintenance/edit/${record.id}`}
-                    onDelete={() => handleDelete(record)}
+                    onDelete={() => handleArchive(record)}
+                    deleteLabel="Archive"
                   />
                 </td>
               </tr>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import BackButton from "@/components/common/BackButton";
 
 const vendors = [
   {
@@ -18,6 +19,17 @@ const vendors = [
     state: "Maharashtra",
     address: "Baner Road, Pune, Maharashtra",
     gstNumber: "27ABCDE1234F1Z5",
+    panNumber: "ABCDE1234F",
+    paymentTerms: "30 Days",
+    bankAccountStatus: "Verified",
+    complianceStatus: "Compliant",
+    documentStatus: "GST + PAN + Bank",
+    rating: "4.8",
+    lastPurchaseDate: "2026-01-12",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-05 10:00 AM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-01-12 10:30 AM",
     category: "Laptop Supplier",
     status: "Active",
     remarks: "Primary supplier for Dell laptops and accessories.",
@@ -33,6 +45,17 @@ const vendors = [
     state: "Maharashtra",
     address: "Andheri East, Mumbai, Maharashtra",
     gstNumber: "27HPWLD5678K1Z8",
+    panNumber: "HPWLD5678K",
+    paymentTerms: "45 Days",
+    bankAccountStatus: "Pending",
+    complianceStatus: "Compliant",
+    documentStatus: "GST + PAN",
+    rating: "4.5",
+    lastPurchaseDate: "2026-01-18",
+    createdBy: "Procurement Admin",
+    createdAt: "2026-01-08 11:15 AM",
+    updatedBy: "Procurement Admin",
+    updatedAt: "2026-01-18 11:10 AM",
     category: "Laptop Supplier",
     status: "Active",
     remarks: "Preferred vendor for HP laptops and desktops.",
@@ -60,8 +83,6 @@ export default function EditVendorPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    console.log("Updated Vendor Data:", formData);
-
     alert("Vendor updated successfully. Backend will be connected later.");
   }
 
@@ -73,12 +94,7 @@ export default function EditVendorPage() {
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Link
-          href="/vendors"
-          className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-        >
-          ← Back to Vendors
-        </Link>
+        <BackButton href="/vendors" label="Vendors" />
 
         <Link
           href={`/vendors/view/${selectedVendor.id}`}
@@ -225,6 +241,87 @@ export default function EditVendorPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
+              PAN Number
+            </label>
+            <input
+              type="text"
+              name="panNumber"
+              value={formData.panNumber}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm uppercase outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Payment Terms
+            </label>
+            <select
+              name="paymentTerms"
+              value={formData.paymentTerms}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="">Select payment terms</option>
+              <option value="Advance">Advance</option>
+              <option value="15 Days">15 Days</option>
+              <option value="30 Days">30 Days</option>
+              <option value="45 Days">45 Days</option>
+              <option value="60 Days">60 Days</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Bank Account Status
+            </label>
+            <select
+              name="bankAccountStatus"
+              value={formData.bankAccountStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Verified">Verified</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Compliance Status
+            </label>
+            <select
+              name="complianceStatus"
+              value={formData.complianceStatus}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Compliant">Compliant</option>
+              <option value="Review Required">Review Required</option>
+              <option value="Non-Compliant">Non-Compliant</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Vendor Rating
+            </label>
+            <input
+              type="number"
+              name="rating"
+              value={formData.rating}
+              onChange={handleChange}
+              min="0"
+              max="5"
+              step="0.1"
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Status
             </label>
             <select
@@ -237,6 +334,20 @@ export default function EditVendorPage() {
               <option value="Inactive">Inactive</option>
               <option value="Blacklisted">Blacklisted</option>
             </select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Vendor Documents
+            </label>
+            <input
+              type="file"
+              multiple
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white focus:border-gray-900"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Current document status: {formData.documentStatus}
+            </p>
           </div>
 
           <div className="md:col-span-2">
@@ -263,6 +374,13 @@ export default function EditVendorPage() {
               rows="4"
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+              Created by {formData.createdBy} on {formData.createdAt}. Last
+              updated by {formData.updatedBy} on {formData.updatedAt}.
+            </div>
           </div>
         </div>
 

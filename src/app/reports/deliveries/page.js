@@ -13,9 +13,19 @@ const deliveryReportData = [
     category: "Laptop",
     deliveredTo: "Rahul Patil",
     department: "HR Department",
+    issuedBy: "IT Admin",
+    location: "Pune Office - HR",
+    accessoriesIncluded: "Charger, laptop bag",
+    acknowledgementStatus: "Acknowledged",
+    qrCode: "QR-DEL-001",
+    returnStatus: "Not Due",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-02-01 10:30",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-01 10:30",
     deliveryDate: "2026-02-01",
     condition: "Good",
-    deliveredBy: "IT Admin",
     status: "Delivered",
   },
   {
@@ -24,9 +34,19 @@ const deliveryReportData = [
     category: "Printer",
     deliveredTo: "Accounts Team",
     department: "Accounts Department",
+    issuedBy: "IT Support",
+    location: "Pune Office - Accounts",
+    accessoriesIncluded: "Power cable, USB cable",
+    acknowledgementStatus: "Acknowledged",
+    qrCode: "QR-DEL-002",
+    returnStatus: "Not Due",
+    attachmentStatus: "Pending",
+    createdBy: "IT Support",
+    createdAt: "2026-02-04 11:00",
+    updatedBy: "IT Support",
+    updatedAt: "2026-02-04 11:00",
     deliveryDate: "2026-02-04",
     condition: "New",
-    deliveredBy: "IT Support",
     status: "Delivered",
   },
   {
@@ -35,9 +55,19 @@ const deliveryReportData = [
     category: "Desktop",
     deliveredTo: "Amit Jadhav",
     department: "Sales Department",
+    issuedBy: "IT Admin",
+    location: "Sales Desk",
+    accessoriesIncluded: "Power cable, keyboard, mouse",
+    acknowledgementStatus: "Acknowledged",
+    qrCode: "QR-DEL-003",
+    returnStatus: "Not Due",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2026-02-08 14:20",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-02-08 14:20",
     deliveryDate: "2026-02-08",
     condition: "Good",
-    deliveredBy: "IT Admin",
     status: "Delivered",
   },
   {
@@ -46,9 +76,19 @@ const deliveryReportData = [
     category: "Monitor",
     deliveredTo: "Priya Sharma",
     department: "Admin Department",
+    issuedBy: "IT Support",
+    location: "Admin Cabin",
+    accessoriesIncluded: "HDMI cable, power cable",
+    acknowledgementStatus: "Pending",
+    qrCode: "QR-DEL-004",
+    returnStatus: "Pending Return",
+    attachmentStatus: "Pending",
+    createdBy: "IT Support",
+    createdAt: "2026-02-12 16:10",
+    updatedBy: "IT Support",
+    updatedAt: "2026-02-12 16:10",
     deliveryDate: "2026-02-12",
     condition: "Good",
-    deliveredBy: "IT Support",
     status: "Pending",
   },
 ];
@@ -133,7 +173,7 @@ export default function DeliveryReportPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
+        <table className="min-w-[1650px] divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-50">
             <tr>
               <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
@@ -152,13 +192,31 @@ export default function DeliveryReportPage() {
                 Department
               </th>
               <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Issued By
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Location
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
                 Delivery Date
               </th>
               <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
                 Condition
               </th>
               <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
-                Delivered By
+                Accessories
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Acknowledgement
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Return
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                QR Code
+              </th>
+              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                Documents
               </th>
               <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
                 Status
@@ -190,6 +248,14 @@ export default function DeliveryReportPage() {
                 </td>
 
                 <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.issuedBy}
+                </td>
+
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.location}
+                </td>
+
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
                   {item.deliveryDate}
                 </td>
 
@@ -198,7 +264,23 @@ export default function DeliveryReportPage() {
                 </td>
 
                 <td className="whitespace-nowrap px-4 py-4 text-gray-700">
-                  {item.deliveredBy}
+                  {item.accessoriesIncluded}
+                </td>
+
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.acknowledgementStatus}
+                </td>
+
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.returnStatus}
+                </td>
+
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.qrCode}
+                </td>
+
+                <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                  {item.attachmentStatus}
                 </td>
 
                 <td className="whitespace-nowrap px-4 py-4">
@@ -212,7 +294,7 @@ export default function DeliveryReportPage() {
 
       <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
         Note: This delivery report currently uses sample frontend data. After
-        SQL Server backend integration, this report will show real delivery and
+        MySQL backend integration, this report will show real delivery and
         issued equipment/material records.
       </p>
     </LayoutWrapper>
