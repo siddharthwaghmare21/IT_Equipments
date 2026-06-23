@@ -62,6 +62,18 @@ export default function ProfilePage() {
     "Activity Logs",
   ];
 
+  const profileSummary = [
+    { label: "Assigned Assets", value: "3" },
+    { label: "Pending Approvals", value: profile.role === "Viewer" ? "0" : "4" },
+    { label: "Recent Actions", value: "8" },
+  ];
+
+  const recentActions = [
+    "Viewed asset warranty report",
+    "Reviewed maintenance follow-up",
+    "Opened delivery acknowledgement",
+  ];
+
   return (
     <LayoutWrapper>
       <PageHeader
@@ -99,6 +111,36 @@ export default function ProfilePage() {
       </section>
 
       <section className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-3">
+          <h2 className="text-lg font-bold text-gray-900">
+            My Work Summary
+          </h2>
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {profileSummary.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-gray-100 bg-gray-50 p-4"
+              >
+                <p className="text-sm text-gray-500">{item.label}</p>
+                <p className="mt-2 text-2xl font-bold text-gray-900">
+                  {item.value}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {recentActions.map((action) => (
+              <p
+                key={action}
+                className="rounded-xl border border-gray-100 bg-white p-3 text-sm font-semibold text-gray-700"
+              >
+                {action}
+              </p>
+            ))}
+          </div>
+        </div>
+
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
           <h2 className="text-lg font-bold text-gray-900">Access Areas</h2>
 

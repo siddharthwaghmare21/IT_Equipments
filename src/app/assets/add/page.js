@@ -5,6 +5,7 @@ import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import FormStepper from "@/components/common/FormStepper";
+import HelpTooltip from "@/components/common/HelpTooltip";
 import { showToast } from "@/components/common/ToastHost";
 import useUnsavedChanges from "@/hooks/useUnsavedChanges";
 
@@ -100,8 +101,9 @@ export default function AddAssetPage() {
       >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 flex items-center gap-2 text-sm font-medium text-gray-700">
               Asset Tag
+              <HelpTooltip text="Unique internal asset number. Example: IT-LAP-001." />
             </label>
             <input
               type="text"
@@ -209,8 +211,9 @@ export default function AddAssetPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 flex items-center gap-2 text-sm font-medium text-gray-700">
               Purchase Reference
+              <HelpTooltip text="PO number, invoice number or purchase reference used for audit and warranty tracking." />
             </label>
             <input
               type="text"
@@ -338,8 +341,9 @@ export default function AddAssetPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 flex items-center gap-2 text-sm font-medium text-gray-700">
               QR Code Reference
+              <HelpTooltip text="QR/barcode value used on asset label. Backend can auto-generate this later." />
             </label>
             <input
               type="text"

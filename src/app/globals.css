@@ -5,12 +5,39 @@
 }
 
 :focus-visible {
-  outline: 3px solid #111827;
+  outline: 3px solid #334155;
   outline-offset: 2px;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 120ms ease;
+}
+
+button:active,
+a:active {
+  transform: translateY(1px) scale(0.99);
 }
 
 .dark {
   color-scheme: dark;
+}
+
+.dark :focus-visible {
+  outline-color: #64748b;
 }
 
 .dark body,
@@ -60,6 +87,11 @@
   background-color: #111827;
   color: #f9fafb;
   border-color: #4b5563;
+}
+
+.dark button:focus-visible,
+.dark a:focus-visible {
+  box-shadow: 0 0 0 4px rgb(100 116 139 / 0.25);
 }
 
 @media print {

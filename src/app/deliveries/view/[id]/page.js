@@ -168,9 +168,17 @@ export default function ViewDeliveryPage() {
         >
           Edit Delivery
         </Link>
+
+        <button
+          type="button"
+          onClick={() => window.print()}
+          className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+        >
+          Print Acknowledgement
+        </button>
       </div>
 
-      <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <section className="print-area rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
         <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500">
@@ -306,6 +314,26 @@ export default function ViewDeliveryPage() {
             Return workflow and acknowledgement will be connected after backend
             integration.
           </p>
+        </div>
+      </section>
+
+      <section className="print-area mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h2 className="text-lg font-bold text-gray-900">
+          Delivery Acknowledgement
+        </h2>
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <DetailItem label="Employee" value={delivery.deliveredTo} />
+          <DetailItem label="Asset" value={delivery.assetName} />
+          <DetailItem label="Delivery Date" value={delivery.deliveryDate} />
+          <DetailItem label="Accessories" value={delivery.accessoriesIncluded} />
+        </div>
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="border-t border-gray-300 pt-2 text-sm text-gray-600">
+            Employee Signature
+          </div>
+          <div className="border-t border-gray-300 pt-2 text-sm text-gray-600">
+            IT Department Signature
+          </div>
         </div>
       </section>
     </LayoutWrapper>

@@ -8,6 +8,7 @@ import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
+import CompactRecordList from "@/components/common/CompactRecordList";
 import { EmptyState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
 
@@ -129,15 +130,6 @@ export default function AssetsPage() {
   const [conditionFilter, setConditionFilter] = useState("All");
   const [selectedAssets, setSelectedAssets] = useState([]);
   const [archiveAsset, setArchiveAsset] = useState(null);
-  const [density, setDensity] = useState("Comfortable");
-  const [visibleColumns, setVisibleColumns] = useState({
-    serial: true,
-    assignedTo: true,
-    lifecycle: true,
-    warranty: true,
-    qrCode: true,
-    documents: true,
-  });
 
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
@@ -199,6 +191,8 @@ export default function AssetsPage() {
   }
 
   function confirmArchive() {
+    if (!archiveAsset) return;
+
     showToast(
       `Asset ${archiveAsset.assetTag} archive action added. Backend will be connected later.`
     );
@@ -230,15 +224,6 @@ export default function AssetsPage() {
       setConditionFilter("All");
     }
   }
-
-  function toggleColumn(columnName) {
-    setVisibleColumns((previousColumns) => ({
-      ...previousColumns,
-      [columnName]: !previousColumns[columnName],
-    }));
-  }
-
-  const tableCellClass = density === "Compact" ? "px-4 py-2" : "px-4 py-4";
 
   return (
     <LayoutWrapper>
@@ -330,41 +315,6 @@ export default function AssetsPage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-[180px_1fr]">
-            <select
-              value={density}
-              onChange={(event) => setDensity(event.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            >
-              <option value="Comfortable">Comfortable Table</option>
-              <option value="Compact">Compact Table</option>
-            </select>
-
-            <div className="flex flex-wrap gap-2">
-              {[
-                ["serial", "Serial"],
-                ["assignedTo", "Assigned"],
-                ["lifecycle", "Lifecycle"],
-                ["warranty", "Warranty"],
-                ["qrCode", "QR"],
-                ["documents", "Documents"],
-              ].map(([key, label]) => (
-                <label
-                  key={key}
-                  className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700"
-                >
-                  <input
-                    type="checkbox"
-                    checked={visibleColumns[key]}
-                    onChange={() => toggleColumn(key)}
-                    className="h-4 w-4 rounded border-gray-300 accent-gray-900"
-                  />
-                  {label}
-                </label>
-              ))}
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <select
               value={categoryFilter}
@@ -436,63 +386,23 @@ export default function AssetsPage() {
         </section>
       )}
 
-      <div className="mb-6 grid grid-cols-1 gap-4 md:hidden">
-        {filteredAssets.map((asset) => (
-          <article
-            key={asset.id}
-            className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-sm font-bold text-gray-900">
-                  {asset.assetTag}
-                </p>
-                <p className="mt-1 text-sm text-gray-600">{asset.name}</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={selectedAssets.includes(asset.id)}
-                onChange={() => toggleAssetSelection(asset.id)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 accent-gray-900"
-                aria-label={`Select ${asset.assetTag}`}
-              />
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <p className="text-xs text-gray-500">Category</p>
-                <p className="font-semibold text-gray-900">{asset.category}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Department</p>
-                <p className="font-semibold text-gray-900">
-                  {asset.custodianDepartment}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Location</p>
-                <p className="font-semibold text-gray-900">{asset.location}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Warranty</p>
-                <p className="font-semibold text-gray-900">
-                  {asset.warrantyExpiry}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-4 flex items-center justify-between gap-3">
-              <StatusBadge status={asset.status} />
-              <ActionButtons
-                viewHref={`/assets/view/${asset.id}`}
-                updateHref={`/assets/edit/${asset.id}`}
-                onDelete={() => handleArchive(asset)}
-                deleteLabel="Archive"
-              />
-            </div>
-          </article>
-        ))}
-      </div>
+      <CompactRecordList
+        records={filteredAssets}
+        titleKey="assetTag"
+        subtitleKey="name"
+        meta={[
+          { label: "Category", key: "category" },
+          { label: "Location", key: "location" },
+          { label: "Department", key: "custodianDepartment" },
+          { label: "Warranty", key: "warrantyExpiry" },
+        ]}
+        statusRender={(asset) => <StatusBadge status={asset.status} />}
+        viewHref={(asset) => `/assets/view/${asset.id}`}
+        editHref={(asset) => `/assets/edit/${asset.id}`}
+        onArchive={handleArchive}
+        emptyTitle="No assets found"
+        emptyDescription="Try changing search, status, category, department or condition filters."
+      />
 
       <div className="hidden md:block">
         <TableWrapper>
@@ -511,39 +421,27 @@ export default function AssetsPage() {
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Category
               </th>
-              {visibleColumns.serial && (
-                <th className="px-4 py-3 font-semibold text-gray-700">
-                  Serial No.
-                </th>
-              )}
-              {visibleColumns.assignedTo && (
-                <th className="px-4 py-3 font-semibold text-gray-700">
-                  Assigned To
-                </th>
-              )}
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Serial No.
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Assigned To
+              </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Location
               </th>
-              {visibleColumns.lifecycle && (
-                <th className="px-4 py-3 font-semibold text-gray-700">
-                  Lifecycle
-                </th>
-              )}
-              {visibleColumns.warranty && (
-                <th className="px-4 py-3 font-semibold text-gray-700">
-                  Warranty
-                </th>
-              )}
-              {visibleColumns.qrCode && (
-                <th className="px-4 py-3 font-semibold text-gray-700">
-                  QR Code
-                </th>
-              )}
-              {visibleColumns.documents && (
-                <th className="px-4 py-3 font-semibold text-gray-700">
-                  Documents
-                </th>
-              )}
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Lifecycle
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Warranty
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                QR Code
+              </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Documents
+              </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
               </th>
@@ -559,7 +457,7 @@ export default function AssetsPage() {
                 key={asset.id}
                 className="border-b border-gray-100 hover:bg-gray-50"
               >
-                <td className={tableCellClass}>
+                <td className="px-4 py-4">
                   <input
                     type="checkbox"
                     checked={selectedAssets.includes(asset.id)}
@@ -569,57 +467,45 @@ export default function AssetsPage() {
                   />
                 </td>
 
-                <td className={`${tableCellClass} font-semibold text-gray-900`}>
+                <td className="px-4 py-4 font-semibold text-gray-900">
                   {asset.assetTag}
                 </td>
 
-                <td className={`${tableCellClass} text-gray-700`}>{asset.name}</td>
+                <td className="px-4 py-4 text-gray-700">{asset.name}</td>
 
-                <td className={`${tableCellClass} text-gray-700`}>{asset.category}</td>
+                <td className="px-4 py-4 text-gray-700">{asset.category}</td>
 
-                {visibleColumns.serial && (
-                  <td className={`${tableCellClass} text-gray-700`}>
-                    {asset.serialNumber}
-                  </td>
-                )}
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.serialNumber}
+                </td>
 
-                {visibleColumns.assignedTo && (
-                  <td className={`${tableCellClass} text-gray-700`}>
-                    {asset.assignedTo}
-                  </td>
-                )}
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.assignedTo}
+                </td>
 
-                <td className={`${tableCellClass} text-gray-700`}>{asset.location}</td>
+                <td className="px-4 py-4 text-gray-700">{asset.location}</td>
 
-                {visibleColumns.lifecycle && (
-                  <td className={`${tableCellClass} text-gray-700`}>
-                    {asset.lifecycleStatus}
-                  </td>
-                )}
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.lifecycleStatus}
+                </td>
 
-                {visibleColumns.warranty && (
-                  <td className={`${tableCellClass} text-gray-700`}>
-                    {asset.warrantyExpiry}
-                  </td>
-                )}
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.warrantyExpiry}
+                </td>
 
-                {visibleColumns.qrCode && (
-                  <td className={`${tableCellClass} font-medium text-gray-700`}>
-                    {asset.qrCode}
-                  </td>
-                )}
+                <td className="px-4 py-4 font-medium text-gray-700">
+                  {asset.qrCode}
+                </td>
 
-                {visibleColumns.documents && (
-                  <td className={`${tableCellClass} text-gray-700`}>
-                    {asset.attachmentStatus}
-                  </td>
-                )}
+                <td className="px-4 py-4 text-gray-700">
+                  {asset.attachmentStatus}
+                </td>
 
-                <td className={tableCellClass}>
+                <td className="px-4 py-4">
                   <StatusBadge status={asset.status} />
                 </td>
 
-                <td className={tableCellClass}>
+                <td className="px-4 py-4">
                   <ActionButtons
                     viewHref={`/assets/view/${asset.id}`}
                     updateHref={`/assets/edit/${asset.id}`}
@@ -642,15 +528,6 @@ export default function AssetsPage() {
           )}
         </TableWrapper>
       </div>
-
-      {filteredAssets.length === 0 && (
-        <div className="md:hidden">
-          <EmptyState
-            title="No assets found"
-            description="Try changing search, status, category, department or condition filters."
-          />
-        </div>
-      )}
 
       <ConfirmDialog
         isOpen={Boolean(archiveAsset)}

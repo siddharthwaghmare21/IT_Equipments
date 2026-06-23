@@ -76,6 +76,13 @@ export default function SettingsPage() {
     showToast("Settings saved successfully. Backend will be connected later.");
   }
 
+  const backendRequiredItems = [
+    "Real email OTP and password hashing",
+    "PDF and Excel export jobs",
+    "MySQL backup and restore",
+    "Scheduled report email summary",
+  ];
+
   return (
     <LayoutWrapper>
       <PageHeader
@@ -147,6 +154,26 @@ export default function SettingsPage() {
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               />
             </div>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-yellow-200 bg-yellow-50 p-4 shadow-sm sm:p-6">
+          <h2 className="text-lg font-bold text-yellow-900">
+            Backend Required
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-yellow-800">
+            These settings are visible in frontend so the process is ready, but
+            real execution will start after backend APIs are connected.
+          </p>
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+            {backendRequiredItems.map((item) => (
+              <p
+                key={item}
+                className="rounded-xl border border-yellow-200 bg-white/70 p-3 text-sm font-semibold text-yellow-900"
+              >
+                {item}
+              </p>
+            ))}
           </div>
         </section>
 

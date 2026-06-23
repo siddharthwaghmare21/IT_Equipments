@@ -56,6 +56,27 @@ const reportCards = [
   },
 ];
 
+const recentExports = [
+  {
+    name: "Asset Summary CSV",
+    module: "Assets",
+    date: "2026-06-20",
+    status: "Downloaded",
+  },
+  {
+    name: "Warranty Review",
+    module: "Warranty",
+    date: "2026-06-18",
+    status: "Preview",
+  },
+  {
+    name: "Maintenance Cost",
+    module: "Maintenance",
+    date: "2026-06-15",
+    status: "Pending Backend",
+  },
+];
+
 export default function ReportsPage() {
   return (
     <LayoutWrapper>
@@ -83,6 +104,42 @@ export default function ReportsPage() {
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Finance Reports</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">1</h2>
+        </div>
+      </section>
+
+      <section className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
+          <h2 className="text-lg font-bold text-gray-900">Recent Exports</h2>
+          <div className="mt-4 divide-y divide-gray-100">
+            {recentExports.map((item) => (
+              <div
+                key={`${item.name}-${item.date}`}
+                className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {item.name}
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {item.module} | {item.date}
+                  </p>
+                </div>
+                <span className="w-fit rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700">
+                  {item.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-yellow-900">
+            Backend Export Queue
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-yellow-800">
+            PDF export, Excel export, scheduled reports and email summary will
+            be connected after backend APIs and database are ready.
+          </p>
         </div>
       </section>
 
