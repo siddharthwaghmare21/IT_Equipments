@@ -150,9 +150,31 @@ textarea:user-invalid {
     box-shadow: none !important;
   }
 
+  .report-watermark {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 0 !important;
+    opacity: 0.18 !important;
+    transform: rotate(-28deg);
+    color: #e5e7eb !important;
+    font-size: 72px !important;
+  }
+
   .print-area > div {
     padding-left: 0 !important;
     padding-right: 0 !important;
+  }
+
+  .report-section,
+  .print-area section,
+  .print-area table {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-area table {
+    break-inside: auto;
+    page-break-inside: auto;
   }
 
   table {
@@ -188,5 +210,10 @@ textarea:user-invalid {
     position: sticky;
     top: 0;
     z-index: 1;
+  }
+
+  .report-watermark {
+    opacity: 0.45;
+    transform: rotate(-24deg);
   }
 }

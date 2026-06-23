@@ -13,6 +13,7 @@ export default function ReportPageShell({
   children,
 }) {
   const reportId = `${fileName.toUpperCase()}-2026`;
+  const reportVersion = "v1.0";
   const generatedDate = new Date().toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
@@ -22,13 +23,49 @@ export default function ReportPageShell({
     hour: "2-digit",
     minute: "2-digit",
   });
+  const attentionWords = [
+    "Pending",
+    "Damaged",
+    "Expired",
+    "Maintenance",
+    "Rejected",
+    "Under Review",
+    "Under Inspection",
+    "Cancelled",
+    "Needs Repair",
+  ];
+  const attentionRecords = data.filter((item) =>
+    Object.values(item).some((value) =>
+      attentionWords.some((word) => String(value).includes(word))
+    )
+  ).length;
+  const completedRecords = data.filter((item) =>
+    ["Completed", "Delivered", "Returned", "Received", "Active", "Approved"].some(
+      (word) => Object.values(item).some((value) => String(value).includes(word))
+    )
+  ).length;
+  const appliedFilters = [
+    { label: "Date Range", value: "All available records" },
+    { label: "Department", value: "All departments" },
+    { label: "Status", value: "All statuses" },
+    { label: "View", value: "Audit-ready summary" },
+  ];
+  const executiveSummary = [
+    { label: "Total Records", value: data.length },
+    { label: "Completed / Active", value: completedRecords },
+    { label: "Needs Attention", value: attentionRecords },
+    { label: "Report Version", value: reportVersion },
+  ];
 
   return (
     <LayoutWrapper>
       <PageHeader title={title} description={description} />
 
-      <section className="print-area rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200 bg-white px-5 py-4">
+      <section className="print-area relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div className="report-watermark pointer-events-none absolute inset-0 flex items-center justify-center text-6xl font-bold uppercase text-gray-100">
+          Internal
+        </div>
+        <div className="relative z-10 border-b border-gray-200 bg-white px-5 py-4">
           <div className="grid gap-4 lg:grid-cols-[1.3fr_0.7fr] lg:items-start">
             <div className="flex items-start gap-4">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-gray-900 text-lg font-bold text-white">
@@ -78,6 +115,22 @@ export default function ReportPageShell({
                     Frontend Preview
                   </p>
                 </div>
+                <div>
+                  <p className="font-semibold uppercase tracking-wide text-gray-500">
+                    Version
+                  </p>
+                  <p className="mt-1 font-bold text-gray-900">
+                    {reportVersion}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-semibold uppercase tracking-wide text-gray-500">
+                    Last Refreshed
+                  </p>
+                  <p className="mt-1 font-bold text-gray-900">
+                    {generatedTime}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -119,9 +172,91 @@ export default function ReportPageShell({
           </div>
         </div>
 
-        <div className="space-y-6 p-5">{children}</div>
+        <div className="relative z-10 space-y-6 p-5">
+          <section className="report-section grid grid-cols-1 gap-4 xl:grid-cols-[1.25fr_0.75fr]">
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Executive Summary
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+                {executiveSummary.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-xl border border-gray-100 bg-gray-50 p-3"
+                  >
+                    <p className="text-xs font-semibold text-gray-500">
+                      {item.label}
+                    </p>
+                    <p className="mt-2 text-xl font-bold text-gray-900">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-sm leading-6 text-gray-600">
+                This report is prepared for internal IT review. Attention count
+                highlights records containing pending, damaged, expired,
+                maintenance or review-related statuses.
+              </p>
+            </div>
 
-        <div className="report-footer border-t border-gray-200 bg-gray-50 px-5 py-4 text-xs text-gray-600">
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Applied Filters
+              </p>
+              <div className="mt-4 space-y-3">
+                {appliedFilters.map((filter) => (
+                  <div
+                    key={filter.label}
+                    className="flex justify-between gap-3 rounded-xl bg-gray-50 px-3 py-2 text-sm"
+                  >
+                    <span className="font-semibold text-gray-500">
+                      {filter.label}
+                    </span>
+                    <span className="text-right font-bold text-gray-900">
+                      {filter.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {attentionRecords > 0 && (
+            <section className="report-section rounded-2xl border border-yellow-200 bg-yellow-50 p-4">
+              <p className="text-sm font-bold text-yellow-900">
+                Attention Highlights
+              </p>
+              <p className="mt-1 text-sm leading-6 text-yellow-800">
+                {attentionRecords} records need review before this report is
+                considered final for audit or management circulation.
+              </p>
+            </section>
+          )}
+
+          {children}
+
+          <section className="report-section rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Approval & Sign-off
+            </p>
+            <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
+              {["Prepared By", "Reviewed By", "Approved By"].map((label) => (
+                <div
+                  key={label}
+                  className="rounded-xl border border-gray-200 bg-gray-50 p-4"
+                >
+                  <p className="text-sm font-bold text-gray-900">{label}</p>
+                  <div className="mt-10 border-t border-gray-300 pt-2 text-xs font-semibold text-gray-500">
+                    Name, signature and date
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <div className="report-footer relative z-10 border-t border-gray-200 bg-gray-50 px-5 py-4 text-xs text-gray-600">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="font-semibold">
               Confidential - For internal IT department use only

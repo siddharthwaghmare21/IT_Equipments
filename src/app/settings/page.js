@@ -23,6 +23,9 @@ export default function SettingsPage() {
     companyEmail: "admin@company.com",
     companyPhone: "+91 98765 43210",
     companyAddress: "Main Office, Maharashtra, India",
+    reportLogoText: "IT",
+    reportPreparedBy: "IT Department",
+    reportClassification: "Internal",
 
     adminName: "Admin",
     adminEmail: "itadmin@company.com",
@@ -192,6 +195,63 @@ export default function SettingsPage() {
                 onChange={handleChange}
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               />
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-gray-100 bg-gray-50 p-4">
+            <div className="mb-4">
+              <h3 className="text-base font-bold text-gray-900">
+                Report Branding
+              </h3>
+              <p className="mt-1 text-sm text-gray-600">
+                These values will be used in professional report headers after
+                backend/settings storage is connected.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Logo Text
+                </label>
+                <input
+                  type="text"
+                  name="reportLogoText"
+                  value={settings.reportLogoText}
+                  onChange={handleChange}
+                  maxLength="4"
+                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Prepared By
+                </label>
+                <input
+                  type="text"
+                  name="reportPreparedBy"
+                  value={settings.reportPreparedBy}
+                  onChange={handleChange}
+                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Classification
+                </label>
+                <select
+                  name="reportClassification"
+                  value={settings.reportClassification}
+                  onChange={handleChange}
+                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                >
+                  <option value="Internal">Internal</option>
+                  <option value="Confidential">Confidential</option>
+                  <option value="Restricted">Restricted</option>
+                </select>
+              </div>
             </div>
           </div>
         </section>
