@@ -89,6 +89,8 @@ export default function ReportsPage() {
   const [search, setSearch] = useState("");
   const [activeGroup, setActiveGroup] = useState("All");
   const [reportView, setReportView] = useState("Summary");
+  const [reportTemplate, setReportTemplate] = useState("Executive");
+  const [printPreviewMode, setPrintPreviewMode] = useState(false);
 
   const filteredReports = useMemo(() => {
     return reportCards.filter((report) => {
@@ -136,13 +138,94 @@ export default function ReportsPage() {
       status: "Ready after backend",
     },
   ];
+  const savedReportViews = [
+    {
+      name: "Monthly Asset Review",
+      filter: "Assets | Summary | All departments",
+    },
+    {
+      name: "Warranty Expiry Review",
+      filter: "Assets | Audit | Expiring soon",
+    },
+    {
+      name: "Maintenance Follow-up",
+      filter: "Operations | Detailed | Pending",
+    },
+  ];
+  const scheduledReports = [
+    {
+      name: "Weekly IT Asset Summary",
+      frequency: "Weekly",
+      format: "PDF",
+      recipients: "IT Admins",
+      status: "Active after backend",
+    },
+    {
+      name: "Monthly Warranty Review",
+      frequency: "Monthly",
+      format: "Excel",
+      recipients: "Super Admins",
+      status: "Draft",
+    },
+  ];
+  const dataSourceStatus = [
+    { label: "API Status", value: "Pending Backend" },
+    { label: "Last Sync", value: "Frontend demo" },
+    { label: "Records Fetched", value: "Sample data" },
+    { label: "Database", value: "MySQL planned" },
+  ];
 
   return (
     <LayoutWrapper>
-      <PageHeader
-        title="Reports"
-        description="View IT asset reports, purchase summaries, deliveries, returns, warranty, maintenance and damaged asset records."
-      />
+      <div
+        className={
+          printPreviewMode
+            ? "rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+            : ""
+        }
+      >
+      {!printPreviewMode && (
+        <PageHeader
+          title="Reports"
+          description="View IT asset reports, purchase summaries, deliveries, returns, warranty, maintenance and damaged asset records."
+        />
+      )}
+
+      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Report Workspace
+            </p>
+            <h2 className="mt-1 text-lg font-bold text-gray-900">
+              Template and print preview controls
+            </h2>
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <select
+              value={reportTemplate}
+              onChange={(event) => setReportTemplate(event.target.value)}
+              className="rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Executive">Executive Template</option>
+              <option value="Standard">Standard Template</option>
+              <option value="Audit">Audit Template</option>
+              <option value="Compliance">Compliance Template</option>
+            </select>
+            <button
+              type="button"
+              onClick={() => setPrintPreviewMode((current) => !current)}
+              className="rounded-xl border border-gray-900 bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
+            >
+              {printPreviewMode ? "Exit Preview" : "Print Preview"}
+            </button>
+          </div>
+        </div>
+        <p className="mt-3 text-sm text-gray-600">
+          Selected template: {reportTemplate}. Backend phase will connect this
+          template choice to actual PDF/Excel generation.
+        </p>
+      </section>
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -301,6 +384,74 @@ export default function ReportsPage() {
         </div>
       </section>
 
+      <section className="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">
+            Saved Report Views
+          </h2>
+          <div className="mt-4 space-y-3">
+            {savedReportViews.map((view) => (
+              <div
+                key={view.name}
+                className="rounded-xl border border-gray-100 bg-gray-50 p-3"
+              >
+                <p className="text-sm font-bold text-gray-900">{view.name}</p>
+                <p className="mt-1 text-xs font-semibold text-gray-500">
+                  {view.filter}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">
+            Scheduled Reports
+          </h2>
+          <div className="mt-4 space-y-3">
+            {scheduledReports.map((report) => (
+              <div
+                key={report.name}
+                className="rounded-xl border border-gray-100 bg-gray-50 p-3"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-sm font-bold text-gray-900">
+                    {report.name}
+                  </p>
+                  <span className="rounded-full border border-gray-200 bg-white px-2 py-1 text-xs font-semibold text-gray-600">
+                    {report.status}
+                  </span>
+                </div>
+                <p className="mt-2 text-xs font-semibold text-gray-500">
+                  {report.frequency} | {report.format} | {report.recipients}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">
+            Data Source Status
+          </h2>
+          <div className="mt-4 space-y-3">
+            {dataSourceStatus.map((item) => (
+              <div
+                key={item.label}
+                className="flex justify-between gap-3 rounded-xl bg-gray-50 px-3 py-2 text-sm"
+              >
+                <span className="font-semibold text-gray-500">
+                  {item.label}
+                </span>
+                <span className="text-right font-bold text-gray-900">
+                  {item.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {filteredReports.map((report) => (
           <Link
@@ -346,6 +497,7 @@ export default function ReportsPage() {
           purchase, delivery, return, warranty and maintenance records.
         </p>
       </section>
+      </div>
     </LayoutWrapper>
   );
 }

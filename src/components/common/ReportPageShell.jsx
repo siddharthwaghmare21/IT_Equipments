@@ -56,6 +56,25 @@ export default function ReportPageShell({
     { label: "Needs Attention", value: attentionRecords },
     { label: "Report Version", value: reportVersion },
   ];
+  const tableOfContents = [
+    "Cover Page",
+    "Executive Summary",
+    "Applied Filters",
+    "Attention Highlights",
+    "Chart Preview",
+    "Detailed Records",
+    "Reviewer Notes",
+    "Approval & Sign-off",
+  ];
+  const chartPreview = [
+    { label: "Completed", value: completedRecords },
+    { label: "Attention", value: attentionRecords },
+    {
+      label: "Remaining",
+      value: Math.max(data.length - completedRecords - attentionRecords, 0),
+    },
+  ];
+  const maxChartValue = Math.max(...chartPreview.map((item) => item.value), 1);
 
   return (
     <LayoutWrapper>
@@ -173,6 +192,63 @@ export default function ReportPageShell({
         </div>
 
         <div className="relative z-10 space-y-6 p-5">
+          <section className="report-cover report-section rounded-2xl border border-gray-200 bg-gray-50 p-6">
+            <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Report Cover Page
+                </p>
+                <h2 className="mt-3 text-3xl font-bold text-gray-900">
+                  {title}
+                </h2>
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-gray-600">
+                  {description}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-gray-200 bg-white p-4 text-sm">
+                <div className="flex justify-between gap-4 py-2">
+                  <span className="font-semibold text-gray-500">Period</span>
+                  <span className="font-bold text-gray-900">
+                    All available records
+                  </span>
+                </div>
+                <div className="flex justify-between gap-4 border-t border-gray-100 py-2">
+                  <span className="font-semibold text-gray-500">
+                    Prepared By
+                  </span>
+                  <span className="font-bold text-gray-900">
+                    IT Department
+                  </span>
+                </div>
+                <div className="flex justify-between gap-4 border-t border-gray-100 py-2">
+                  <span className="font-semibold text-gray-500">
+                    Confidentiality
+                  </span>
+                  <span className="font-bold text-gray-900">Internal</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="report-section rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Table Of Contents
+            </p>
+            <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {tableOfContents.map((item, index) => (
+                <div
+                  key={item}
+                  className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2 text-sm font-semibold text-gray-700"
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-xs font-bold text-gray-900">
+                    {index + 1}
+                  </span>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </section>
+
           <section className="report-section grid grid-cols-1 gap-4 xl:grid-cols-[1.25fr_0.75fr]">
             <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -234,7 +310,68 @@ export default function ReportPageShell({
             </section>
           )}
 
+          <section className="report-section rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Chart Preview
+                </p>
+                <h2 className="mt-1 text-lg font-bold text-gray-900">
+                  Report distribution snapshot
+                </h2>
+              </div>
+              <span className="w-fit rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-600">
+                Frontend chart preview
+              </span>
+            </div>
+            <div className="mt-5 space-y-4">
+              {chartPreview.map((item) => (
+                <div key={item.label}>
+                  <div className="mb-2 flex items-center justify-between text-sm">
+                    <span className="font-semibold text-gray-700">
+                      {item.label}
+                    </span>
+                    <span className="font-bold text-gray-900">
+                      {item.value}
+                    </span>
+                  </div>
+                  <div className="h-3 rounded-full bg-gray-100">
+                    <div
+                      className="h-3 rounded-full bg-gray-900"
+                      style={{
+                        width: `${Math.max(
+                          (item.value / maxChartValue) * 100,
+                          item.value > 0 ? 12 : 0
+                        )}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {children}
+
+          <section className="report-section rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Reviewer Notes & Action Items
+            </p>
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+              {[
+                "Review records marked for attention",
+                "Confirm department-wise ownership",
+                "Update backend data before final export",
+              ].map((note) => (
+                <div
+                  key={note}
+                  className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm font-semibold text-gray-700"
+                >
+                  {note}
+                </div>
+              ))}
+            </div>
+          </section>
 
           <section className="report-section rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">

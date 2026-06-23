@@ -172,6 +172,12 @@ textarea:user-invalid {
     page-break-inside: avoid;
   }
 
+  .report-cover {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+  }
+
   .print-area table {
     break-inside: auto;
     page-break-inside: auto;
