@@ -30,6 +30,20 @@ const sopSteps = [
   },
 ];
 
+const cleanupItems = [
+  "Set TEMP_AUTH_BYPASS back to false",
+  "Remove or hide Frontend Demo badges",
+  "Replace sample arrays with API responses",
+  "Connect import preview/validation to backend APIs",
+  "Enable real PDF, Excel and backup jobs",
+];
+
+const shortcuts = [
+  { keys: "Ctrl + K", action: "Open quick action command palette" },
+  { keys: "Ctrl + F", action: "Use browser/page search" },
+  { keys: "Ctrl + P", action: "Print delivery, return or report page" },
+];
+
 export default function HelpPage() {
   return (
     <LayoutWrapper>
@@ -66,6 +80,45 @@ export default function HelpPage() {
           <p className="rounded-xl bg-gray-50 p-4 text-sm text-gray-700">
             Upload invoices, service reports and acknowledgement proofs wherever available.
           </p>
+        </div>
+      </section>
+
+      <section className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-yellow-900">
+            Backend Cleanup Checklist
+          </h2>
+          <div className="mt-4 space-y-3">
+            {cleanupItems.map((item) => (
+              <p
+                key={item}
+                className="rounded-xl border border-yellow-200 bg-white/70 p-3 text-sm font-semibold text-yellow-900"
+              >
+                {item}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">
+            Keyboard Shortcuts
+          </h2>
+          <div className="mt-4 space-y-3">
+            {shortcuts.map((shortcut) => (
+              <div
+                key={shortcut.keys}
+                className="flex items-center justify-between gap-3 rounded-xl bg-gray-50 p-3"
+              >
+                <span className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-bold text-white">
+                  {shortcut.keys}
+                </span>
+                <p className="text-sm font-semibold text-gray-700">
+                  {shortcut.action}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </LayoutWrapper>

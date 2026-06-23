@@ -110,6 +110,13 @@ export default function ViewAssetPage() {
       time: asset.updatedAt,
     },
   ];
+  const lifecycleSteps = [
+    "Purchased",
+    "Registered",
+    asset.status === "Delivered" ? "Delivered" : "Stored",
+    "Maintenance",
+    "Retire",
+  ];
 
   function handlePrintLabel() {
     showToast("Print preview opened.");
@@ -204,6 +211,27 @@ export default function ViewAssetPage() {
             Remarks
           </p>
           <p className="mt-2 text-sm text-gray-700">{asset.remarks || "-"}</p>
+        </div>
+
+        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            Asset Lifecycle Flow
+          </p>
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-5">
+            {lifecycleSteps.map((step, index) => (
+              <div
+                key={step}
+                className={`rounded-xl border p-3 ${
+                  index <= 2
+                    ? "border-green-200 bg-green-50 text-green-800"
+                    : "border-gray-200 bg-white text-gray-600"
+                }`}
+              >
+                <p className="text-xs font-bold uppercase">Step {index + 1}</p>
+                <p className="mt-1 text-sm font-semibold">{step}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-3">

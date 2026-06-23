@@ -153,6 +153,27 @@ export default function VendorsPage() {
     });
   }, [search, activeFilter]);
 
+  const vendorEvaluation = [
+    {
+      label: "Preferred Vendors",
+      value: vendors.filter((vendor) => Number(vendor.rating) >= 4.5).length,
+      detail: "Rating 4.5 and above",
+    },
+    {
+      label: "Compliance Review",
+      value: vendors.filter(
+        (vendor) => vendor.complianceStatus !== "Compliant"
+      ).length,
+      detail: "Need procurement follow-up",
+    },
+    {
+      label: "Document Pending",
+      value: vendors.filter((vendor) => vendor.documentStatus === "Pending")
+        .length,
+      detail: "GST, PAN or bank proof pending",
+    },
+  ];
+
   function handleArchive(vendor) {
     setArchiveVendor(vendor);
   }
@@ -225,6 +246,66 @@ export default function VendorsPage() {
               >
                 {filter}
               </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-[1.1fr_1.9fr]">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Vendor Evaluation
+          </p>
+          <h2 className="mt-1 text-lg font-semibold text-gray-900">
+            Procurement readiness snapshot
+          </h2>
+          <div className="mt-4 space-y-3">
+            {vendorEvaluation.map((item) => (
+              <div
+                key={item.label}
+                className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"
+              >
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {item.label}
+                  </p>
+                  <p className="text-xs text-gray-500">{item.detail}</p>
+                </div>
+                <span className="text-2xl font-bold text-gray-900">
+                  {item.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Evaluation Checklist
+              </p>
+              <h2 className="mt-1 text-lg font-semibold text-gray-900">
+                Vendor selection controls
+              </h2>
+            </div>
+            <span className="inline-flex w-fit rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700">
+              Frontend preview
+            </span>
+          </div>
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+            {[
+              "GST, PAN and bank documents verified",
+              "Rating and service response reviewed",
+              "Payment terms approved by procurement",
+              "Blacklisted or inactive vendor check completed",
+            ].map((check) => (
+              <div
+                key={check}
+                className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700"
+              >
+                {check}
+              </div>
             ))}
           </div>
         </div>

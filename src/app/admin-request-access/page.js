@@ -17,6 +17,29 @@ function isStrongPassword(password) {
   return hasMinimumLength && hasCapitalLetter && hasSymbol;
 }
 
+const rolePermissions = {
+  "Super Admin": [
+    "Full module access",
+    "User approval and role management",
+    "Settings, backup and export control",
+  ],
+  Admin: [
+    "Most module access",
+    "Employee/Admin request approval",
+    "Asset workflow control",
+  ],
+  Employee: [
+    "Add and update asset workflow records",
+    "Delivery, return and maintenance approvals",
+    "Reports access",
+  ],
+  Viewer: [
+    "Read-only reports access",
+    "No backup, approval or update actions",
+    "Dashboard visibility",
+  ],
+};
+
 export default function AdminRequestAccessPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasSuperAdmin, setHasSuperAdmin] = useState(false);
@@ -332,6 +355,22 @@ export default function AdminRequestAccessPage() {
                 Super Admin request will require approval from an existing Super
                 Admin.
               </p>
+
+              <div className="mt-3 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                <p className="text-sm font-bold text-gray-900">
+                  {formData.requestedRole} Permission Preview
+                </p>
+                <div className="mt-3 grid grid-cols-1 gap-2">
+                  {rolePermissions[formData.requestedRole].map((permission) => (
+                    <p
+                      key={permission}
+                      className="rounded-xl bg-white p-3 text-sm font-semibold text-gray-700"
+                    >
+                      {permission}
+                    </p>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

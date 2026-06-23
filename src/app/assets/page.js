@@ -118,9 +118,30 @@ const assets = [
     updatedBy: "IT Manager",
     updatedAt: "2024-09-15 15:30",
   },
+  {
+    id: "6",
+    assetTag: "IT-MSE-001",
+    name: "Dell USB Mouse",
+    category: "Mouse",
+    serialNumber: "MSE-2201",
+    assignedTo: "-",
+    location: "Archive Store",
+    status: "Archived",
+    lifecycleStatus: "Archived",
+    purchaseRef: "PO-2023-0110",
+    warrantyExpiry: "2026-01-10",
+    qrCode: "QR-IT-MSE-001",
+    condition: "Retired",
+    custodianDepartment: "IT Store",
+    attachmentStatus: "Uploaded",
+    createdBy: "IT Admin",
+    createdAt: "2023-01-10 11:00",
+    updatedBy: "IT Admin",
+    updatedAt: "2026-03-01 12:00",
+  },
 ];
 
-const filters = ["All", "Available", "Assigned", "Maintenance", "Damaged"];
+const filters = ["All", "Available", "Assigned", "Maintenance", "Damaged", "Archived"];
 
 export default function AssetsPage() {
   const [search, setSearch] = useState("");
@@ -234,7 +255,7 @@ export default function AssetsPage() {
 
       <PageActionBar addHref="/assets/add" addLabel="Add Asset" />
 
-      <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Total Assets</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
@@ -260,6 +281,13 @@ export default function AssetsPage() {
           <p className="text-sm text-gray-500">Maintenance</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
             {assets.filter((asset) => asset.status === "Maintenance").length}
+          </h2>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-gray-500">Archived</p>
+          <h2 className="mt-2 text-3xl font-bold text-gray-900">
+            {assets.filter((asset) => asset.status === "Archived").length}
           </h2>
         </div>
       </section>
@@ -354,6 +382,29 @@ export default function AssetsPage() {
           </div>
         </div>
       </section>
+
+      {activeFilter === "Archived" && (
+        <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Archive View
+              </p>
+              <h2 className="mt-1 text-lg font-semibold text-gray-900">
+                Read-only asset records for audit trail
+              </h2>
+              <p className="mt-1 max-w-3xl text-sm text-gray-600">
+                Archived assets should stay locked after backend approval so
+                purchase reference, custodian history, QR code and retirement
+                details remain available during audit.
+              </p>
+            </div>
+            <span className="inline-flex w-fit rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700">
+              Backend approval pending
+            </span>
+          </div>
+        </section>
+      )}
 
       {selectedAssets.length > 0 && (
         <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">

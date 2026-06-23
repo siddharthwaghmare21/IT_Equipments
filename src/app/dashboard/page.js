@@ -25,6 +25,7 @@ export default function DashboardPage() {
       }
     );
   });
+  const [previewRole, setPreviewRole] = useState(currentUser?.role || "Super Admin");
 
   const stats = [
     {
@@ -192,7 +193,13 @@ export default function DashboardPage() {
   ];
 
   const visibleRoleActions =
-    roleActions[currentUser?.role || "Super Admin"] || roleActions.Employee;
+    roleActions[previewRole] || roleActions.Employee;
+  const dataQualityItems = [
+    { label: "Missing Serial Numbers", value: "2", status: "Review" },
+    { label: "Missing Warranty Dates", value: "5", status: "Action Needed" },
+    { label: "Pending Documents", value: "7", status: "Follow-up" },
+    { label: "Duplicate Asset Tags", value: "0", status: "Clean" },
+  ];
 
   return (
     <LayoutWrapper>
@@ -244,12 +251,26 @@ export default function DashboardPage() {
 
       <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm xl:col-span-2">
-          <h2 className="text-lg font-bold text-gray-900">
-            Role Based Actions
-          </h2>
-          <p className="mt-1 text-sm text-gray-600">
-            Showing quick actions for {currentUser?.role || "Super Admin"}.
-          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">
+                Role Based Actions
+              </h2>
+              <p className="mt-1 text-sm text-gray-600">
+                Preview quick actions before backend permissions are connected.
+              </p>
+            </div>
+            <select
+              value={previewRole}
+              onChange={(event) => setPreviewRole(event.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 sm:w-48"
+            >
+              <option value="Super Admin">Super Admin</option>
+              <option value="Admin">Admin</option>
+              <option value="Employee">Employee</option>
+              <option value="Viewer">Viewer</option>
+            </select>
+          </div>
 
           <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
             {visibleRoleActions.map((action) => (
@@ -281,6 +302,32 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h2 className="text-lg font-bold text-gray-900">
+          Data Quality Dashboard
+        </h2>
+        <p className="mt-1 text-sm text-gray-600">
+          Frontend checks that will become backend validation rules later.
+        </p>
+
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
+          {dataQualityItems.map((item) => (
+            <div
+              key={item.label}
+              className="rounded-xl border border-gray-100 bg-gray-50 p-4"
+            >
+              <p className="text-sm text-gray-500">{item.label}</p>
+              <p className="mt-2 text-2xl font-bold text-gray-900">
+                {item.value}
+              </p>
+              <p className="mt-1 text-xs font-semibold text-gray-600">
+                {item.status}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 

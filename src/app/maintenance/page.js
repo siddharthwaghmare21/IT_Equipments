@@ -166,6 +166,41 @@ export default function MaintenancePage() {
     });
   }, [search, activeFilter]);
 
+  const slaIndicators = [
+    {
+      label: "High Priority Open",
+      value: maintenanceRecords.filter(
+        (record) =>
+          record.priority === "High" &&
+          record.status !== "Completed" &&
+          record.status !== "Cancelled"
+      ).length,
+      detail: "Needs same-day follow-up",
+    },
+    {
+      label: "Approval Pending",
+      value: maintenanceRecords.filter(
+        (record) => record.approvalStatus === "Pending"
+      ).length,
+      detail: "Waiting for admin decision",
+    },
+    {
+      label: "Warranty Claims",
+      value: maintenanceRecords.filter(
+        (record) => record.warrantyClaim === "Yes"
+      ).length,
+      detail: "Track with vendor service desk",
+    },
+    {
+      label: "Downtime Hours",
+      value: maintenanceRecords.reduce(
+        (total, record) => total + Number(record.downtimeHours || 0),
+        0
+      ),
+      detail: "Total reported downtime",
+    },
+  ];
+
   function handleArchive(record) {
     setArchiveRecord(record);
   }
@@ -251,6 +286,39 @@ export default function MaintenancePage() {
               </button>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              SLA Indicators
+            </p>
+            <h2 className="mt-1 text-lg font-semibold text-gray-900">
+              Maintenance response health
+            </h2>
+          </div>
+          <span className="inline-flex w-fit rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700">
+            Frontend preview
+          </span>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {slaIndicators.map((item) => (
+            <div
+              key={item.label}
+              className="rounded-xl border border-gray-100 bg-gray-50 p-4"
+            >
+              <p className="text-sm font-semibold text-gray-900">
+                {item.label}
+              </p>
+              <p className="mt-2 text-3xl font-bold text-gray-900">
+                {item.value}
+              </p>
+              <p className="mt-1 text-xs text-gray-500">{item.detail}</p>
+            </div>
+          ))}
         </div>
       </section>
 

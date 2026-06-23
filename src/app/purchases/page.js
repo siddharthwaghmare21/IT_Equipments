@@ -154,6 +154,34 @@ export default function PurchasesPage() {
     });
   }, [search, activeFilter]);
 
+  const receivingSteps = [
+    {
+      title: "PO Created",
+      detail: "Purchase order and vendor invoice reference captured",
+      count: purchases.length,
+    },
+    {
+      title: "Approved",
+      detail: "Approval completed before receiving",
+      count: purchases.filter(
+        (purchase) => purchase.approvalStatus === "Approved"
+      ).length,
+    },
+    {
+      title: "Received",
+      detail: "Items physically received by stores team",
+      count: purchases.filter((purchase) => purchase.status === "Received")
+        .length,
+    },
+    {
+      title: "Asset Registration",
+      detail: "Serial number and QR code creation pending after backend",
+      count: purchases.filter(
+        (purchase) => purchase.receivedStatus === "Fully Received"
+      ).length,
+    },
+  ];
+
   function handleArchive(purchase) {
     setArchivePurchase(purchase);
   }
@@ -237,6 +265,56 @@ export default function PurchasesPage() {
               </button>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Purchase Receiving Flow
+            </p>
+            <h2 className="mt-1 text-lg font-semibold text-gray-900">
+              PO to asset registration tracking
+            </h2>
+            <p className="mt-1 max-w-3xl text-sm text-gray-600">
+              This keeps procurement, stores and asset registration aligned
+              before items become available in inventory.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() =>
+              showToast(
+                "Asset registration handoff is ready for backend API connection."
+              )
+            }
+            className="w-fit rounded-xl border border-gray-900 bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
+          >
+            Prepare Registration
+          </button>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {receivingSteps.map((step, index) => (
+            <div
+              key={step.title}
+              className="rounded-xl border border-gray-100 bg-gray-50 p-4"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-bold text-gray-900">
+                  {index + 1}
+                </span>
+                <span className="text-2xl font-bold text-gray-900">
+                  {step.count}
+                </span>
+              </div>
+              <p className="mt-3 text-sm font-semibold text-gray-900">
+                {step.title}
+              </p>
+              <p className="mt-1 text-xs text-gray-500">{step.detail}</p>
+            </div>
+          ))}
         </div>
       </section>
 
