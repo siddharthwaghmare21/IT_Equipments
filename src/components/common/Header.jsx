@@ -15,6 +15,53 @@ function getInitials(name) {
   return `${words[0][0]}${words[1][0]}`.toUpperCase();
 }
 
+function BellIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5"
+    >
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+      <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+    </svg>
+  );
+}
+
+function ThemeIcon({ isDarkMode }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5"
+    >
+      {isDarkMode ? (
+        <>
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+        </>
+      ) : (
+        <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.5 6.5 0 0 0 21 12.8z" />
+      )}
+    </svg>
+  );
+}
+
 export default function Header({
   onMenuClick,
   currentUser,
@@ -106,7 +153,7 @@ export default function Header({
             className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100"
             aria-label="Open notifications"
           >
-            <span aria-hidden="true">🔔</span>
+            <BellIcon />
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
           </button>
           <button
@@ -115,7 +162,7 @@ export default function Header({
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100"
             aria-label="Toggle dark mode"
           >
-            <span aria-hidden="true">{isDarkMode ? "☀️" : "🌙"}</span>
+            <ThemeIcon isDarkMode={isDarkMode} />
           </button>
         </div>
       </div>
@@ -138,7 +185,7 @@ export default function Header({
             className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100"
             aria-label="Open notifications"
           >
-            <span aria-hidden="true">🔔</span>
+            <BellIcon />
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
           </button>
         </div>
@@ -149,7 +196,7 @@ export default function Header({
           className="hidden h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100 xl:inline-flex"
           aria-label="Toggle dark mode"
         >
-          <span aria-hidden="true">{isDarkMode ? "☀️" : "🌙"}</span>
+          <ThemeIcon isDarkMode={isDarkMode} />
         </button>
 
       <div className="flex items-center justify-between gap-3 xl:justify-end">

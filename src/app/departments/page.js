@@ -6,6 +6,7 @@ import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
+import PageActionBar from "@/components/common/PageActionBar";
 import { EmptyState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
 
@@ -158,9 +159,9 @@ export default function DepartmentsPage() {
       <PageHeader
         title="Departments"
         description="Manage company departments, department heads and asset delivery structure."
-        buttonText="Add Department"
-        buttonHref="/departments/add"
       />
+
+      <PageActionBar addHref="/departments/add" addLabel="Add Department" />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">

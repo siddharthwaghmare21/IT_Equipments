@@ -175,21 +175,50 @@ export default function Sidebar({
   const pathname = usePathname();
   const navRef = useRef(null);
 
-  const managementLinks = [
-    ...(canManageAccessRequests ? accessManagementLinks : []),
-    ...(isSuperAdmin ? superAdminOnlyLinks : []),
-  ];
-  const utilityStartIndex = sidebarLinks.findIndex(
-    (link) => link.path === "/settings"
-  );
-  const visibleLinks =
-    utilityStartIndex === -1
-      ? [...sidebarLinks, ...managementLinks]
-      : [
-          ...sidebarLinks.slice(0, utilityStartIndex),
-          ...managementLinks,
-          ...sidebarLinks.slice(utilityStartIndex),
-        ];
+  const groupedLinks = [
+    {
+      title: "Overview",
+      links: sidebarLinks.filter((link) => link.path === "/dashboard"),
+    },
+    {
+      title: "Procurement",
+      links: sidebarLinks.filter((link) =>
+        ["/import-data", "/purchases", "/vendors"].includes(link.path)
+      ),
+    },
+    {
+      title: "Asset Lifecycle",
+      links: sidebarLinks.filter((link) =>
+        [
+          "/assets",
+          "/employees",
+          "/departments",
+          "/deliveries",
+          "/returns",
+          "/maintenance",
+        ].includes(link.path)
+      ),
+    },
+    {
+      title: "Reports",
+      links: sidebarLinks.filter((link) =>
+        ["/reports", "/activity-logs"].includes(link.path)
+      ),
+    },
+    {
+      title: "Administration",
+      links: [
+        ...(canManageAccessRequests ? accessManagementLinks : []),
+        ...(isSuperAdmin ? superAdminOnlyLinks : []),
+      ],
+    },
+    {
+      title: "System",
+      links: sidebarLinks.filter((link) =>
+        ["/settings", "/profile", "/help"].includes(link.path)
+      ),
+    },
+  ].filter((group) => group.links.length > 0);
 
   useEffect(() => {
     const navElement = navRef.current;
@@ -230,35 +259,43 @@ export default function Sidebar({
         onScroll={handleSidebarScroll}
         className="flex-1 space-y-1 overflow-y-auto p-4"
       >
-        {visibleLinks.map((link) => {
-          const isActive =
-            pathname === link.path || pathname.startsWith(`${link.path}/`);
+        {groupedLinks.map((group) => (
+          <div key={group.title} className="space-y-1">
+            <p className="px-3 pt-3 text-[11px] font-bold uppercase tracking-wide text-gray-500">
+              {group.title}
+            </p>
 
-          return (
-            <Link
-              key={link.path}
-              href={link.path}
-              onClick={onClose}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
-                isActive
-                  ? "bg-white font-semibold text-gray-950"
-                  : "text-gray-300 hover:bg-gray-900 hover:text-white"
-              }`}
-            >
-              <span
-                className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-                  isActive
-                    ? "bg-gray-950 text-white"
-                    : "bg-gray-800 text-gray-300"
-                }`}
-              >
-                <SidebarIcon path={link.path} />
-              </span>
+            {group.links.map((link) => {
+              const isActive =
+                pathname === link.path || pathname.startsWith(`${link.path}/`);
 
-              <span>{link.label}</span>
-            </Link>
-          );
-        })}
+              return (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  onClick={onClose}
+                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
+                    isActive
+                      ? "bg-white font-semibold text-gray-950"
+                      : "text-gray-300 hover:bg-gray-900 hover:text-white"
+                  }`}
+                >
+                  <span
+                    className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+                      isActive
+                        ? "bg-gray-950 text-white"
+                        : "bg-gray-800 text-gray-300"
+                    }`}
+                  >
+                    <SidebarIcon path={link.path} />
+                  </span>
+
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       <div className="border-t border-gray-800 p-4">

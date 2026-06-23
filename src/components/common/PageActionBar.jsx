@@ -1,0 +1,79 @@
+"use client";
+
+import Link from "next/link";
+import { showToast } from "./ToastHost";
+
+export default function PageActionBar({
+  addHref,
+  addLabel = "Add New",
+  onRefresh,
+  onExport,
+  onPrint,
+  children,
+}) {
+  function handleRefresh() {
+    if (onRefresh) {
+      onRefresh();
+      return;
+    }
+
+    showToast("Page refreshed for frontend preview.");
+  }
+
+  function handleExport() {
+    if (onExport) {
+      onExport();
+      return;
+    }
+
+    showToast("Export will be connected with backend/report module.", "warning");
+  }
+
+  function handlePrint() {
+    if (onPrint) {
+      onPrint();
+      return;
+    }
+
+    window.print();
+  }
+
+  return (
+    <section className="mb-6 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-wrap gap-2">
+        {addHref && (
+          <Link
+            href={addHref}
+            className="inline-flex justify-center rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
+          >
+            {addLabel}
+          </Link>
+        )}
+
+        <button
+          type="button"
+          onClick={handleRefresh}
+          className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+        >
+          Refresh
+        </button>
+        <button
+          type="button"
+          onClick={handleExport}
+          className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+        >
+          Export
+        </button>
+        <button
+          type="button"
+          onClick={handlePrint}
+          className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+        >
+          Print
+        </button>
+      </div>
+
+      {children && <div className="flex flex-wrap gap-2">{children}</div>}
+    </section>
+  );
+}

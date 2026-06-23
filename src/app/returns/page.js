@@ -6,6 +6,8 @@ import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
+import PageActionBar from "@/components/common/PageActionBar";
+import CompactRecordList from "@/components/common/CompactRecordList";
 import { EmptyState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
 
@@ -181,9 +183,9 @@ export default function ReturnsPage() {
       <PageHeader
         title="Returns"
         description="Manage returned IT assets, return condition, received by details and inspection status."
-        buttonText="Add Return"
-        buttonHref="/returns/add"
       />
+
+      <PageActionBar addHref="/returns/add" addLabel="Add Return" />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -256,6 +258,27 @@ export default function ReturnsPage() {
         </div>
       </section>
 
+      <CompactRecordList
+        records={filteredReturnRecords}
+        titleKey="returnCode"
+        subtitleKey="assetName"
+        meta={[
+          { label: "Returned By", key: "returnedBy" },
+          { label: "Return Date", key: "returnDate" },
+          { label: "Condition", key: "returnCondition" },
+          { label: "Inspection", key: "inspectionStatus" },
+        ]}
+        statusRender={(returnItem) => (
+          <ReturnStatusBadge status={returnItem.status} />
+        )}
+        viewHref={(returnItem) => `/returns/view/${returnItem.id}`}
+        editHref={(returnItem) => `/returns/edit/${returnItem.id}`}
+        onArchive={handleArchive}
+        emptyTitle="No return records found"
+        emptyDescription="Try changing employee, asset, inspection or status filters."
+      />
+
+      <div className="hidden md:block">
       <TableWrapper>
         <table className="min-w-[1850px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
@@ -413,6 +436,7 @@ export default function ReturnsPage() {
           </div>
         )}
       </TableWrapper>
+      </div>
 
       <ConfirmDialog
         isOpen={Boolean(archiveReturn)}

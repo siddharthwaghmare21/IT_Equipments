@@ -6,6 +6,8 @@ import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
+import PageActionBar from "@/components/common/PageActionBar";
+import CompactRecordList from "@/components/common/CompactRecordList";
 import { EmptyState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
 
@@ -166,9 +168,9 @@ export default function PurchasesPage() {
       <PageHeader
         title="Purchases"
         description="Track purchase orders, vendor invoices, received items and pending procurement."
-        buttonText="Add Purchase"
-        buttonHref="/purchases/add"
       />
+
+      <PageActionBar addHref="/purchases/add" addLabel="Add Purchase" />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -238,6 +240,27 @@ export default function PurchasesPage() {
         </div>
       </section>
 
+      <CompactRecordList
+        records={filteredPurchases}
+        titleKey="poNumber"
+        subtitleKey="vendorName"
+        meta={[
+          { label: "Amount", key: "totalAmount" },
+          { label: "Purchase Date", key: "purchaseDate" },
+          { label: "Payment", key: "paymentStatus" },
+          { label: "Approval", key: "approvalStatus" },
+        ]}
+        statusRender={(purchase) => (
+          <PurchaseStatusBadge status={purchase.status} />
+        )}
+        viewHref={(purchase) => `/purchases/view/${purchase.id}`}
+        editHref={(purchase) => `/purchases/edit/${purchase.id}`}
+        onArchive={handleArchive}
+        emptyTitle="No purchases found"
+        emptyDescription="Try changing PO, vendor, payment or status filters."
+      />
+
+      <div className="hidden md:block">
       <TableWrapper>
         <table className="min-w-[1550px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
@@ -358,6 +381,7 @@ export default function PurchasesPage() {
           </div>
         )}
       </TableWrapper>
+      </div>
 
       <ConfirmDialog
         isOpen={Boolean(archivePurchase)}

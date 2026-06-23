@@ -6,6 +6,7 @@ import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
+import PageActionBar from "@/components/common/PageActionBar";
 import { EmptyState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
 
@@ -160,9 +161,9 @@ export default function EmployeesPage() {
       <PageHeader
         title="Employees"
         description="Manage employees, departments, designations and asset delivery users."
-        buttonText="Add Employee"
-        buttonHref="/employees/add"
       />
+
+      <PageActionBar addHref="/employees/add" addLabel="Add Employee" />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">

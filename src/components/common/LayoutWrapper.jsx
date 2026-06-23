@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ConfirmDialog from "./ConfirmDialog";
+import Breadcrumbs from "./Breadcrumbs";
+import CommandPalette from "./CommandPalette";
 import { showToast } from "./ToastHost";
 
 const SESSION_KEY = "itAssetUserSession";
@@ -80,7 +82,10 @@ export default function LayoutWrapper({ children }) {
           onMenuClick={() => setIsSidebarOpen(true)}
         />
 
-        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="p-4 sm:p-6 lg:p-8">
+          <Breadcrumbs />
+          {children}
+        </main>
       </div>
 
       <ConfirmDialog
@@ -93,6 +98,7 @@ export default function LayoutWrapper({ children }) {
         onConfirm={confirmLogout}
       />
 
+      <CommandPalette />
     </div>
   );
 }

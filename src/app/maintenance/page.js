@@ -6,6 +6,8 @@ import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
+import PageActionBar from "@/components/common/PageActionBar";
+import CompactRecordList from "@/components/common/CompactRecordList";
 import { EmptyState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
 
@@ -178,9 +180,9 @@ export default function MaintenancePage() {
       <PageHeader
         title="Maintenance"
         description="Manage asset repair, servicing, issue tracking, vendor support and maintenance status."
-        buttonText="Add Maintenance"
-        buttonHref="/maintenance/add"
       />
+
+      <PageActionBar addHref="/maintenance/add" addLabel="Add Maintenance" />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -252,6 +254,25 @@ export default function MaintenancePage() {
         </div>
       </section>
 
+      <CompactRecordList
+        records={filteredMaintenanceRecords}
+        titleKey="maintenanceCode"
+        subtitleKey="assetName"
+        meta={[
+          { label: "Issue", key: "issueType" },
+          { label: "Priority", key: "priority" },
+          { label: "Vendor", key: "vendor" },
+          { label: "Cost", key: "cost" },
+        ]}
+        statusRender={(record) => <MaintenanceStatusBadge status={record.status} />}
+        viewHref={(record) => `/maintenance/view/${record.id}`}
+        editHref={(record) => `/maintenance/edit/${record.id}`}
+        onArchive={handleArchive}
+        emptyTitle="No maintenance records found"
+        emptyDescription="Try changing asset, issue, priority or status filters."
+      />
+
+      <div className="hidden md:block">
       <TableWrapper>
         <table className="min-w-[1650px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
@@ -382,6 +403,7 @@ export default function MaintenancePage() {
           </div>
         )}
       </TableWrapper>
+      </div>
 
       <ConfirmDialog
         isOpen={Boolean(archiveRecord)}

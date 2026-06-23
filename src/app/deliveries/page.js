@@ -6,6 +6,8 @@ import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
+import PageActionBar from "@/components/common/PageActionBar";
+import CompactRecordList from "@/components/common/CompactRecordList";
 import { EmptyState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
 
@@ -171,9 +173,9 @@ export default function DeliveriesPage() {
       <PageHeader
         title="Deliveries"
         description="Track IT equipment/material delivery records, employee allocation and return status."
-        buttonText="Add Delivery"
-        buttonHref="/deliveries/delivery"
       />
+
+      <PageActionBar addHref="/deliveries/delivery" addLabel="Add Delivery" />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -244,6 +246,27 @@ export default function DeliveriesPage() {
         </div>
       </section>
 
+      <CompactRecordList
+        records={filteredDeliveries}
+        titleKey="deliveryCode"
+        subtitleKey="assetName"
+        meta={[
+          { label: "Employee", key: "deliveredTo" },
+          { label: "Department", key: "department" },
+          { label: "Delivery Date", key: "deliveryDate" },
+          { label: "Return", key: "returnStatus" },
+        ]}
+        statusRender={(delivery) => (
+          <DeliveryStatusBadge status={delivery.status} />
+        )}
+        viewHref={(delivery) => `/deliveries/view/${delivery.id}`}
+        editHref={(delivery) => `/deliveries/edit/${delivery.id}`}
+        onArchive={handleArchive}
+        emptyTitle="No delivery records found"
+        emptyDescription="Try changing search or delivery status filters."
+      />
+
+      <div className="hidden md:block">
       <TableWrapper>
         <table className="min-w-[1850px] w-full text-sm">
           <thead className="bg-gray-50 text-left">
@@ -387,6 +410,7 @@ export default function DeliveriesPage() {
           </div>
         )}
       </TableWrapper>
+      </div>
 
       <ConfirmDialog
         isOpen={Boolean(archiveDelivery)}
