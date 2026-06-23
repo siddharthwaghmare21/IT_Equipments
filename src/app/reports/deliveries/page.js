@@ -1,10 +1,7 @@
 "use client";
 
-import LayoutWrapper from "@/components/common/LayoutWrapper";
-import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
-import BackButton from "@/components/common/BackButton";
-import ReportExportButtons from "@/components/common/ReportExportButtons";
+import ReportPageShell from "@/components/common/ReportPageShell";
 
 const deliveryReportData = [
   {
@@ -127,20 +124,12 @@ export default function DeliveryReportPage() {
   ).size;
 
   return (
-    <LayoutWrapper>
-      <PageHeader
-        title="Delivery Report"
-        description="View employee-wise and department-wise equipment/material delivery records."
-      />
-
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <BackButton href="/reports" label="Reports" />
-
-        <ReportExportButtons
-          data={deliveryReportData}
-          fileName="delivery-report"
-        />
-      </div>
+    <ReportPageShell
+      title="Delivery Report"
+      description="View employee-wise and department-wise equipment/material delivery records."
+      data={deliveryReportData}
+      fileName="delivery-report"
+    >
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -297,6 +286,6 @@ export default function DeliveryReportPage() {
         MySQL backend integration, this report will show real delivery and
         issued equipment/material records.
       </p>
-    </LayoutWrapper>
+    </ReportPageShell>
   );
 }

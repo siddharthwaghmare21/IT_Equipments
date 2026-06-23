@@ -1,10 +1,7 @@
 "use client";
 
-import LayoutWrapper from "@/components/common/LayoutWrapper";
-import PageHeader from "@/components/common/PageHeader";
-import BackButton from "@/components/common/BackButton";
 import TableWrapper from "@/components/common/TableWrapper";
-import ReportExportButtons from "@/components/common/ReportExportButtons";
+import ReportPageShell from "@/components/common/ReportPageShell";
 
 const damagedReportData = [
   {
@@ -115,20 +112,12 @@ export default function DamagedAssetsReportPage() {
   ).length;
 
   return (
-    <LayoutWrapper>
-      <PageHeader
-        title="Damaged Assets Report"
-        description="View damaged, under inspection and scrapped IT assets with repair cost and action status."
-      />
-
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <BackButton href="/reports" label="Reports" />
-
-        <ReportExportButtons
-          data={damagedReportData}
-          fileName="damaged-assets-report"
-        />
-      </div>
+    <ReportPageShell
+      title="Damaged Assets Report"
+      description="View damaged, under inspection and scrapped IT assets with repair cost and action status."
+      data={damagedReportData}
+      fileName="damaged-assets-report"
+    >
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -347,6 +336,6 @@ export default function DamagedAssetsReportPage() {
           </tbody>
         </table>
       </TableWrapper>
-    </LayoutWrapper>
+    </ReportPageShell>
   );
 }

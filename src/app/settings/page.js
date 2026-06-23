@@ -6,9 +6,18 @@ import PageHeader from "@/components/common/PageHeader";
 import { showToast } from "@/components/common/ToastHost";
 
 const SESSION_KEY = "itAssetUserSession";
+const settingsTabs = [
+  { label: "General", target: "settings-general" },
+  { label: "Roles", target: "settings-roles" },
+  { label: "Backup", target: "settings-backup" },
+  { label: "Export", target: "settings-export" },
+  { label: "Notifications", target: "settings-notifications" },
+  { label: "Security", target: "settings-security" },
+];
 
 export default function SettingsPage() {
   const [currentUser, setCurrentUser] = useState(null);
+  const [activeSettingsTab, setActiveSettingsTab] = useState("General");
   const [settings, setSettings] = useState({
     companyName: "IT Assets Management",
     companyEmail: "admin@company.com",
@@ -76,6 +85,14 @@ export default function SettingsPage() {
     showToast("Settings saved successfully. Backend will be connected later.");
   }
 
+  function openSettingsSection(tab) {
+    setActiveSettingsTab(tab.label);
+    document.getElementById(tab.target)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
   const backendRequiredItems = [
     "Real email OTP and password hashing",
     "PDF and Excel export jobs",
@@ -90,8 +107,30 @@ export default function SettingsPage() {
         description="Manage company details, admin information, notifications, report export options and system security settings."
       />
 
+      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {settingsTabs.map((tab) => (
+            <button
+              key={tab.label}
+              type="button"
+              onClick={() => openSettingsSection(tab)}
+              className={`whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-semibold ${
+                activeSettingsTab === tab.label
+                  ? "border-gray-900 bg-gray-900 text-white"
+                  : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
       <form onSubmit={handleSubmit} className="space-y-6">
-        <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <section
+          id="settings-general"
+          className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+        >
           <div className="mb-5">
             <h2 className="text-lg font-bold text-gray-900">
               Company Information
@@ -157,7 +196,10 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-yellow-200 bg-yellow-50 p-4 shadow-sm sm:p-6">
+        <section
+          id="settings-backup"
+          className="scroll-mt-24 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 shadow-sm sm:p-6"
+        >
           <h2 className="text-lg font-bold text-yellow-900">
             Backend Required
           </h2>
@@ -177,7 +219,10 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <section
+          id="settings-roles"
+          className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+        >
           <div className="mb-5">
             <h2 className="text-lg font-bold text-gray-900">
               System Admin Details
@@ -275,7 +320,10 @@ export default function SettingsPage() {
         </section>
 
         <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+          <div
+            id="settings-notifications"
+            className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+          >
             <div className="mb-5">
               <h2 className="text-lg font-bold text-gray-900">
                 Notification Settings
@@ -344,7 +392,10 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+          <div
+            id="settings-export"
+            className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+          >
             <div className="mb-5">
               <h2 className="text-lg font-bold text-gray-900">
                 Report Export Settings
@@ -392,7 +443,10 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <section
+          id="settings-security"
+          className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+        >
           <div className="mb-5">
             <h2 className="text-lg font-bold text-gray-900">
               Security Settings

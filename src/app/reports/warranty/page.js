@@ -1,10 +1,7 @@
 "use client";
 
-import LayoutWrapper from "@/components/common/LayoutWrapper";
-import PageHeader from "@/components/common/PageHeader";
-import BackButton from "@/components/common/BackButton";
 import TableWrapper from "@/components/common/TableWrapper";
-import ReportExportButtons from "@/components/common/ReportExportButtons";
+import ReportPageShell from "@/components/common/ReportPageShell";
 
 const warrantyReportData = [
   {
@@ -123,20 +120,12 @@ export default function WarrantyReportPage() {
   ).length;
 
   return (
-    <LayoutWrapper>
-      <PageHeader
-        title="Warranty Report"
-        description="Track asset warranty expiry, expired assets, upcoming warranty alerts and vendor support details."
-      />
-
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <BackButton href="/reports" label="Reports" />
-
-        <ReportExportButtons
-          data={warrantyReportData}
-          fileName="warranty-report"
-        />
-      </div>
+    <ReportPageShell
+      title="Warranty Report"
+      description="Track asset warranty expiry, expired assets, upcoming warranty alerts and vendor support details."
+      data={warrantyReportData}
+      fileName="warranty-report"
+    >
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -343,6 +332,6 @@ export default function WarrantyReportPage() {
           </tbody>
         </table>
       </TableWrapper>
-    </LayoutWrapper>
+    </ReportPageShell>
   );
 }

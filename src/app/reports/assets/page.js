@@ -1,11 +1,8 @@
 "use client";
 
-import LayoutWrapper from "@/components/common/LayoutWrapper";
-import PageHeader from "@/components/common/PageHeader";
-import BackButton from "@/components/common/BackButton";
 import TableWrapper from "@/components/common/TableWrapper";
+import ReportPageShell from "@/components/common/ReportPageShell";
 import StatusBadge from "@/components/common/StatusBadge";
-import ReportExportButtons from "@/components/common/ReportExportButtons";
 
 const assetReportData = [
   {
@@ -120,20 +117,12 @@ export default function AssetsReportPage() {
   ).length;
 
   return (
-    <LayoutWrapper>
-      <PageHeader
-        title="Assets Report"
-        description="View asset-wise summary, category details, assigned users, warranty and current asset status."
-      />
-
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <BackButton href="/reports" label="Reports" />
-
-        <ReportExportButtons
-          data={assetReportData}
-          fileName="assets-report"
-        />
-      </div>
+    <ReportPageShell
+      title="Assets Report"
+      description="View asset-wise summary, category details, assigned users, warranty and current asset status."
+      data={assetReportData}
+      fileName="assets-report"
+    >
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -356,6 +345,6 @@ export default function AssetsReportPage() {
           </tbody>
         </table>
       </TableWrapper>
-    </LayoutWrapper>
+    </ReportPageShell>
   );
 }

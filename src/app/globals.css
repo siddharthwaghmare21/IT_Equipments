@@ -121,6 +121,13 @@ a:active {
   background-color: #374151;
 }
 
+input:user-invalid,
+select:user-invalid,
+textarea:user-invalid {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgb(220 38 38 / 0.1);
+}
+
 @media print {
   .no-print,
   header,
@@ -132,8 +139,42 @@ a:active {
     background: #ffffff !important;
   }
 
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
   .print-area {
+    width: 100% !important;
     border: 0 !important;
     box-shadow: none !important;
+  }
+
+  .print-area > div {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  table {
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 10px !important;
+  }
+
+  th,
+  td {
+    padding: 6px 8px !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+}
+
+@media screen {
+  .print-area thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
 }

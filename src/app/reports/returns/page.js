@@ -1,10 +1,7 @@
 "use client";
 
-import LayoutWrapper from "@/components/common/LayoutWrapper";
-import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
-import BackButton from "@/components/common/BackButton";
-import ReportExportButtons from "@/components/common/ReportExportButtons";
+import ReportPageShell from "@/components/common/ReportPageShell";
 
 const returnsReportData = [
   {
@@ -120,20 +117,12 @@ export default function ReturnsReportPage() {
   ).length;
 
   return (
-    <LayoutWrapper>
-      <PageHeader
-        title="Returns Report"
-        description="Track returned equipment/material records, return condition, returned by and received details."
-      />
-
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <BackButton href="/reports" label="Reports" />
-
-        <ReportExportButtons
-          data={returnsReportData}
-          fileName="returns-report"
-        />
-      </div>
+    <ReportPageShell
+      title="Returns Report"
+      description="Track returned equipment/material records, return condition, returned by and received details."
+      data={returnsReportData}
+      fileName="returns-report"
+    >
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -286,6 +275,6 @@ export default function ReturnsReportPage() {
         Server backend integration, this report will show real returned
         equipment/material records.
       </p>
-    </LayoutWrapper>
+    </ReportPageShell>
   );
 }

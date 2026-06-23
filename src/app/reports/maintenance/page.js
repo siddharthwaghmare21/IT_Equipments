@@ -1,10 +1,7 @@
 "use client";
 
-import LayoutWrapper from "@/components/common/LayoutWrapper";
-import PageHeader from "@/components/common/PageHeader";
-import BackButton from "@/components/common/BackButton";
 import TableWrapper from "@/components/common/TableWrapper";
-import ReportExportButtons from "@/components/common/ReportExportButtons";
+import ReportPageShell from "@/components/common/ReportPageShell";
 
 const maintenanceReportData = [
   {
@@ -120,20 +117,12 @@ export default function MaintenanceReportPage() {
   ).length;
 
   return (
-    <LayoutWrapper>
-      <PageHeader
-        title="Maintenance Report"
-        description="View maintenance records, repair status, vendor support, issue type and maintenance cost summary."
-      />
-
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <BackButton href="/reports" label="Reports" />
-
-        <ReportExportButtons
-          data={maintenanceReportData}
-          fileName="maintenance-report"
-        />
-      </div>
+    <ReportPageShell
+      title="Maintenance Report"
+      description="View maintenance records, repair status, vendor support, issue type and maintenance cost summary."
+      data={maintenanceReportData}
+      fileName="maintenance-report"
+    >
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -375,6 +364,6 @@ export default function MaintenanceReportPage() {
           </tbody>
         </table>
       </TableWrapper>
-    </LayoutWrapper>
+    </ReportPageShell>
   );
 }
