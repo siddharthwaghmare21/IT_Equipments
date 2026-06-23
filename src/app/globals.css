@@ -149,6 +149,41 @@ textarea:user-invalid {
   background-color: #f9fafb;
 }
 
+.dark .print-area,
+.dark .print-area section,
+.dark .print-area div,
+.dark .print-area table,
+.dark .print-area thead,
+.dark .print-area tbody,
+.dark .print-area tr {
+  background-color: #ffffff;
+  border-color: #e5e7eb;
+}
+
+.dark .print-area .bg-gray-50,
+.dark .print-area .bg-gray-100 {
+  background-color: #f9fafb;
+}
+
+.dark .print-area .text-gray-900,
+.dark .print-area .text-gray-800,
+.dark .print-area .text-gray-700 {
+  color: #111827;
+}
+
+.dark .print-area .text-gray-600,
+.dark .print-area .text-gray-500 {
+  color: #4b5563;
+}
+
+.dark .print-area input,
+.dark .print-area select,
+.dark .print-area textarea {
+  background-color: #ffffff;
+  color: #111827;
+  border-color: #d1d5db;
+}
+
 @media print {
   .no-print,
   header,
@@ -167,6 +202,7 @@ textarea:user-invalid {
 
   .print-area {
     width: 100% !important;
+    padding-bottom: 72px !important;
     border: 0 !important;
     box-shadow: none !important;
   }

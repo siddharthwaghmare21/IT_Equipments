@@ -222,6 +222,32 @@ export default function DashboardPage() {
       href: "/reports/damaged",
     },
   ];
+  const rolePermissionPreview = {
+    "Super Admin": [
+      "Full access",
+      "User approval",
+      "Role management",
+      "Backup and export control",
+    ],
+    Admin: [
+      "Most module access",
+      "Request approvals",
+      "Asset workflow control",
+      "Backup access",
+    ],
+    Employee: [
+      "Add/update workflow records",
+      "Delivery and maintenance approvals",
+      "Reports access",
+      "Backup access",
+    ],
+    Viewer: [
+      "Read-only reports",
+      "No approval rights",
+      "No edit actions",
+      "No backup access",
+    ],
+  };
 
   return (
     <LayoutWrapper>
@@ -304,6 +330,17 @@ export default function DashboardPage() {
               >
                 {action.label}
               </button>
+            ))}
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {rolePermissionPreview[previewRole].map((permission) => (
+              <div
+                key={permission}
+                className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700"
+              >
+                {permission}
+              </div>
             ))}
           </div>
         </div>

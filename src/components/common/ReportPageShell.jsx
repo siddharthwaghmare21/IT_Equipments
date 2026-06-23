@@ -95,6 +95,11 @@ export default function ReportPageShell({
     { label: "Approval Status", value: "Pending backend approval" },
     { label: "Audit Mode", value: "Preview only" },
   ];
+  const mobileRecords = data.slice(0, 4).map((item) =>
+    Object.entries(item)
+      .filter(([, value]) => value !== "" && value !== null && value !== undefined)
+      .slice(0, 5)
+  );
 
   useEffect(() => {
     const savedBranding = JSON.parse(
@@ -370,6 +375,36 @@ export default function ReportPageShell({
                 The report document structure is ready. Once filters or backend
                 data return records, the table and summary will populate here.
               </p>
+            </section>
+          )}
+
+          {data.length > 0 && (
+            <section className="report-section rounded-2xl border border-gray-200 bg-white p-5 shadow-sm md:hidden">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Mobile Record Summary
+              </p>
+              <div className="mt-4 space-y-3">
+                {mobileRecords.map((record, index) => (
+                  <div
+                    key={`${title}-mobile-record-${index}`}
+                    className="rounded-xl border border-gray-100 bg-gray-50 p-4"
+                  >
+                    {record.map(([key, value]) => (
+                      <div
+                        key={`${key}-${value}`}
+                        className="flex justify-between gap-3 py-1 text-sm"
+                      >
+                        <span className="font-semibold capitalize text-gray-500">
+                          {key.replace(/([A-Z])/g, " $1")}
+                        </span>
+                        <span className="text-right font-bold text-gray-900">
+                          {String(value)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </section>
           )}
 

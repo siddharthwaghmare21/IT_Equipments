@@ -44,6 +44,29 @@ const shortcuts = [
   { keys: "Ctrl + P", action: "Print delivery, return or report page" },
 ];
 
+const frontendCompletion = [
+  "Dashboard, reports, assets and workflow screens are frontend-ready",
+  "Temporary login bypass is active for frontend review",
+  "PDF, Excel, backup and email jobs are backend pending",
+  "Report branding can be previewed from Settings",
+];
+
+const backendPreparation = [
+  "Auth APIs: login, signup request, email OTP, approval workflow",
+  "Master APIs: assets, employees, departments, vendors",
+  "Workflow APIs: purchase, delivery, return, maintenance, damage review",
+  "Report APIs: filters, PDF/Excel export, scheduled email, audit trail",
+  "System APIs: backup, restore, role permissions, activity logs",
+];
+
+const namingStandards = [
+  "Assets: AST-001 or IT-LAP-001 based on final asset tagging policy",
+  "Deliveries: DLV-001",
+  "Returns: RET-001",
+  "Maintenance: MNT-001",
+  "Purchases: PO-2026-001",
+];
+
 export default function HelpPage() {
   return (
     <LayoutWrapper>
@@ -117,6 +140,56 @@ export default function HelpPage() {
                   {shortcut.action}
                 </p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">
+            Frontend Completion Notes
+          </h2>
+          <div className="mt-4 space-y-3">
+            {frontendCompletion.map((item) => (
+              <p
+                key={item}
+                className="rounded-xl bg-gray-50 p-3 text-sm font-semibold text-gray-700"
+              >
+                {item}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">
+            Backend Preparation
+          </h2>
+          <div className="mt-4 space-y-3">
+            {backendPreparation.map((item) => (
+              <p
+                key={item}
+                className="rounded-xl bg-gray-50 p-3 text-sm font-semibold text-gray-700"
+              >
+                {item}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">
+            Naming Convention
+          </h2>
+          <div className="mt-4 space-y-3">
+            {namingStandards.map((item) => (
+              <p
+                key={item}
+                className="rounded-xl bg-gray-50 p-3 text-sm font-semibold text-gray-700"
+              >
+                {item}
+              </p>
             ))}
           </div>
         </div>
