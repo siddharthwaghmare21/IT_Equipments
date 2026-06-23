@@ -4,9 +4,28 @@ import { useState } from "react";
 import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import FormStepper from "@/components/common/FormStepper";
 import { showToast } from "@/components/common/ToastHost";
+import useUnsavedChanges from "@/hooks/useUnsavedChanges";
+
+const assetFormSteps = [
+  {
+    title: "Identity",
+    description: "Asset tag, name, category, brand, model and serial number.",
+  },
+  {
+    title: "Purchase & Location",
+    description: "Purchase reference, warranty, custodian, location and status.",
+  },
+  {
+    title: "Documents & Notes",
+    description: "Documents, specifications, description, remarks and tracking.",
+  },
+];
 
 export default function AddAssetPage() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isDirty, setIsDirty] = useState(false);
   const [formData, setFormData] = useState({
     assetTag: "",
     assetName: "",
@@ -41,11 +60,15 @@ export default function AddAssetPage() {
       ...previousData,
       [name]: value,
     }));
+    setIsDirty(true);
   }
+
+  useUnsavedChanges(isDirty);
 
   function handleSubmit(event) {
     event.preventDefault();
 
+    setIsDirty(false);
     showToast("Asset saved successfully. Backend will be connected later.");
   }
 
@@ -55,6 +78,21 @@ export default function AddAssetPage() {
         title="Add Asset"
         description="Register a new IT asset with serial number, warranty, specifications, description, location and status."
       />
+
+      <FormStepper
+        steps={assetFormSteps}
+        currentStep={currentStep}
+        onStepChange={setCurrentStep}
+      />
+
+      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+        <h2 className="text-sm font-bold text-gray-900">
+          {assetFormSteps[currentStep].title}
+        </h2>
+        <p className="mt-1 text-sm leading-6 text-gray-600">
+          {assetFormSteps[currentStep].description}
+        </p>
+      </section>
 
       <form
         onSubmit={handleSubmit}
@@ -422,6 +460,26 @@ export default function AddAssetPage() {
         </section>
 
         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={() => setCurrentStep((step) => Math.max(step - 1, 0))}
+            className="inline-flex justify-center rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+          >
+            Previous Step
+          </button>
+
+          <button
+            type="button"
+            onClick={() =>
+              setCurrentStep((step) =>
+                Math.min(step + 1, assetFormSteps.length - 1)
+              )
+            }
+            className="inline-flex justify-center rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+          >
+            Next Step
+          </button>
+
           <Link
             href="/assets"
             className="inline-flex justify-center rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"

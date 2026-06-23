@@ -50,6 +50,11 @@ export const sidebarLinks = [
     short: "RP",
   },
   {
+    label: "Search",
+    path: "/search",
+    short: "SE",
+  },
+  {
     label: "Import Data",
     path: "/import-data",
     short: "IM",

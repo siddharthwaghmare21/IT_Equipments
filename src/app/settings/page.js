@@ -26,6 +26,9 @@ export default function SettingsPage() {
     warrantyExpiryAlert: true,
     maintenanceAlert: true,
     deliveryAlert: true,
+    emailNotifications: true,
+    inAppNotifications: true,
+    weeklySummary: true,
 
     csvExport: true,
     printReport: true,
@@ -285,6 +288,30 @@ export default function SettingsPage() {
                 description="Notify when asset is delivered or returned."
                 name="deliveryAlert"
                 checked={settings.deliveryAlert}
+                onChange={handleChange}
+              />
+
+              <SettingToggle
+                title="Email Notifications"
+                description="Send important alerts by email after backend SMTP/API integration."
+                name="emailNotifications"
+                checked={settings.emailNotifications}
+                onChange={handleChange}
+              />
+
+              <SettingToggle
+                title="In-app Notifications"
+                description="Show alerts in the header notification center."
+                name="inAppNotifications"
+                checked={settings.inAppNotifications}
+                onChange={handleChange}
+              />
+
+              <SettingToggle
+                title="Weekly Summary"
+                description="Prepare weekly IT asset summary for admins and employees."
+                name="weeklySummary"
+                checked={settings.weeklySummary}
                 onChange={handleChange}
               />
             </div>

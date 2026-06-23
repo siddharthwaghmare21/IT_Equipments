@@ -1,10 +1,30 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 
+const SESSION_KEY = "itAssetUserSession";
+
 export default function DashboardPage() {
   const router = useRouter();
+  const [currentUser] = useState(() => {
+    if (typeof window === "undefined") {
+      return {
+        fullName: "Frontend Review User",
+        role: "Super Admin",
+      };
+    }
+
+    const savedSession = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+
+    return (
+      savedSession || {
+        fullName: "Frontend Review User",
+        role: "Super Admin",
+      }
+    );
+  });
 
   const stats = [
     {
@@ -141,6 +161,39 @@ export default function DashboardPage() {
     },
   ];
 
+  const roleActions = {
+    "Super Admin": [
+      { label: "Review Access Requests", href: "/admin-request-management" },
+      { label: "Manage Users", href: "/admin-user-management" },
+      { label: "Open Backup Settings", href: "/settings" },
+    ],
+    Admin: [
+      { label: "Approve Requests", href: "/admin-request-management" },
+      { label: "Asset Workflow", href: "/assets" },
+      { label: "Reports", href: "/reports" },
+    ],
+    Employee: [
+      { label: "Add Asset", href: "/assets/add" },
+      { label: "Create Delivery", href: "/deliveries/delivery" },
+      { label: "Maintenance", href: "/maintenance" },
+    ],
+    Viewer: [
+      { label: "Asset Reports", href: "/reports/assets" },
+      { label: "Warranty Reports", href: "/reports/warranty" },
+      { label: "Activity Logs", href: "/activity-logs" },
+    ],
+  };
+
+  const dueDates = [
+    { date: "2026-06-24", title: "Warranty review", meta: "3 assets" },
+    { date: "2026-06-26", title: "Expected return", meta: "DLV-004" },
+    { date: "2026-06-29", title: "Maintenance follow-up", meta: "MNT-001" },
+    { date: "2026-07-01", title: "Stock audit", meta: "IT Store" },
+  ];
+
+  const visibleRoleActions =
+    roleActions[currentUser?.role || "Super Admin"] || roleActions.Employee;
+
   return (
     <LayoutWrapper>
       <div className="mb-6">
@@ -187,6 +240,48 @@ export default function DashboardPage() {
             <p className="mt-2 text-xs text-gray-500">{item.description}</p>
           </button>
         ))}
+      </section>
+
+      <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm xl:col-span-2">
+          <h2 className="text-lg font-bold text-gray-900">
+            Role Based Actions
+          </h2>
+          <p className="mt-1 text-sm text-gray-600">
+            Showing quick actions for {currentUser?.role || "Super Admin"}.
+          </p>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {visibleRoleActions.map((action) => (
+              <button
+                key={action.label}
+                type="button"
+                onClick={() => router.push(action.href)}
+                className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-left text-sm font-semibold text-gray-800 hover:bg-white"
+              >
+                {action.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">Due Dates</h2>
+          <div className="mt-4 space-y-3">
+            {dueDates.map((item) => (
+              <div
+                key={`${item.date}-${item.title}`}
+                className="rounded-xl border border-gray-100 bg-gray-50 p-3"
+              >
+                <p className="text-xs font-bold text-gray-500">{item.date}</p>
+                <p className="mt-1 text-sm font-semibold text-gray-900">
+                  {item.title}
+                </p>
+                <p className="mt-1 text-xs text-gray-500">{item.meta}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">

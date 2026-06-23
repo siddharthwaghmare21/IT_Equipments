@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 
 const SESSION_KEY = "itAssetUserSession";
 
-// Keep false so first website load goes through login/setup flow.
-const TEMP_AUTH_BYPASS = false;
+// Temporary frontend review mode. Set false again before backend auth starts.
+const TEMP_AUTH_BYPASS = true;
 
 export default function HomePage() {
   const router = useRouter();

@@ -12,7 +12,7 @@ const SESSION_KEY = "itAssetUserSession";
 
 // Keep true while backend authentication is pending.
 // Set this to false after API login is connected.
-const TEMP_AUTH_BYPASS = false;
+const TEMP_AUTH_BYPASS = true;
 
 export default function LoginPage() {
   const router = useRouter();

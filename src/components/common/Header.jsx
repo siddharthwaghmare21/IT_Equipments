@@ -59,12 +59,7 @@ export default function Header({
 
     if (!query) return;
 
-    if (query.startsWith("po")) router.push("/purchases");
-    else if (query.startsWith("ven")) router.push("/vendors");
-    else if (query.startsWith("mnt")) router.push("/maintenance");
-    else if (query.startsWith("ast") || query.startsWith("it-"))
-      router.push("/assets");
-    else router.push(`/reports?search=${encodeURIComponent(query)}`);
+    router.push(`/search?q=${encodeURIComponent(query)}`);
   }
 
   function toggleDarkMode() {

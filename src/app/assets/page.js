@@ -128,6 +128,15 @@ export default function AssetsPage() {
   const [conditionFilter, setConditionFilter] = useState("All");
   const [selectedAssets, setSelectedAssets] = useState([]);
   const [archiveAsset, setArchiveAsset] = useState(null);
+  const [density, setDensity] = useState("Comfortable");
+  const [visibleColumns, setVisibleColumns] = useState({
+    serial: true,
+    assignedTo: true,
+    lifecycle: true,
+    warranty: true,
+    qrCode: true,
+    documents: true,
+  });
 
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
@@ -221,6 +230,15 @@ export default function AssetsPage() {
     }
   }
 
+  function toggleColumn(columnName) {
+    setVisibleColumns((previousColumns) => ({
+      ...previousColumns,
+      [columnName]: !previousColumns[columnName],
+    }));
+  }
+
+  const tableCellClass = density === "Compact" ? "px-4 py-2" : "px-4 py-4";
+
   return (
     <LayoutWrapper>
       <PageHeader
@@ -309,6 +327,41 @@ export default function AssetsPage() {
             >
               Pending Documents
             </button>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-[180px_1fr]">
+            <select
+              value={density}
+              onChange={(event) => setDensity(event.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              <option value="Comfortable">Comfortable Table</option>
+              <option value="Compact">Compact Table</option>
+            </select>
+
+            <div className="flex flex-wrap gap-2">
+              {[
+                ["serial", "Serial"],
+                ["assignedTo", "Assigned"],
+                ["lifecycle", "Lifecycle"],
+                ["warranty", "Warranty"],
+                ["qrCode", "QR"],
+                ["documents", "Documents"],
+              ].map(([key, label]) => (
+                <label
+                  key={key}
+                  className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700"
+                >
+                  <input
+                    type="checkbox"
+                    checked={visibleColumns[key]}
+                    onChange={() => toggleColumn(key)}
+                    className="h-4 w-4 rounded border-gray-300 accent-gray-900"
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -457,27 +510,39 @@ export default function AssetsPage() {
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Category
               </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Serial No.
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Assigned To
-              </th>
+              {visibleColumns.serial && (
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Serial No.
+                </th>
+              )}
+              {visibleColumns.assignedTo && (
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Assigned To
+                </th>
+              )}
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Location
               </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Lifecycle
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Warranty
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                QR Code
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Documents
-              </th>
+              {visibleColumns.lifecycle && (
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Lifecycle
+                </th>
+              )}
+              {visibleColumns.warranty && (
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Warranty
+                </th>
+              )}
+              {visibleColumns.qrCode && (
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  QR Code
+                </th>
+              )}
+              {visibleColumns.documents && (
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Documents
+                </th>
+              )}
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Status
               </th>
@@ -493,7 +558,7 @@ export default function AssetsPage() {
                 key={asset.id}
                 className="border-b border-gray-100 hover:bg-gray-50"
               >
-                <td className="px-4 py-4">
+                <td className={tableCellClass}>
                   <input
                     type="checkbox"
                     checked={selectedAssets.includes(asset.id)}
@@ -503,45 +568,57 @@ export default function AssetsPage() {
                   />
                 </td>
 
-                <td className="px-4 py-4 font-semibold text-gray-900">
+                <td className={`${tableCellClass} font-semibold text-gray-900`}>
                   {asset.assetTag}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">{asset.name}</td>
+                <td className={`${tableCellClass} text-gray-700`}>{asset.name}</td>
 
-                <td className="px-4 py-4 text-gray-700">{asset.category}</td>
+                <td className={`${tableCellClass} text-gray-700`}>{asset.category}</td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.serialNumber}
-                </td>
+                {visibleColumns.serial && (
+                  <td className={`${tableCellClass} text-gray-700`}>
+                    {asset.serialNumber}
+                  </td>
+                )}
 
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.assignedTo}
-                </td>
+                {visibleColumns.assignedTo && (
+                  <td className={`${tableCellClass} text-gray-700`}>
+                    {asset.assignedTo}
+                  </td>
+                )}
 
-                <td className="px-4 py-4 text-gray-700">{asset.location}</td>
+                <td className={`${tableCellClass} text-gray-700`}>{asset.location}</td>
 
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.lifecycleStatus}
-                </td>
+                {visibleColumns.lifecycle && (
+                  <td className={`${tableCellClass} text-gray-700`}>
+                    {asset.lifecycleStatus}
+                  </td>
+                )}
 
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.warrantyExpiry}
-                </td>
+                {visibleColumns.warranty && (
+                  <td className={`${tableCellClass} text-gray-700`}>
+                    {asset.warrantyExpiry}
+                  </td>
+                )}
 
-                <td className="px-4 py-4 font-medium text-gray-700">
-                  {asset.qrCode}
-                </td>
+                {visibleColumns.qrCode && (
+                  <td className={`${tableCellClass} font-medium text-gray-700`}>
+                    {asset.qrCode}
+                  </td>
+                )}
 
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.attachmentStatus}
-                </td>
+                {visibleColumns.documents && (
+                  <td className={`${tableCellClass} text-gray-700`}>
+                    {asset.attachmentStatus}
+                  </td>
+                )}
 
-                <td className="px-4 py-4">
+                <td className={tableCellClass}>
                   <StatusBadge status={asset.status} />
                 </td>
 
-                <td className="px-4 py-4">
+                <td className={tableCellClass}>
                   <ActionButtons
                     viewHref={`/assets/view/${asset.id}`}
                     updateHref={`/assets/edit/${asset.id}`}

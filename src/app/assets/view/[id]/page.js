@@ -266,6 +266,35 @@ export default function ViewAssetPage() {
             </button>
           </div>
         </div>
+
+        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            Document Preview
+          </p>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {["Invoice", "Warranty Card", "Acknowledgement"].map((document) => (
+              <div
+                key={document}
+                className="rounded-xl border border-gray-200 bg-white p-4"
+              >
+                <p className="text-sm font-semibold text-gray-900">
+                  {document}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-gray-500">
+                  Preview will open here after backend document storage is
+                  connected.
+                </p>
+                <button
+                  type="button"
+                  className="mt-3 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+                >
+                  Preview
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
