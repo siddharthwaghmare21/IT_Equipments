@@ -23,6 +23,148 @@ const superAdminOnlyLinks = [
   },
 ];
 
+function SidebarIcon({ path }) {
+  const iconMap = {
+    "/dashboard": (
+      <>
+        <path d="M4 5h6v6H4z" />
+        <path d="M14 5h6v4h-6z" />
+        <path d="M14 13h6v6h-6z" />
+        <path d="M4 15h6v4H4z" />
+      </>
+    ),
+    "/import-data": (
+      <>
+        <path d="M12 4v10" />
+        <path d="m8 8 4-4 4 4" />
+        <path d="M5 16v3h14v-3" />
+      </>
+    ),
+    "/purchases": (
+      <>
+        <path d="M7 6h14l-2 8H8z" />
+        <path d="M7 6 6 3H3" />
+        <path d="M9 20h.01" />
+        <path d="M18 20h.01" />
+      </>
+    ),
+    "/vendors": (
+      <>
+        <path d="M4 20V8l8-4 8 4v12" />
+        <path d="M9 20v-6h6v6" />
+        <path d="M8 10h.01" />
+        <path d="M16 10h.01" />
+      </>
+    ),
+    "/assets": (
+      <>
+        <path d="M5 6h14v9H5z" />
+        <path d="M9 20h6" />
+        <path d="M12 15v5" />
+      </>
+    ),
+    "/employees": (
+      <>
+        <path d="M16 21v-2a4 4 0 0 0-8 0v2" />
+        <circle cx="12" cy="7" r="4" />
+      </>
+    ),
+    "/departments": (
+      <>
+        <path d="M4 21V5h7v16" />
+        <path d="M11 9h9v12" />
+        <path d="M7 9h1" />
+        <path d="M7 13h1" />
+        <path d="M15 13h1" />
+      </>
+    ),
+    "/deliveries": (
+      <>
+        <path d="M3 7h11v10H3z" />
+        <path d="M14 11h4l3 3v3h-7" />
+        <circle cx="7" cy="18" r="2" />
+        <circle cx="18" cy="18" r="2" />
+      </>
+    ),
+    "/returns": (
+      <>
+        <path d="M9 14 4 9l5-5" />
+        <path d="M4 9h10a6 6 0 1 1 0 12h-2" />
+      </>
+    ),
+    "/maintenance": (
+      <>
+        <path d="m14.7 6.3 3 3" />
+        <path d="M4 20l6.5-6.5" />
+        <path d="M13 7a4 4 0 0 1 5.5-3.7l-3 3 2.2 2.2 3-3A4 4 0 0 1 17 11" />
+      </>
+    ),
+    "/reports": (
+      <>
+        <path d="M4 19V5" />
+        <path d="M8 19v-7" />
+        <path d="M12 19V8" />
+        <path d="M16 19v-4" />
+        <path d="M20 19V4" />
+      </>
+    ),
+    "/activity-logs": (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </>
+    ),
+    "/admin-request-management": (
+      <>
+        <path d="M9 12l2 2 4-4" />
+        <path d="M12 3 5 6v5c0 5 3.5 8 7 10 3.5-2 7-5 7-10V6z" />
+      </>
+    ),
+    "/admin-user-management": (
+      <>
+        <path d="M16 21v-2a4 4 0 0 0-8 0v2" />
+        <circle cx="12" cy="7" r="4" />
+        <path d="M19 8v4" />
+        <path d="M21 10h-4" />
+      </>
+    ),
+    "/settings": (
+      <>
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a8 8 0 0 0 .1-2l2-1.5-2-3.4-2.4 1a8 8 0 0 0-1.7-1L15 5.5h-4l-.4 2.6a8 8 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5a8 8 0 0 0 .1 2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 1.7 1l.4 2.6h4l.4-2.6a8 8 0 0 0 1.7-1l2.4 1 2-3.4z" />
+      </>
+    ),
+    "/profile": (
+      <>
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 21a8 8 0 0 1 16 0" />
+      </>
+    ),
+    "/help": (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M9.5 9a2.5 2.5 0 1 1 4.1 1.9c-.9.6-1.6 1.1-1.6 2.1" />
+        <path d="M12 17h.01" />
+      </>
+    ),
+  };
+
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-4 w-4"
+    >
+      {iconMap[path] || iconMap["/dashboard"]}
+    </svg>
+  );
+}
+
 export default function Sidebar({
   onClose,
   currentUser,
@@ -104,13 +246,13 @@ export default function Sidebar({
               }`}
             >
               <span
-                className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold ${
+                className={`flex h-8 w-8 items-center justify-center rounded-lg ${
                   isActive
                     ? "bg-gray-950 text-white"
                     : "bg-gray-800 text-gray-300"
                 }`}
               >
-                {link.short}
+                <SidebarIcon path={link.path} />
               </span>
 
               <span>{link.label}</span>
