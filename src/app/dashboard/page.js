@@ -200,6 +200,28 @@ export default function DashboardPage() {
     { label: "Pending Documents", value: "7", status: "Follow-up" },
     { label: "Duplicate Asset Tags", value: "0", status: "Clean" },
   ];
+  const reportShortcuts = [
+    {
+      title: "Assets Report",
+      description: "Asset status and category summary",
+      href: "/reports/assets",
+    },
+    {
+      title: "Warranty Report",
+      description: "Expiry and support follow-up",
+      href: "/reports/warranty",
+    },
+    {
+      title: "Maintenance Report",
+      description: "Repair SLA and vendor summary",
+      href: "/reports/maintenance",
+    },
+    {
+      title: "Damaged Assets Report",
+      description: "Inspection and decision status",
+      href: "/reports/damaged",
+    },
+  ];
 
   return (
     <LayoutWrapper>
@@ -327,6 +349,44 @@ export default function DashboardPage() {
                 {item.status}
               </p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">
+              Report Shortcuts
+            </h2>
+            <p className="mt-1 text-sm text-gray-600">
+              Open management reports directly from dashboard review.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => router.push("/reports")}
+            className="w-full rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 sm:w-auto"
+          >
+            All Reports
+          </button>
+        </div>
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
+          {reportShortcuts.map((report) => (
+            <button
+              key={report.href}
+              type="button"
+              aria-label={`Open ${report.title}`}
+              onClick={() => router.push(report.href)}
+              className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-left hover:bg-white"
+            >
+              <p className="text-sm font-bold text-gray-900">
+                {report.title}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-gray-500">
+                {report.description}
+              </p>
+            </button>
           ))}
         </div>
       </section>

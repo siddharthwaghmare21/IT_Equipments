@@ -174,6 +174,18 @@ export default function ReportsPage() {
     { label: "Records Fetched", value: "Sample data" },
     { label: "Database", value: "MySQL planned" },
   ];
+  const frontendQaItems = [
+    "Mobile and laptop spacing review",
+    "Print footer and watermark review",
+    "Table overflow and compact mode review",
+    "Dark mode contrast review",
+  ];
+  const cleanupChecklist = [
+    "Remove frontend demo labels",
+    "Connect PDF and Excel export APIs",
+    "Bind report branding to database settings",
+    "Replace sample data with backend responses",
+  ];
 
   return (
     <LayoutWrapper>
@@ -446,6 +458,40 @@ export default function ReportsPage() {
                 <span className="text-right font-bold text-gray-900">
                   {item.value}
                 </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900">
+            Frontend QA Checklist
+          </h2>
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {frontendQaItems.map((item) => (
+              <div
+                key={item}
+                className="rounded-xl border border-gray-100 bg-gray-50 p-3 text-sm font-semibold text-gray-700"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-yellow-900">
+            Final Frontend Cleanup Checklist
+          </h2>
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {cleanupChecklist.map((item) => (
+              <div
+                key={item}
+                className="rounded-xl border border-yellow-200 bg-white/70 p-3 text-sm font-semibold text-yellow-900"
+              >
+                {item}
               </div>
             ))}
           </div>

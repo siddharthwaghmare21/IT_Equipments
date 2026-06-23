@@ -6,6 +6,7 @@ import PageHeader from "@/components/common/PageHeader";
 import { showToast } from "@/components/common/ToastHost";
 
 const SESSION_KEY = "itAssetUserSession";
+const REPORT_BRANDING_KEY = "itReportBranding";
 const settingsTabs = [
   { label: "General", target: "settings-general" },
   { label: "Roles", target: "settings-roles" },
@@ -67,8 +68,19 @@ export default function SettingsPage() {
     const savedSession = JSON.parse(
       localStorage.getItem(SESSION_KEY) || "null"
     );
+    const savedBranding = JSON.parse(
+      localStorage.getItem(REPORT_BRANDING_KEY) || "null"
+    );
 
     setTimeout(() => setCurrentUser(savedSession), 0);
+    if (savedBranding) {
+      setTimeout(() => {
+        setSettings((currentSettings) => ({
+          ...currentSettings,
+          ...savedBranding,
+        }));
+      }, 0);
+    }
   }, []);
 
   const canUseBackup = currentUser?.role !== "Viewer";
@@ -84,6 +96,19 @@ export default function SettingsPage() {
 
   function handleSubmit(event) {
     event.preventDefault();
+
+    localStorage.setItem(
+      REPORT_BRANDING_KEY,
+      JSON.stringify({
+        companyName: settings.companyName,
+        companyEmail: settings.companyEmail,
+        companyPhone: settings.companyPhone,
+        companyAddress: settings.companyAddress,
+        reportLogoText: settings.reportLogoText,
+        reportPreparedBy: settings.reportPreparedBy,
+        reportClassification: settings.reportClassification,
+      })
+    );
 
     showToast("Settings saved successfully. Backend will be connected later.");
   }

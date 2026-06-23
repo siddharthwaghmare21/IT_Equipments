@@ -128,6 +128,27 @@ textarea:user-invalid {
   box-shadow: 0 0 0 3px rgb(220 38 38 / 0.1);
 }
 
+.report-compact table {
+  font-size: 12px;
+}
+
+.report-compact th,
+.report-compact td {
+  padding: 8px 10px !important;
+}
+
+.print-area tbody tr:has(span[class*="yellow"]) {
+  background-color: #fffbeb;
+}
+
+.print-area tbody tr:has(span[class*="red"]) {
+  background-color: #fef2f2;
+}
+
+.print-area tbody tr:has(span[class*="gray"]) {
+  background-color: #f9fafb;
+}
+
 @media print {
   .no-print,
   header,
