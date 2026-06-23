@@ -1,8 +1,11 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sidebarLinks } from "@/data/sidebarLinks";
+
+const SIDEBAR_SCROLL_KEY = "itAssetSidebarScroll";
 
 const accessManagementLinks = [
   {
@@ -28,12 +31,39 @@ export default function Sidebar({
   onLogout,
 }) {
   const pathname = usePathname();
+  const navRef = useRef(null);
 
-  const visibleLinks = [
-    ...sidebarLinks,
+  const managementLinks = [
     ...(canManageAccessRequests ? accessManagementLinks : []),
     ...(isSuperAdmin ? superAdminOnlyLinks : []),
   ];
+  const utilityStartIndex = sidebarLinks.findIndex(
+    (link) => link.path === "/settings"
+  );
+  const visibleLinks =
+    utilityStartIndex === -1
+      ? [...sidebarLinks, ...managementLinks]
+      : [
+          ...sidebarLinks.slice(0, utilityStartIndex),
+          ...managementLinks,
+          ...sidebarLinks.slice(utilityStartIndex),
+        ];
+
+  useEffect(() => {
+    const navElement = navRef.current;
+    const savedScroll = Number(sessionStorage.getItem(SIDEBAR_SCROLL_KEY) || 0);
+
+    if (navElement) {
+      navElement.scrollTop = savedScroll;
+    }
+  }, [pathname]);
+
+  function handleSidebarScroll(event) {
+    sessionStorage.setItem(
+      SIDEBAR_SCROLL_KEY,
+      String(event.currentTarget.scrollTop)
+    );
+  }
 
   return (
     <aside className="flex h-full w-72 flex-col bg-gray-950 text-white">
@@ -53,7 +83,11 @@ export default function Sidebar({
         </button>
       </div>
 
-      <nav className="flex-1 space-y-1 overflow-y-auto p-4">
+      <nav
+        ref={navRef}
+        onScroll={handleSidebarScroll}
+        className="flex-1 space-y-1 overflow-y-auto p-4"
+      >
         {visibleLinks.map((link) => {
           const isActive =
             pathname === link.path || pathname.startsWith(`${link.path}/`);

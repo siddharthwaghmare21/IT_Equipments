@@ -106,7 +106,7 @@ export default function Header({
             className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100"
             aria-label="Open notifications"
           >
-            N
+            <span aria-hidden="true">🔔</span>
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
           </button>
           <button
@@ -115,7 +115,7 @@ export default function Header({
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100"
             aria-label="Toggle dark mode"
           >
-            {isDarkMode ? "L" : "D"}
+            <span aria-hidden="true">{isDarkMode ? "☀️" : "🌙"}</span>
           </button>
         </div>
       </div>
@@ -138,7 +138,7 @@ export default function Header({
             className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100"
             aria-label="Open notifications"
           >
-            N
+            <span aria-hidden="true">🔔</span>
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
           </button>
         </div>
@@ -149,7 +149,7 @@ export default function Header({
           className="hidden h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-100 xl:inline-flex"
           aria-label="Toggle dark mode"
         >
-          {isDarkMode ? "L" : "D"}
+          <span aria-hidden="true">{isDarkMode ? "☀️" : "🌙"}</span>
         </button>
 
       <div className="flex items-center justify-between gap-3 xl:justify-end">

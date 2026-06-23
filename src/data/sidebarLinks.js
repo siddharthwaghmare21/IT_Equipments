@@ -5,9 +5,9 @@ export const sidebarLinks = [
     short: "DB",
   },
   {
-    label: "Assets",
-    path: "/assets",
-    short: "AS",
+    label: "Import Data",
+    path: "/import-data",
+    short: "IM",
   },
   {
     label: "Purchases",
@@ -18,6 +18,11 @@ export const sidebarLinks = [
     label: "Vendors",
     path: "/vendors",
     short: "VE",
+  },
+  {
+    label: "Assets",
+    path: "/assets",
+    short: "AS",
   },
   {
     label: "Employees",
@@ -50,21 +55,6 @@ export const sidebarLinks = [
     short: "RP",
   },
   {
-    label: "Search",
-    path: "/search",
-    short: "SE",
-  },
-  {
-    label: "Import Data",
-    path: "/import-data",
-    short: "IM",
-  },
-  {
-    label: "Help / SOP",
-    path: "/help",
-    short: "HP",
-  },
-  {
     label: "Activity Logs",
     path: "/activity-logs",
     short: "AL",
@@ -78,5 +68,10 @@ export const sidebarLinks = [
     label: "Profile",
     path: "/profile",
     short: "PR",
+  },
+  {
+    label: "Help / SOP",
+    path: "/help",
+    short: "HP",
   },
 ];
