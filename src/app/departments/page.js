@@ -5,6 +5,9 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const departments = [
   {
@@ -115,6 +118,7 @@ function DepartmentStatusBadge({ status }) {
 export default function DepartmentsPage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [archiveDepartment, setArchiveDepartment] = useState(null);
 
   const filteredDepartments = useMemo(() => {
     return departments.filter((department) => {
@@ -141,13 +145,12 @@ export default function DepartmentsPage() {
   }, [search, activeFilter]);
 
   function handleArchive(department) {
-    const confirmed = confirm(
-      `Are you sure you want to archive ${department.departmentName}?`
-    );
+    setArchiveDepartment(department);
+  }
 
-    if (confirmed) {
-      alert("Department archive action added. Backend will be connected later.");
-    }
+  function confirmArchive() {
+    showToast("Department archive action added. Backend will be connected later.");
+    setArchiveDepartment(null);
   }
 
   return (
@@ -342,11 +345,25 @@ export default function DepartmentsPage() {
         </table>
 
         {filteredDepartments.length === 0 && (
-          <div className="p-6 text-center text-sm text-gray-500">
-            No departments found.
+          <div className="p-6">
+            <EmptyState
+              title="No departments found"
+              description="Try changing department search or status filters."
+            />
           </div>
         )}
       </TableWrapper>
+
+      <ConfirmDialog
+        isOpen={Boolean(archiveDepartment)}
+        title="Archive department?"
+        description={`Department ${
+          archiveDepartment?.departmentName || ""
+        } will be archived after backend integration.`}
+        confirmLabel="Archive"
+        onCancel={() => setArchiveDepartment(null)}
+        onConfirm={confirmArchive}
+      />
     </LayoutWrapper>
   );
 }

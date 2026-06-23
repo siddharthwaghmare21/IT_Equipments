@@ -5,6 +5,7 @@ import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
+import { showToast } from "@/components/common/ToastHost";
 
 export default function AddDeliveryPage() {
   const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ export default function AddDeliveryPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Delivery saved successfully. Backend will be connected later.");
+    showToast("Delivery saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -435,3 +436,7 @@ export default function AddDeliveryPage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

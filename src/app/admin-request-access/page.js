@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { LoadingState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const ACCESS_CODE = "DataCenterSMKC";
 const USERS_KEY = "itAssetUsers";
@@ -86,7 +88,7 @@ export default function AdminRequestAccessPage() {
     }
 
     if (formData.accessCode !== ACCESS_CODE) {
-      alert("Invalid access code. Access request denied.");
+      showToast("Invalid access code. Access request denied.", "error");
       return;
     }
 
@@ -102,7 +104,7 @@ export default function AdminRequestAccessPage() {
     );
 
     if (userAlreadyExists) {
-      alert("This email already has an account. Please login.");
+      showToast("This email already has an account. Please login.", "warning");
       return;
     }
 
@@ -112,7 +114,7 @@ export default function AdminRequestAccessPage() {
     );
 
     if (pendingRequestExists) {
-      alert("Access request already submitted for this email.");
+      showToast("Access request already submitted for this email.", "warning");
       return;
     }
 
@@ -135,12 +137,16 @@ export default function AdminRequestAccessPage() {
     );
 
     setIsSubmitted(true);
+    showToast("Access request submitted successfully.");
   }
 
   if (isLoading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-        <p className="text-sm font-semibold text-gray-700">Loading...</p>
+        <LoadingState
+          title="Loading request form"
+          description="Checking Super Admin setup status."
+        />
       </main>
     );
   }

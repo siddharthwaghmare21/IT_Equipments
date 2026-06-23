@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
+import { showToast } from "@/components/common/ToastHost";
 
 const purchases = [
   {
@@ -91,7 +92,7 @@ export default function EditPurchasePage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Purchase changes saved successfully. Backend will be connected later.");
+    showToast("Purchase changes saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -482,3 +483,7 @@ export default function EditPurchasePage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

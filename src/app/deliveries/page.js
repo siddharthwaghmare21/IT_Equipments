@@ -5,6 +5,9 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const deliveries = [
   {
@@ -124,6 +127,7 @@ function DeliveryStatusBadge({ status }) {
 export default function DeliveriesPage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [archiveDelivery, setArchiveDelivery] = useState(null);
 
   const filteredDeliveries = useMemo(() => {
     return deliveries.filter((delivery) => {
@@ -154,13 +158,12 @@ export default function DeliveriesPage() {
   }, [search, activeFilter]);
 
   function handleArchive(delivery) {
-    const confirmed = confirm(
-      `Archive delivery ${delivery.deliveryCode}? This keeps history for audit and reporting.`
-    );
+    setArchiveDelivery(delivery);
+  }
 
-    if (confirmed) {
-      alert("Delivery archive action added. Backend will be connected later.");
-    }
+  function confirmArchive() {
+    showToast("Delivery archive action added. Backend will be connected later.");
+    setArchiveDelivery(null);
   }
 
   return (
@@ -376,11 +379,25 @@ export default function DeliveriesPage() {
         </table>
 
         {filteredDeliveries.length === 0 && (
-          <div className="p-6 text-center text-sm text-gray-500">
-            No delivery records found.
+          <div className="p-6">
+            <EmptyState
+              title="No delivery records found"
+              description="Try changing search or delivery status filters."
+            />
           </div>
         )}
       </TableWrapper>
+
+      <ConfirmDialog
+        isOpen={Boolean(archiveDelivery)}
+        title="Archive delivery?"
+        description={`Delivery ${
+          archiveDelivery?.deliveryCode || ""
+        } will keep its audit and reporting history.`}
+        confirmLabel="Archive"
+        onCancel={() => setArchiveDelivery(null)}
+        onConfirm={confirmArchive}
+      />
     </LayoutWrapper>
   );
 }

@@ -4,6 +4,11 @@
   color-scheme: light;
 }
 
+:focus-visible {
+  outline: 3px solid #111827;
+  outline-offset: 2px;
+}
+
 .dark {
   color-scheme: dark;
 }
@@ -55,4 +60,21 @@
   background-color: #111827;
   color: #f9fafb;
   border-color: #4b5563;
+}
+
+@media print {
+  .no-print,
+  header,
+  aside {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+  }
+
+  .print-area {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
 }

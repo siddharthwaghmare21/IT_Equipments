@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
+import { showToast } from "@/components/common/ToastHost";
 
 const departments = [
   {
@@ -144,7 +145,7 @@ export default function EditDepartmentPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Department changes saved successfully. Backend will be connected later.");
+    showToast("Department changes saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -399,3 +400,7 @@ export default function EditDepartmentPage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

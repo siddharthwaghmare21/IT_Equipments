@@ -5,6 +5,9 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const maintenanceRecords = [
   {
@@ -133,6 +136,7 @@ function MaintenanceStatusBadge({ status }) {
 export default function MaintenancePage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [archiveRecord, setArchiveRecord] = useState(null);
 
   const filteredMaintenanceRecords = useMemo(() => {
     return maintenanceRecords.filter((record) => {
@@ -161,13 +165,12 @@ export default function MaintenancePage() {
   }, [search, activeFilter]);
 
   function handleArchive(record) {
-    const confirmed = confirm(
-      `Are you sure you want to archive maintenance record ${record.maintenanceCode}?`
-    );
+    setArchiveRecord(record);
+  }
 
-    if (confirmed) {
-      alert("Maintenance archive action added. Backend will be connected later.");
-    }
+  function confirmArchive() {
+    showToast("Maintenance archive action added. Backend will be connected later.");
+    setArchiveRecord(null);
   }
 
   return (
@@ -371,11 +374,25 @@ export default function MaintenancePage() {
         </table>
 
         {filteredMaintenanceRecords.length === 0 && (
-          <div className="p-6 text-center text-sm text-gray-500">
-            No maintenance records found.
+          <div className="p-6">
+            <EmptyState
+              title="No maintenance records found"
+              description="Try changing asset, issue, priority or status filters."
+            />
           </div>
         )}
       </TableWrapper>
+
+      <ConfirmDialog
+        isOpen={Boolean(archiveRecord)}
+        title="Archive maintenance record?"
+        description={`Maintenance record ${
+          archiveRecord?.maintenanceCode || ""
+        } will be archived after backend integration.`}
+        confirmLabel="Archive"
+        onCancel={() => setArchiveRecord(null)}
+        onConfirm={confirmArchive}
+      />
     </LayoutWrapper>
   );
 }

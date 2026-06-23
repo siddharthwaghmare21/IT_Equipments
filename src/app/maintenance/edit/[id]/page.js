@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
+import { showToast } from "@/components/common/ToastHost";
 
 const maintenanceRecords = [
   {
@@ -162,7 +163,7 @@ export default function EditMaintenancePage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert(
+    showToast(
       "Maintenance changes saved successfully. Backend will be connected later."
     );
   }
@@ -522,3 +523,7 @@ export default function EditMaintenancePage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

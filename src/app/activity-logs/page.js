@@ -5,6 +5,7 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ReportExportButtons from "@/components/common/ReportExportButtons";
+import { EmptyState } from "@/components/common/StateBlock";
 
 const activityLogs = [
   {
@@ -130,6 +131,9 @@ function ActivityStatusBadge({ status }) {
 export default function ActivityLogsPage() {
   const [search, setSearch] = useState("");
   const [activeModule, setActiveModule] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [userFilter, setUserFilter] = useState("All");
+  const [dateFilter, setDateFilter] = useState("");
 
   const filteredLogs = useMemo(() => {
     return activityLogs.filter((log) => {
@@ -149,9 +153,17 @@ export default function ActivityLogsPage() {
       const matchesModule =
         activeModule === "All" || log.module === activeModule;
 
-      return matchesSearch && matchesModule;
+      const matchesStatus =
+        statusFilter === "All" || log.status === statusFilter;
+
+      const matchesUser =
+        userFilter === "All" || log.performedBy === userFilter;
+
+      const matchesDate = !dateFilter || log.date === dateFilter;
+
+      return matchesSearch && matchesModule && matchesStatus && matchesUser && matchesDate;
     });
-  }, [search, activeModule]);
+  }, [search, activeModule, statusFilter, userFilter, dateFilter]);
 
   const successLogs = activityLogs.filter(
     (log) => log.status === "Success"
@@ -161,6 +173,8 @@ export default function ActivityLogsPage() {
     .length;
 
   const uniqueModules = new Set(activityLogs.map((log) => log.module)).size;
+  const userFilters = ["All", ...new Set(activityLogs.map((log) => log.performedBy))];
+  const statusFilters = ["All", "Success", "Failed", "Warning"];
 
   return (
     <LayoutWrapper>
@@ -200,13 +214,13 @@ export default function ActivityLogsPage() {
       </section>
 
       <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex flex-col gap-4">
           <input
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by module, action, user, role, status or description..."
-            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 xl:max-w-md"
+            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
 
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -224,6 +238,39 @@ export default function ActivityLogsPage() {
                 {filter}
               </button>
             ))}
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              {statusFilters.map((status) => (
+                <option key={status} value={status}>
+                  {status === "All" ? "All Statuses" : status}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={userFilter}
+              onChange={(event) => setUserFilter(event.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            >
+              {userFilters.map((user) => (
+                <option key={user} value={user}>
+                  {user === "All" ? "All Users" : user}
+                </option>
+              ))}
+            </select>
+
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(event) => setDateFilter(event.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            />
           </div>
         </div>
       </section>
@@ -302,11 +349,41 @@ export default function ActivityLogsPage() {
         </table>
 
         {filteredLogs.length === 0 && (
-          <div className="p-6 text-center text-sm text-gray-500">
-            No activity logs found.
+          <div className="p-6">
+            <EmptyState
+              title="No activity logs found"
+              description="Try changing module, status, user, date or search filters."
+            />
           </div>
         )}
       </TableWrapper>
+
+      <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h3 className="text-lg font-bold text-gray-900">Activity Timeline</h3>
+
+        <div className="mt-4 space-y-4">
+          {filteredLogs.slice(0, 5).map((log) => (
+            <div key={`timeline-${log.id}`} className="flex gap-3">
+              <span
+                className={`mt-1 h-3 w-3 rounded-full ${
+                  log.status === "Failed" ? "bg-red-600" : "bg-green-700"
+                }`}
+              />
+              <div>
+                <p className="text-sm font-semibold text-gray-900">
+                  {log.action}
+                </p>
+                <p className="mt-1 text-sm leading-6 text-gray-600">
+                  {log.description}
+                </p>
+                <p className="mt-1 text-xs font-medium text-gray-500">
+                  {log.date} {log.time} by {log.performedBy}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <h3 className="text-lg font-bold text-gray-900">Audit Note</h3>

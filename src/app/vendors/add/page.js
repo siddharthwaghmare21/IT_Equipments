@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import { showToast } from "@/components/common/ToastHost";
 
 export default function AddVendorPage() {
   const [formData, setFormData] = useState({
@@ -39,7 +40,7 @@ export default function AddVendorPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Vendor saved successfully. Backend will be connected later.");
+    showToast("Vendor saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -360,3 +361,7 @@ export default function AddVendorPage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

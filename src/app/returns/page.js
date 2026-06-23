@@ -5,6 +5,9 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const returnRecords = [
   {
@@ -132,6 +135,7 @@ function ReturnStatusBadge({ status }) {
 export default function ReturnsPage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [archiveReturn, setArchiveReturn] = useState(null);
 
   const filteredReturnRecords = useMemo(() => {
     return returnRecords.filter((returnItem) => {
@@ -164,13 +168,12 @@ export default function ReturnsPage() {
   }, [search, activeFilter]);
 
   function handleArchive(returnItem) {
-    const confirmed = confirm(
-      `Archive return record ${returnItem.returnCode}? This keeps history for audit and reporting.`
-    );
+    setArchiveReturn(returnItem);
+  }
 
-    if (confirmed) {
-      alert("Return archive action added. Backend will be connected later.");
-    }
+  function confirmArchive() {
+    showToast("Return archive action added. Backend will be connected later.");
+    setArchiveReturn(null);
   }
 
   return (
@@ -402,11 +405,25 @@ export default function ReturnsPage() {
         </table>
 
         {filteredReturnRecords.length === 0 && (
-          <div className="p-6 text-center text-sm text-gray-500">
-            No return records found.
+          <div className="p-6">
+            <EmptyState
+              title="No return records found"
+              description="Try changing employee, asset, inspection or status filters."
+            />
           </div>
         )}
       </TableWrapper>
+
+      <ConfirmDialog
+        isOpen={Boolean(archiveReturn)}
+        title="Archive return?"
+        description={`Return ${
+          archiveReturn?.returnCode || ""
+        } will keep its audit and reporting history.`}
+        confirmLabel="Archive"
+        onCancel={() => setArchiveReturn(null)}
+        onConfirm={confirmArchive}
+      />
     </LayoutWrapper>
   );
 }

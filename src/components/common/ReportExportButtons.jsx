@@ -1,9 +1,11 @@
 "use client";
 
+import { showToast } from "./ToastHost";
+
 export default function ReportExportButtons({ data = [], fileName = "report" }) {
   function exportToCSV() {
     if (!data || data.length === 0) {
-      alert("No data available to export.");
+      showToast("No data available to export.", "warning");
       return;
     }
 
@@ -35,6 +37,7 @@ export default function ReportExportButtons({ data = [], fileName = "report" }) 
     link.click();
 
     URL.revokeObjectURL(url);
+    showToast("CSV export downloaded.");
   }
 
   function printReport() {

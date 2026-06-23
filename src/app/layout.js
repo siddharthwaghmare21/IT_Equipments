@@ -1,5 +1,6 @@
 import "./globals.css";
 import AuthProvider from "@/components/common/AuthProvider";
+import ToastHost from "@/components/common/ToastHost";
 
 export const metadata = {
   title: "IT Assets & Equipment Management",
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <AuthProvider>{children}</AuthProvider>
+        <ToastHost />
       </body>
     </html>
   );

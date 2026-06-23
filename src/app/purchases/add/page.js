@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import { showToast } from "@/components/common/ToastHost";
 
 export default function AddPurchasePage() {
   const [formData, setFormData] = useState({
@@ -46,7 +47,7 @@ export default function AddPurchasePage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Purchase saved successfully. Backend will be connected later.");
+    showToast("Purchase saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -433,3 +434,7 @@ export default function AddPurchasePage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

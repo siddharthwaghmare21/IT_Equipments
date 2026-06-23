@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { LoadingState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const ACCESS_CODE = "DataCenterSMKC";
 const USERS_KEY = "itAssetUsers";
@@ -17,6 +19,11 @@ export default function LoginPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [hasSuperAdmin, setHasSuperAdmin] = useState(false);
+  const [authStep, setAuthStep] = useState("login");
+  const [pendingUser, setPendingUser] = useState(null);
+  const [otp, setOtp] = useState("");
+  const [resendTimer, setResendTimer] = useState(0);
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     email: "",
@@ -49,6 +56,16 @@ export default function LoginPage() {
     }, 0);
   }, [router]);
 
+  useEffect(() => {
+    if (resendTimer === 0) return;
+
+    const timer = setTimeout(() => {
+      setResendTimer((currentValue) => Math.max(currentValue - 1, 0));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [resendTimer]);
+
   function handleChange(event) {
     const { name, value } = event.target;
 
@@ -56,13 +73,42 @@ export default function LoginPage() {
       ...previousData,
       [name]: value,
     }));
+
+    setErrors((previousErrors) => ({
+      ...previousErrors,
+      [name]: "",
+      form: "",
+    }));
+  }
+
+  function validateLoginForm() {
+    const nextErrors = {};
+
+    if (!formData.email.trim()) {
+      nextErrors.email = "Official email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      nextErrors.email = "Enter a valid official email.";
+    }
+
+    if (!formData.password) {
+      nextErrors.password = "Password is required.";
+    }
+
+    if (!formData.accessCode) {
+      nextErrors.accessCode = "Access code is required.";
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
   }
 
   function handleSubmit(event) {
     event.preventDefault();
 
+    if (!validateLoginForm()) return;
+
     if (formData.accessCode !== ACCESS_CODE) {
-      alert("Invalid access code. Login denied.");
+      setErrors({ form: "Invalid access code. Login denied." });
       return;
     }
 
@@ -74,43 +120,69 @@ export default function LoginPage() {
     );
 
     if (!matchedUser) {
-      alert("User account not found. Please request access.");
+      setErrors({ form: "User account not found. Please request access." });
       return;
     }
 
     if (matchedUser.status !== "Active") {
-      alert("Your account is not active. Please contact Super Admin.");
+      if (matchedUser.status === "Rejected") {
+        setAuthStep("rejected");
+      } else {
+        setAuthStep("approval-pending");
+      }
       return;
     }
 
     if (matchedUser.password !== formData.password) {
-      alert("Invalid password. Please try again.");
+      setErrors({ password: "Invalid password. Please try again." });
+      return;
+    }
+
+    setPendingUser(matchedUser);
+    setAuthStep("otp");
+    setResendTimer(30);
+    showToast("Demo OTP sent. Use 123456 until backend email OTP is connected.");
+  }
+
+  function handleOtpSubmit(event) {
+    event.preventDefault();
+
+    if (otp !== "123456") {
+      setErrors({ otp: "Invalid OTP. Use demo OTP 123456." });
       return;
     }
 
     localStorage.setItem(
       SESSION_KEY,
       JSON.stringify({
-        id: matchedUser.id,
-        fullName: matchedUser.fullName,
-        email: matchedUser.email,
-        phone: matchedUser.phone,
-        department: matchedUser.department || "IT Department",
-        role: matchedUser.role,
-        status: matchedUser.status,
+        id: pendingUser.id,
+        fullName: pendingUser.fullName,
+        email: pendingUser.email,
+        phone: pendingUser.phone,
+        department: pendingUser.department || "IT Department",
+        role: pendingUser.role,
+        status: pendingUser.status,
         loginAt: new Date().toISOString(),
       })
     );
 
-    alert("Login successful.");
+    showToast("Login successful.");
 
     router.push("/dashboard");
+  }
+
+  function handleResendOtp() {
+    setResendTimer(30);
+    showToast("Demo OTP resent. Use 123456 until backend email OTP is connected.");
   }
 
   if (isLoading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-        <p className="text-sm font-semibold text-gray-700">Loading...</p>
+        <LoadingState
+          title="Loading login"
+          description="Checking local frontend session."
+        />
       </main>
     );
   }
@@ -140,6 +212,121 @@ export default function LoginPage() {
             >
               Create First Super Admin
             </Link>
+          </section>
+        </div>
+      </main>
+    );
+  }
+
+  if (authStep === "approval-pending" || authStep === "rejected") {
+    const isRejected = authStep === "rejected";
+
+    return (
+      <main className="min-h-screen bg-gray-100 px-4 py-10">
+        <div className="mx-auto flex min-h-[80vh] max-w-xl items-center justify-center">
+          <section className="w-full rounded-3xl border border-gray-200 bg-white p-6 text-center shadow-sm sm:p-8">
+            <div
+              className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl text-xl font-bold text-white ${
+                isRejected ? "bg-red-700" : "bg-yellow-600"
+              }`}
+            >
+              {isRejected ? "NO" : "WT"}
+            </div>
+
+            <h1 className="mt-6 text-2xl font-bold text-gray-900">
+              {isRejected ? "Access Request Rejected" : "Approval Pending"}
+            </h1>
+
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              {isRejected
+                ? "Your access request is rejected. Contact Super Admin for details."
+                : "Your account is not active yet. Super Admin or Admin approval is required before login."}
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setAuthStep("login")}
+              className="mt-6 inline-flex w-full justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+            >
+              Back to Login
+            </button>
+          </section>
+        </div>
+      </main>
+    );
+  }
+
+  if (authStep === "otp") {
+    return (
+      <main className="min-h-screen bg-gray-100 px-4 py-10">
+        <div className="mx-auto flex min-h-[80vh] max-w-xl items-center justify-center">
+          <section className="w-full rounded-3xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-900 text-xl font-bold text-white">
+              OTP
+            </div>
+
+            <h1 className="mt-6 text-center text-2xl font-bold text-gray-900">
+              Verify Email OTP
+            </h1>
+
+            <p className="mt-3 text-center text-sm leading-6 text-gray-600">
+              OTP verification screen is ready. Backend email service will send
+              real OTP later. For frontend demo, use 123456.
+            </p>
+
+            <form onSubmit={handleOtpSubmit} className="mt-6 space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  One Time Password
+                </label>
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(event) => {
+                    setOtp(event.target.value);
+                    setErrors((previousErrors) => ({
+                      ...previousErrors,
+                      otp: "",
+                    }));
+                  }}
+                  inputMode="numeric"
+                  maxLength="6"
+                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-center text-lg font-bold tracking-[0.35em] outline-none focus:border-gray-900"
+                  required
+                />
+                {errors.otp && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">
+                    {errors.otp}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+              >
+                Verify & Open Dashboard
+              </button>
+            </form>
+
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-between">
+              <button
+                type="button"
+                onClick={() => setAuthStep("login")}
+                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+              >
+                Change Login
+              </button>
+
+              <button
+                type="button"
+                onClick={handleResendOtp}
+                disabled={resendTimer > 0}
+                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend OTP"}
+              </button>
+            </div>
           </section>
         </div>
       </main>
@@ -207,6 +394,11 @@ export default function LoginPage() {
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
                 required
               />
+              {errors.email && (
+                <p className="mt-2 text-xs font-semibold text-red-600">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             <div>
@@ -222,6 +414,11 @@ export default function LoginPage() {
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
                 required
               />
+              {errors.password && (
+                <p className="mt-2 text-xs font-semibold text-red-600">
+                  {errors.password}
+                </p>
+              )}
             </div>
 
             <div>
@@ -237,7 +434,18 @@ export default function LoginPage() {
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
                 required
               />
+              {errors.accessCode && (
+                <p className="mt-2 text-xs font-semibold text-red-600">
+                  {errors.accessCode}
+                </p>
+              )}
             </div>
+
+            {errors.form && (
+              <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">
+                {errors.form}
+              </p>
+            )}
 
             <button
               type="submit"

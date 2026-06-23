@@ -5,6 +5,9 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const vendors = [
   {
@@ -120,6 +123,7 @@ function VendorStatusBadge({ status }) {
 export default function VendorsPage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [archiveVendor, setArchiveVendor] = useState(null);
 
   const filteredVendors = useMemo(() => {
     return vendors.filter((vendor) => {
@@ -149,13 +153,12 @@ export default function VendorsPage() {
   }, [search, activeFilter]);
 
   function handleArchive(vendor) {
-    const confirmed = confirm(
-      `Are you sure you want to archive ${vendor.vendorName}?`
-    );
+    setArchiveVendor(vendor);
+  }
 
-    if (confirmed) {
-      alert("Vendor archive action added. Backend will be connected later.");
-    }
+  function confirmArchive() {
+    showToast("Vendor archive action added. Backend will be connected later.");
+    setArchiveVendor(null);
   }
 
   return (
@@ -332,11 +335,25 @@ export default function VendorsPage() {
         </table>
 
         {filteredVendors.length === 0 && (
-          <div className="p-6 text-center text-sm text-gray-500">
-            No vendors found.
+          <div className="p-6">
+            <EmptyState
+              title="No vendors found"
+              description="Try changing vendor search, compliance or status filters."
+            />
           </div>
         )}
       </TableWrapper>
+
+      <ConfirmDialog
+        isOpen={Boolean(archiveVendor)}
+        title="Archive vendor?"
+        description={`Vendor ${
+          archiveVendor?.vendorName || ""
+        } will be archived after backend integration.`}
+        confirmLabel="Archive"
+        onCancel={() => setArchiveVendor(null)}
+        onConfirm={confirmArchive}
+      />
     </LayoutWrapper>
   );
 }

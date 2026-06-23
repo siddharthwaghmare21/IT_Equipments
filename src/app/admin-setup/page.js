@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { showToast } from "@/components/common/ToastHost";
 
 const ACCESS_CODE = "DataCenterSMKC";
 const USERS_KEY = "itAssetUsers";
@@ -82,7 +82,7 @@ export default function AdminSetupPage() {
     }
 
     if (formData.accessCode !== ACCESS_CODE) {
-      alert("Invalid access code. Super Admin setup denied.");
+      showToast("Invalid access code. Super Admin setup denied.");
       return;
     }
 
@@ -93,7 +93,7 @@ export default function AdminSetupPage() {
     );
 
     if (hasSuperAdmin) {
-      alert("Super Admin already exists. Please login.");
+      showToast("Super Admin already exists. Please login.");
       router.push("/login");
       return;
     }
@@ -126,7 +126,7 @@ export default function AdminSetupPage() {
       })
     );
 
-    alert("Super Admin profile created successfully.");
+    showToast("Super Admin profile created successfully.");
 
     router.push("/dashboard");
   }
@@ -336,3 +336,5 @@ export default function AdminSetupPage() {
     </main>
   );
 }
+
+

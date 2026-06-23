@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const USERS_KEY = "itAssetUsers";
 const REQUESTS_KEY = "itAssetAccessRequests";
@@ -63,6 +66,7 @@ export default function AdminRequestManagementPage() {
   const [requests, setRequests] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [statusFilter, setStatusFilter] = useState("All");
+  const [pendingDecision, setPendingDecision] = useState(null);
 
   useEffect(() => {
     const savedRequests = JSON.parse(
@@ -107,41 +111,44 @@ export default function AdminRequestManagementPage() {
 
   function approveRequest(requestId) {
     if (!canApproveAccess) {
-      alert("Only Super Admin or Admin can approve access requests.");
+      showToast("Only Super Admin or Admin can approve access requests.", "error");
       return;
     }
 
     const selectedRequest = requests.find((request) => request.id === requestId);
 
     if (!selectedRequest) {
-      alert("Request not found.");
+      showToast("Request not found.", "error");
       return;
     }
 
     if (selectedRequest.status !== "Pending") {
-      alert("Only pending requests can be approved.");
+      showToast("Only pending requests can be approved.", "warning");
       return;
     }
 
     if (selectedRequest.requestedRole === "Super Admin" && !isSuperAdmin) {
-      alert("Only an existing Super Admin can approve Super Admin requests.");
-      return;
-    }
-
-    if (!selectedRequest.password) {
-      alert(
-        "Password missing in this request. Ask user to submit request again."
+      showToast(
+        "Only an existing Super Admin can approve Super Admin requests.",
+        "error"
       );
       return;
     }
 
-    const confirmed = confirm(
-      `Approve ${selectedRequest.fullName} as ${selectedRequest.requestedRole}?`
-    );
+    if (!selectedRequest.password) {
+      showToast(
+        "Password missing in this request. Ask user to submit request again.",
+        "error"
+      );
+      return;
+    }
 
-    if (!confirmed) return;
+    setPendingDecision({ type: "approve", request: selectedRequest });
+  }
 
+  function confirmApproveRequest(selectedRequest) {
     const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+
 
     const emailAlreadyExists = savedUsers.some(
       (user) =>
@@ -149,7 +156,8 @@ export default function AdminRequestManagementPage() {
     );
 
     if (emailAlreadyExists) {
-      alert("This email already exists in users list.");
+      showToast("This email already exists in users list.", "warning");
+      setPendingDecision(null);
       return;
     }
 
@@ -182,32 +190,33 @@ export default function AdminRequestManagementPage() {
 
     updateRequestsInStorage(updatedRequests);
 
-    alert("Access request approved successfully.");
+    showToast("Access request approved successfully.");
+    setPendingDecision(null);
   }
 
   function rejectRequest(requestId) {
     if (!canApproveAccess) {
-      alert("Only Super Admin or Admin can reject access requests.");
+      showToast("Only Super Admin or Admin can reject access requests.", "error");
       return;
     }
 
     const selectedRequest = requests.find((request) => request.id === requestId);
 
     if (!selectedRequest) {
-      alert("Request not found.");
+      showToast("Request not found.", "error");
       return;
     }
 
     if (selectedRequest.status !== "Pending") {
-      alert("Only pending requests can be rejected.");
+      showToast("Only pending requests can be rejected.", "warning");
       return;
     }
 
-    const confirmed = confirm(
-      `Reject access request of ${selectedRequest.fullName}?`
-    );
+    setPendingDecision({ type: "reject", request: selectedRequest });
+  }
 
-    if (!confirmed) return;
+  function confirmRejectRequest(selectedRequest) {
+    const requestId = selectedRequest.id;
 
     const updatedRequests = requests.map((request) =>
       request.id === requestId
@@ -222,7 +231,19 @@ export default function AdminRequestManagementPage() {
 
     updateRequestsInStorage(updatedRequests);
 
-    alert("Access request rejected.");
+    showToast("Access request rejected.", "warning");
+    setPendingDecision(null);
+  }
+
+  function confirmPendingDecision() {
+    if (!pendingDecision) return;
+
+    if (pendingDecision.type === "approve") {
+      confirmApproveRequest(pendingDecision.request);
+      return;
+    }
+
+    confirmRejectRequest(pendingDecision.request);
   }
 
   return (
@@ -325,11 +346,11 @@ export default function AdminRequestManagementPage() {
           <tbody className="divide-y divide-gray-200 bg-white">
             {filteredRequests.length === 0 ? (
               <tr>
-                <td
-                  colSpan="7"
-                  className="px-4 py-8 text-center text-sm text-gray-500"
-                >
-                  No access requests found.
+                <td colSpan="7" className="px-4 py-8">
+                  <EmptyState
+                    title="No access requests found"
+                    description="Try changing request status filter."
+                  />
                 </td>
               </tr>
             ) : (
@@ -406,6 +427,28 @@ export default function AdminRequestManagementPage() {
         secure database records, password hashing, email OTP verification and
         server-side role validation.
       </p>
+
+      <ConfirmDialog
+        isOpen={Boolean(pendingDecision)}
+        title={
+          pendingDecision?.type === "approve"
+            ? "Approve access request?"
+            : "Reject access request?"
+        }
+        description={
+          pendingDecision?.type === "approve"
+            ? `Approve ${
+                pendingDecision?.request?.fullName || "this user"
+              } as ${pendingDecision?.request?.requestedRole || ""}?`
+            : `Reject access request of ${
+                pendingDecision?.request?.fullName || "this user"
+              }?`
+        }
+        confirmLabel={pendingDecision?.type === "approve" ? "Approve" : "Reject"}
+        tone={pendingDecision?.type === "approve" ? "default" : "danger"}
+        onCancel={() => setPendingDecision(null)}
+        onConfirm={confirmPendingDecision}
+      />
     </LayoutWrapper>
   );
 }

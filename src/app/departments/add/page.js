@@ -5,6 +5,7 @@ import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
+import { showToast } from "@/components/common/ToastHost";
 
 export default function AddDepartmentPage() {
   const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ export default function AddDepartmentPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Department saved successfully. Backend will be connected later.");
+    showToast("Department saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -283,3 +284,7 @@ export default function AddDepartmentPage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

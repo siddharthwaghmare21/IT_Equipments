@@ -5,6 +5,9 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const purchases = [
   {
@@ -121,6 +124,7 @@ function PurchaseStatusBadge({ status }) {
 export default function PurchasesPage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [archivePurchase, setArchivePurchase] = useState(null);
 
   const filteredPurchases = useMemo(() => {
     return purchases.filter((purchase) => {
@@ -149,13 +153,12 @@ export default function PurchasesPage() {
   }, [search, activeFilter]);
 
   function handleArchive(purchase) {
-    const confirmed = confirm(
-      `Are you sure you want to archive ${purchase.poNumber}?`
-    );
+    setArchivePurchase(purchase);
+  }
 
-    if (confirmed) {
-      alert("Purchase archive action added. Backend will be connected later.");
-    }
+  function confirmArchive() {
+    showToast("Purchase archive action added. Backend will be connected later.");
+    setArchivePurchase(null);
   }
 
   return (
@@ -347,11 +350,25 @@ export default function PurchasesPage() {
         </table>
 
         {filteredPurchases.length === 0 && (
-          <div className="p-6 text-center text-sm text-gray-500">
-            No purchases found.
+          <div className="p-6">
+            <EmptyState
+              title="No purchases found"
+              description="Try changing PO, vendor, payment or status filters."
+            />
           </div>
         )}
       </TableWrapper>
+
+      <ConfirmDialog
+        isOpen={Boolean(archivePurchase)}
+        title="Archive purchase?"
+        description={`Purchase ${
+          archivePurchase?.poNumber || ""
+        } will be archived after backend integration.`}
+        confirmLabel="Archive"
+        onCancel={() => setArchivePurchase(null)}
+        onConfirm={confirmArchive}
+      />
     </LayoutWrapper>
   );
 }

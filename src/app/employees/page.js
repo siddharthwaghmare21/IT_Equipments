@@ -5,6 +5,9 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ActionButtons from "@/components/common/ActionButtons";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const employees = [
   {
@@ -115,6 +118,7 @@ function EmployeeStatusBadge({ status }) {
 export default function EmployeesPage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [archiveEmployee, setArchiveEmployee] = useState(null);
 
   const filteredEmployees = useMemo(() => {
     return employees.filter((employee) => {
@@ -143,13 +147,12 @@ export default function EmployeesPage() {
   }, [search, activeFilter]);
 
   function handleArchive(employee) {
-    const confirmed = confirm(
-      `Are you sure you want to archive ${employee.employeeName}?`
-    );
+    setArchiveEmployee(employee);
+  }
 
-    if (confirmed) {
-      alert("Employee archive action added. Backend will be connected later.");
-    }
+  function confirmArchive() {
+    showToast("Employee archive action added. Backend will be connected later.");
+    setArchiveEmployee(null);
   }
 
   return (
@@ -333,11 +336,25 @@ export default function EmployeesPage() {
         </table>
 
         {filteredEmployees.length === 0 && (
-          <div className="p-6 text-center text-sm text-gray-500">
-            No employees found.
+          <div className="p-6">
+            <EmptyState
+              title="No employees found"
+              description="Try changing employee search, department or status filters."
+            />
           </div>
         )}
       </TableWrapper>
+
+      <ConfirmDialog
+        isOpen={Boolean(archiveEmployee)}
+        title="Archive employee?"
+        description={`Employee ${
+          archiveEmployee?.employeeName || ""
+        } will be archived after backend integration.`}
+        confirmLabel="Archive"
+        onCancel={() => setArchiveEmployee(null)}
+        onConfirm={confirmArchive}
+      />
     </LayoutWrapper>
   );
 }

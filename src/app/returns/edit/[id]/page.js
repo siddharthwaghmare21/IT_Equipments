@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
+import { showToast } from "@/components/common/ToastHost";
 
 const returnRecords = [
   {
@@ -160,7 +161,7 @@ export default function EditReturnPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Return changes saved successfully. Backend will be connected later.");
+    showToast("Return changes saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -562,3 +563,7 @@ export default function EditReturnPage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

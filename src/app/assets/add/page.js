@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import { showToast } from "@/components/common/ToastHost";
 
 export default function AddAssetPage() {
   const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ export default function AddAssetPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Asset saved successfully. Backend will be connected later.");
+    showToast("Asset saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -439,3 +440,7 @@ export default function AddAssetPage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

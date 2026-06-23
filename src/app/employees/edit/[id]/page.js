@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
+import { showToast } from "@/components/common/ToastHost";
 
 const employees = [
   {
@@ -98,7 +99,7 @@ export default function EditEmployeePage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Employee changes saved successfully. Backend will be connected later.");
+    showToast("Employee changes saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -371,3 +372,7 @@ export default function EditEmployeePage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

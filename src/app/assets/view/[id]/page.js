@@ -6,6 +6,7 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import StatusBadge from "@/components/common/StatusBadge";
 import BackButton from "@/components/common/BackButton";
+import { showToast } from "@/components/common/ToastHost";
 
 const assets = [
   {
@@ -84,6 +85,36 @@ export default function ViewAssetPage() {
   const assetId = params.id;
 
   const asset = assets.find((item) => item.id === assetId) || assets[0];
+  const auditTimeline = [
+    {
+      title: "Asset Registered",
+      detail: `${asset.createdBy} created this asset record.`,
+      time: asset.createdAt,
+    },
+    {
+      title: "Purchase Linked",
+      detail: `${asset.purchaseRef} attached with warranty expiry ${asset.warrantyExpiry}.`,
+      time: asset.purchaseDate,
+    },
+    {
+      title: asset.status === "Delivered" ? "Asset Delivered" : "Stock Ready",
+      detail:
+        asset.status === "Delivered"
+          ? `Issued to ${asset.deliveredTo} in ${asset.department}.`
+          : `Available at ${asset.location} for future delivery.`,
+      time: asset.updatedAt,
+    },
+    {
+      title: "Last Updated",
+      detail: `${asset.updatedBy} updated lifecycle status to ${asset.lifecycleStatus}.`,
+      time: asset.updatedAt,
+    },
+  ];
+
+  function handlePrintLabel() {
+    showToast("Print preview opened.");
+    window.print();
+  }
 
   return (
     <LayoutWrapper>
@@ -103,7 +134,7 @@ export default function ViewAssetPage() {
         </Link>
       </div>
 
-      <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <section className="print-area rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
         <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500">
@@ -175,35 +206,64 @@ export default function ViewAssetPage() {
           <p className="mt-2 text-sm text-gray-700">{asset.remarks || "-"}</p>
         </div>
 
-        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-            Audit Trail
-          </p>
-          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <div>
-              <p className="text-xs font-medium text-gray-500">Created By</p>
-              <p className="mt-1 text-sm font-semibold text-gray-900">
-                {asset.createdBy}
-              </p>
+        <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-3">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 xl:col-span-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Audit Timeline
+            </p>
+
+            <div className="mt-4 space-y-4">
+              {auditTimeline.map((event) => (
+                <div key={`${event.title}-${event.time}`} className="flex gap-3">
+                  <span className="mt-1 h-3 w-3 rounded-full bg-gray-900" />
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">
+                      {event.title}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-gray-600">
+                      {event.detail}
+                    </p>
+                    <p className="mt-1 text-xs font-medium text-gray-500">
+                      {event.time}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div>
-              <p className="text-xs font-medium text-gray-500">Created At</p>
-              <p className="mt-1 text-sm font-semibold text-gray-900">
-                {asset.createdAt}
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              QR / Barcode Label
+            </p>
+
+            <div className="mt-4 rounded-xl border border-dashed border-gray-300 bg-white p-4 text-center">
+              <div className="mx-auto grid h-36 w-36 grid-cols-4 gap-1 rounded-lg bg-gray-900 p-2">
+                {Array.from({ length: 16 }).map((_, index) => (
+                  <span
+                    key={index}
+                    className={`rounded-sm ${
+                      [1, 2, 4, 7, 8, 11, 13, 14].includes(index)
+                        ? "bg-white"
+                        : "bg-gray-900"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <p className="mt-3 text-sm font-bold text-gray-900">
+                {asset.assetTag}
               </p>
+              <p className="mt-1 text-xs text-gray-500">{asset.qrCode}</p>
             </div>
-            <div>
-              <p className="text-xs font-medium text-gray-500">Updated By</p>
-              <p className="mt-1 text-sm font-semibold text-gray-900">
-                {asset.updatedBy}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-gray-500">Updated At</p>
-              <p className="mt-1 text-sm font-semibold text-gray-900">
-                {asset.updatedAt}
-              </p>
-            </div>
+
+            <button
+              type="button"
+              onClick={handlePrintLabel}
+              className="no-print mt-4 w-full rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
+            >
+              Print Label
+            </button>
           </div>
         </div>
       </section>

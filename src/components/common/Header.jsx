@@ -24,7 +24,11 @@ export default function Header({
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window === "undefined") return false;
+
+    return localStorage.getItem("itAssetTheme") === "dark";
+  });
 
   const notifications = [
     {
@@ -45,12 +49,8 @@ export default function Header({
   ];
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("itAssetTheme");
-    const shouldUseDark = savedTheme === "dark";
-
-    document.documentElement.classList.toggle("dark", shouldUseDark);
-    setIsDarkMode(shouldUseDark);
-  }, []);
+    document.documentElement.classList.toggle("dark", isDarkMode);
+  }, [isDarkMode]);
 
   function handleSearchSubmit(event) {
     event.preventDefault();

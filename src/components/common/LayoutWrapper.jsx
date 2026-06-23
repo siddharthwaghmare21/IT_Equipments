@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import ConfirmDialog from "./ConfirmDialog";
+import { showToast } from "./ToastHost";
 
 const SESSION_KEY = "itAssetUserSession";
 
@@ -12,6 +14,7 @@ export default function LayoutWrapper({ children }) {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     const savedSession = JSON.parse(
@@ -26,12 +29,14 @@ export default function LayoutWrapper({ children }) {
     currentUser?.role === "Super Admin" || currentUser?.role === "Admin";
 
   function handleLogout() {
-    const confirmed = confirm("Are you sure you want to logout?");
+    setShowLogoutConfirm(true);
+  }
 
-    if (!confirmed) return;
-
+  function confirmLogout() {
     localStorage.removeItem(SESSION_KEY);
     setCurrentUser(null);
+    setShowLogoutConfirm(false);
+    showToast("Logged out successfully.");
     router.push("/login");
   }
 
@@ -77,6 +82,17 @@ export default function LayoutWrapper({ children }) {
 
         <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
+
+      <ConfirmDialog
+        isOpen={showLogoutConfirm}
+        title="Logout?"
+        description="Your current session will be closed on this device."
+        confirmLabel="Logout"
+        tone="default"
+        onCancel={() => setShowLogoutConfirm(false)}
+        onConfirm={confirmLogout}
+      />
+
     </div>
   );
 }

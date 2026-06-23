@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { EmptyState } from "@/components/common/StateBlock";
+import { showToast } from "@/components/common/ToastHost";
 
 const USERS_KEY = "itAssetUsers";
 const SESSION_KEY = "itAssetUserSession";
@@ -62,6 +65,7 @@ export default function AdminUsersManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [pendingAction, setPendingAction] = useState(null);
 
   useEffect(() => {
     const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
@@ -104,72 +108,79 @@ export default function AdminUsersManagementPage() {
 
   function handleRoleChange(userId, newRole) {
     if (!isSuperAdmin) {
-      alert("Only Super Admin can change user roles.");
+      showToast("Only Super Admin can change user roles.", "error");
       return;
     }
 
     const selectedUser = users.find((user) => user.id === userId);
 
     if (!selectedUser) {
-      alert("User not found.");
+      showToast("User not found.", "error");
       return;
     }
 
-    const confirmed = confirm(
-      `Change ${selectedUser.fullName}'s role to ${newRole}?`
-    );
-
-    if (!confirmed) return;
-
-    const updatedUsers = users.map((user) =>
-      user.id === userId
-        ? {
-            ...user,
-            role: newRole,
-            updatedAt: new Date().toISOString(),
-            updatedBy: currentUser?.fullName || "Super Admin",
-          }
-        : user
-    );
-
-    updateUsersInStorage(updatedUsers);
-
-    alert("User role updated successfully.");
+    setPendingAction({
+      type: "role",
+      userId,
+      fullName: selectedUser.fullName,
+      nextRole: newRole,
+    });
   }
 
   function toggleUserStatus(userId) {
     if (!isSuperAdmin) {
-      alert("Only Super Admin can update user status.");
+      showToast("Only Super Admin can update user status.", "error");
       return;
     }
 
     const selectedUser = users.find((user) => user.id === userId);
 
     if (!selectedUser) {
-      alert("User not found.");
+      showToast("User not found.", "error");
       return;
     }
 
     if (selectedUser.id === currentUser?.id) {
-      alert("You cannot block your own account.");
+      showToast("You cannot block your own account.", "warning");
       return;
     }
 
     const newStatus = selectedUser.status === "Active" ? "Blocked" : "Active";
 
-    const confirmed = confirm(
-      `${newStatus === "Blocked" ? "Block" : "Activate"} ${
-        selectedUser.fullName
-      }?`
-    );
+    setPendingAction({
+      type: "status",
+      userId,
+      fullName: selectedUser.fullName,
+      nextStatus: newStatus,
+    });
+  }
 
-    if (!confirmed) return;
+  function confirmPendingAction() {
+    if (!pendingAction) return;
+
+    if (pendingAction.type === "role") {
+      const updatedUsers = users.map((user) =>
+        user.id === pendingAction.userId
+          ? {
+              ...user,
+              role: pendingAction.nextRole,
+              updatedAt: new Date().toISOString(),
+              updatedBy: currentUser?.fullName || "Super Admin",
+            }
+          : user
+      );
+
+      updateUsersInStorage(updatedUsers);
+      showToast("User role updated successfully.");
+      setPendingAction(null);
+      return;
+    }
 
     const updatedUsers = users.map((user) =>
-      user.id === userId
+      user.id === pendingAction.userId
         ? {
             ...user,
-            status: newStatus,
+            status: pendingAction.nextStatus,
             updatedAt: new Date().toISOString(),
             updatedBy: currentUser?.fullName || "Super Admin",
           }
@@ -177,8 +188,8 @@ export default function AdminUsersManagementPage() {
     );
 
     updateUsersInStorage(updatedUsers);
-
-    alert(`User ${newStatus.toLowerCase()} successfully.`);
+    showToast(`User ${pendingAction.nextStatus.toLowerCase()} successfully.`);
+    setPendingAction(null);
   }
 
   return (
@@ -292,11 +303,11 @@ export default function AdminUsersManagementPage() {
           <tbody className="divide-y divide-gray-200 bg-white">
             {filteredUsers.length === 0 ? (
               <tr>
-                <td
-                  colSpan="7"
-                  className="px-4 py-8 text-center text-sm text-gray-500"
-                >
-                  No users found.
+                <td colSpan="7" className="px-4 py-8">
+                  <EmptyState
+                    title="No users found"
+                    description="Try changing name, email, role or status filters."
+                  />
                 </td>
               </tr>
             ) : (
@@ -371,6 +382,28 @@ export default function AdminUsersManagementPage() {
         will use secure database records, password hashing, OTP verification and
         server-side role permissions.
       </p>
+
+      <ConfirmDialog
+        isOpen={Boolean(pendingAction)}
+        title={
+          pendingAction?.type === "role"
+            ? "Change user role?"
+            : "Change user status?"
+        }
+        description={
+          pendingAction?.type === "role"
+            ? `Change ${pendingAction?.fullName || "this user"} role to ${
+                pendingAction?.nextRole || ""
+              }?`
+            : `${pendingAction?.nextStatus || "Update"} ${
+                pendingAction?.fullName || "this user"
+              }?`
+        }
+        confirmLabel="Confirm"
+        tone="default"
+        onCancel={() => setPendingAction(null)}
+        onConfirm={confirmPendingAction}
+      />
     </LayoutWrapper>
   );
 }

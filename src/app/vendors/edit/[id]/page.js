@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
+import { showToast } from "@/components/common/ToastHost";
 
 const vendors = [
   {
@@ -83,7 +84,7 @@ export default function EditVendorPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Vendor updated successfully. Backend will be connected later.");
+    showToast("Vendor updated successfully. Backend will be connected later.");
   }
 
   return (
@@ -403,3 +404,7 @@ export default function EditVendorPage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

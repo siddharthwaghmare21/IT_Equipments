@@ -5,6 +5,7 @@ import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
+import { showToast } from "@/components/common/ToastHost";
 
 export default function AddReturnPage() {
   const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ export default function AddReturnPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Return record saved successfully. Backend will be connected later.");
+    showToast("Return record saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -436,3 +437,7 @@ export default function AddReturnPage() {
     </LayoutWrapper>
   );
 }
+
+
+
+

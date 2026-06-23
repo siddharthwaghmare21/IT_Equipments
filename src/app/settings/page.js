@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import { showToast } from "@/components/common/ToastHost";
 
 const SESSION_KEY = "itAssetUserSession";
 
@@ -39,6 +40,12 @@ export default function SettingsPage() {
     dataBackup: false,
     backupFrequency: "Weekly",
     auditRetention: "365",
+    assetTagPrefix: "IT",
+    fiscalYearStart: "April",
+    warrantyLeadDays: "30",
+    assetLabelSize: "Standard",
+    dateFormat: "DD-MM-YYYY",
+    defaultReportView: "Summary",
   });
 
   useEffect(() => {
@@ -63,7 +70,7 @@ export default function SettingsPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    alert("Settings saved successfully. Backend will be connected later.");
+    showToast("Settings saved successfully. Backend will be connected later.");
   }
 
   return (
@@ -429,11 +436,118 @@ export default function SettingsPage() {
           </div>
         </section>
 
+        <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+          <div className="mb-5">
+            <h2 className="text-lg font-bold text-gray-900">
+              Frontend Preferences
+            </h2>
+            <p className="mt-1 text-sm text-gray-600">
+              Configure previews used across forms, labels and reports.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Asset Tag Prefix
+              </label>
+              <input
+                type="text"
+                name="assetTagPrefix"
+                value={settings.assetTagPrefix}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm uppercase outline-none focus:border-gray-900"
+              />
+              <p className="mt-2 text-xs text-gray-500">
+                Preview: {settings.assetTagPrefix || "IT"}-LAP-001
+              </p>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Fiscal Year Start
+              </label>
+              <select
+                name="fiscalYearStart"
+                value={settings.fiscalYearStart}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              >
+                <option value="January">January</option>
+                <option value="April">April</option>
+                <option value="July">July</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Warranty Alert Lead Days
+              </label>
+              <input
+                type="number"
+                name="warrantyLeadDays"
+                value={settings.warrantyLeadDays}
+                onChange={handleChange}
+                min="1"
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Asset Label Size
+              </label>
+              <select
+                name="assetLabelSize"
+                value={settings.assetLabelSize}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              >
+                <option value="Compact">Compact</option>
+                <option value="Standard">Standard</option>
+                <option value="Large">Large</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Date Format
+              </label>
+              <select
+                name="dateFormat"
+                value={settings.dateFormat}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              >
+                <option value="DD-MM-YYYY">DD-MM-YYYY</option>
+                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                <option value="MM-DD-YYYY">MM-DD-YYYY</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Default Report View
+              </label>
+              <select
+                name="defaultReportView"
+                value={settings.defaultReportView}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              >
+                <option value="Summary">Summary</option>
+                <option value="Detailed">Detailed</option>
+                <option value="Audit">Audit</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={() =>
-              alert("Settings reset action will be connected later.")
+              showToast("Settings reset action will be connected later.", "warning")
             }
             className="inline-flex justify-center rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
           >
