@@ -94,6 +94,33 @@ a:active {
   box-shadow: 0 0 0 4px rgb(100 116 139 / 0.25);
 }
 
+.dark .hover\:bg-white:hover,
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover {
+  background-color: #374151 !important;
+}
+
+.dark .hover\:border-gray-300:hover {
+  border-color: #64748b !important;
+}
+
+.dark .hover\:text-gray-900:hover,
+.dark .hover\:text-black:hover {
+  color: #ffffff !important;
+}
+
+.dark button:active,
+.dark a:active {
+  background-color: #475569;
+  box-shadow: inset 0 0 0 9999px rgb(15 23 42 / 0.12);
+}
+
+.dark .bg-white:active,
+.dark .bg-gray-50:active,
+.dark .bg-gray-100:active {
+  background-color: #374151;
+}
+
 @media print {
   .no-print,
   header,
