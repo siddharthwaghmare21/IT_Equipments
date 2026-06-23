@@ -11,7 +11,6 @@ const labels = {
   view: "View",
   purchases: "Purchases",
   vendors: "Vendors",
-  employees: "Employees",
   departments: "Departments",
   deliveries: "Deliveries",
   delivery: "Delivery",

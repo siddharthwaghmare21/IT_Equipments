@@ -6,7 +6,7 @@ import PageHeader from "@/components/common/PageHeader";
 const sopSteps = [
   {
     title: "Purchase",
-    details: "Create purchase order record, attach invoice and update approval/payment status.",
+    details: "Create Work Order record, attach invoice and update approval/payment status.",
   },
   {
     title: "Register Asset",
@@ -64,7 +64,7 @@ const namingStandards = [
   "Deliveries: DLV-001",
   "Returns: RET-001",
   "Maintenance: MNT-001",
-  "Purchases: PO-2026-001",
+  "Purchases: WO-2026-001",
 ];
 
 export default function HelpPage() {

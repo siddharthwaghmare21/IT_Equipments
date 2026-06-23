@@ -257,21 +257,17 @@ export default function EditReturnPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Returned By
+              Returned By / Receiver Name
             </label>
-            <select
+            <input
+              type="text"
               name="returnedBy"
               value={formData.returnedBy}
               onChange={handleChange}
+              placeholder="Name of person returning asset"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
-            >
-              <option value="">Select employee</option>
-              <option value="Rahul Patil">Rahul Patil</option>
-              <option value="Sneha Jadhav">Sneha Jadhav</option>
-              <option value="Amit Shinde">Amit Shinde</option>
-              <option value="Priya More">Priya More</option>
-            </select>
+            />
           </div>
 
           <div>

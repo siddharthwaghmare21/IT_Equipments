@@ -11,7 +11,7 @@ import { showToast } from "@/components/common/ToastHost";
 const purchases = [
   {
     id: "1",
-    poNumber: "PO-2026-001",
+    poNumber: "WO-2026-001",
     vendorName: "Dell Technologies",
     invoiceNumber: "INV-DL-4587",
     purchaseDate: "2026-01-12",
@@ -22,7 +22,7 @@ const purchases = [
     paymentStatus: "Paid",
     receivedStatus: "Fully Received",
     invoiceStatus: "Verified",
-    attachmentStatus: "PO + Invoice",
+    attachmentStatus: "WO + Invoice",
     createdBy: "Procurement Admin",
     createdAt: "2026-01-12 10:30 AM",
     updatedBy: "Stores Team",
@@ -39,7 +39,7 @@ const purchases = [
   },
   {
     id: "2",
-    poNumber: "PO-2026-002",
+    poNumber: "WO-2026-002",
     vendorName: "HP World",
     invoiceNumber: "INV-HP-7821",
     purchaseDate: "2026-01-18",
@@ -50,7 +50,7 @@ const purchases = [
     paymentStatus: "Pending",
     receivedStatus: "Awaiting Delivery",
     invoiceStatus: "Pending",
-    attachmentStatus: "PO Uploaded",
+    attachmentStatus: "WO Uploaded",
     createdBy: "Procurement Admin",
     createdAt: "2026-01-18 11:10 AM",
     updatedBy: "Procurement Admin",
@@ -62,7 +62,7 @@ const purchases = [
     warranty: "3 Years",
     status: "Pending",
     specifications: "Intel i7, 16GB RAM, 512GB SSD, Windows 11 Pro",
-    description: "HP laptops ordered for upcoming employee requirements.",
+    description: "HP laptops ordered for upcoming department requirements.",
     remarks: "Awaiting delivery from vendor.",
   },
 ];
@@ -92,14 +92,14 @@ export default function EditPurchasePage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    showToast("Purchase changes saved successfully. Backend will be connected later.");
+    showToast("Work order changes saved successfully. Backend will be connected later.");
   }
 
   return (
     <LayoutWrapper>
       <PageHeader
-        title="Edit Purchase"
-        description="Update purchase order, vendor invoice, item details, specifications, description, status and cost."
+        title="Edit Work Order"
+        description="Update Work Order, vendor invoice, item details, specifications, description, status and cost."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -109,7 +109,7 @@ export default function EditPurchasePage() {
           href={`/purchases/view/${selectedPurchase.id}`}
           className="inline-flex justify-center rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
         >
-          View Purchase
+          View Work Order
         </Link>
       </div>
 
@@ -120,7 +120,7 @@ export default function EditPurchasePage() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              PO Number
+              WO Number
             </label>
             <input
               type="text"
@@ -162,7 +162,7 @@ export default function EditPurchasePage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Purchase Date
+              Work Order Date
             </label>
             <input
               type="date"
@@ -302,7 +302,7 @@ export default function EditPurchasePage() {
           <div className="md:col-span-2">
             <div className="mt-2 rounded-2xl border border-gray-200 bg-gray-50 p-4">
               <h2 className="text-base font-bold text-gray-900">
-                Purchase Item Details
+                Work Order Item Details
               </h2>
 
               <p className="mt-1 text-sm text-gray-600">
@@ -403,7 +403,7 @@ export default function EditPurchasePage() {
 
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Purchase Documents
+              Work Order Documents
             </label>
             <input
               type="file"
@@ -438,7 +438,7 @@ export default function EditPurchasePage() {
               value={formData.description}
               onChange={handleChange}
               rows="3"
-              placeholder="Add item details, included accessories, purchase purpose or extra information..."
+              placeholder="Add item details, included accessories, work order purpose or extra information..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>

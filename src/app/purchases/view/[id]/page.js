@@ -9,7 +9,7 @@ import BackButton from "@/components/common/BackButton";
 const purchases = [
   {
     id: "1",
-    poNumber: "PO-2026-001",
+    poNumber: "WO-2026-001",
     vendorName: "Dell Technologies",
     invoiceNumber: "INV-DL-4587",
     purchaseDate: "2026-01-12",
@@ -20,7 +20,7 @@ const purchases = [
     paymentStatus: "Paid",
     receivedStatus: "Fully Received",
     invoiceStatus: "Verified",
-    attachmentStatus: "PO + Invoice",
+    attachmentStatus: "WO + Invoice",
     createdBy: "Procurement Admin",
     createdAt: "2026-01-12 10:30 AM",
     updatedBy: "Stores Team",
@@ -37,7 +37,7 @@ const purchases = [
   },
   {
     id: "2",
-    poNumber: "PO-2026-002",
+    poNumber: "WO-2026-002",
     vendorName: "HP World",
     invoiceNumber: "INV-HP-7821",
     purchaseDate: "2026-01-18",
@@ -48,7 +48,7 @@ const purchases = [
     paymentStatus: "Pending",
     receivedStatus: "Awaiting Delivery",
     invoiceStatus: "Pending",
-    attachmentStatus: "PO Uploaded",
+    attachmentStatus: "WO Uploaded",
     createdBy: "Procurement Admin",
     createdAt: "2026-01-18 11:10 AM",
     updatedBy: "Procurement Admin",
@@ -60,7 +60,7 @@ const purchases = [
     warranty: "3 Years",
     status: "Pending",
     specifications: "Intel i7, 16GB RAM, 512GB SSD, Windows 11 Pro",
-    description: "HP laptops ordered for upcoming employee requirements.",
+    description: "HP laptops ordered for upcoming department requirements.",
     remarks: "Awaiting delivery from vendor.",
   },
 ];
@@ -112,7 +112,7 @@ export default function ViewPurchasePage() {
     <LayoutWrapper>
       <PageHeader
         title="Purchase Details"
-        description="View complete purchase order, vendor invoice, item, specifications, description and cost information."
+        description="View complete Work Order, vendor invoice, item, specifications, description and cost information."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -146,7 +146,7 @@ export default function ViewPurchasePage() {
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          <DetailItem label="PO Number" value={purchase.poNumber} />
+          <DetailItem label="WO Number" value={purchase.poNumber} />
           <DetailItem label="Vendor Name" value={purchase.vendorName} />
           <DetailItem label="Invoice Number" value={purchase.invoiceNumber} />
           <DetailItem label="Purchase Date" value={purchase.purchaseDate} />

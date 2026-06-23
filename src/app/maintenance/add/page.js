@@ -136,20 +136,15 @@ export default function AddMaintenancePage() {
             <label className="mb-1 block text-sm font-medium text-gray-700">
               Reported By
             </label>
-            <select
+            <input
+              type="text"
               name="reportedBy"
               value={formData.reportedBy}
               onChange={handleChange}
+              placeholder="Department user / IT team member"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
-            >
-              <option value="">Select employee</option>
-              <option value="Rahul Patil">Rahul Patil</option>
-              <option value="Sneha Jadhav">Sneha Jadhav</option>
-              <option value="Amit Shinde">Amit Shinde</option>
-              <option value="Priya More">Priya More</option>
-              <option value="IT Admin">IT Admin</option>
-            </select>
+            />
           </div>
 
           <div>

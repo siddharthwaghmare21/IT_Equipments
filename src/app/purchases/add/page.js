@@ -47,14 +47,14 @@ export default function AddPurchasePage() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    showToast("Purchase saved successfully. Backend will be connected later.");
+    showToast("Work order saved successfully. Backend will be connected later.");
   }
 
   return (
     <LayoutWrapper>
       <PageHeader
-        title="Add Purchase"
-        description="Create a new purchase entry with vendor, invoice, equipment items, specifications, description and cost details."
+        title="Add Work Order"
+        description="Create a new work order entry with vendor, invoice, equipment items, specifications, description and cost details."
       />
 
       <form
@@ -64,14 +64,14 @@ export default function AddPurchasePage() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              PO Number
+              WO Number
             </label>
             <input
               type="text"
               name="poNumber"
               value={formData.poNumber}
               onChange={handleChange}
-              placeholder="PO-2026-001"
+              placeholder="WO-2026-001"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
             />
@@ -109,7 +109,7 @@ export default function AddPurchasePage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Purchase Date
+              Work Order Date
             </label>
             <input
               type="date"
@@ -249,7 +249,7 @@ export default function AddPurchasePage() {
           <div className="md:col-span-2">
             <div className="mt-2 rounded-2xl border border-gray-200 bg-gray-50 p-4">
               <h2 className="text-base font-bold text-gray-900">
-                Purchase Item Details
+                Work Order Item Details
               </h2>
 
               <p className="mt-1 text-sm text-gray-600">
@@ -353,7 +353,7 @@ export default function AddPurchasePage() {
 
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Purchase Documents
+              Work Order Documents
             </label>
             <input
               type="file"
@@ -361,7 +361,7 @@ export default function AddPurchasePage() {
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white focus:border-gray-900"
             />
             <p className="mt-1 text-xs text-gray-500">
-              Upload purchase order, invoice, quotation or warranty documents.
+              Upload Work Order, invoice, quotation or warranty documents.
             </p>
           </div>
 
@@ -388,7 +388,7 @@ export default function AddPurchasePage() {
               value={formData.description}
               onChange={handleChange}
               rows="3"
-              placeholder="Add item details, included accessories, purchase purpose or extra information..."
+              placeholder="Add item details, included accessories, work order purpose or extra information..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>
@@ -402,7 +402,7 @@ export default function AddPurchasePage() {
               value={formData.remarks}
               onChange={handleChange}
               rows="4"
-              placeholder="Additional purchase notes..."
+              placeholder="Additional work order notes..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>
@@ -427,7 +427,7 @@ export default function AddPurchasePage() {
             type="submit"
             className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
           >
-            Save Purchase
+            Save Work Order
           </button>
         </div>
       </form>

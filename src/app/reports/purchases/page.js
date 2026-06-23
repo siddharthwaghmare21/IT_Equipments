@@ -6,7 +6,7 @@ import ReportPageShell from "@/components/common/ReportPageShell";
 const purchaseReportData = [
   {
     id: 1,
-    poNumber: "PO-2026-001",
+    poNumber: "WO-2026-001",
     vendorName: "Dell Technologies",
     invoiceNumber: "INV-DL-4587",
     purchaseDate: "2026-01-12",
@@ -24,7 +24,7 @@ const purchaseReportData = [
   },
   {
     id: 2,
-    poNumber: "PO-2026-002",
+    poNumber: "WO-2026-002",
     vendorName: "HP World",
     invoiceNumber: "INV-HP-7821",
     purchaseDate: "2026-01-18",
@@ -42,7 +42,7 @@ const purchaseReportData = [
   },
   {
     id: 3,
-    poNumber: "PO-2026-003",
+    poNumber: "WO-2026-003",
     vendorName: "Canon India",
     invoiceNumber: "INV-CN-2190",
     purchaseDate: "2026-02-02",
@@ -60,7 +60,7 @@ const purchaseReportData = [
   },
   {
     id: 4,
-    poNumber: "PO-2026-004",
+    poNumber: "WO-2026-004",
     vendorName: "Network Solutions",
     invoiceNumber: "INV-NS-1002",
     purchaseDate: "2026-02-10",
@@ -116,14 +116,14 @@ export default function PurchasesReportPage() {
   return (
     <ReportPageShell
       title="Purchases Report"
-      description="View purchase order summary, vendor-wise records, invoice details and purchase status."
+      description="View Work Order summary, vendor-wise records, invoice details and purchase status."
       data={purchaseReportData}
       fileName="purchases-report"
     >
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Purchase Orders</p>
+          <p className="text-sm text-gray-500">Total Work Orders</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
             {totalPurchases}
           </h2>
@@ -220,7 +220,7 @@ export default function PurchasesReportPage() {
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
-                PO Number
+                WO Number
               </th>
 
               <th className="px-4 py-3 font-semibold text-gray-700">

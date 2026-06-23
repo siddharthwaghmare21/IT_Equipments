@@ -37,7 +37,7 @@ export default function DashboardPage() {
     {
       title: "Delivered Assets",
       value: "156",
-      description: "Issued to employees",
+      description: "Issued to departments",
       trend: "63% allocation",
     },
     {
@@ -149,7 +149,7 @@ export default function DashboardPage() {
       meta: "Delivery | Today 10:30 AM",
     },
     {
-      title: "Purchase PO-2026-004 submitted",
+      title: "Work Order WO-2026-004 submitted",
       meta: "Purchases | Pending approval",
     },
     {

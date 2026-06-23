@@ -19,11 +19,11 @@ const assets = [
     name: "Dell Latitude 5420",
     category: "Laptop",
     serialNumber: "DL5420-9821",
-    assignedTo: "Rahul Patil",
+    assignedTo: "IT Department",
     location: "IT Department",
     status: "Assigned",
     lifecycleStatus: "In Use",
-    purchaseRef: "PO-2024-0412",
+    purchaseRef: "WO-2024-0412",
     warrantyExpiry: "2027-04-12",
     qrCode: "QR-IT-LAP-001",
     condition: "Good",
@@ -44,7 +44,7 @@ const assets = [
     location: "Store Room",
     status: "Available",
     lifecycleStatus: "In Stock",
-    purchaseRef: "PO-2024-0620",
+    purchaseRef: "WO-2024-0620",
     warrantyExpiry: "2027-06-20",
     qrCode: "QR-IT-LAP-002",
     condition: "New",
@@ -61,11 +61,11 @@ const assets = [
     name: "Dell 24 Inch Monitor",
     category: "Monitor",
     serialNumber: "MON24-1189",
-    assignedTo: "Sneha Jadhav",
+    assignedTo: "Accounts",
     location: "Accounts",
     status: "Assigned",
     lifecycleStatus: "In Use",
-    purchaseRef: "PO-2024-0705",
+    purchaseRef: "WO-2024-0705",
     warrantyExpiry: "2027-07-05",
     qrCode: "QR-IT-MON-001",
     condition: "Good",
@@ -86,7 +86,7 @@ const assets = [
     location: "Admin Office",
     status: "Maintenance",
     lifecycleStatus: "Under Maintenance",
-    purchaseRef: "PO-2024-0830",
+    purchaseRef: "WO-2024-0830",
     warrantyExpiry: "2027-08-30",
     qrCode: "QR-IT-PRN-001",
     condition: "Needs Repair",
@@ -107,7 +107,7 @@ const assets = [
     location: "Server Room",
     status: "Available",
     lifecycleStatus: "In Stock",
-    purchaseRef: "PO-2024-0915",
+    purchaseRef: "WO-2024-0915",
     warrantyExpiry: "2027-09-15",
     qrCode: "QR-IT-RTR-001",
     condition: "Good",
@@ -128,7 +128,7 @@ const assets = [
     location: "Archive Store",
     status: "Archived",
     lifecycleStatus: "Archived",
-    purchaseRef: "PO-2023-0110",
+    purchaseRef: "WO-2023-0110",
     warrantyExpiry: "2026-01-10",
     qrCode: "QR-IT-MSE-001",
     condition: "Retired",
@@ -298,7 +298,7 @@ export default function AssetsPage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by asset tag, name, serial number, employee, purchase ref, QR or location..."
+            placeholder="Search by asset tag, name, serial number, department, work order ref, QR or location..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
 
@@ -395,7 +395,7 @@ export default function AssetsPage() {
               </h2>
               <p className="mt-1 max-w-3xl text-sm text-gray-600">
                 Archived assets should stay locked after backend approval so
-                purchase reference, custodian history, QR code and retirement
+                work order reference, custodian history, QR code and retirement
                 details remain available during audit.
               </p>
             </div>
@@ -476,7 +476,7 @@ export default function AssetsPage() {
                 Serial No.
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
-                Assigned To
+                Department
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Location

@@ -7,16 +7,16 @@ import PageHeader from "@/components/common/PageHeader";
 import { EmptyState } from "@/components/common/StateBlock";
 
 const searchItems = [
-  { type: "Asset", title: "IT-LAP-001", detail: "Dell Latitude 5420 assigned to Rahul Patil", href: "/assets/view/1" },
+  { type: "Asset", title: "IT-LAP-001", detail: "Dell Latitude 5420 assigned to IT Department", href: "/assets/view/1" },
   { type: "Asset", title: "IT-MON-001", detail: "Dell 24 Inch Monitor in Accounts", href: "/assets" },
-  { type: "Purchase", title: "PO-2026-004", detail: "Network Solutions purchase approval pending", href: "/purchases" },
+  { type: "Work Order", title: "WO-2026-004", detail: "Network Solutions work order approval pending", href: "/purchases" },
   { type: "Vendor", title: "Dell Technologies", detail: "Laptop supplier, compliant vendor", href: "/vendors" },
   { type: "Maintenance", title: "MNT-001", detail: "Battery issue, high priority service", href: "/maintenance" },
   { type: "Report", title: "Warranty Report", detail: "Assets with warranty expiring soon", href: "/reports/warranty" },
-  { type: "Delivery", title: "DLV-001", detail: "Laptop delivered to Rahul Patil", href: "/deliveries/view/1" },
+  { type: "Delivery", title: "DLV-001", detail: "Laptop issued to IT Department, received by Rahul Patil", href: "/deliveries/view/1" },
 ];
 
-const typeFilters = ["All", "Asset", "Purchase", "Vendor", "Maintenance", "Delivery", "Report"];
+const typeFilters = ["All", "Asset", "Work Order", "Vendor", "Maintenance", "Delivery", "Report"];
 
 export default function SearchPage() {
   const params = useSearchParams();
@@ -44,7 +44,7 @@ export default function SearchPage() {
     <LayoutWrapper>
       <PageHeader
         title="Search"
-        description="Search across assets, purchases, vendors, deliveries, maintenance and reports."
+        description="Search across assets, work orders, vendors, deliveries, maintenance and reports."
       />
 
       <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -53,7 +53,7 @@ export default function SearchPage() {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search asset tag, PO, vendor, employee, maintenance or report..."
+            placeholder="Search asset tag, WO, vendor, receiver, maintenance or report..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
 
@@ -79,7 +79,7 @@ export default function SearchPage() {
       {results.length === 0 ? (
         <EmptyState
           title="No search results"
-          description="Try another asset tag, PO number, vendor name or module name."
+          description="Try another asset tag, WO number, vendor name or module name."
         />
       ) : (
         <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">

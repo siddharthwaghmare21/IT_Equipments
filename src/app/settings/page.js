@@ -469,7 +469,7 @@ export default function SettingsPage() {
 
               <SettingToggle
                 title="Weekly Summary"
-                description="Prepare weekly IT asset summary for admins and employees."
+                description="Prepare weekly IT asset summary for admins and department users."
                 name="weeklySummary"
                 checked={settings.weeklySummary}
                 onChange={handleChange}

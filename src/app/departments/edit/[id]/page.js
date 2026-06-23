@@ -22,7 +22,7 @@ const departments = [
     assetBudget: "INR 12,00,000",
     approvalRequired: "Yes",
     assetPolicy: "Standard IT Policy",
-    totalEmployees: "12",
+    totalUsers: "12",
     deliveredAssets: "34",
     createdBy: "Admin",
     createdAt: "2026-01-01 10:00 AM",
@@ -45,7 +45,7 @@ const departments = [
     assetBudget: "INR 6,50,000",
     approvalRequired: "Yes",
     assetPolicy: "Finance Asset Policy",
-    totalEmployees: "8",
+    totalUsers: "8",
     deliveredAssets: "18",
     createdBy: "Admin",
     createdAt: "2026-01-01 10:10 AM",
@@ -68,7 +68,7 @@ const departments = [
     assetBudget: "INR 4,00,000",
     approvalRequired: "Yes",
     assetPolicy: "Admin Asset Policy",
-    totalEmployees: "6",
+    totalUsers: "6",
     deliveredAssets: "14",
     createdBy: "Admin",
     createdAt: "2026-01-01 10:20 AM",
@@ -91,7 +91,7 @@ const departments = [
     assetBudget: "INR 2,50,000",
     approvalRequired: "No",
     assetPolicy: "Basic Asset Policy",
-    totalEmployees: "4",
+    totalUsers: "4",
     deliveredAssets: "9",
     createdBy: "Admin",
     createdAt: "2026-01-01 10:30 AM",
@@ -99,7 +99,7 @@ const departments = [
     updatedAt: "2026-01-30 05:00 PM",
     status: "Inactive",
     description:
-      "Handles employee records, recruitment coordination and HR documentation.",
+      "Handles department user records, recruitment coordination and HR documentation.",
   },
 ];
 
@@ -123,7 +123,7 @@ export default function EditDepartmentPage() {
     assetBudget: selectedDepartment.assetBudget,
     approvalRequired: selectedDepartment.approvalRequired,
     assetPolicy: selectedDepartment.assetPolicy,
-    totalEmployees: selectedDepartment.totalEmployees,
+    totalUsers: selectedDepartment.totalUsers,
     deliveredAssets: selectedDepartment.deliveredAssets,
     createdBy: selectedDepartment.createdBy,
     createdAt: selectedDepartment.createdAt,
@@ -316,12 +316,12 @@ export default function EditDepartmentPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Total Employees
+              Department Users
             </label>
             <input
               type="number"
-              name="totalEmployees"
-              value={formData.totalEmployees}
+              name="totalUsers"
+              value={formData.totalUsers}
               onChange={handleChange}
               placeholder="12"
               min="0"

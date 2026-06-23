@@ -20,7 +20,7 @@ const departments = [
     assetBudget: "INR 12,00,000",
     approvalRequired: "Yes",
     assetPolicy: "Standard IT Policy",
-    totalEmployees: 12,
+    totalUsers: 12,
     assignedAssets: 34,
     createdBy: "Admin",
     createdAt: "2026-01-01 10:00 AM",
@@ -43,7 +43,7 @@ const departments = [
     assetBudget: "INR 6,50,000",
     approvalRequired: "Yes",
     assetPolicy: "Finance Asset Policy",
-    totalEmployees: 8,
+    totalUsers: 8,
     assignedAssets: 18,
     createdBy: "Admin",
     createdAt: "2026-01-01 10:10 AM",
@@ -66,7 +66,7 @@ const departments = [
     assetBudget: "INR 4,00,000",
     approvalRequired: "Yes",
     assetPolicy: "Admin Asset Policy",
-    totalEmployees: 6,
+    totalUsers: 6,
     assignedAssets: 14,
     createdBy: "Admin",
     createdAt: "2026-01-01 10:20 AM",
@@ -89,7 +89,7 @@ const departments = [
     assetBudget: "INR 2,50,000",
     approvalRequired: "No",
     assetPolicy: "Basic Asset Policy",
-    totalEmployees: 4,
+    totalUsers: 4,
     assignedAssets: 9,
     createdBy: "Admin",
     createdAt: "2026-01-01 10:30 AM",
@@ -97,7 +97,7 @@ const departments = [
     updatedAt: "2026-01-30 05:00 PM",
     status: "Inactive",
     description:
-      "Handles employee records, recruitment coordination and HR documentation.",
+      "Handles department user records, recruitment coordination and HR documentation.",
   },
 ];
 
@@ -142,7 +142,7 @@ export default function ViewDepartmentPage() {
     <LayoutWrapper>
       <PageHeader
         title="Department Details"
-        description="View department information, department head, employee count and assigned asset summary."
+        description="View department information, department head, user count and assigned asset summary."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -199,8 +199,8 @@ export default function ViewDepartmentPage() {
             value={department.approvalRequired}
           />
           <DetailItem
-            label="Total Employees"
-            value={department.totalEmployees}
+            label="Department Users"
+            value={department.totalUsers}
           />
           <DetailItem
             label="Assigned Assets"
@@ -237,12 +237,12 @@ export default function ViewDepartmentPage() {
 
       <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Employees in Department</p>
+          <p className="text-sm text-gray-500">Users in Department</p>
           <h3 className="mt-2 text-3xl font-bold text-gray-900">
-            {department.totalEmployees}
+            {department.totalUsers}
           </h3>
           <p className="mt-2 text-sm text-gray-600">
-            Employee-wise department mapping will be connected after backend
+            User-wise department mapping will be connected after backend
             integration.
           </p>
         </div>

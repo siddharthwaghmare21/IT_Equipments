@@ -20,7 +20,7 @@ export default function AddDepartmentPage() {
     assetBudget: "",
     approvalRequired: "Yes",
     assetPolicy: "",
-    totalEmployees: "",
+    totalUsers: "",
     status: "Active",
     description: "",
   });
@@ -44,7 +44,7 @@ export default function AddDepartmentPage() {
     <LayoutWrapper>
       <PageHeader
         title="Add Department"
-        description="Create a department for employee grouping and IT asset allocation."
+        description="Create a department for department user grouping and IT asset allocation."
       />
 
       <div className="mb-6">
@@ -201,12 +201,12 @@ export default function AddDepartmentPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Total Employees
+              Department Users
             </label>
             <input
               type="number"
-              name="totalEmployees"
-              value={formData.totalEmployees}
+              name="totalUsers"
+              value={formData.totalUsers}
               onChange={handleChange}
               placeholder="12"
               min="0"

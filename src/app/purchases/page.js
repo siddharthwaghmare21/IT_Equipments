@@ -14,7 +14,7 @@ import { showToast } from "@/components/common/ToastHost";
 const purchases = [
   {
     id: "1",
-    poNumber: "PO-2026-001",
+    poNumber: "WO-2026-001",
     vendorName: "Dell Technologies",
     invoiceNumber: "INV-DL-4587",
     purchaseDate: "2026-01-12",
@@ -26,7 +26,7 @@ const purchases = [
     paymentStatus: "Paid",
     receivedStatus: "Fully Received",
     invoiceStatus: "Verified",
-    attachmentStatus: "PO + Invoice",
+    attachmentStatus: "WO + Invoice",
     createdBy: "Procurement Admin",
     createdAt: "2026-01-12 10:30 AM",
     updatedBy: "Stores Team",
@@ -36,7 +36,7 @@ const purchases = [
   },
   {
     id: "2",
-    poNumber: "PO-2026-002",
+    poNumber: "WO-2026-002",
     vendorName: "HP World",
     invoiceNumber: "INV-HP-7821",
     purchaseDate: "2026-01-18",
@@ -48,7 +48,7 @@ const purchases = [
     paymentStatus: "Pending",
     receivedStatus: "Awaiting Delivery",
     invoiceStatus: "Pending",
-    attachmentStatus: "PO Uploaded",
+    attachmentStatus: "WO Uploaded",
     createdBy: "Procurement Admin",
     createdAt: "2026-01-18 11:10 AM",
     updatedBy: "Procurement Admin",
@@ -58,7 +58,7 @@ const purchases = [
   },
   {
     id: "3",
-    poNumber: "PO-2026-003",
+    poNumber: "WO-2026-003",
     vendorName: "Canon India",
     invoiceNumber: "INV-CN-2190",
     purchaseDate: "2026-02-02",
@@ -70,7 +70,7 @@ const purchases = [
     paymentStatus: "Paid",
     receivedStatus: "Fully Received",
     invoiceStatus: "Verified",
-    attachmentStatus: "PO + Invoice",
+    attachmentStatus: "WO + Invoice",
     createdBy: "Procurement Admin",
     createdAt: "2026-02-02 09:40 AM",
     updatedBy: "Stores Team",
@@ -80,7 +80,7 @@ const purchases = [
   },
   {
     id: "4",
-    poNumber: "PO-2026-004",
+    poNumber: "WO-2026-004",
     vendorName: "Network Solutions",
     invoiceNumber: "INV-NS-1002",
     purchaseDate: "2026-02-10",
@@ -156,8 +156,8 @@ export default function PurchasesPage() {
 
   const receivingSteps = [
     {
-      title: "PO Created",
-      detail: "Purchase order and vendor invoice reference captured",
+      title: "WO Created",
+      detail: "Work Order and vendor invoice reference captured",
       count: purchases.length,
     },
     {
@@ -195,7 +195,7 @@ export default function PurchasesPage() {
     <LayoutWrapper>
       <PageHeader
         title="Purchases"
-        description="Track purchase orders, vendor invoices, received items and pending procurement."
+        description="Track Work Orders, vendor invoices, received items and pending procurement."
       />
 
       <PageActionBar addHref="/purchases/add" addLabel="Add Purchase" />
@@ -245,7 +245,7 @@ export default function PurchasesPage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by PO, vendor, invoice, approval, payment or status..."
+            placeholder="Search by WO, vendor, invoice, approval, payment or status..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
           />
 
@@ -275,7 +275,7 @@ export default function PurchasesPage() {
               Purchase Receiving Flow
             </p>
             <h2 className="mt-1 text-lg font-semibold text-gray-900">
-              PO to asset registration tracking
+              WO to asset registration tracking
             </h2>
             <p className="mt-1 max-w-3xl text-sm text-gray-600">
               This keeps procurement, stores and asset registration aligned
@@ -335,7 +335,7 @@ export default function PurchasesPage() {
         editHref={(purchase) => `/purchases/edit/${purchase.id}`}
         onArchive={handleArchive}
         emptyTitle="No purchases found"
-        emptyDescription="Try changing PO, vendor, payment or status filters."
+        emptyDescription="Try changing WO, vendor, payment or status filters."
       />
 
       <div className="hidden md:block">
@@ -344,7 +344,7 @@ export default function PurchasesPage() {
           <thead className="bg-gray-50 text-left">
             <tr className="border-b border-gray-200">
               <th className="px-4 py-3 font-semibold text-gray-700">
-                PO Number
+                WO Number
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Vendor
@@ -454,7 +454,7 @@ export default function PurchasesPage() {
           <div className="p-6">
             <EmptyState
               title="No purchases found"
-              description="Try changing PO, vendor, payment or status filters."
+              description="Try changing WO, vendor, payment or status filters."
             />
           </div>
         )}

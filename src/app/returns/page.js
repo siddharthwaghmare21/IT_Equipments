@@ -235,7 +235,7 @@ export default function ReturnsPage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by return code, asset tag, asset name, employee, inspection, location or status..."
+            placeholder="Search by return code, asset tag, asset name, receiver, inspection, location or status..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
           />
 
@@ -275,7 +275,7 @@ export default function ReturnsPage() {
         editHref={(returnItem) => `/returns/edit/${returnItem.id}`}
         onArchive={handleArchive}
         emptyTitle="No return records found"
-        emptyDescription="Try changing employee, asset, inspection or status filters."
+        emptyDescription="Try changing receiver, asset, inspection or status filters."
       />
 
       <div className="hidden md:block">
@@ -431,7 +431,7 @@ export default function ReturnsPage() {
           <div className="p-6">
             <EmptyState
               title="No return records found"
-              description="Try changing employee, asset, inspection or status filters."
+              description="Try changing receiver, asset, inspection or status filters."
             />
           </div>
         )}

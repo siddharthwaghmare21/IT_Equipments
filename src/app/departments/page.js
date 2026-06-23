@@ -24,7 +24,7 @@ const departments = [
     assetBudget: "INR 12,00,000",
     approvalRequired: "Yes",
     assetPolicy: "Standard IT Policy",
-    totalEmployees: 12,
+    totalUsers: 12,
     deliveredAssets: 34,
     createdBy: "Admin",
     createdAt: "2026-01-01 10:00 AM",
@@ -45,7 +45,7 @@ const departments = [
     assetBudget: "INR 6,50,000",
     approvalRequired: "Yes",
     assetPolicy: "Finance Asset Policy",
-    totalEmployees: 8,
+    totalUsers: 8,
     deliveredAssets: 18,
     createdBy: "Admin",
     createdAt: "2026-01-01 10:10 AM",
@@ -66,7 +66,7 @@ const departments = [
     assetBudget: "INR 4,00,000",
     approvalRequired: "Yes",
     assetPolicy: "Admin Asset Policy",
-    totalEmployees: 6,
+    totalUsers: 6,
     deliveredAssets: 14,
     createdBy: "Admin",
     createdAt: "2026-01-01 10:20 AM",
@@ -87,7 +87,7 @@ const departments = [
     assetBudget: "INR 2,50,000",
     approvalRequired: "No",
     assetPolicy: "Basic Asset Policy",
-    totalEmployees: 4,
+    totalUsers: 4,
     deliveredAssets: 9,
     createdBy: "Admin",
     createdAt: "2026-01-01 10:30 AM",
@@ -183,10 +183,10 @@ export default function DepartmentsPage() {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Employees</p>
+          <p className="text-sm text-gray-500">Department Users</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
             {departments.reduce(
-              (total, department) => total + department.totalEmployees,
+              (total, department) => total + department.totalUsers,
               0
             )}
           </h2>
@@ -264,7 +264,7 @@ export default function DepartmentsPage() {
                 Asset Budget
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
-                Employees
+                Users
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Delivered Assets
@@ -321,7 +321,7 @@ export default function DepartmentsPage() {
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">
-                  {department.totalEmployees}
+                  {department.totalUsers}
                 </td>
 
                 <td className="px-4 py-4 text-gray-700">

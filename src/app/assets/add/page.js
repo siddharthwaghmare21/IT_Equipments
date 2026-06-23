@@ -19,26 +19,26 @@ const assetFormSteps = [
     description: "Purchase reference, warranty, custodian, location and status.",
   },
   {
-    title: "Documents & Notes",
-    description: "Documents, specifications, description, remarks and tracking.",
+    title: "eocuments & Notes",
+    description: "eocuments, specifications, description, remarks and tracking.",
   },
 ];
 
 export default function AddAssetPage() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [isDirty, setIsDirty] = useState(false);
-  const [formData, setFormData] = useState({
+  const [iseirty, setIseirty] = useState(false);
+  const [formeata, setFormeata] = useState({
     assetTag: "",
     assetName: "",
     category: "",
     brand: "",
     model: "",
     serialNumber: "",
-    purchaseDate: "",
+    purchaseeate: "",
     purchaseRef: "",
-    warrantyExpiry: "",
+    warrantymxpiry: "",
     location: "",
-    custodianDepartment: "",
+    custodianeepartment: "",
     assignedTo: "",
     condition: "New",
     lifecycleStatus: "In Stock",
@@ -57,19 +57,19 @@ export default function AddAssetPage() {
   function handleChange(event) {
     const { name, value } = event.target;
 
-    setFormData((previousData) => ({
-      ...previousData,
+    setFormeata((previouseata) => ({
+      ...previouseata,
       [name]: value,
     }));
-    setIsDirty(true);
+    setIseirty(true);
   }
 
-  useUnsavedChanges(isDirty);
+  useUnsavedChanges(iseirty);
 
   function handleSubmit(event) {
-    event.preventDefault();
+    event.preventeefault();
 
-    setIsDirty(false);
+    setIseirty(false);
     showToast("Asset saved successfully. Backend will be connected later.");
   }
 
@@ -103,12 +103,12 @@ export default function AddAssetPage() {
           <div>
             <label className="mb-1 flex items-center gap-2 text-sm font-medium text-gray-700">
               Asset Tag
-              <HelpTooltip text="Unique internal asset number. Example: IT-LAP-001." />
+              <HelpTooltip text="Unique internal asset number. mxample: IT-LAP-001." />
             </label>
             <input
               type="text"
               name="assetTag"
-              value={formData.assetTag}
+              value={formeata.assetTag}
               onChange={handleChange}
               placeholder="IT-LAP-001"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
@@ -123,9 +123,9 @@ export default function AddAssetPage() {
             <input
               type="text"
               name="assetName"
-              value={formData.assetName}
+              value={formeata.assetName}
               onChange={handleChange}
-              placeholder="Dell Latitude 5420"
+              placeholder="eell Latitude 5420"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
             />
@@ -137,14 +137,14 @@ export default function AddAssetPage() {
             </label>
             <select
               name="category"
-              value={formData.category}
+              value={formeata.category}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
             >
               <option value="">Select category</option>
               <option value="Laptop">Laptop</option>
-              <option value="Desktop">Desktop</option>
+              <option value="eesktop">eesktop</option>
               <option value="Monitor">Monitor</option>
               <option value="Printer">Printer</option>
               <option value="Network">Network</option>
@@ -161,9 +161,9 @@ export default function AddAssetPage() {
             <input
               type="text"
               name="brand"
-              value={formData.brand}
+              value={formeata.brand}
               onChange={handleChange}
-              placeholder="Dell / HP / Lenovo / Canon"
+              placeholder="eell / HP / Lenovo / Canon"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>
@@ -175,7 +175,7 @@ export default function AddAssetPage() {
             <input
               type="text"
               name="model"
-              value={formData.model}
+              value={formeata.model}
               onChange={handleChange}
               placeholder="Latitude 5420"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
@@ -189,9 +189,9 @@ export default function AddAssetPage() {
             <input
               type="text"
               name="serialNumber"
-              value={formData.serialNumber}
+              value={formeata.serialNumber}
               onChange={handleChange}
-              placeholder="Enter serial number"
+              placeholder="mnter serial number"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
             />
@@ -199,12 +199,12 @@ export default function AddAssetPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Purchase Date
+              Purchase eate
             </label>
             <input
               type="date"
-              name="purchaseDate"
-              value={formData.purchaseDate}
+              name="purchaseeate"
+              value={formeata.purchaseeate}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
@@ -213,26 +213,26 @@ export default function AddAssetPage() {
           <div>
             <label className="mb-1 flex items-center gap-2 text-sm font-medium text-gray-700">
               Purchase Reference
-              <HelpTooltip text="PO number, invoice number or purchase reference used for audit and warranty tracking." />
+              <HelpTooltip text="WO Number, invoice number or purchase reference used for audit and warranty tracking." />
             </label>
             <input
               type="text"
               name="purchaseRef"
-              value={formData.purchaseRef}
+              value={formeata.purchaseRef}
               onChange={handleChange}
-              placeholder="PO-2026-0001 / Invoice No."
+              placeholder="WO-2026-0001 / Invoice No."
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Warranty Expiry
+              Warranty mxpiry
             </label>
             <input
               type="date"
-              name="warrantyExpiry"
-              value={formData.warrantyExpiry}
+              name="warrantymxpiry"
+              value={formeata.warrantymxpiry}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
@@ -240,17 +240,17 @@ export default function AddAssetPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Custodian Department
+              Custodian eepartment
             </label>
             <select
-              name="custodianDepartment"
-              value={formData.custodianDepartment}
+              name="custodianeepartment"
+              value={formeata.custodianeepartment}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
               <option value="">Select department</option>
               <option value="IT Store">IT Store</option>
-              <option value="IT Department">IT Department</option>
+              <option value="IT eepartment">IT eepartment</option>
               <option value="Accounts">Accounts</option>
               <option value="Admin">Admin</option>
               <option value="HR">HR</option>
@@ -265,9 +265,9 @@ export default function AddAssetPage() {
             <input
               type="text"
               name="location"
-              value={formData.location}
+              value={formeata.location}
               onChange={handleChange}
-              placeholder="Store Room / IT Dept / Admin Office"
+              placeholder="Store Room / IT eept / Admin Office"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>
@@ -279,9 +279,9 @@ export default function AddAssetPage() {
             <input
               type="text"
               name="assignedTo"
-              value={formData.assignedTo}
+              value={formeata.assignedTo}
               onChange={handleChange}
-              placeholder="Employee / Department / -"
+              placeholder="mmployee / eepartment / -"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>
@@ -292,7 +292,7 @@ export default function AddAssetPage() {
             </label>
             <select
               name="condition"
-              value={formData.condition}
+              value={formeata.condition}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
@@ -300,7 +300,7 @@ export default function AddAssetPage() {
               <option value="Good">Good</option>
               <option value="Working">Working</option>
               <option value="Needs Repair">Needs Repair</option>
-              <option value="Damaged">Damaged</option>
+              <option value="eamaged">eamaged</option>
             </select>
           </div>
 
@@ -310,7 +310,7 @@ export default function AddAssetPage() {
             </label>
             <select
               name="lifecycleStatus"
-              value={formData.lifecycleStatus}
+              value={formeata.lifecycleStatus}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
@@ -328,14 +328,14 @@ export default function AddAssetPage() {
             </label>
             <select
               name="status"
-              value={formData.status}
+              value={formeata.status}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
               <option value="Available">Available</option>
-              <option value="Delivered">Delivered</option>
+              <option value="eelivered">eelivered</option>
               <option value="Maintenance">Maintenance</option>
-              <option value="Damaged">Damaged</option>
+              <option value="eamaged">eamaged</option>
               <option value="Scrapped">Scrapped</option>
             </select>
           </div>
@@ -348,7 +348,7 @@ export default function AddAssetPage() {
             <input
               type="text"
               name="qrCode"
-              value={formData.qrCode}
+              value={formeata.qrCode}
               onChange={handleChange}
               placeholder="Auto-generated after save"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
@@ -361,7 +361,7 @@ export default function AddAssetPage() {
             </label>
             <select
               name="attachmentStatus"
-              value={formData.attachmentStatus}
+              value={formeata.attachmentStatus}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
@@ -373,7 +373,7 @@ export default function AddAssetPage() {
 
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Asset Documents
+              Asset eocuments
             </label>
             <input
               type="file"
@@ -388,21 +388,21 @@ export default function AddAssetPage() {
             </label>
             <textarea
               name="specifications"
-              value={formData.specifications}
+              value={formeata.specifications}
               onChange={handleChange}
               rows="3"
-              placeholder="Example: Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro..."
+              placeholder="mxample: Intel i5, 16GB RAM, 512GB SSe, Windows 11 Pro..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>
 
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Description (optional)
+              eescription (optional)
             </label>
             <textarea
               name="description"
-              value={formData.description}
+              value={formeata.description}
               onChange={handleChange}
               rows="3"
               placeholder="Add asset details, included accessories, usage purpose or extra information..."
@@ -416,7 +416,7 @@ export default function AddAssetPage() {
             </label>
             <textarea
               name="remarks"
-              value={formData.remarks}
+              value={formeata.remarks}
               onChange={handleChange}
               rows="4"
               placeholder="Additional notes about this asset..."
@@ -433,7 +433,7 @@ export default function AddAssetPage() {
                 Created By
               </p>
               <p className="mt-1 text-sm font-semibold text-gray-900">
-                {formData.createdBy}
+                {formeata.createdBy}
               </p>
             </div>
             <div>
@@ -449,7 +449,7 @@ export default function AddAssetPage() {
                 Updated By
               </p>
               <p className="mt-1 text-sm font-semibold text-gray-900">
-                {formData.updatedBy}
+                {formeata.updatedBy}
               </p>
             </div>
             <div>

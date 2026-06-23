@@ -12,18 +12,13 @@ const importModules = [
     status: "Template Ready",
   },
   {
-    title: "Employees",
-    format: "name, department, designation, email, phone, location",
-    status: "Template Ready",
-  },
-  {
     title: "Vendors",
     format: "vendorName, contactPerson, gstNumber, paymentTerms",
     status: "Template Ready",
   },
   {
     title: "Purchases",
-    format: "poNumber, vendorName, invoiceNumber, purchaseDate, amount",
+    format: "workOrderNumber, vendorName, invoiceNumber, purchaseDate, amount",
     status: "Backend Pending",
   },
 ];
@@ -66,7 +61,7 @@ export default function ImportDataPage() {
     <LayoutWrapper>
       <PageHeader
         title="Import Data"
-        description="Prepare bulk import files for assets, employees, vendors and purchase records."
+        description="Prepare bulk import files for assets, departments, vendors and work order records."
       />
 
       <section className="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">

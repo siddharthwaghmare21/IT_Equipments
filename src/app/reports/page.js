@@ -17,7 +17,7 @@ const reportCards = [
   {
     title: "Purchases Report",
     description:
-      "Track purchase orders, vendor-wise purchase amount and invoice records.",
+      "Track Work Orders, vendor-wise purchase amount and invoice records.",
     href: "/reports/purchases",
     tag: "Purchases",
     group: "Finance",
