@@ -14,7 +14,7 @@ const sopSteps = [
   },
   {
     title: "Delivery",
-    details: "Issue equipment to employee, capture acknowledgement and accessories.",
+    details: "Issue equipment to department, capture receiver name, acknowledgement and accessories.",
   },
   {
     title: "Return",
@@ -53,7 +53,7 @@ const frontendCompletion = [
 
 const backendPreparation = [
   "Auth APIs: login, signup request, email OTP, approval workflow",
-  "Master APIs: assets, employees, departments, vendors",
+  "Master APIs: assets, departments, vendors and receiver tracking",
   "Workflow APIs: purchase, delivery, return, maintenance, damage review",
   "Report APIs: filters, PDF/Excel export, scheduled email, audit trail",
   "System APIs: backup, restore, role permissions, activity logs",

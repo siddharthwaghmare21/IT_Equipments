@@ -126,7 +126,7 @@ export default function DeliveryReportPage() {
   return (
     <ReportPageShell
       title="Delivery Report"
-      description="View employee-wise and department-wise equipment/material delivery records."
+      description="View department-wise equipment/material delivery records with receiver tracking."
       data={deliveryReportData}
       fileName="delivery-report"
     >
@@ -175,7 +175,7 @@ export default function DeliveryReportPage() {
                 Category
               </th>
               <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
-                Delivered To
+                Receiver
               </th>
               <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
                 Department

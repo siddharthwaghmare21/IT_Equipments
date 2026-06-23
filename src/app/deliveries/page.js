@@ -172,7 +172,7 @@ export default function DeliveriesPage() {
     <LayoutWrapper>
       <PageHeader
         title="Deliveries"
-        description="Track IT equipment/material delivery records, employee allocation and return status."
+        description="Track department-wise IT equipment/material delivery records, receiver details and return status."
       />
 
       <PageActionBar addHref="/deliveries/delivery" addLabel="Add Delivery" />
@@ -223,7 +223,7 @@ export default function DeliveriesPage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by delivery code, asset tag, asset name, employee, location or department..."
+            placeholder="Search by delivery code, asset tag, asset name, receiver, location or department..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
           />
 
@@ -251,7 +251,7 @@ export default function DeliveriesPage() {
         titleKey="deliveryCode"
         subtitleKey="assetName"
         meta={[
-          { label: "Employee", key: "deliveredTo" },
+          { label: "Receiver", key: "deliveredTo" },
           { label: "Department", key: "department" },
           { label: "Delivery Date", key: "deliveryDate" },
           { label: "Return", key: "returnStatus" },
@@ -281,7 +281,7 @@ export default function DeliveriesPage() {
                 Asset Name
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
-                Delivered To
+                Receiver
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Department

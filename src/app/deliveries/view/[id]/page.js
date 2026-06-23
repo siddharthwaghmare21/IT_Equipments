@@ -155,7 +155,7 @@ export default function ViewDeliveryPage() {
     <LayoutWrapper>
       <PageHeader
         title="Delivery Details"
-        description="View equipment/material delivery information, employee details, condition and return status."
+        description="View department-wise equipment/material delivery information, receiver details, condition and return status."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -190,7 +190,8 @@ export default function ViewDeliveryPage() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-600">
-              {delivery.assetTag} - Delivered to {delivery.deliveredTo}
+              {delivery.assetTag} - Issued to {delivery.department}; received
+              by {delivery.deliveredTo}
             </p>
           </div>
 
@@ -201,7 +202,7 @@ export default function ViewDeliveryPage() {
           <DetailItem label="Delivery Code" value={delivery.deliveryCode} />
           <DetailItem label="Asset Tag" value={delivery.assetTag} />
           <DetailItem label="Asset / Material Name" value={delivery.assetName} />
-          <DetailItem label="Delivered To" value={delivery.deliveredTo} />
+          <DetailItem label="Receiver / Employee Name" value={delivery.deliveredTo} />
           <DetailItem label="Department" value={delivery.department} />
           <DetailItem label="Issued By" value={delivery.issuedBy} />
           <DetailItem label="Location" value={delivery.location} />
@@ -300,8 +301,8 @@ export default function ViewDeliveryPage() {
             {delivery.assetName}
           </h3>
           <p className="mt-2 text-sm text-gray-600">
-            This equipment/material is delivered to {delivery.deliveredTo} from{" "}
-            {delivery.department}.
+            This equipment/material is issued to {delivery.department} and
+            collected by {delivery.deliveredTo}.
           </p>
         </div>
 
@@ -322,14 +323,14 @@ export default function ViewDeliveryPage() {
           Delivery Acknowledgement
         </h2>
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <DetailItem label="Employee" value={delivery.deliveredTo} />
+          <DetailItem label="Receiver / Employee Name" value={delivery.deliveredTo} />
           <DetailItem label="Asset" value={delivery.assetName} />
           <DetailItem label="Delivery Date" value={delivery.deliveryDate} />
           <DetailItem label="Accessories" value={delivery.accessoriesIncluded} />
         </div>
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div className="border-t border-gray-300 pt-2 text-sm text-gray-600">
-            Employee Signature
+            Receiver Signature
           </div>
           <div className="border-t border-gray-300 pt-2 text-sm text-gray-600">
             IT Department Signature

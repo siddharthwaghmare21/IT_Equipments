@@ -25,11 +25,6 @@ export const sidebarLinks = [
     short: "AS",
   },
   {
-    label: "Employees",
-    path: "/employees",
-    short: "EM",
-  },
-  {
     label: "Departments",
     path: "/departments",
     short: "DP",

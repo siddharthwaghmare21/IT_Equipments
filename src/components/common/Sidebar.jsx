@@ -63,12 +63,6 @@ function SidebarIcon({ path }) {
         <path d="M12 15v5" />
       </>
     ),
-    "/employees": (
-      <>
-        <path d="M16 21v-2a4 4 0 0 0-8 0v2" />
-        <circle cx="12" cy="7" r="4" />
-      </>
-    ),
     "/departments": (
       <>
         <path d="M4 21V5h7v16" />
@@ -191,7 +185,6 @@ export default function Sidebar({
       links: sidebarLinks.filter((link) =>
         [
           "/assets",
-          "/employees",
           "/departments",
           "/deliveries",
           "/returns",

@@ -234,21 +234,21 @@ export default function EditDeliveryPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Delivered To
+              Receiver / Employee Name
             </label>
-            <select
+            <input
+              type="text"
               name="deliveredTo"
               value={formData.deliveredTo}
               onChange={handleChange}
+              placeholder="Name of person collecting asset"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
               required
-            >
-              <option value="">Select employee</option>
-              <option value="Rahul Patil">Rahul Patil</option>
-              <option value="Sneha Jadhav">Sneha Jadhav</option>
-              <option value="Amit Shinde">Amit Shinde</option>
-              <option value="Priya More">Priya More</option>
-            </select>
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Asset remains allocated to the department; this name records who
+              collected it.
+            </p>
           </div>
 
           <div>

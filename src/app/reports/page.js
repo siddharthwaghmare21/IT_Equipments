@@ -25,7 +25,7 @@ const reportCards = [
   {
     title: "Delivery Report",
     description:
-      "View employee-wise and department-wise equipment/material delivery records.",
+      "View department-wise equipment/material delivery records with receiver tracking.",
     href: "/reports/deliveries",
     tag: "Deliveries",
     group: "Operations",
