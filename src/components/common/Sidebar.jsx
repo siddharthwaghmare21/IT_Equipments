@@ -80,6 +80,14 @@ function SidebarIcon({ path }) {
         <circle cx="18" cy="18" r="2" />
       </>
     ),
+    "/transfers": (
+      <>
+        <path d="M7 7h11" />
+        <path d="m15 4 3 3-3 3" />
+        <path d="M17 17H6" />
+        <path d="m9 14-3 3 3 3" />
+      </>
+    ),
     "/returns": (
       <>
         <path d="M9 14 4 9l5-5" />
@@ -187,6 +195,7 @@ export default function Sidebar({
           "/assets",
           "/departments",
           "/deliveries",
+          "/transfers",
           "/returns",
           "/maintenance",
         ].includes(link.path)

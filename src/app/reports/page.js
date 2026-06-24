@@ -39,6 +39,14 @@ const reportCards = [
     group: "Operations",
   },
   {
+    title: "Transfers Report",
+    description:
+      "Track department transfers, IT collection, reassignment and receiver acknowledgement.",
+    href: "/reports/transfers",
+    tag: "Transfers",
+    group: "Operations",
+  },
+  {
     title: "Warranty Report",
     description:
       "Track warranty expiry, expired assets and upcoming warranty alerts.",
@@ -199,7 +207,7 @@ export default function ReportsPage() {
       {!printPreviewMode && (
         <PageHeader
           title="Reports"
-          description="View IT asset reports, purchase summaries, deliveries, returns, warranty, maintenance and damaged asset records."
+          description="View IT asset reports, purchase summaries, deliveries, transfers, returns, warranty, maintenance and damaged asset records."
         />
       )}
 
@@ -242,7 +250,7 @@ export default function ReportsPage() {
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Total Reports</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">7</h2>
+          <h2 className="mt-2 text-3xl font-bold text-gray-900">8</h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -252,7 +260,7 @@ export default function ReportsPage() {
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Operational Reports</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">4</h2>
+          <h2 className="mt-2 text-3xl font-bold text-gray-900">5</h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -540,7 +548,7 @@ export default function ReportsPage() {
         <p className="mt-2 text-sm leading-6 text-gray-600">
           These reports are currently using sample frontend data. After MySQL
           backend integration, all reports will show real-time asset,
-          purchase, delivery, return, warranty and maintenance records.
+          purchase, delivery, transfer, return, warranty and maintenance records.
         </p>
       </section>
       </div>

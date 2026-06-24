@@ -14,9 +14,10 @@ const searchItems = [
   { type: "Maintenance", title: "MNT-001", detail: "Battery issue, high priority service", href: "/maintenance" },
   { type: "Report", title: "Warranty Report", detail: "Assets with warranty expiring soon", href: "/reports/warranty" },
   { type: "Delivery", title: "DLV-001", detail: "Laptop issued to IT Department, received by Rahul Patil", href: "/deliveries/view/1" },
+  { type: "Transfer", title: "TRF-001", detail: "Dell Latitude 5420 moved from IT Department to Accounts", href: "/transfers/view/1" },
 ];
 
-const typeFilters = ["All", "Asset", "Work Order", "Vendor", "Maintenance", "Delivery", "Report"];
+const typeFilters = ["All", "Asset", "Work Order", "Vendor", "Maintenance", "Delivery", "Transfer", "Report"];
 
 export default function SearchPage() {
   const params = useSearchParams();
@@ -44,7 +45,7 @@ export default function SearchPage() {
     <LayoutWrapper>
       <PageHeader
         title="Search"
-        description="Search across assets, work orders, vendors, deliveries, maintenance and reports."
+        description="Search across assets, work orders, vendors, deliveries, transfers, maintenance and reports."
       />
 
       <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -53,7 +54,7 @@ export default function SearchPage() {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search asset tag, WO, vendor, receiver, maintenance or report..."
+            placeholder="Search asset tag, WO, vendor, receiver, transfer, maintenance or report..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
 

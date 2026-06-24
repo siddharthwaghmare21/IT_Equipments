@@ -173,7 +173,7 @@ export default function Header({
             type="search"
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search asset, WO, vendor, maintenance..."
+            placeholder="Search asset, WO, vendor, transfer..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
         </form>

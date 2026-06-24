@@ -114,8 +114,31 @@ export default function ViewAssetPage() {
     "Purchased",
     "Registered",
     asset.status === "Delivered" ? "Delivered" : "Stored",
+    "Transfer",
     "Maintenance",
     "Retire",
+  ];
+  const transferHistory = [
+    {
+      code: "TRF-001",
+      type: "Department Transfer",
+      fromDepartment: "IT Department",
+      toDepartment: "Accounts",
+      receiver: "Sneha Jadhav",
+      status: "Completed",
+      date: "2026-06-12",
+      condition: "Good",
+    },
+    {
+      code: "TRF-003",
+      type: "Reassignment",
+      fromDepartment: "IT Store",
+      toDepartment: "HR",
+      receiver: "Priya More",
+      status: "Reassigned",
+      date: "2026-06-16",
+      condition: "Working",
+    },
   ];
 
   function handlePrintLabel() {
@@ -217,7 +240,7 @@ export default function ViewAssetPage() {
           <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
             Asset Lifecycle Flow
           </p>
-          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-5">
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-6">
             {lifecycleSteps.map((step, index) => (
               <div
                 key={step}
@@ -229,6 +252,60 @@ export default function ViewAssetPage() {
               >
                 <p className="text-xs font-bold uppercase">Step {index + 1}</p>
                 <p className="mt-1 text-sm font-semibold">{step}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                Transfer History
+              </p>
+              <p className="mt-1 text-sm text-gray-600">
+                Department movement, IT collection and reassignment records for
+                this asset.
+              </p>
+            </div>
+
+            <Link
+              href="/transfers"
+              className="inline-flex w-fit justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+            >
+              Open Transfers
+            </Link>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            {transferHistory.map((transfer) => (
+              <div
+                key={transfer.code}
+                className="rounded-xl border border-gray-200 bg-white p-4"
+              >
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">
+                      {transfer.code} | {transfer.type}
+                    </p>
+                    <p className="mt-1 text-sm text-gray-600">
+                      {transfer.fromDepartment} to {transfer.toDepartment}
+                    </p>
+                    <p className="mt-1 text-xs font-semibold text-gray-500">
+                      Receiver: {transfer.receiver} | Condition:{" "}
+                      {transfer.condition}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700">
+                      {transfer.date}
+                    </span>
+                    <span className="rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+                      {transfer.status}
+                    </span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

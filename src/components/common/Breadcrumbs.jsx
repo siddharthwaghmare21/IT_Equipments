@@ -14,6 +14,7 @@ const labels = {
   departments: "Departments",
   deliveries: "Deliveries",
   delivery: "Delivery",
+  transfers: "Transfers",
   returns: "Returns",
   maintenance: "Maintenance",
   reports: "Reports",

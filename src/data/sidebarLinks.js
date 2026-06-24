@@ -35,6 +35,11 @@ export const sidebarLinks = [
     short: "DL",
   },
   {
+    label: "Transfers",
+    path: "/transfers",
+    short: "TR",
+  },
+  {
     label: "Returns",
     path: "/returns",
     short: "RT",
