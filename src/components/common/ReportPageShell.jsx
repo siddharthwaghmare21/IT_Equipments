@@ -219,7 +219,7 @@ export default function ReportPageShell({
         </div>
 
         <div className="report-body space-y-5 px-5 py-5">
-          <section className="report-section">
+          <section className="report-section report-print-hidden">
             <h2 className="report-section-title">Report Metadata</h2>
             <div className="overflow-hidden border border-gray-300">
               <table className="w-full text-sm">
@@ -239,7 +239,7 @@ export default function ReportPageShell({
             </div>
           </section>
 
-          <section className="report-section">
+          <section className="report-section report-print-hidden">
             <h2 className="report-section-title">Executive Summary</h2>
             <div className="grid grid-cols-2 border border-gray-300 lg:grid-cols-4">
               {reportMetrics.map((item) => (
@@ -258,7 +258,7 @@ export default function ReportPageShell({
             </div>
           </section>
 
-          <section className="report-section">
+          <section className="report-section report-print-hidden">
             <h2 className="report-section-title">Applied Filters</h2>
             <div className="overflow-hidden border border-gray-300">
               <table className="w-full text-sm">

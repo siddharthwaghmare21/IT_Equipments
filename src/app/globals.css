@@ -239,6 +239,7 @@ textarea:user-invalid {
   }
 
   .no-print,
+  nav[aria-label="Breadcrumb"],
   header:not(.report-letterhead),
   aside {
     display: none !important;
@@ -271,7 +272,7 @@ textarea:user-invalid {
     break-after: avoid !important;
     page-break-after: avoid !important;
     padding-top: 0 !important;
-    padding-bottom: 8px !important;
+    padding-bottom: 6px !important;
   }
 
   .report-title-block {
@@ -279,12 +280,12 @@ textarea:user-invalid {
     break-after: avoid !important;
     page-break-before: avoid !important;
     page-break-after: avoid !important;
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
   }
 
   .report-body {
-    padding-top: 8px !important;
+    padding-top: 6px !important;
   }
 
   .print-area .overflow-hidden,
@@ -319,6 +320,14 @@ textarea:user-invalid {
   .report-section:first-child {
     break-before: avoid !important;
     page-break-before: avoid !important;
+  }
+
+  .report-print-hidden {
+    display: none !important;
+  }
+
+  .report-body > .report-section > section:not(:has(table)) {
+    display: none !important;
   }
 
   .report-section-title {
