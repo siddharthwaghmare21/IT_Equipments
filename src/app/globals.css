@@ -137,6 +137,44 @@ textarea:user-invalid {
   padding: 8px 10px !important;
 }
 
+.report-document {
+  border-radius: 0;
+}
+
+.report-document .rounded-2xl,
+.report-document .rounded-xl {
+  border-radius: 2px;
+}
+
+.report-document .shadow-sm,
+.report-document .shadow-md {
+  box-shadow: none;
+}
+
+.report-section-title {
+  margin-bottom: 12px;
+  border-bottom: 1px solid #d1d5db;
+  padding-bottom: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #111827;
+}
+
+.report-document .report-body > .report-section > section:first-child {
+  border-radius: 0;
+}
+
+.report-document table {
+  border-collapse: collapse;
+}
+
+.report-document th,
+.report-document td {
+  vertical-align: top;
+}
+
 .print-area tbody tr:has(span[class*="yellow"]) {
   background-color: #fffbeb;
 }
@@ -204,17 +242,12 @@ textarea:user-invalid {
     width: 100% !important;
     padding-bottom: 72px !important;
     border: 0 !important;
+    border-radius: 0 !important;
     box-shadow: none !important;
   }
 
-  .report-watermark {
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 0 !important;
-    opacity: 0.18 !important;
-    transform: rotate(-28deg);
-    color: #e5e7eb !important;
-    font-size: 72px !important;
+  .report-letterhead {
+    border-bottom: 3px solid #111827 !important;
   }
 
   .print-area > div {
@@ -225,19 +258,17 @@ textarea:user-invalid {
   .report-section,
   .print-area section,
   .print-area table {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-
-  .report-cover {
-    min-height: 70vh;
-    display: flex;
-    align-items: center;
-  }
-
-  .print-area table {
     break-inside: auto;
     page-break-inside: auto;
+  }
+
+  .report-section {
+    margin-bottom: 16px !important;
+  }
+
+  .report-section-title {
+    break-after: avoid;
+    page-break-after: avoid;
   }
 
   table {
@@ -249,6 +280,7 @@ textarea:user-invalid {
   th,
   td {
     padding: 6px 8px !important;
+    border-color: #d1d5db !important;
   }
 
   thead {
@@ -261,6 +293,7 @@ textarea:user-invalid {
     bottom: 0;
     left: 0;
     background: #ffffff !important;
+    border-top: 1px solid #d1d5db !important;
   }
 
   .page-number::after {
