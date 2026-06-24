@@ -128,7 +128,9 @@ export default function ReportPageShell({
 
   return (
     <LayoutWrapper>
-      <PageHeader title={title} description={description} />
+      <div className="no-print">
+        <PageHeader title={title} description={description} />
+      </div>
 
       <section
         className={`print-area report-document report-format-${printFormat} overflow-hidden border border-gray-200 bg-white shadow-sm`}
