@@ -230,7 +230,7 @@ export default function AddTransferPage() {
                 <option value="Internal movement">Internal movement</option>
                 <option value="Replacement">Replacement</option>
                 <option value="Project need">Project need</option>
-                <option value="Employee change">Employee change</option>
+                <option value="Receiver change">Receiver change</option>
                 <option value="Repair return">Repair return</option>
                 <option value="Temporary setup">Temporary setup</option>
               </select>

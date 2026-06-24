@@ -272,7 +272,7 @@ export default function ReturnsReportPage() {
 
       <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
         Note: This returns report currently uses sample frontend data. After SQL
-        Server backend integration, this report will show real returned
+        MySQL backend integration, this report will show real returned
         equipment/material records.
       </p>
     </ReportPageShell>

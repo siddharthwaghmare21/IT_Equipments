@@ -185,7 +185,7 @@ export default function EditTransferPage() {
               "Internal movement",
               "Replacement",
               "Project need",
-              "Employee change",
+              "Receiver change",
               "Repair return",
               "Temporary setup",
             ]}
