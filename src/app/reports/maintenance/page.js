@@ -248,7 +248,7 @@ export default function MaintenanceReportPage() {
                 Issue Type
               </th>
 
-              <th className="px-4 py-3 font-semibold text-gray-700">
+              <th className="report-print-secondary px-4 py-3 font-semibold text-gray-700">
                 Reported By
               </th>
 
@@ -256,7 +256,7 @@ export default function MaintenanceReportPage() {
                 Vendor / Technician
               </th>
 
-              <th className="px-4 py-3 font-semibold text-gray-700">
+              <th className="report-print-secondary px-4 py-3 font-semibold text-gray-700">
                 Service Type
               </th>
 
@@ -268,7 +268,7 @@ export default function MaintenanceReportPage() {
                 Service Date
               </th>
 
-              <th className="px-4 py-3 font-semibold text-gray-700">
+              <th className="report-print-secondary px-4 py-3 font-semibold text-gray-700">
                 Expected Completion
               </th>
 
@@ -276,15 +276,15 @@ export default function MaintenanceReportPage() {
                 Cost
               </th>
 
-              <th className="px-4 py-3 font-semibold text-gray-700">
+              <th className="report-print-secondary px-4 py-3 font-semibold text-gray-700">
                 Downtime
               </th>
 
-              <th className="px-4 py-3 font-semibold text-gray-700">
+              <th className="report-print-secondary px-4 py-3 font-semibold text-gray-700">
                 Warranty
               </th>
 
-              <th className="px-4 py-3 font-semibold text-gray-700">
+              <th className="report-print-secondary px-4 py-3 font-semibold text-gray-700">
                 Approval
               </th>
 
@@ -316,7 +316,7 @@ export default function MaintenanceReportPage() {
                   {record.issueType}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
+                <td className="report-print-secondary px-4 py-4 text-gray-700">
                   {record.reportedBy}
                 </td>
 
@@ -324,7 +324,7 @@ export default function MaintenanceReportPage() {
                   {record.vendor}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
+                <td className="report-print-secondary px-4 py-4 text-gray-700">
                   {record.serviceType}
                 </td>
 
@@ -336,7 +336,7 @@ export default function MaintenanceReportPage() {
                   {record.serviceDate}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
+                <td className="report-print-secondary px-4 py-4 text-gray-700">
                   {record.expectedCompletion}
                 </td>
 
@@ -344,15 +344,15 @@ export default function MaintenanceReportPage() {
                   {record.cost}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
+                <td className="report-print-secondary px-4 py-4 text-gray-700">
                   {record.downtimeHours}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
+                <td className="report-print-secondary px-4 py-4 text-gray-700">
                   {record.warrantyClaim}
                 </td>
 
-                <td className="px-4 py-4 text-gray-700">
+                <td className="report-print-secondary px-4 py-4 text-gray-700">
                   {record.approvalStatus}
                 </td>
 
@@ -364,6 +364,74 @@ export default function MaintenanceReportPage() {
           </tbody>
         </table>
       </TableWrapper>
+
+      <section className="report-print-appendix mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h3 className="text-lg font-bold text-gray-900">
+          Maintenance Details Appendix
+        </h3>
+        <p className="mt-1 text-sm text-gray-600">
+          Additional fields are listed record-wise so the portrait print remains
+          readable without losing important maintenance details.
+        </p>
+
+        <div className="mt-4 overflow-hidden border border-gray-300">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 text-left">
+              <tr className="border-b border-gray-200">
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Maintenance Code
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Reported By
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Service Type
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Expected / Completion
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Downtime / Warranty
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-700">
+                  Approval
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {maintenanceReportData.map((record) => (
+                <tr
+                  key={`appendix-${record.id}`}
+                  className="border-b border-gray-100"
+                >
+                  <td className="px-4 py-4 font-semibold text-gray-900">
+                    {record.maintenanceCode}
+                  </td>
+                  <td className="px-4 py-4 text-gray-700">
+                    {record.reportedBy}
+                  </td>
+                  <td className="px-4 py-4 text-gray-700">
+                    {record.serviceType}
+                  </td>
+                  <td className="px-4 py-4 text-gray-700">
+                    Expected: {record.expectedCompletion}
+                    <br />
+                    Completion: {record.completionDate || "Pending"}
+                  </td>
+                  <td className="px-4 py-4 text-gray-700">
+                    Downtime: {record.downtimeHours} hrs
+                    <br />
+                    Warranty: {record.warrantyClaim}
+                  </td>
+                  <td className="px-4 py-4 text-gray-700">
+                    {record.approvalStatus}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </ReportPageShell>
   );
 }

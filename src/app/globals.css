@@ -223,8 +223,23 @@ textarea:user-invalid {
 }
 
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 9mm 14mm;
+  }
+
+  @page report-landscape {
+    size: A4 landscape;
+    margin: 10mm 8mm 14mm;
+  }
+
+  @page report-portrait {
+    size: A4 portrait;
+    margin: 10mm 9mm 14mm;
+  }
+
   .no-print,
-  header,
+  header:not(.report-letterhead),
   aside {
     display: none !important;
   }
@@ -239,15 +254,31 @@ textarea:user-invalid {
   }
 
   .print-area {
+    page: report-portrait;
     width: 100% !important;
+    max-width: 100% !important;
     padding-bottom: 72px !important;
     border: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
+    overflow: visible !important;
   }
 
   .report-letterhead {
     border-bottom: 3px solid #111827 !important;
+  }
+
+  .print-area .overflow-hidden,
+  .print-area .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  .print-area .min-w-\[1300px\],
+  .print-area .min-w-\[1700px\],
+  .print-area .min-w-\[1750px\],
+  .print-area .min-w-\[1800px\],
+  .print-area .min-w-\[1850px\] {
+    min-width: 0 !important;
   }
 
   .print-area > div {
@@ -274,13 +305,75 @@ textarea:user-invalid {
   table {
     width: 100% !important;
     min-width: 0 !important;
-    font-size: 10px !important;
+    table-layout: fixed !important;
+    font-size: 9px !important;
+    line-height: 1.25 !important;
   }
 
   th,
   td {
-    padding: 6px 8px !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    padding: 4px 5px !important;
     border-color: #d1d5db !important;
+  }
+
+  .report-print-secondary {
+    display: none !important;
+  }
+
+  .report-print-appendix {
+    display: block !important;
+    break-before: auto;
+    page-break-before: auto;
+  }
+
+  .report-format-a4-landscape {
+    page: report-landscape;
+  }
+
+  .report-format-a4-landscape table {
+    font-size: 8px !important;
+  }
+
+  .report-format-a4-landscape .report-print-secondary {
+    display: table-cell !important;
+  }
+
+  .report-format-a4-landscape .report-print-appendix {
+    display: none !important;
+  }
+
+  .report-format-compact {
+    page: report-portrait;
+  }
+
+  .report-format-compact table {
+    font-size: 8px !important;
+  }
+
+  .report-format-compact th,
+  .report-format-compact td {
+    padding: 3px 4px !important;
+  }
+
+  .report-format-compact .report-title-block,
+  .report-format-compact .report-body {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .report-format-appendix {
+    page: report-portrait;
+  }
+
+  .report-format-appendix .report-print-secondary {
+    display: none !important;
+  }
+
+  .report-format-appendix .report-print-appendix {
+    display: block !important;
   }
 
   thead {

@@ -29,6 +29,29 @@ const attentionWords = [
   "Needs Repair",
 ];
 
+const printFormats = [
+  {
+    value: "a4-portrait",
+    label: "A4 Portrait",
+    description: "Official readable format",
+  },
+  {
+    value: "a4-landscape",
+    label: "A4 Landscape",
+    description: "Full wide table format",
+  },
+  {
+    value: "compact",
+    label: "Compact Portrait",
+    description: "Dense table format",
+  },
+  {
+    value: "appendix",
+    label: "Portrait + Appendix",
+    description: "Key columns with details below",
+  },
+];
+
 export default function ReportPageShell({
   title,
   description,
@@ -37,7 +60,10 @@ export default function ReportPageShell({
   children,
 }) {
   const [branding, setBranding] = useState(defaultBranding);
-  const [compactTable, setCompactTable] = useState(false);
+  const [printFormat, setPrintFormat] = useState("a4-portrait");
+  const selectedPrintFormat =
+    printFormats.find((format) => format.value === printFormat) ||
+    printFormats[0];
 
   const generatedDate = new Date().toLocaleDateString("en-IN", {
     day: "2-digit",
@@ -77,6 +103,7 @@ export default function ReportPageShell({
     { label: "Prepared By", value: branding.reportPreparedBy },
     { label: "Source", value: "Frontend sample data" },
     { label: "Backend Status", value: "Pending integration" },
+    { label: "Print Format", value: selectedPrintFormat.label },
     { label: "Version", value: "v1.0" },
   ];
 
@@ -104,9 +131,7 @@ export default function ReportPageShell({
       <PageHeader title={title} description={description} />
 
       <section
-        className={`print-area report-document overflow-hidden border border-gray-200 bg-white shadow-sm ${
-          compactTable ? "report-compact" : ""
-        }`}
+        className={`print-area report-document report-format-${printFormat} overflow-hidden border border-gray-200 bg-white shadow-sm`}
       >
         <header className="report-letterhead border-b-4 border-gray-900 bg-white px-5 py-5">
           <div className="grid gap-5 lg:grid-cols-[1fr_280px] lg:items-start">
@@ -162,17 +187,32 @@ export default function ReportPageShell({
               </p>
             </div>
 
-            <div className="no-print flex flex-col gap-3 sm:flex-row">
+            <div className="no-print flex flex-col gap-3 sm:flex-row sm:items-center">
               <BackButton href="/reports" label="Reports" />
-              <button
-                type="button"
-                onClick={() => setCompactTable((current) => !current)}
-                className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-              >
-                {compactTable ? "Normal Table" : "Compact Table"}
-              </button>
+              <label className="flex flex-col gap-1 text-xs font-semibold text-gray-600">
+                Print Format
+                <select
+                  value={printFormat}
+                  onChange={(event) => setPrintFormat(event.target.value)}
+                  className="min-w-44 rounded-xl border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 outline-none focus:border-gray-900"
+                >
+                  {printFormats.map((format) => (
+                    <option key={format.value} value={format.value}>
+                      {format.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
               <ReportExportButtons data={data} fileName={fileName} />
             </div>
+          </div>
+
+          <div className="no-print mt-4 border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">
+            <span className="font-bold text-gray-900">
+              {selectedPrintFormat.label}:
+            </span>{" "}
+            {selectedPrintFormat.description}. Backend PDF export will use this
+            same format later.
           </div>
         </div>
 
