@@ -21,6 +21,11 @@ const importModules = [
     format: "workOrderNumber, vendorName, invoiceNumber, purchaseDate, amount",
     status: "Backend Pending",
   },
+  {
+    title: "Transfers",
+    format: "transferCode, assetTag, fromDepartment, toDepartment, newReceiver, status",
+    status: "Backend Pending",
+  },
 ];
 
 const previewRows = [
@@ -61,7 +66,7 @@ export default function ImportDataPage() {
     <LayoutWrapper>
       <PageHeader
         title="Import Data"
-        description="Prepare bulk import files for assets, departments, vendors and work order records."
+        description="Prepare bulk import files for assets, departments, vendors, work orders and transfer records."
       />
 
       <section className="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">

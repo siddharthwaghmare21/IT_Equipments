@@ -106,10 +106,10 @@ export default function DashboardPage() {
       href: "/deliveries",
     },
     {
-      title: "Return Inspections",
-      value: "5",
-      description: "Awaiting condition check",
-      href: "/returns",
+      title: "Pending Transfers",
+      value: "4",
+      description: "Movement or reassignment open",
+      href: "/transfers",
     },
     {
       title: "Purchase Approvals",
@@ -153,6 +153,10 @@ export default function DashboardPage() {
       meta: "Purchases | Pending approval",
     },
     {
+      title: "Asset transfer TRF-001 completed",
+      meta: "Transfers | IT Department to Accounts",
+    },
+    {
       title: "HP LaserJet maintenance completed",
       meta: "Maintenance | Service report attached",
     },
@@ -171,12 +175,12 @@ export default function DashboardPage() {
     Admin: [
       { label: "Approve Requests", href: "/admin-request-management" },
       { label: "Asset Workflow", href: "/assets" },
-      { label: "Reports", href: "/reports" },
+      { label: "Transfers", href: "/transfers" },
     ],
     Employee: [
       { label: "Add Asset", href: "/assets/add" },
       { label: "Create Delivery", href: "/deliveries/delivery" },
-      { label: "Maintenance", href: "/maintenance" },
+      { label: "Create Transfer", href: "/transfers/add" },
     ],
     Viewer: [
       { label: "Asset Reports", href: "/reports/assets" },
@@ -188,7 +192,7 @@ export default function DashboardPage() {
   const dueDates = [
     { date: "2026-06-24", title: "Warranty review", meta: "3 assets" },
     { date: "2026-06-26", title: "Expected return", meta: "DLV-004" },
-    { date: "2026-06-29", title: "Maintenance follow-up", meta: "MNT-001" },
+    { date: "2026-06-29", title: "Transfer follow-up", meta: "TRF-002" },
     { date: "2026-07-01", title: "Stock audit", meta: "IT Store" },
   ];
 
@@ -215,6 +219,11 @@ export default function DashboardPage() {
       title: "Maintenance Report",
       description: "Repair SLA and vendor summary",
       href: "/reports/maintenance",
+    },
+    {
+      title: "Transfers Report",
+      description: "Movement and reassignment summary",
+      href: "/reports/transfers",
     },
     {
       title: "Damaged Assets Report",

@@ -55,6 +55,17 @@ const activityLogs = [
   {
     id: 5,
     date: "2026-03-03",
+    time: "01:45 PM",
+    module: "Transfers",
+    action: "Asset Transferred",
+    description: "Transfer TRF-001 moved IT-LAP-001 from IT Department to Accounts.",
+    performedBy: "IT Admin",
+    role: "Admin",
+    status: "Success",
+  },
+  {
+    id: 6,
+    date: "2026-03-03",
     time: "03:20 PM",
     module: "Returns",
     action: "Asset Returned",
@@ -64,7 +75,7 @@ const activityLogs = [
     status: "Success",
   },
   {
-    id: 6,
+    id: 7,
     date: "2026-03-04",
     time: "04:10 PM",
     module: "Maintenance",
@@ -75,7 +86,7 @@ const activityLogs = [
     status: "Success",
   },
   {
-    id: 7,
+    id: 8,
     date: "2026-03-05",
     time: "01:25 PM",
     module: "Departments",
@@ -86,7 +97,7 @@ const activityLogs = [
     status: "Success",
   },
   {
-    id: 8,
+    id: 9,
     date: "2026-03-05",
     time: "05:40 PM",
     module: "Login",
@@ -105,6 +116,7 @@ const moduleFilters = [
   "Vendors",
   "Departments",
   "Deliveries",
+  "Transfers",
   "Returns",
   "Maintenance",
   "Login",
@@ -391,7 +403,7 @@ export default function ActivityLogsPage() {
         <p className="mt-2 text-sm leading-6 text-gray-600">
           Activity logs are read-only audit records. After backend integration,
           logs will be automatically created whenever users add, edit, delete,
-          deliver, return or update IT asset records.
+          deliver, transfer, return or update IT asset records.
         </p>
       </section>
     </LayoutWrapper>

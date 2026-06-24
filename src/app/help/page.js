@@ -17,6 +17,10 @@ const sopSteps = [
     details: "Issue equipment to department, capture receiver name, acknowledgement and accessories.",
   },
   {
+    title: "Transfer",
+    details: "Move issued assets between departments, collect by IT when needed and record reassignment acknowledgement.",
+  },
+  {
     title: "Return",
     details: "Receive equipment back, inspect condition and update return decision.",
   },
@@ -26,7 +30,7 @@ const sopSteps = [
   },
   {
     title: "Reports",
-    details: "Review asset, purchase, delivery, return, warranty, maintenance and damaged reports.",
+    details: "Review asset, purchase, delivery, transfer, return, warranty, maintenance and damaged reports.",
   },
 ];
 
@@ -54,7 +58,7 @@ const frontendCompletion = [
 const backendPreparation = [
   "Auth APIs: login, signup request, email OTP, approval workflow",
   "Master APIs: assets, departments, vendors and receiver tracking",
-  "Workflow APIs: purchase, delivery, return, maintenance, damage review",
+  "Workflow APIs: purchase, delivery, transfer, return, maintenance, damage review",
   "Report APIs: filters, PDF/Excel export, scheduled email, audit trail",
   "System APIs: backup, restore, role permissions, activity logs",
 ];
@@ -63,6 +67,7 @@ const namingStandards = [
   "Assets: AST-001 or IT-LAP-001 based on final asset tagging policy",
   "Deliveries: DLV-001",
   "Returns: RET-001",
+  "Transfers: TRF-001",
   "Maintenance: MNT-001",
   "Purchases: WO-2026-001",
 ];
