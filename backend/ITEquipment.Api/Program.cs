@@ -12,6 +12,7 @@ builder.Services.AddScoped<VendorRepository>();
 builder.Services.AddScoped<AssetRepository>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddSingleton<PasswordHashService>();
+builder.Services.AddSingleton<OtpService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
