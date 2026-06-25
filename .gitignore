@@ -25,6 +25,11 @@
 # production
 /build
 
+# .NET backend
+**/bin/
+**/obj/
+appsettings.Local.json
+
 # misc
 .DS_Store
 *.pem
