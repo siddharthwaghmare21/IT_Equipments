@@ -5,7 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<MySqlConnectionFactory>();
-builder.Services.AddScoped<LookupRepository>();
+builder.Services.AddScoped<RoleRepository>();
+builder.Services.AddScoped<DepartmentRepository>();
+builder.Services.AddScoped<VendorRepository>();
+builder.Services.AddScoped<AssetRepository>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
@@ -42,7 +45,10 @@ app.MapGet("/api/health", () =>
 })
 .WithName("HealthCheck");
 
-app.MapLookupEndpoints();
+app.MapRoleEndpoints();
+app.MapDepartmentEndpoints();
+app.MapVendorEndpoints();
+app.MapAssetEndpoints();
 
 app.Run();
 

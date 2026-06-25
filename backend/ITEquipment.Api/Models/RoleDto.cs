@@ -1,7 +1,7 @@
 namespace ITEquipment.Api.Models;
 
 public sealed record RoleDto(
-    int RoleId,
+    long RoleId,
     string RoleName,
     string RoleCode,
     string? Description,

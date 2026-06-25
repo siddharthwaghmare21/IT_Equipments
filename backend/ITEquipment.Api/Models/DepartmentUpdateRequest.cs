@@ -1,7 +1,6 @@
 namespace ITEquipment.Api.Models;
 
-public sealed record DepartmentDto(
-    long DepartmentId,
+public sealed record DepartmentUpdateRequest(
     string DepartmentCode,
     string DepartmentName,
     string? DepartmentHead,

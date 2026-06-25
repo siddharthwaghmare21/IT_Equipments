@@ -1,12 +1,10 @@
 namespace ITEquipment.Api.Models;
 
-public sealed record DepartmentDto(
-    long DepartmentId,
+public sealed record DepartmentCreateRequest(
     string DepartmentCode,
     string DepartmentName,
     string? DepartmentHead,
     string? ContactEmail,
     string? ContactPhone,
     string? Location,
-    string? Description,
-    bool IsActive);
+    string? Description);
