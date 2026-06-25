@@ -6,7 +6,9 @@ public static class SecurityEndpoints
 {
     public static RouteGroupBuilder MapSecurityEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/security").WithTags("Security");
+        var group = routes.MapGroup("/api/security")
+            .WithTags("Security")
+            .RequireAuthorization(AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/role-permissions", () =>
         {

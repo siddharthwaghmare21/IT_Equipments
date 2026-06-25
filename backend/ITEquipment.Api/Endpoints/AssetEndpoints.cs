@@ -38,7 +38,9 @@ public static class AssetEndpoints
 
     public static RouteGroupBuilder MapAssetEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/assets").WithTags("Assets");
+        var group = routes.MapGroup("/api/assets")
+            .WithTags("Assets")
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
 
         group.MapGet("/", async (
             AssetRepository repository,

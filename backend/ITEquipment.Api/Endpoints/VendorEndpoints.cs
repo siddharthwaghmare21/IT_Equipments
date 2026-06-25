@@ -16,7 +16,9 @@ public static class VendorEndpoints
 
     public static RouteGroupBuilder MapVendorEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/vendors").WithTags("Vendors");
+        var group = routes.MapGroup("/api/vendors")
+            .WithTags("Vendors")
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
 
         group.MapGet("/", async (
             VendorRepository repository,

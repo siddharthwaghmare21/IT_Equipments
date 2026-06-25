@@ -1,7 +1,11 @@
 using ITEquipment.Api.Data;
 using ITEquipment.Api.Endpoints;
+using ITEquipment.Api.Middleware;
 using ITEquipment.Api.Security;
 using ITEquipment.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +15,41 @@ builder.Services.AddScoped<RoleRepository>();
 builder.Services.AddScoped<DepartmentRepository>();
 builder.Services.AddScoped<VendorRepository>();
 builder.Services.AddScoped<AssetRepository>();
+builder.Services.AddScoped<AssetDocumentRepository>();
+builder.Services.AddScoped<WorkOrderRepository>();
+builder.Services.AddScoped<DeliveryRepository>();
+builder.Services.AddScoped<TransferRepository>();
+builder.Services.AddScoped<ReturnRepository>();
+builder.Services.AddScoped<MaintenanceRepository>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<ApprovalRepository>();
+builder.Services.AddScoped<ActivityLogRepository>();
 builder.Services.AddSingleton<PasswordHashService>();
 builder.Services.AddSingleton<OtpService>();
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
+builder.Services.AddSingleton<JwtTokenService>();
+var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
+if (string.IsNullOrWhiteSpace(jwtOptions.SigningKey) || jwtOptions.SigningKey.Length < 32)
+{
+    throw new InvalidOperationException("JWT signing key must be configured with at least 32 characters.");
+}
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtOptions.Issuer,
+            ValidAudience = jwtOptions.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
+            ClockSkew = TimeSpan.FromMinutes(2)
+        };
+    });
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy(AppAuthorizationPolicies.RequireSuperAdmin, policy =>
         policy.RequireRole(AppRoles.SuperAdmin))
@@ -49,7 +84,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("Frontend");
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ActivityLogMiddleware>();
 
 app.MapGet("/api/health", () =>
 {
@@ -67,6 +104,13 @@ app.MapRoleEndpoints();
 app.MapDepartmentEndpoints();
 app.MapVendorEndpoints();
 app.MapAssetEndpoints();
+app.MapAssetDocumentEndpoints();
+app.MapWorkOrderEndpoints();
+app.MapDeliveryEndpoints();
+app.MapTransferEndpoints();
+app.MapReturnEndpoints();
+app.MapMaintenanceEndpoints();
+app.MapActivityLogEndpoints();
 app.MapAuthEndpoints();
 app.MapSecurityEndpoints();
 app.MapApprovalEndpoints();

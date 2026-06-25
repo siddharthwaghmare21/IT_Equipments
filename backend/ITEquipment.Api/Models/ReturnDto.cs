@@ -1,0 +1,27 @@
+namespace ITEquipment.Api.Models;
+
+public sealed record ReturnDto(
+    long ReturnId,
+    string ReturnCode,
+    long? DeliveryId,
+    string? DeliveryCode,
+    long AssetId,
+    string? AssetTag,
+    string? AssetName,
+    long? DepartmentId,
+    string? DepartmentName,
+    string ReturnedByName,
+    DateOnly ReturnDate,
+    string ReturnCondition,
+    long? ReceivedBy,
+    string? ReceivedByName,
+    string? ReceivedLocation,
+    string AcknowledgementStatus,
+    string InspectionStatus,
+    long? InspectionBy,
+    string? InspectionByName,
+    string DamageDecision,
+    string ReturnStatus,
+    string? Remarks,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt);

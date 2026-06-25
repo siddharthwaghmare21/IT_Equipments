@@ -1,0 +1,28 @@
+namespace ITEquipment.Api.Models;
+
+public sealed record TransferDto(
+    long TransferId,
+    string TransferCode,
+    string TransferType,
+    long AssetId,
+    string? AssetTag,
+    string? AssetName,
+    long? FromDepartmentId,
+    string? FromDepartmentName,
+    long? ToDepartmentId,
+    string? ToDepartmentName,
+    string? CurrentReceiverName,
+    string? NewReceiverName,
+    string? TransferReason,
+    string? Accessories,
+    string ConditionAtTransfer,
+    DateOnly? CollectionDate,
+    long? CollectedBy,
+    string? CollectedByName,
+    DateOnly? IssueDate,
+    string HandoverAcknowledgement,
+    string NewAcknowledgement,
+    string TransferStatus,
+    string? Remarks,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt);

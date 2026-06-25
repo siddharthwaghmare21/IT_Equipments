@@ -92,6 +92,7 @@ public static class AuthEndpoints
             LoginRequest request,
             AuthRepository repository,
             PasswordHashService passwordHashService,
+            JwtTokenService jwtTokenService,
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
@@ -122,7 +123,8 @@ public static class AuthEndpoints
                 var updatedUser = await repository.MarkLoginSuccessAsync(loginUser.User.UserId, cancellationToken)
                     ?? loginUser.User;
 
-                return Results.Ok(new LoginResponse(updatedUser, "Login successful."));
+                var token = jwtTokenService.CreateToken(updatedUser);
+                return Results.Ok(new LoginResponse(updatedUser, "Login successful.", token));
             }
             catch (InvalidOperationException exception)
             {

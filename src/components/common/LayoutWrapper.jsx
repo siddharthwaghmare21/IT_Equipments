@@ -8,8 +8,8 @@ import ConfirmDialog from "./ConfirmDialog";
 import Breadcrumbs from "./Breadcrumbs";
 import CommandPalette from "./CommandPalette";
 import { showToast } from "./ToastHost";
-
-const SESSION_KEY = "itAssetUserSession";
+import { SESSION_KEY } from "@/lib/authConfig";
+import { readSession } from "@/lib/authSession";
 
 export default function LayoutWrapper({ children }) {
   const router = useRouter();
@@ -19,11 +19,7 @@ export default function LayoutWrapper({ children }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
-    const savedSession = JSON.parse(
-      localStorage.getItem(SESSION_KEY) || "null"
-    );
-
-    setTimeout(() => setCurrentUser(savedSession), 0);
+    setTimeout(() => setCurrentUser(readSession()), 0);
   }, []);
 
   const isSuperAdmin = currentUser?.role === "Super Admin";

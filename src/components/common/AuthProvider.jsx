@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { SESSION_KEY, TEMP_AUTH_BYPASS } from "@/lib/authConfig";
+import { TEMP_AUTH_BYPASS } from "@/lib/authConfig";
+import { readSession } from "@/lib/authSession";
 
 const publicRoutes = ["/login", "/admin-setup", "/admin-request-access"];
 
@@ -13,7 +14,7 @@ export default function AuthProvider({ children }) {
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    const savedSession = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+    const savedSession = readSession();
 
     if (TEMP_AUTH_BYPASS) {
       if (pathname === "/") {

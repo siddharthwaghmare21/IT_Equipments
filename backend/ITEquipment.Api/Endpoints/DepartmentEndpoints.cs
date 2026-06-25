@@ -9,7 +9,9 @@ public static class DepartmentEndpoints
 {
     public static RouteGroupBuilder MapDepartmentEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/departments").WithTags("Departments");
+        var group = routes.MapGroup("/api/departments")
+            .WithTags("Departments")
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
 
         group.MapGet("/", async (
             DepartmentRepository repository,

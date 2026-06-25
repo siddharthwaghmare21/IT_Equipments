@@ -8,7 +8,9 @@ public static class ApprovalEndpoints
 {
     public static RouteGroupBuilder MapApprovalEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/approvals").WithTags("Approvals");
+        var group = routes.MapGroup("/api/approvals")
+            .WithTags("Approvals")
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAdminOrSuperAdmin);
 
         group.MapGet("/user-access/pending", async (
             ApprovalRepository repository,

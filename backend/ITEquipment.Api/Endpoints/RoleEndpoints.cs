@@ -7,7 +7,9 @@ public static class RoleEndpoints
 {
     public static RouteGroupBuilder MapRoleEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/roles").WithTags("Roles");
+        var group = routes.MapGroup("/api/roles")
+            .WithTags("Roles")
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/", async (
             RoleRepository repository,

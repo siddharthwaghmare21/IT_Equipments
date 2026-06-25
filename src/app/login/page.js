@@ -5,10 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
-import { SESSION_KEY, TEMP_AUTH_BYPASS } from "@/lib/authConfig";
+import { TEMP_AUTH_BYPASS } from "@/lib/authConfig";
+import { ApiError, loginUser } from "@/lib/apiClient";
+import { readSession, saveLoginSession } from "@/lib/authSession";
 
 const ACCESS_CODE = "DataCenterSMKC";
-const USERS_KEY = "itAssetUsers";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasSuperAdmin, setHasSuperAdmin] = useState(false);
   const [authStep, setAuthStep] = useState("login");
-  const [pendingUser, setPendingUser] = useState(null);
+  const [pendingLogin, setPendingLogin] = useState(null);
   const [otp, setOtp] = useState("");
   const [resendTimer, setResendTimer] = useState(0);
   const [errors, setErrors] = useState({});
@@ -33,21 +34,15 @@ export default function LoginPage() {
       return;
     }
 
-    const savedSession = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+    const savedSession = readSession();
 
     if (savedSession) {
       router.replace("/dashboard");
       return;
     }
 
-    const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
-
-    const superAdminExists = savedUsers.some(
-      (user) => user.role === "Super Admin"
-    );
-
     setTimeout(() => {
-      setHasSuperAdmin(superAdminExists);
+      setHasSuperAdmin(true);
       setIsLoading(false);
     }, 0);
   }, [router]);
@@ -98,7 +93,7 @@ export default function LoginPage() {
     return Object.keys(nextErrors).length === 0;
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     if (!validateLoginForm()) return;
@@ -108,36 +103,35 @@ export default function LoginPage() {
       return;
     }
 
-    const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+    setIsLoading(true);
 
-    const matchedUser = savedUsers.find(
-      (user) =>
-        user.email.toLowerCase() === formData.email.trim().toLowerCase()
-    );
+    try {
+      const loginResponse = await loginUser({
+        email: formData.email.trim(),
+        password: formData.password,
+      });
 
-    if (!matchedUser) {
-      setErrors({ form: "User account not found. Please request access." });
-      return;
-    }
-
-    if (matchedUser.status !== "Active") {
-      if (matchedUser.status === "Rejected") {
-        setAuthStep("rejected");
+      setPendingLogin(loginResponse);
+      setAuthStep("otp");
+      setResendTimer(30);
+      showToast("Login verified. Use demo OTP 123456 until email OTP is connected.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        if (error.status === 401) {
+          setErrors({ form: "Invalid email or password." });
+        } else if (error.status === 403) {
+          setAuthStep("approval-pending");
+        } else {
+          setErrors({ form: error.message });
+        }
       } else {
-        setAuthStep("approval-pending");
+        setErrors({
+          form: "Backend API is not reachable. Check that the backend server is running.",
+        });
       }
-      return;
+    } finally {
+      setIsLoading(false);
     }
-
-    if (matchedUser.password !== formData.password) {
-      setErrors({ password: "Invalid password. Please try again." });
-      return;
-    }
-
-    setPendingUser(matchedUser);
-    setAuthStep("otp");
-    setResendTimer(30);
-    showToast("Demo OTP sent. Use 123456 until backend email OTP is connected.");
   }
 
   function handleOtpSubmit(event) {
@@ -148,19 +142,7 @@ export default function LoginPage() {
       return;
     }
 
-    localStorage.setItem(
-      SESSION_KEY,
-      JSON.stringify({
-        id: pendingUser.id,
-        fullName: pendingUser.fullName,
-        email: pendingUser.email,
-        phone: pendingUser.phone,
-        department: pendingUser.department || "IT Department",
-        role: pendingUser.role,
-        status: pendingUser.status,
-        loginAt: new Date().toISOString(),
-      })
-    );
+    saveLoginSession(pendingLogin);
 
     showToast("Login successful.");
 
@@ -177,7 +159,7 @@ export default function LoginPage() {
       <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
         <LoadingState
           title="Loading login"
-          description="Checking local frontend session."
+          description="Checking access session."
         />
       </main>
     );

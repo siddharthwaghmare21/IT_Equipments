@@ -1,0 +1,25 @@
+namespace ITEquipment.Api.Models;
+
+public sealed record MaintenanceDto(
+    long MaintenanceId,
+    string MaintenanceCode,
+    long AssetId,
+    string? AssetTag,
+    string? AssetName,
+    string IssueType,
+    string? ReportedByName,
+    long? VendorId,
+    string? VendorName,
+    string? ServiceType,
+    string Priority,
+    DateOnly? ServiceDate,
+    DateOnly? ExpectedCompletionDate,
+    DateOnly? CompletionDate,
+    decimal DowntimeHours,
+    bool WarrantyClaim,
+    string ApprovalStatus,
+    decimal MaintenanceCost,
+    string MaintenanceStatus,
+    string? Remarks,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt);
