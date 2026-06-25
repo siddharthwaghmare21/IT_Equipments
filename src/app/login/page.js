@@ -5,14 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
+import { SESSION_KEY, TEMP_AUTH_BYPASS } from "@/lib/authConfig";
 
 const ACCESS_CODE = "DataCenterSMKC";
 const USERS_KEY = "itAssetUsers";
-const SESSION_KEY = "itAssetUserSession";
-
-// Keep true while backend authentication is pending.
-// Set this to false after API login is connected.
-const TEMP_AUTH_BYPASS = true;
 
 export default function LoginPage() {
   const router = useRouter();

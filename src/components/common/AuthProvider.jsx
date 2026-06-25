@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-
-const SESSION_KEY = "itAssetUserSession";
-
-// Temporary frontend review mode. Set false again before backend auth starts.
-const TEMP_AUTH_BYPASS = true;
+import { SESSION_KEY, TEMP_AUTH_BYPASS } from "@/lib/authConfig";
 
 const publicRoutes = ["/login", "/admin-setup", "/admin-request-access"];
 

@@ -35,8 +35,19 @@ public sealed class PasswordHashService
             return false;
         }
 
-        var salt = Convert.FromBase64String(parts[2]);
-        var expectedHash = Convert.FromBase64String(parts[3]);
+        byte[] salt;
+        byte[] expectedHash;
+
+        try
+        {
+            salt = Convert.FromBase64String(parts[2]);
+            expectedHash = Convert.FromBase64String(parts[3]);
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+
         var actualHash = Rfc2898DeriveBytes.Pbkdf2(
             password,
             salt,

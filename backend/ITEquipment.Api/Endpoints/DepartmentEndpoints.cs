@@ -1,6 +1,7 @@
 using ITEquipment.Api.Data;
 using ITEquipment.Api.Models;
 using MySqlConnector;
+using System.Net.Mail;
 
 namespace ITEquipment.Api.Endpoints;
 
@@ -36,6 +37,11 @@ public static class DepartmentEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
+            if (departmentId <= 0)
+            {
+                return Results.BadRequest(new { message = "Department id must be greater than zero." });
+            }
+
             try
             {
                 var department = await repository.GetByIdAsync(departmentId, cancellationToken);
@@ -58,7 +64,7 @@ public static class DepartmentEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
-            var validationError = Validate(request.DepartmentCode, request.DepartmentName);
+            var validationError = Validate(request);
             if (validationError is not null)
             {
                 return Results.BadRequest(new { message = validationError });
@@ -91,7 +97,12 @@ public static class DepartmentEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
-            var validationError = Validate(request.DepartmentCode, request.DepartmentName);
+            if (departmentId <= 0)
+            {
+                return Results.BadRequest(new { message = "Department id must be greater than zero." });
+            }
+
+            var validationError = Validate(request);
             if (validationError is not null)
             {
                 return Results.BadRequest(new { message = validationError });
@@ -123,6 +134,11 @@ public static class DepartmentEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
+            if (departmentId <= 0)
+            {
+                return Results.BadRequest(new { message = "Department id must be greater than zero." });
+            }
+
             try
             {
                 return await repository.DeactivateAsync(departmentId, cancellationToken)
@@ -143,7 +159,35 @@ public static class DepartmentEndpoints
         return group;
     }
 
-    private static string? Validate(string departmentCode, string departmentName)
+    private static string? Validate(DepartmentCreateRequest request)
+    {
+        return Validate(
+            request.DepartmentCode,
+            request.DepartmentName,
+            request.DepartmentHead,
+            request.ContactEmail,
+            request.ContactPhone,
+            request.Location);
+    }
+
+    private static string? Validate(DepartmentUpdateRequest request)
+    {
+        return Validate(
+            request.DepartmentCode,
+            request.DepartmentName,
+            request.DepartmentHead,
+            request.ContactEmail,
+            request.ContactPhone,
+            request.Location);
+    }
+
+    private static string? Validate(
+        string departmentCode,
+        string departmentName,
+        string? departmentHead,
+        string? contactEmail,
+        string? contactPhone,
+        string? location)
     {
         if (string.IsNullOrWhiteSpace(departmentCode))
         {
@@ -155,14 +199,62 @@ public static class DepartmentEndpoints
             return "Department name is required.";
         }
 
-        if (departmentCode.Length > 50)
+        if (departmentCode.Trim().Length > 50)
         {
             return "Department code must be 50 characters or fewer.";
         }
 
-        return departmentName.Length > 150
-            ? "Department name must be 150 characters or fewer."
+        if (departmentName.Trim().Length > 150)
+        {
+            return "Department name must be 150 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(departmentHead, 150))
+        {
+            return "Department head must be 150 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(contactEmail, 150))
+        {
+            return "Contact email must be 150 characters or fewer.";
+        }
+
+        if (!IsValidEmail(contactEmail))
+        {
+            return "Contact email is invalid.";
+        }
+
+        if (HasValueLongerThan(contactPhone, 30))
+        {
+            return "Contact phone must be 30 characters or fewer.";
+        }
+
+        return HasValueLongerThan(location, 200)
+            ? "Location must be 200 characters or fewer."
             : null;
+    }
+
+    private static bool HasValueLongerThan(string? value, int maxLength)
+    {
+        return !string.IsNullOrWhiteSpace(value) && value.Trim().Length > maxLength;
+    }
+
+    private static bool IsValidEmail(string? email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return true;
+        }
+
+        try
+        {
+            _ = new MailAddress(email.Trim());
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
     }
 
     private static IResult DatabaseProblem(IHostEnvironment environment, MySqlException exception)

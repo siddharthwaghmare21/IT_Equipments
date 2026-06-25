@@ -66,6 +66,11 @@ public static class AssetEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
+            if (assetId <= 0)
+            {
+                return Results.BadRequest(new { message = "Asset id must be greater than zero." });
+            }
+
             try
             {
                 var asset = await repository.GetByIdAsync(assetId, cancellationToken);
@@ -88,6 +93,11 @@ public static class AssetEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
+            if (assetId <= 0)
+            {
+                return Results.BadRequest(new { message = "Asset id must be greater than zero." });
+            }
+
             try
             {
                 var asset = await repository.GetByIdAsync(assetId, cancellationToken);
@@ -118,7 +128,7 @@ public static class AssetEndpoints
             var assetCondition = string.IsNullOrWhiteSpace(request.AssetCondition) ? "New" : request.AssetCondition.Trim();
             var lifecycleStatus = string.IsNullOrWhiteSpace(request.LifecycleStatus) ? "In Stock" : request.LifecycleStatus.Trim();
             var assetStatus = string.IsNullOrWhiteSpace(request.AssetStatus) ? "Available" : request.AssetStatus.Trim();
-            var validationError = Validate(request.AssetTag, request.AssetName, request.Category, request.SerialNumber, assetCondition, lifecycleStatus, assetStatus);
+            var validationError = Validate(request, assetCondition, lifecycleStatus, assetStatus);
             if (validationError is not null)
             {
                 return Results.BadRequest(new { message = validationError });
@@ -162,7 +172,12 @@ public static class AssetEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
-            var validationError = Validate(request.AssetTag, request.AssetName, request.Category, request.SerialNumber, request.AssetCondition, request.LifecycleStatus, request.AssetStatus);
+            if (assetId <= 0)
+            {
+                return Results.BadRequest(new { message = "Asset id must be greater than zero." });
+            }
+
+            var validationError = Validate(request);
             if (validationError is not null)
             {
                 return Results.BadRequest(new { message = validationError });
@@ -205,6 +220,11 @@ public static class AssetEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
+            if (assetId <= 0)
+            {
+                return Results.BadRequest(new { message = "Asset id must be greater than zero." });
+            }
+
             try
             {
                 var asset = await repository.ArchiveAsync(assetId, null, cancellationToken);
@@ -228,6 +248,16 @@ public static class AssetEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
+            if (assetId <= 0)
+            {
+                return Results.BadRequest(new { message = "Asset id must be greater than zero." });
+            }
+
+            if (HasValueLongerThan(request.Remarks, 1000))
+            {
+                return Results.BadRequest(new { message = "Archive remarks must be 1000 characters or fewer." });
+            }
+
             try
             {
                 var asset = await repository.ArchiveAsync(assetId, request.Remarks, cancellationToken);
@@ -247,14 +277,71 @@ public static class AssetEndpoints
         return group;
     }
 
+    private static string? Validate(AssetCreateRequest request, string assetCondition, string lifecycleStatus, string assetStatus)
+    {
+        return Validate(
+            request.AssetTag,
+            request.AssetName,
+            request.Category,
+            request.Brand,
+            request.Model,
+            request.SerialNumber,
+            request.WorkOrderRef,
+            request.InvoiceNumber,
+            request.PurchaseDate,
+            request.WarrantyExpiry,
+            request.CustodianDepartmentId,
+            request.CurrentDepartmentId,
+            request.CurrentReceiverName,
+            request.Location,
+            assetCondition,
+            lifecycleStatus,
+            assetStatus,
+            request.QrCode);
+    }
+
+    private static string? Validate(AssetUpdateRequest request)
+    {
+        return Validate(
+            request.AssetTag,
+            request.AssetName,
+            request.Category,
+            request.Brand,
+            request.Model,
+            request.SerialNumber,
+            request.WorkOrderRef,
+            request.InvoiceNumber,
+            request.PurchaseDate,
+            request.WarrantyExpiry,
+            request.CustodianDepartmentId,
+            request.CurrentDepartmentId,
+            request.CurrentReceiverName,
+            request.Location,
+            request.AssetCondition,
+            request.LifecycleStatus,
+            request.AssetStatus,
+            request.QrCode);
+    }
+
     private static string? Validate(
         string assetTag,
         string assetName,
         string category,
+        string? brand,
+        string? model,
         string serialNumber,
+        string? workOrderRef,
+        string? invoiceNumber,
+        DateOnly? purchaseDate,
+        DateOnly? warrantyExpiry,
+        long? custodianDepartmentId,
+        long? currentDepartmentId,
+        string? currentReceiverName,
+        string? location,
         string assetCondition,
         string lifecycleStatus,
-        string assetStatus)
+        string assetStatus,
+        string? qrCode)
     {
         if (string.IsNullOrWhiteSpace(assetTag))
         {
@@ -276,14 +363,64 @@ public static class AssetEndpoints
             return "Serial number is required.";
         }
 
-        if (assetTag.Length > 80)
+        if (assetTag.Trim().Length > 80)
         {
             return "Asset tag must be 80 characters or fewer.";
         }
 
-        if (assetName.Length > 180)
+        if (assetName.Trim().Length > 180)
         {
             return "Asset name must be 180 characters or fewer.";
+        }
+
+        if (category.Trim().Length > 100)
+        {
+            return "Category must be 100 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(brand, 100))
+        {
+            return "Brand must be 100 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(model, 120))
+        {
+            return "Model must be 120 characters or fewer.";
+        }
+
+        if (serialNumber.Trim().Length > 150)
+        {
+            return "Serial number must be 150 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(workOrderRef, 80))
+        {
+            return "Work order reference must be 80 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(invoiceNumber, 100))
+        {
+            return "Invoice number must be 100 characters or fewer.";
+        }
+
+        if (purchaseDate.HasValue && warrantyExpiry.HasValue && warrantyExpiry.Value < purchaseDate.Value)
+        {
+            return "Warranty expiry cannot be before purchase date.";
+        }
+
+        if (custodianDepartmentId <= 0 || currentDepartmentId <= 0)
+        {
+            return "Department id must be greater than zero.";
+        }
+
+        if (HasValueLongerThan(currentReceiverName, 150))
+        {
+            return "Current receiver name must be 150 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(location, 200))
+        {
+            return "Location must be 200 characters or fewer.";
         }
 
         if (!ValidConditions.Contains(assetCondition))
@@ -296,13 +433,25 @@ public static class AssetEndpoints
             return "Lifecycle status is invalid.";
         }
 
-        return ValidAssetStatuses.Contains(assetStatus) ? null : "Asset status is invalid.";
+        if (!ValidAssetStatuses.Contains(assetStatus))
+        {
+            return "Asset status is invalid.";
+        }
+
+        return HasValueLongerThan(qrCode, 150)
+            ? "QR code must be 150 characters or fewer."
+            : null;
     }
 
     private static string Normalize(string value, HashSet<string> validValues)
     {
         return validValues.First(validValue =>
             validValue.Equals(value, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool HasValueLongerThan(string? value, int maxLength)
+    {
+        return !string.IsNullOrWhiteSpace(value) && value.Trim().Length > maxLength;
     }
 
     private static IResult DatabaseProblem(IHostEnvironment environment, MySqlException exception)

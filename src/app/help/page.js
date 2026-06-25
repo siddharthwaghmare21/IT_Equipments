@@ -35,7 +35,7 @@ const sopSteps = [
 ];
 
 const cleanupItems = [
-  "Set TEMP_AUTH_BYPASS back to false",
+  "Keep NEXT_PUBLIC_TEMP_AUTH_BYPASS disabled outside temporary frontend review",
   "Remove or hide Frontend Demo badges",
   "Replace sample arrays with API responses",
   "Connect import preview/validation to backend APIs",
@@ -50,7 +50,7 @@ const shortcuts = [
 
 const frontendCompletion = [
   "Dashboard, reports, assets and workflow screens are frontend-ready",
-  "Temporary login bypass is active for frontend review",
+  "Temporary login bypass is controlled by NEXT_PUBLIC_TEMP_AUTH_BYPASS",
   "PDF, Excel, backup and email jobs are backend pending",
   "Report branding can be previewed from Settings",
 ];

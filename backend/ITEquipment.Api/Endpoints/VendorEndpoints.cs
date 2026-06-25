@@ -1,6 +1,7 @@
 using ITEquipment.Api.Data;
 using ITEquipment.Api.Models;
 using MySqlConnector;
+using System.Net.Mail;
 
 namespace ITEquipment.Api.Endpoints;
 
@@ -43,6 +44,11 @@ public static class VendorEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
+            if (vendorId <= 0)
+            {
+                return Results.BadRequest(new { message = "Vendor id must be greater than zero." });
+            }
+
             try
             {
                 var vendor = await repository.GetByIdAsync(vendorId, cancellationToken);
@@ -68,7 +74,7 @@ public static class VendorEndpoints
             var complianceStatus = string.IsNullOrWhiteSpace(request.ComplianceStatus)
                 ? "Review Required"
                 : request.ComplianceStatus.Trim();
-            var validationError = Validate(request.VendorCode, request.VendorName, complianceStatus);
+            var validationError = Validate(request, complianceStatus);
             if (validationError is not null)
             {
                 return Results.BadRequest(new { message = validationError });
@@ -103,7 +109,12 @@ public static class VendorEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
-            var validationError = Validate(request.VendorCode, request.VendorName, request.ComplianceStatus);
+            if (vendorId <= 0)
+            {
+                return Results.BadRequest(new { message = "Vendor id must be greater than zero." });
+            }
+
+            var validationError = Validate(request);
             if (validationError is not null)
             {
                 return Results.BadRequest(new { message = validationError });
@@ -140,6 +151,11 @@ public static class VendorEndpoints
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
+            if (vendorId <= 0)
+            {
+                return Results.BadRequest(new { message = "Vendor id must be greater than zero." });
+            }
+
             try
             {
                 return await repository.DeactivateAsync(vendorId, cancellationToken)
@@ -160,7 +176,44 @@ public static class VendorEndpoints
         return group;
     }
 
-    private static string? Validate(string vendorCode, string vendorName, string complianceStatus)
+    private static string? Validate(VendorCreateRequest request, string complianceStatus)
+    {
+        return Validate(
+            request.VendorCode,
+            request.VendorName,
+            request.ContactPerson,
+            request.ContactEmail,
+            request.ContactPhone,
+            request.GstNumber,
+            request.PaymentTerms,
+            request.ServiceCategory,
+            complianceStatus);
+    }
+
+    private static string? Validate(VendorUpdateRequest request)
+    {
+        return Validate(
+            request.VendorCode,
+            request.VendorName,
+            request.ContactPerson,
+            request.ContactEmail,
+            request.ContactPhone,
+            request.GstNumber,
+            request.PaymentTerms,
+            request.ServiceCategory,
+            request.ComplianceStatus);
+    }
+
+    private static string? Validate(
+        string vendorCode,
+        string vendorName,
+        string? contactPerson,
+        string? contactEmail,
+        string? contactPhone,
+        string? gstNumber,
+        string? paymentTerms,
+        string? serviceCategory,
+        string complianceStatus)
     {
         if (string.IsNullOrWhiteSpace(vendorCode))
         {
@@ -172,17 +225,57 @@ public static class VendorEndpoints
             return "Vendor name is required.";
         }
 
-        if (vendorCode.Length > 50)
+        if (vendorCode.Trim().Length > 50)
         {
             return "Vendor code must be 50 characters or fewer.";
         }
 
-        if (vendorName.Length > 180)
+        if (vendorName.Trim().Length > 180)
         {
             return "Vendor name must be 180 characters or fewer.";
         }
 
-        return ValidComplianceStatuses.Contains(complianceStatus)
+        if (HasValueLongerThan(contactPerson, 150))
+        {
+            return "Contact person must be 150 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(contactEmail, 150))
+        {
+            return "Contact email must be 150 characters or fewer.";
+        }
+
+        if (!IsValidEmail(contactEmail))
+        {
+            return "Contact email is invalid.";
+        }
+
+        if (HasValueLongerThan(contactPhone, 30))
+        {
+            return "Contact phone must be 30 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(gstNumber, 50))
+        {
+            return "GST number must be 50 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(paymentTerms, 150))
+        {
+            return "Payment terms must be 150 characters or fewer.";
+        }
+
+        if (HasValueLongerThan(serviceCategory, 120))
+        {
+            return "Service category must be 120 characters or fewer.";
+        }
+
+        if (string.IsNullOrWhiteSpace(complianceStatus))
+        {
+            return "Compliance status is required.";
+        }
+
+        return ValidComplianceStatuses.Contains(complianceStatus.Trim())
             ? null
             : "Compliance status must be Compliant, Review Required, or Blocked.";
     }
@@ -191,6 +284,29 @@ public static class VendorEndpoints
     {
         return ValidComplianceStatuses.First(status =>
             status.Equals(complianceStatus, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool HasValueLongerThan(string? value, int maxLength)
+    {
+        return !string.IsNullOrWhiteSpace(value) && value.Trim().Length > maxLength;
+    }
+
+    private static bool IsValidEmail(string? email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return true;
+        }
+
+        try
+        {
+            _ = new MailAddress(email.Trim());
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
     }
 
     private static IResult DatabaseProblem(IHostEnvironment environment, MySqlException exception)

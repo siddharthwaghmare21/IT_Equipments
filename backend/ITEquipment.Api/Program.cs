@@ -1,5 +1,6 @@
 using ITEquipment.Api.Data;
 using ITEquipment.Api.Endpoints;
+using ITEquipment.Api.Security;
 using ITEquipment.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +12,20 @@ builder.Services.AddScoped<DepartmentRepository>();
 builder.Services.AddScoped<VendorRepository>();
 builder.Services.AddScoped<AssetRepository>();
 builder.Services.AddScoped<AuthRepository>();
+builder.Services.AddScoped<ApprovalRepository>();
 builder.Services.AddSingleton<PasswordHashService>();
 builder.Services.AddSingleton<OtpService>();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(AppAuthorizationPolicies.RequireSuperAdmin, policy =>
+        policy.RequireRole(AppRoles.SuperAdmin))
+    .AddPolicy(AppAuthorizationPolicies.RequireAdminOrSuperAdmin, policy =>
+        policy.RequireRole(AppRoles.SuperAdmin, AppRoles.Admin))
+    .AddPolicy(AppAuthorizationPolicies.RequireBackupAccess, policy =>
+        policy.RequireRole(AppRoles.SuperAdmin, AppRoles.Admin, AppRoles.Employee))
+    .AddPolicy(AppAuthorizationPolicies.RequireAssetWrite, policy =>
+        policy.RequireRole(AppRoles.SuperAdmin, AppRoles.Admin, AppRoles.Employee))
+    .AddPolicy(AppAuthorizationPolicies.RequireReportsRead, policy =>
+        policy.RequireRole(AppRoles.SuperAdmin, AppRoles.Admin, AppRoles.Employee, AppRoles.Viewer));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
@@ -36,6 +49,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("Frontend");
+app.UseAuthorization();
 
 app.MapGet("/api/health", () =>
 {
@@ -54,6 +68,8 @@ app.MapDepartmentEndpoints();
 app.MapVendorEndpoints();
 app.MapAssetEndpoints();
 app.MapAuthEndpoints();
+app.MapSecurityEndpoints();
+app.MapApprovalEndpoints();
 
 app.Run();
 
