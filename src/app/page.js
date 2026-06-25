@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { SESSION_KEY, TEMP_AUTH_BYPASS } from "@/lib/authConfig";
+import { TEMP_AUTH_BYPASS } from "@/lib/authConfig";
+import { readSession } from "@/lib/authSession";
 
 export default function HomePage() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function HomePage() {
       return;
     }
 
-    const savedSession = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+    const savedSession = readSession();
 
     router.replace(savedSession ? "/dashboard" : "/login");
   }, [router]);

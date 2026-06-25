@@ -341,7 +341,7 @@ export default function LoginPage() {
             <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
               <h2 className="text-sm font-bold text-gray-900">Role Based</h2>
               <p className="mt-2 text-sm leading-6 text-gray-600">
-                Super Admin, Admin, Employee and Viewer roles are supported.
+              Super Admin, Admin, Employee and Viewer use the same secure panel.
               </p>
             </div>
           </div>
@@ -350,11 +350,11 @@ export default function LoginPage() {
         <section className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-900">
-              IT Staff Login
+              Login / Sign Up
             </h2>
 
             <p className="mt-2 text-sm text-gray-600">
-              Login with your approved IT department account.
+              Login with an approved account or request access for a new one.
             </p>
           </div>
 
@@ -438,14 +438,7 @@ export default function LoginPage() {
               href="/admin-request-access"
               className="text-sm font-semibold text-gray-700 hover:text-gray-900"
             >
-              Request Access
-            </Link>
-
-            <Link
-              href="/admin-setup"
-              className="text-sm font-semibold text-gray-700 hover:text-gray-900"
-            >
-              Admin Setup
+              Sign Up / Request Access
             </Link>
           </div>
 
