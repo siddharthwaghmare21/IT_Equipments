@@ -11,6 +11,7 @@ public static class LookupEndpoints
 
         group.MapGet("/departments", async (
             LookupRepository repository,
+            IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
             try
@@ -22,15 +23,19 @@ public static class LookupEndpoints
             {
                 return Results.Problem(exception.Message, statusCode: StatusCodes.Status503ServiceUnavailable);
             }
-            catch (MySqlException)
+            catch (MySqlException exception)
             {
-                return Results.Problem("Database connection failed.", statusCode: StatusCodes.Status503ServiceUnavailable);
+                var detail = environment.IsDevelopment()
+                    ? $"Database connection failed: {exception.Message}"
+                    : "Database connection failed.";
+                return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
             }
         })
         .WithName("GetDepartments");
 
         group.MapGet("/roles", async (
             LookupRepository repository,
+            IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
             try
@@ -42,9 +47,12 @@ public static class LookupEndpoints
             {
                 return Results.Problem(exception.Message, statusCode: StatusCodes.Status503ServiceUnavailable);
             }
-            catch (MySqlException)
+            catch (MySqlException exception)
             {
-                return Results.Problem("Database connection failed.", statusCode: StatusCodes.Status503ServiceUnavailable);
+                var detail = environment.IsDevelopment()
+                    ? $"Database connection failed: {exception.Message}"
+                    : "Database connection failed.";
+                return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
             }
         })
         .WithName("GetRoles");
