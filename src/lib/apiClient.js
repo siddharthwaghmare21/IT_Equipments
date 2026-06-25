@@ -51,3 +51,34 @@ export function loginUser({ email, password }) {
     body: { email, password },
   });
 }
+
+export function getDepartments(token) {
+  return apiRequest("/api/departments", { token });
+}
+
+export function getDepartment(departmentId, token) {
+  return apiRequest(`/api/departments/${departmentId}`, { token });
+}
+
+export function createDepartment(department, token) {
+  return apiRequest("/api/departments", {
+    method: "POST",
+    token,
+    body: department,
+  });
+}
+
+export function updateDepartment(departmentId, department, token) {
+  return apiRequest(`/api/departments/${departmentId}`, {
+    method: "PUT",
+    token,
+    body: department,
+  });
+}
+
+export function archiveDepartment(departmentId, token) {
+  return apiRequest(`/api/departments/${departmentId}`, {
+    method: "DELETE",
+    token,
+  });
+}

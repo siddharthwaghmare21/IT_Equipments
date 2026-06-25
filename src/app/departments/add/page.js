@@ -2,12 +2,19 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
 import { showToast } from "@/components/common/ToastHost";
+import { createDepartment } from "@/lib/apiClient";
+import { getSessionToken } from "@/lib/authSession";
+import { mapDepartmentToCreateRequest } from "@/lib/departmentMapper";
 
 export default function AddDepartmentPage() {
+  const router = useRouter();
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     departmentCode: "",
     departmentName: "",
@@ -15,13 +22,6 @@ export default function AddDepartmentPage() {
     email: "",
     phone: "",
     location: "",
-    costCenter: "",
-    businessUnit: "",
-    assetBudget: "",
-    approvalRequired: "Yes",
-    assetPolicy: "",
-    totalUsers: "",
-    status: "Active",
     description: "",
   });
 
@@ -32,19 +32,33 @@ export default function AddDepartmentPage() {
       ...previousData,
       [name]: value,
     }));
+    setError("");
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    setIsSaving(true);
+    setError("");
 
-    showToast("Department saved successfully. Backend will be connected later.");
+    try {
+      await createDepartment(
+        mapDepartmentToCreateRequest(formData),
+        getSessionToken()
+      );
+      showToast("Department saved successfully.");
+      router.push("/departments");
+    } catch (saveError) {
+      setError(saveError.message || "Department could not be saved.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
     <LayoutWrapper>
       <PageHeader
         title="Add Department"
-        description="Create a department for department user grouping and IT asset allocation."
+        description="Create a department for department grouping and IT asset allocation."
       />
 
       <div className="mb-6">
@@ -142,107 +156,6 @@ export default function AddDepartmentPage() {
             />
           </div>
 
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Cost Center
-            </label>
-            <input
-              type="text"
-              name="costCenter"
-              value={formData.costCenter}
-              onChange={handleChange}
-              placeholder="CC-IT-001"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Business Unit
-            </label>
-            <input
-              type="text"
-              name="businessUnit"
-              value={formData.businessUnit}
-              onChange={handleChange}
-              placeholder="Corporate / Finance / Operations"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Asset Budget
-            </label>
-            <input
-              type="text"
-              name="assetBudget"
-              value={formData.assetBudget}
-              onChange={handleChange}
-              placeholder="INR 12,00,000"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Asset Approval Required
-            </label>
-            <select
-              name="approvalRequired"
-              value={formData.approvalRequired}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            >
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Department Users
-            </label>
-            <input
-              type="number"
-              name="totalUsers"
-              value={formData.totalUsers}
-              onChange={handleChange}
-              placeholder="12"
-              min="0"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Status
-            </label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            >
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Asset Policy
-            </label>
-            <textarea
-              name="assetPolicy"
-              value={formData.assetPolicy}
-              onChange={handleChange}
-              rows="3"
-              placeholder="Department-wise asset issue rules or approval notes..."
-              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
           <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
               Description
@@ -259,11 +172,17 @@ export default function AddDepartmentPage() {
 
           <div className="md:col-span-2">
             <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
-              Created By and Updated By will be captured automatically after
-              login and backend integration.
+              Asset counts and allocation summary will be calculated from real
+              asset records after asset integration.
             </div>
           </div>
         </div>
+
+        {error && (
+          <p className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">
+            {error}
+          </p>
+        )}
 
         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Link
@@ -275,16 +194,13 @@ export default function AddDepartmentPage() {
 
           <button
             type="submit"
-            className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+            disabled={isSaving}
+            className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Save Department
+            {isSaving ? "Saving..." : "Save Department"}
           </button>
         </div>
       </form>
     </LayoutWrapper>
   );
 }
-
-
-
-

@@ -35,3 +35,7 @@ export function saveLoginSession(loginResponse) {
   localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   return session;
 }
+
+export function getSessionToken() {
+  return readSession()?.token || null;
+}

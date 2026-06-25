@@ -1,105 +1,15 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
-
-const departments = [
-  {
-    id: "1",
-    departmentCode: "DEP-001",
-    departmentName: "IT Department",
-    headOfDepartment: "Rahul Patil",
-    email: "it@company.com",
-    phone: "+91 98765 12345",
-    location: "Main Office",
-    costCenter: "CC-IT-001",
-    businessUnit: "Corporate",
-    assetBudget: "INR 12,00,000",
-    approvalRequired: "Yes",
-    assetPolicy: "Standard IT Policy",
-    totalUsers: 12,
-    assignedAssets: 34,
-    createdBy: "Admin",
-    createdAt: "2026-01-01 10:00 AM",
-    updatedBy: "IT Admin",
-    updatedAt: "2026-01-15 04:15 PM",
-    status: "Active",
-    description:
-      "Responsible for IT infrastructure, software systems, hardware support and equipment management.",
-  },
-  {
-    id: "2",
-    departmentCode: "DEP-002",
-    departmentName: "Accounts",
-    headOfDepartment: "Sneha Jadhav",
-    email: "accounts@company.com",
-    phone: "+91 99887 45678",
-    location: "Accounts Office",
-    costCenter: "CC-ACC-002",
-    businessUnit: "Finance",
-    assetBudget: "INR 6,50,000",
-    approvalRequired: "Yes",
-    assetPolicy: "Finance Asset Policy",
-    totalUsers: 8,
-    assignedAssets: 18,
-    createdBy: "Admin",
-    createdAt: "2026-01-01 10:10 AM",
-    updatedBy: "IT Admin",
-    updatedAt: "2026-01-20 12:10 PM",
-    status: "Active",
-    description:
-      "Handles billing, finance records, purchase invoices and payment documentation.",
-  },
-  {
-    id: "3",
-    departmentCode: "DEP-003",
-    departmentName: "Admin",
-    headOfDepartment: "Amit Shinde",
-    email: "admin@company.com",
-    phone: "+91 91234 56789",
-    location: "Admin Office",
-    costCenter: "CC-ADM-003",
-    businessUnit: "Operations",
-    assetBudget: "INR 4,00,000",
-    approvalRequired: "Yes",
-    assetPolicy: "Admin Asset Policy",
-    totalUsers: 6,
-    assignedAssets: 14,
-    createdBy: "Admin",
-    createdAt: "2026-01-01 10:20 AM",
-    updatedBy: "IT Admin",
-    updatedAt: "2026-02-04 03:20 PM",
-    status: "Active",
-    description:
-      "Manages office administration, internal coordination and resource allocation.",
-  },
-  {
-    id: "4",
-    departmentCode: "DEP-004",
-    departmentName: "HR",
-    headOfDepartment: "Priya More",
-    email: "hr@company.com",
-    phone: "+91 90123 45678",
-    location: "HR Office",
-    costCenter: "CC-HR-004",
-    businessUnit: "People",
-    assetBudget: "INR 2,50,000",
-    approvalRequired: "No",
-    assetPolicy: "Basic Asset Policy",
-    totalUsers: 4,
-    assignedAssets: 9,
-    createdBy: "Admin",
-    createdAt: "2026-01-01 10:30 AM",
-    updatedBy: "Admin",
-    updatedAt: "2026-01-30 05:00 PM",
-    status: "Inactive",
-    description:
-      "Handles department user records, recruitment coordination and HR documentation.",
-  },
-];
+import { ErrorState, LoadingState } from "@/components/common/StateBlock";
+import { getDepartment } from "@/lib/apiClient";
+import { getSessionToken } from "@/lib/authSession";
+import { mapDepartmentFromApi } from "@/lib/departmentMapper";
 
 function DetailItem({ label, value }) {
   return (
@@ -135,129 +45,140 @@ export default function ViewDepartmentPage() {
   const params = useParams();
   const departmentId = params.id;
 
-  const department =
-    departments.find((item) => item.id === departmentId) || departments[0];
+  const [department, setDepartment] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadDepartment = useCallback(async () => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await getDepartment(departmentId, getSessionToken());
+      setDepartment(mapDepartmentFromApi(response));
+    } catch (loadError) {
+      setError(loadError.message || "Department could not be loaded.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [departmentId]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadDepartment();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [loadDepartment]);
 
   return (
     <LayoutWrapper>
       <PageHeader
         title="Department Details"
-        description="View department information, department head, user count and assigned asset summary."
+        description="View department information, department head and operational status."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <BackButton href="/departments" label="Departments" />
 
         <Link
-          href={`/departments/edit/${department.id}`}
+          href={`/departments/edit/${departmentId}`}
           className="inline-flex justify-center rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
         >
           Edit Department
         </Link>
       </div>
 
-      <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-        <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-500">
-              {department.departmentCode}
-            </p>
+      {isLoading && (
+        <LoadingState
+          title="Loading department"
+          description="Fetching department details from backend."
+        />
+      )}
 
-            <h2 className="mt-1 text-2xl font-bold text-gray-900">
-              {department.departmentName}
-            </h2>
+      {!isLoading && error && (
+        <ErrorState
+          title="Department could not be loaded"
+          description={error}
+          onRetry={loadDepartment}
+        />
+      )}
 
-            <p className="mt-1 text-sm text-gray-600">
-              Head: {department.headOfDepartment}
-            </p>
-          </div>
+      {!isLoading && !error && department && (
+        <>
+          <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+            <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  {department.departmentCode}
+                </p>
 
-          <DepartmentStatusBadge status={department.status} />
-        </div>
+                <h2 className="mt-1 text-2xl font-bold text-gray-900">
+                  {department.departmentName}
+                </h2>
 
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          <DetailItem
-            label="Department Code"
-            value={department.departmentCode}
-          />
-          <DetailItem
-            label="Department Name"
-            value={department.departmentName}
-          />
-          <DetailItem
-            label="Head of Department"
-            value={department.headOfDepartment}
-          />
-          <DetailItem label="Email Address" value={department.email} />
-          <DetailItem label="Phone Number" value={department.phone} />
-          <DetailItem label="Location" value={department.location} />
-          <DetailItem label="Cost Center" value={department.costCenter} />
-          <DetailItem label="Business Unit" value={department.businessUnit} />
-          <DetailItem label="Asset Budget" value={department.assetBudget} />
-          <DetailItem
-            label="Approval Required"
-            value={department.approvalRequired}
-          />
-          <DetailItem
-            label="Department Users"
-            value={department.totalUsers}
-          />
-          <DetailItem
-            label="Assigned Assets"
-            value={department.assignedAssets}
-          />
-          <DetailItem label="Status" value={department.status} />
-        </div>
+                <p className="mt-1 text-sm text-gray-600">
+                  Head: {department.headOfDepartment || "-"}
+                </p>
+              </div>
 
-        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-            Asset Policy
-          </p>
-          <p className="mt-2 text-sm text-gray-700">
-            {department.assetPolicy}
-          </p>
-        </div>
+              <DepartmentStatusBadge status={department.status} />
+            </div>
 
-        <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-            Description
-          </p>
-          <p className="mt-2 text-sm text-gray-700">
-            {department.description}
-          </p>
-        </div>
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <DetailItem
+                label="Department Code"
+                value={department.departmentCode}
+              />
+              <DetailItem
+                label="Department Name"
+                value={department.departmentName}
+              />
+              <DetailItem
+                label="Head of Department"
+                value={department.headOfDepartment}
+              />
+              <DetailItem label="Email Address" value={department.email} />
+              <DetailItem label="Phone Number" value={department.phone} />
+              <DetailItem label="Location" value={department.location} />
+              <DetailItem label="Status" value={department.status} />
+            </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <DetailItem label="Created By" value={department.createdBy} />
-          <DetailItem label="Created At" value={department.createdAt} />
-          <DetailItem label="Updated By" value={department.updatedBy} />
-          <DetailItem label="Updated At" value={department.updatedAt} />
-        </div>
-      </section>
+            <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                Description
+              </p>
+              <p className="mt-2 text-sm text-gray-700">
+                {department.description || "-"}
+              </p>
+            </div>
+          </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Users in Department</p>
-          <h3 className="mt-2 text-3xl font-bold text-gray-900">
-            {department.totalUsers}
-          </h3>
-          <p className="mt-2 text-sm text-gray-600">
-            User-wise department mapping will be connected after backend
-            integration.
-          </p>
-        </div>
+          <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <p className="text-sm text-gray-500">Asset Allocation</p>
+              <h3 className="mt-2 text-lg font-bold text-gray-900">
+                Pending asset integration
+              </h3>
+              <p className="mt-2 text-sm text-gray-600">
+                Department-wise asset counts will be calculated from real asset
+                records after Assets integration.
+              </p>
+            </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Assets Assigned</p>
-          <h3 className="mt-2 text-3xl font-bold text-gray-900">
-            {department.assignedAssets}
-          </h3>
-          <p className="mt-2 text-sm text-gray-600">
-            Department-wise asset allocation records will be connected after
-            backend integration.
-          </p>
-        </div>
-      </section>
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <p className="text-sm text-gray-500">Activity Summary</p>
+              <h3 className="mt-2 text-lg font-bold text-gray-900">
+                Pending workflow integration
+              </h3>
+              <p className="mt-2 text-sm text-gray-600">
+                Delivery, transfer, return and maintenance activity will appear
+                here after module integration.
+              </p>
+            </div>
+          </section>
+        </>
+      )}
     </LayoutWrapper>
   );
 }
