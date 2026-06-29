@@ -82,3 +82,34 @@ export function archiveDepartment(departmentId, token) {
     token,
   });
 }
+
+export function getVendors(token) {
+  return apiRequest("/api/vendors", { token });
+}
+
+export function getVendor(vendorId, token) {
+  return apiRequest(`/api/vendors/${vendorId}`, { token });
+}
+
+export function createVendor(vendor, token) {
+  return apiRequest("/api/vendors", {
+    method: "POST",
+    token,
+    body: vendor,
+  });
+}
+
+export function updateVendor(vendorId, vendor, token) {
+  return apiRequest(`/api/vendors/${vendorId}`, {
+    method: "PUT",
+    token,
+    body: vendor,
+  });
+}
+
+export function archiveVendor(vendorId, token) {
+  return apiRequest(`/api/vendors/${vendorId}`, {
+    method: "DELETE",
+    token,
+  });
+}

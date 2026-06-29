@@ -2,30 +2,42 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import { showToast } from "@/components/common/ToastHost";
+import { createVendor } from "@/lib/apiClient";
+import { getSessionToken } from "@/lib/authSession";
+import {
+  mapVendorToCreateRequest,
+  vendorComplianceStatuses,
+} from "@/lib/vendorMapper";
+
+const serviceCategories = [
+  "Laptop Supplier",
+  "Desktop Supplier",
+  "Printer Supplier",
+  "Network Equipment",
+  "Accessories Supplier",
+  "Service Provider",
+  "Other",
+];
 
 export default function AddVendorPage() {
+  const router = useRouter();
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     vendorCode: "",
     vendorName: "",
     contactPerson: "",
     phone: "",
     email: "",
-    city: "",
-    state: "",
     address: "",
     gstNumber: "",
-    panNumber: "",
     paymentTerms: "",
-    bankAccountStatus: "Pending",
-    complianceStatus: "Pending",
-    documentStatus: "Pending",
-    rating: "",
-    category: "",
-    status: "Active",
-    remarks: "",
+    serviceCategory: "",
+    complianceStatus: "Review Required",
   });
 
   function handleChange(event) {
@@ -35,12 +47,23 @@ export default function AddVendorPage() {
       ...previousData,
       [name]: value,
     }));
+    setError("");
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    setIsSaving(true);
+    setError("");
 
-    showToast("Vendor saved successfully. Backend will be connected later.");
+    try {
+      await createVendor(mapVendorToCreateRequest(formData), getSessionToken());
+      showToast("Vendor saved successfully.");
+      router.push("/vendors");
+    } catch (saveError) {
+      setError(saveError.message || "Vendor could not be saved.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -96,7 +119,6 @@ export default function AddVendorPage() {
               onChange={handleChange}
               placeholder="Amit Sharma"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
             />
           </div>
 
@@ -111,7 +133,6 @@ export default function AddVendorPage() {
               onChange={handleChange}
               placeholder="+91 98765 43210"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
             />
           </div>
 
@@ -131,52 +152,21 @@ export default function AddVendorPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Category
+              Service Category
             </label>
             <select
-              name="category"
-              value={formData.category}
+              name="serviceCategory"
+              value={formData.serviceCategory}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
             >
               <option value="">Select category</option>
-              <option value="Laptop Supplier">Laptop Supplier</option>
-              <option value="Desktop Supplier">Desktop Supplier</option>
-              <option value="Printer Supplier">Printer Supplier</option>
-              <option value="Network Equipment">Network Equipment</option>
-              <option value="Accessories Supplier">Accessories Supplier</option>
-              <option value="Service Provider">Service Provider</option>
-              <option value="Other">Other</option>
+              {serviceCategories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
             </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              City
-            </label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="Pune"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              State
-            </label>
-            <input
-              type="text"
-              name="state"
-              value={formData.state}
-              onChange={handleChange}
-              placeholder="Maharashtra"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
           </div>
 
           <div>
@@ -189,20 +179,6 @@ export default function AddVendorPage() {
               value={formData.gstNumber}
               onChange={handleChange}
               placeholder="27ABCDE1234F1Z5"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm uppercase outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              PAN Number
-            </label>
-            <input
-              type="text"
-              name="panNumber"
-              value={formData.panNumber}
-              onChange={handleChange}
-              placeholder="ABCDE1234F"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm uppercase outline-none focus:border-gray-900"
             />
           </div>
@@ -228,22 +204,6 @@ export default function AddVendorPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Bank Account Status
-            </label>
-            <select
-              name="bankAccountStatus"
-              value={formData.bankAccountStatus}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            >
-              <option value="Pending">Pending</option>
-              <option value="Verified">Verified</option>
-              <option value="Rejected">Rejected</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
               Compliance Status
             </label>
             <select
@@ -252,58 +212,12 @@ export default function AddVendorPage() {
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
-              <option value="Pending">Pending</option>
-              <option value="Compliant">Compliant</option>
-              <option value="Review Required">Review Required</option>
-              <option value="Non-Compliant">Non-Compliant</option>
+              {vendorComplianceStatuses.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
             </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Vendor Rating
-            </label>
-            <input
-              type="number"
-              name="rating"
-              value={formData.rating}
-              onChange={handleChange}
-              placeholder="4.5"
-              min="0"
-              max="5"
-              step="0.1"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Status
-            </label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            >
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-              <option value="Blacklisted">Blacklisted</option>
-            </select>
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Vendor Documents
-            </label>
-            <input
-              type="file"
-              multiple
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white focus:border-gray-900"
-            />
-            <p className="mt-1 text-xs text-gray-500">
-              Upload GST certificate, PAN, bank proof, quotation or agreement.
-            </p>
           </div>
 
           <div className="md:col-span-2">
@@ -314,33 +228,25 @@ export default function AddVendorPage() {
               name="address"
               value={formData.address}
               onChange={handleChange}
-              rows="3"
+              rows="4"
               placeholder="Complete vendor office address..."
               className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </div>
 
           <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Remarks
-            </label>
-            <textarea
-              name="remarks"
-              value={formData.remarks}
-              onChange={handleChange}
-              rows="4"
-              placeholder="Additional notes about vendor..."
-              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div className="md:col-span-2">
             <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
-              Created By and Updated By will be captured automatically after
-              login and backend integration.
+              PAN, bank proof, ratings and vendor documents will be connected
+              through vendor document workflow later.
             </div>
           </div>
         </div>
+
+        {error && (
+          <p className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">
+            {error}
+          </p>
+        )}
 
         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Link
@@ -352,16 +258,13 @@ export default function AddVendorPage() {
 
           <button
             type="submit"
-            className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+            disabled={isSaving}
+            className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Save Vendor
+            {isSaving ? "Saving..." : "Save Vendor"}
           </button>
         </div>
       </form>
     </LayoutWrapper>
   );
 }
-
-
-
-
