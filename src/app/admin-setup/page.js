@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
-
-const ACCESS_CODE = "DataCenterSMKC";
-const USERS_KEY = "itAssetUsers";
-const SESSION_KEY = "itAssetUserSession";
+import { ApiError, bootstrapSuperAdmin, getBootstrapStatus } from "@/lib/apiClient";
 
 function isStrongPassword(password) {
   const hasMinimumLength = password.length >= 8;
@@ -20,6 +19,8 @@ export default function AdminSetupPage() {
   const router = useRouter();
 
   const [adminAlreadyExists, setAdminAlreadyExists] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -27,23 +28,38 @@ export default function AdminSetupPage() {
     phone: "",
     password: "",
     confirmPassword: "",
-    accessCode: "",
+    setupKey: "",
   });
 
   const [errors, setErrors] = useState({
+    form: "",
     password: "",
     confirmPassword: "",
   });
 
-  useEffect(() => {
-    const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+  const checkBootstrapStatus = useCallback(async () => {
+    setIsChecking(true);
 
-    const hasSuperAdmin = savedUsers.some(
-      (user) => user.role === "Super Admin"
-    );
-
-    setTimeout(() => setAdminAlreadyExists(hasSuperAdmin), 0);
+    try {
+      const status = await getBootstrapStatus();
+      setAdminAlreadyExists(Boolean(status.hasActiveSuperAdmin));
+    } catch {
+      setErrors((previousErrors) => ({
+        ...previousErrors,
+        form: "Backend API is not reachable. Check backend server or API URL.",
+      }));
+    } finally {
+      setIsChecking(false);
+    }
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      checkBootstrapStatus();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [checkBootstrapStatus]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -53,15 +69,14 @@ export default function AdminSetupPage() {
       [name]: value,
     }));
 
-    if (name === "password" || name === "confirmPassword") {
-      setErrors({
-        password: "",
-        confirmPassword: "",
-      });
-    }
+    setErrors({
+      form: "",
+      password: "",
+      confirmPassword: "",
+    });
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     if (!isStrongPassword(formData.password)) {
@@ -81,54 +96,54 @@ export default function AdminSetupPage() {
       return;
     }
 
-    if (formData.accessCode !== ACCESS_CODE) {
-      showToast("Invalid access code. Super Admin setup denied.");
-      return;
-    }
+    setIsSaving(true);
 
-    const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+    try {
+      await bootstrapSuperAdmin(formData.setupKey, {
+        fullName: formData.fullName.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        phone: formData.phone.trim() || null,
+        departmentId: null,
+      });
 
-    const hasSuperAdmin = savedUsers.some(
-      (user) => user.role === "Super Admin"
-    );
-
-    if (hasSuperAdmin) {
-      showToast("Super Admin already exists. Please login.");
+      showToast("Super Admin profile created successfully. Please login.");
       router.push("/login");
-      return;
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 409) {
+        setAdminAlreadyExists(true);
+        showToast("Super Admin already exists. Please login.");
+        return;
+      }
+
+      if (error instanceof ApiError && error.status === 401) {
+        setErrors((previousErrors) => ({
+          ...previousErrors,
+          form: "Invalid setup key. Super Admin setup denied.",
+        }));
+        return;
+      }
+
+      setErrors((previousErrors) => ({
+        ...previousErrors,
+        form:
+          error.message ||
+          "Super Admin could not be created. Please check backend setup.",
+      }));
+    } finally {
+      setIsSaving(false);
     }
+  }
 
-    const superAdminUser = {
-      id: Date.now(),
-      fullName: formData.fullName,
-      email: formData.email,
-      phone: formData.phone,
-      department: "IT Department",
-      role: "Super Admin",
-      status: "Active",
-      password: formData.password,
-      createdAt: new Date().toISOString(),
-    };
-
-    localStorage.setItem(USERS_KEY, JSON.stringify([superAdminUser]));
-
-    localStorage.setItem(
-      SESSION_KEY,
-      JSON.stringify({
-        id: superAdminUser.id,
-        fullName: superAdminUser.fullName,
-        email: superAdminUser.email,
-        phone: superAdminUser.phone,
-        role: superAdminUser.role,
-        department: superAdminUser.department,
-        status: superAdminUser.status,
-        loginAt: new Date().toISOString(),
-      })
+  if (isChecking) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+        <LoadingState
+          title="Checking setup"
+          description="Verifying whether the first Super Admin is already created."
+        />
+      </main>
     );
-
-    showToast("Super Admin profile created successfully.");
-
-    router.push("/dashboard");
   }
 
   if (adminAlreadyExists) {
@@ -175,8 +190,8 @@ export default function AdminSetupPage() {
 
           <p className="mt-3 text-sm leading-6 text-gray-600">
             Create the first Super Admin account for the IT Assets & Equipment
-            Management system. This account will manage IT staff access,
-            approvals, settings and system control.
+            Management system. This account will manage access approvals,
+            settings, backup/export control and system administration.
           </p>
 
           <div className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
@@ -186,9 +201,9 @@ export default function AdminSetupPage() {
 
             <ul className="mt-3 space-y-2 text-sm text-gray-600">
               <li>- Full access to all IT asset modules</li>
-              <li>- Approve or reject new IT staff access requests</li>
+              <li>- Approve or reject new account requests</li>
               <li>- Manage Super Admin, Admin, Employee and Viewer roles</li>
-              <li>- View reports, activity logs and system settings</li>
+              <li>- Control settings, reports, activity logs and backup/export</li>
             </ul>
           </div>
         </section>
@@ -199,7 +214,7 @@ export default function AdminSetupPage() {
               Create Super Admin
             </h2>
             <p className="mt-1 text-sm text-gray-600">
-              Use the internal access code to create the first IT Super Admin.
+              Use the backend setup key to create the first Super Admin.
             </p>
           </div>
 
@@ -246,7 +261,6 @@ export default function AdminSetupPage() {
                   onChange={handleChange}
                   placeholder="+91 98765 12345"
                   className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-                  required
                 />
               </div>
             </div>
@@ -302,24 +316,31 @@ export default function AdminSetupPage() {
 
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">
-                Access Code
+                Setup Key
               </label>
               <input
                 type="password"
-                name="accessCode"
-                value={formData.accessCode}
+                name="setupKey"
+                value={formData.setupKey}
                 onChange={handleChange}
-                placeholder="Enter internal access code"
+                placeholder="Enter backend setup key"
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
                 required
               />
             </div>
 
+            {errors.form && (
+              <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">
+                {errors.form}
+              </p>
+            )}
+
             <button
               type="submit"
-              className="w-full rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+              disabled={isSaving}
+              className="w-full rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Create Super Admin
+              {isSaving ? "Creating..." : "Create Super Admin"}
             </button>
 
             <div className="text-center">
@@ -336,5 +357,3 @@ export default function AdminSetupPage() {
     </main>
   );
 }
-
-

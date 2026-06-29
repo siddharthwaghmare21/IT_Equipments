@@ -26,6 +26,31 @@ public static class AuthEndpoints
     {
         var group = routes.MapGroup("/api/auth").WithTags("Authentication");
 
+        group.MapGet("/bootstrap-status", async (
+            AuthRepository repository,
+            IHostEnvironment environment,
+            CancellationToken cancellationToken) =>
+        {
+            try
+            {
+                var hasActiveSuperAdmin = await repository.HasActiveSuperAdminAsync(cancellationToken);
+                return Results.Ok(new { hasActiveSuperAdmin });
+            }
+            catch (InvalidOperationException exception)
+            {
+                return Results.Problem(exception.Message, statusCode: StatusCodes.Status503ServiceUnavailable);
+            }
+            catch (MySqlException exception)
+            {
+                var detail = environment.IsDevelopment()
+                    ? $"Database connection failed: {exception.Message}"
+                    : "Database connection failed.";
+
+                return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
+            }
+        })
+        .WithName("GetBootstrapStatus");
+
         group.MapPost("/bootstrap-super-admin", async (
             SuperAdminBootstrapRequest request,
             [FromHeader(Name = "X-Setup-Key")] string? setupKey,

@@ -52,6 +52,18 @@ export function loginUser({ email, password }) {
   });
 }
 
+export function getBootstrapStatus() {
+  return apiRequest("/api/auth/bootstrap-status");
+}
+
+export function bootstrapSuperAdmin(setupKey, superAdmin) {
+  return apiRequest("/api/auth/bootstrap-super-admin", {
+    method: "POST",
+    headers: { "X-Setup-Key": setupKey },
+    body: superAdmin,
+  });
+}
+
 export function getDepartments(token) {
   return apiRequest("/api/departments", { token });
 }
