@@ -223,3 +223,65 @@ export function cancelDelivery(deliveryId, token) {
     token,
   });
 }
+
+export function getReturns(token) {
+  return apiRequest("/api/returns", { token });
+}
+
+export function getReturn(returnId, token) {
+  return apiRequest(`/api/returns/${returnId}`, { token });
+}
+
+export function createReturn(returnRecord, token) {
+  return apiRequest("/api/returns", {
+    method: "POST",
+    token,
+    body: returnRecord,
+  });
+}
+
+export function updateReturn(returnId, returnRecord, token) {
+  return apiRequest(`/api/returns/${returnId}`, {
+    method: "PUT",
+    token,
+    body: returnRecord,
+  });
+}
+
+export function rejectReturn(returnId, token) {
+  return apiRequest(`/api/returns/${returnId}`, {
+    method: "DELETE",
+    token,
+  });
+}
+
+export function getMaintenanceRecords(token) {
+  return apiRequest("/api/maintenance", { token });
+}
+
+export function getMaintenanceRecord(maintenanceId, token) {
+  return apiRequest(`/api/maintenance/${maintenanceId}`, { token });
+}
+
+export function createMaintenanceRecord(maintenanceRecord, token) {
+  return apiRequest("/api/maintenance", {
+    method: "POST",
+    token,
+    body: maintenanceRecord,
+  });
+}
+
+export function updateMaintenanceRecord(maintenanceId, maintenanceRecord, token) {
+  return apiRequest(`/api/maintenance/${maintenanceId}`, {
+    method: "PUT",
+    token,
+    body: maintenanceRecord,
+  });
+}
+
+export function cancelMaintenanceRecord(maintenanceId, token) {
+  return apiRequest(`/api/maintenance/${maintenanceId}`, {
+    method: "DELETE",
+    token,
+  });
+}
