@@ -173,58 +173,60 @@ export default function ViewPurchasePage() {
             </h3>
 
             <TableWrapper>
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Item
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Category
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Qty
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Unit Price
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Total
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Warranty
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {workOrder.items.map((item, index) => (
-                  <tr key={`${item.itemName}-${index}`}>
-                    <td className="px-4 py-4 text-sm">
-                      <p className="font-semibold text-gray-900">
-                        {item.itemName}
-                      </p>
-                      <p className="mt-1 max-w-md text-xs text-gray-500">
-                        {item.specifications || item.description || "-"}
-                      </p>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-700">
-                      {item.category}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-700">
-                      {item.quantity}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-700">
-                      {formatCurrency(item.unitPrice)}
-                    </td>
-                    <td className="px-4 py-4 text-sm font-semibold text-gray-900">
-                      {formatCurrency(item.totalAmount)}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-700">
-                      {item.warranty || "-"}
-                    </td>
+              <table className="min-w-[920px] w-full text-sm">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Item
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Category
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Qty
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Unit Price
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Total
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Warranty
+                    </th>
                   </tr>
-                ))}
-              </tbody>
+                </thead>
+
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {workOrder.items.map((item, index) => (
+                    <tr key={`${item.itemName}-${index}`}>
+                      <td className="px-4 py-4 text-sm">
+                        <p className="font-semibold text-gray-900">
+                          {item.itemName}
+                        </p>
+                        <p className="mt-1 max-w-md text-xs text-gray-500">
+                          {item.specifications || item.description || "-"}
+                        </p>
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-700">
+                        {item.category}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-700">
+                        {item.quantity}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-700">
+                        {formatCurrency(item.unitPrice)}
+                      </td>
+                      <td className="px-4 py-4 text-sm font-semibold text-gray-900">
+                        {formatCurrency(item.totalAmount)}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-700">
+                        {item.warranty || "-"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </TableWrapper>
           </div>
 

@@ -282,84 +282,88 @@ export default function PurchasesPage() {
 
           <div className="hidden lg:block">
             <TableWrapper>
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    WO Details
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Vendor / Invoice
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Dates
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Workflow
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Amount
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {filteredWorkOrders.map((workOrder) => (
-                  <tr key={workOrder.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-4">
-                      <p className="text-sm font-semibold text-gray-900">
-                        {workOrder.workOrderNumber}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {workOrder.itemCount} item lines
-                      </p>
-                    </td>
-
-                    <td className="px-4 py-4 text-sm text-gray-700">
-                      <p className="font-medium text-gray-900">
-                        {workOrder.vendorName}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {workOrder.invoiceNumber || "No invoice"}
-                      </p>
-                    </td>
-
-                    <td className="px-4 py-4 text-sm text-gray-700">
-                      <p>WO: {workOrder.workOrderDate || "-"}</p>
-                      <p className="text-xs text-gray-500">
-                        Expected: {workOrder.expectedDeliveryDate || "-"}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Received: {workOrder.receivedDate || "-"}
-                      </p>
-                    </td>
-
-                    <td className="px-4 py-4">
-                      <WorkOrderStatusBadge status={workOrder.workOrderStatus} />
-                      <p className="mt-2 text-xs text-gray-500">
-                        Approval: {workOrder.approvalStatus}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Payment: {workOrder.paymentStatus}
-                      </p>
-                    </td>
-
-                    <td className="px-4 py-4 text-sm font-semibold text-gray-900">
-                      {formatCurrency(workOrder.totalAmount)}
-                    </td>
-
-                    <td className="px-4 py-4 text-right">
-                      <ActionButtons
-                        viewHref={`/purchases/view/${workOrder.id}`}
-                        editHref={`/purchases/edit/${workOrder.id}`}
-                        onDelete={() => setCancelTarget(workOrder)}
-                      />
-                    </td>
+              <table className="min-w-[1180px] w-full text-sm">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      WO Details
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Vendor / Invoice
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Dates
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Workflow
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Amount
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
+                </thead>
+
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {filteredWorkOrders.map((workOrder) => (
+                    <tr key={workOrder.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-4">
+                        <p className="text-sm font-semibold text-gray-900">
+                          {workOrder.workOrderNumber}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {workOrder.itemCount} item lines
+                        </p>
+                      </td>
+
+                      <td className="px-4 py-4 text-sm text-gray-700">
+                        <p className="font-medium text-gray-900">
+                          {workOrder.vendorName}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {workOrder.invoiceNumber || "No invoice"}
+                        </p>
+                      </td>
+
+                      <td className="px-4 py-4 text-sm text-gray-700">
+                        <p>WO: {workOrder.workOrderDate || "-"}</p>
+                        <p className="text-xs text-gray-500">
+                          Expected: {workOrder.expectedDeliveryDate || "-"}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Received: {workOrder.receivedDate || "-"}
+                        </p>
+                      </td>
+
+                      <td className="px-4 py-4">
+                        <WorkOrderStatusBadge
+                          status={workOrder.workOrderStatus}
+                        />
+                        <p className="mt-2 text-xs text-gray-500">
+                          Approval: {workOrder.approvalStatus}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Payment: {workOrder.paymentStatus}
+                        </p>
+                      </td>
+
+                      <td className="px-4 py-4 text-sm font-semibold text-gray-900">
+                        {formatCurrency(workOrder.totalAmount)}
+                      </td>
+
+                      <td className="px-4 py-4 text-right">
+                        <ActionButtons
+                          viewHref={`/purchases/view/${workOrder.id}`}
+                          editHref={`/purchases/edit/${workOrder.id}`}
+                          onDelete={() => setCancelTarget(workOrder)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </TableWrapper>
           </div>
 
