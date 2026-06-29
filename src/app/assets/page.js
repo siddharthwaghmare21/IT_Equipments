@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import StatusBadge from "@/components/common/StatusBadge";
@@ -9,181 +9,105 @@ import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
 import CompactRecordList from "@/components/common/CompactRecordList";
-import { EmptyState } from "@/components/common/StateBlock";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
+import { archiveAsset, getAssets } from "@/lib/apiClient";
+import { getSessionToken } from "@/lib/authSession";
+import {
+  assetConditions,
+  assetStatuses,
+  mapAssetFromApi,
+} from "@/lib/assetMapper";
 
-const assets = [
-  {
-    id: "1",
-    assetTag: "IT-LAP-001",
-    name: "Dell Latitude 5420",
-    category: "Laptop",
-    serialNumber: "DL5420-9821",
-    assignedTo: "IT Department",
-    location: "IT Department",
-    status: "Assigned",
-    lifecycleStatus: "In Use",
-    purchaseRef: "WO-2024-0412",
-    warrantyExpiry: "2027-04-12",
-    qrCode: "QR-IT-LAP-001",
-    condition: "Good",
-    custodianDepartment: "IT Department",
-    attachmentStatus: "Uploaded",
-    createdBy: "IT Admin",
-    createdAt: "2024-04-12 10:00",
-    updatedBy: "IT Admin",
-    updatedAt: "2026-01-15 10:30",
-  },
-  {
-    id: "2",
-    assetTag: "IT-LAP-002",
-    name: "HP EliteBook 840",
-    category: "Laptop",
-    serialNumber: "HP840-4421",
-    assignedTo: "-",
-    location: "Store Room",
-    status: "Available",
-    lifecycleStatus: "In Stock",
-    purchaseRef: "WO-2024-0620",
-    warrantyExpiry: "2027-06-20",
-    qrCode: "QR-IT-LAP-002",
-    condition: "New",
-    custodianDepartment: "IT Store",
-    attachmentStatus: "Uploaded",
-    createdBy: "IT Admin",
-    createdAt: "2024-06-20 11:00",
-    updatedBy: "IT Admin",
-    updatedAt: "2024-06-20 11:00",
-  },
-  {
-    id: "3",
-    assetTag: "IT-MON-001",
-    name: "Dell 24 Inch Monitor",
-    category: "Monitor",
-    serialNumber: "MON24-1189",
-    assignedTo: "Accounts",
-    location: "Accounts",
-    status: "Assigned",
-    lifecycleStatus: "In Use",
-    purchaseRef: "WO-2024-0705",
-    warrantyExpiry: "2027-07-05",
-    qrCode: "QR-IT-MON-001",
-    condition: "Good",
-    custodianDepartment: "Accounts",
-    attachmentStatus: "Pending",
-    createdBy: "IT Support",
-    createdAt: "2024-07-05 12:15",
-    updatedBy: "IT Support",
-    updatedAt: "2026-01-20 09:30",
-  },
-  {
-    id: "4",
-    assetTag: "IT-PRN-001",
-    name: "Canon Laser Printer",
-    category: "Printer",
-    serialNumber: "CAN-7782",
-    assignedTo: "-",
-    location: "Admin Office",
-    status: "Maintenance",
-    lifecycleStatus: "Under Maintenance",
-    purchaseRef: "WO-2024-0830",
-    warrantyExpiry: "2027-08-30",
-    qrCode: "QR-IT-PRN-001",
-    condition: "Needs Repair",
-    custodianDepartment: "Admin",
-    attachmentStatus: "Uploaded",
-    createdBy: "IT Admin",
-    createdAt: "2024-08-30 16:00",
-    updatedBy: "IT Support",
-    updatedAt: "2026-02-10 14:45",
-  },
-  {
-    id: "5",
-    assetTag: "IT-RTR-001",
-    name: "TP-Link Router",
-    category: "Network",
-    serialNumber: "TPL-9981",
-    assignedTo: "-",
-    location: "Server Room",
-    status: "Available",
-    lifecycleStatus: "In Stock",
-    purchaseRef: "WO-2024-0915",
-    warrantyExpiry: "2027-09-15",
-    qrCode: "QR-IT-RTR-001",
-    condition: "Good",
-    custodianDepartment: "IT Infrastructure",
-    attachmentStatus: "Uploaded",
-    createdBy: "IT Manager",
-    createdAt: "2024-09-15 15:30",
-    updatedBy: "IT Manager",
-    updatedAt: "2024-09-15 15:30",
-  },
-  {
-    id: "6",
-    assetTag: "IT-MSE-001",
-    name: "Dell USB Mouse",
-    category: "Mouse",
-    serialNumber: "MSE-2201",
-    assignedTo: "-",
-    location: "Archive Store",
-    status: "Archived",
-    lifecycleStatus: "Archived",
-    purchaseRef: "WO-2023-0110",
-    warrantyExpiry: "2026-01-10",
-    qrCode: "QR-IT-MSE-001",
-    condition: "Retired",
-    custodianDepartment: "IT Store",
-    attachmentStatus: "Uploaded",
-    createdBy: "IT Admin",
-    createdAt: "2023-01-10 11:00",
-    updatedBy: "IT Admin",
-    updatedAt: "2026-03-01 12:00",
-  },
-];
-
-const filters = ["All", "Available", "Assigned", "Maintenance", "Damaged", "Archived"];
+const filters = ["All", ...assetStatuses];
 
 export default function AssetsPage() {
+  const [assets, setAssets] = useState([]);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [departmentFilter, setDepartmentFilter] = useState("All");
   const [conditionFilter, setConditionFilter] = useState("All");
   const [selectedAssets, setSelectedAssets] = useState([]);
-  const [archiveAsset, setArchiveAsset] = useState(null);
+  const [archiveTarget, setArchiveTarget] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isArchiving, setIsArchiving] = useState(false);
+  const [error, setError] = useState("");
+
+  const loadAssets = useCallback(async () => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await getAssets(getSessionToken());
+      setAssets(response.map(mapAssetFromApi));
+    } catch (loadError) {
+      setError(loadError.message || "Assets could not be loaded.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadAssets();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [loadAssets]);
+
+  const categoryOptions = useMemo(() => {
+    return ["All", ...new Set(assets.map((asset) => asset.category).filter(Boolean))];
+  }, [assets]);
+
+  const departmentOptions = useMemo(() => {
+    return [
+      "All",
+      ...new Set(
+        assets
+          .map((asset) => asset.currentDepartmentName || asset.custodianDepartmentName)
+          .filter(Boolean)
+      ),
+    ];
+  }, [assets]);
 
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
       const searchText = `
         ${asset.assetTag}
-        ${asset.name}
+        ${asset.assetName}
         ${asset.category}
+        ${asset.brand}
+        ${asset.model}
         ${asset.serialNumber}
-        ${asset.assignedTo}
+        ${asset.currentDepartmentName}
+        ${asset.custodianDepartmentName}
+        ${asset.currentReceiverName}
         ${asset.location}
         ${asset.lifecycleStatus}
-        ${asset.purchaseRef}
+        ${asset.workOrderRef}
+        ${asset.invoiceNumber}
         ${asset.warrantyExpiry}
         ${asset.qrCode}
-        ${asset.condition}
-        ${asset.custodianDepartment}
+        ${asset.assetCondition}
         ${asset.attachmentStatus}
       `.toLowerCase();
 
       const matchesSearch = searchText.includes(search.toLowerCase());
-
       const matchesFilter =
-        activeFilter === "All" || asset.status === activeFilter;
-
+        activeFilter === "All" || asset.assetStatus === activeFilter;
       const matchesCategory =
         categoryFilter === "All" || asset.category === categoryFilter;
-
+      const assetDepartment =
+        asset.currentDepartmentName || asset.custodianDepartmentName;
       const matchesDepartment =
-        departmentFilter === "All" ||
-        asset.custodianDepartment === departmentFilter;
-
+        departmentFilter === "All" || assetDepartment === departmentFilter;
       const matchesCondition =
-        conditionFilter === "All" || asset.condition === conditionFilter;
+        conditionFilter === "All" || asset.assetCondition === conditionFilter;
 
       return (
         matchesSearch &&
@@ -193,7 +117,7 @@ export default function AssetsPage() {
         matchesCondition
       );
     });
-  }, [search, activeFilter, categoryFilter, departmentFilter, conditionFilter]);
+  }, [assets, search, activeFilter, categoryFilter, departmentFilter, conditionFilter]);
 
   function toggleAssetSelection(assetId) {
     setSelectedAssets((previousAssets) =>
@@ -207,17 +131,28 @@ export default function AssetsPage() {
     setSelectedAssets([]);
   }
 
-  function handleArchive(asset) {
-    setArchiveAsset(asset);
-  }
+  async function confirmArchive() {
+    if (!archiveTarget) return;
 
-  function confirmArchive() {
-    if (!archiveAsset) return;
+    setIsArchiving(true);
 
-    showToast(
-      `Asset ${archiveAsset.assetTag} archive action added. Backend will be connected later.`
-    );
-    setArchiveAsset(null);
+    try {
+      await archiveAsset(
+        archiveTarget.assetId,
+        `Archived from assets page: ${archiveTarget.assetTag}`,
+        getSessionToken()
+      );
+      showToast(`Asset ${archiveTarget.assetTag} archived successfully.`);
+      setArchiveTarget(null);
+      setSelectedAssets((previousAssets) =>
+        previousAssets.filter((id) => id !== archiveTarget.id)
+      );
+      await loadAssets();
+    } catch (archiveError) {
+      showToast(archiveError.message || "Asset could not be archived.");
+    } finally {
+      setIsArchiving(false);
+    }
   }
 
   function applyQuickView(view) {
@@ -238,13 +173,26 @@ export default function AssetsPage() {
     }
 
     if (view === "pending-documents") {
-      setSearch("pending");
+      setSearch("");
       setActiveFilter("All");
       setCategoryFilter("All");
       setDepartmentFilter("All");
       setConditionFilter("All");
     }
   }
+
+  const availableCount = assets.filter(
+    (asset) => asset.assetStatus === "Available"
+  ).length;
+  const deliveredCount = assets.filter(
+    (asset) => asset.assetStatus === "Delivered"
+  ).length;
+  const maintenanceCount = assets.filter(
+    (asset) => asset.assetStatus === "Maintenance"
+  ).length;
+  const archivedCount = assets.filter(
+    (asset) => asset.assetStatus === "Archived"
+  ).length;
 
   return (
     <LayoutWrapper>
@@ -266,28 +214,28 @@ export default function AssetsPage() {
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Available</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {assets.filter((asset) => asset.status === "Available").length}
+            {availableCount}
           </h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Assigned</p>
+          <p className="text-sm text-gray-500">Delivered</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {assets.filter((asset) => asset.status === "Assigned").length}
+            {deliveredCount}
           </h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Maintenance</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {assets.filter((asset) => asset.status === "Maintenance").length}
+            {maintenanceCount}
           </h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Archived</p>
           <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {assets.filter((asset) => asset.status === "Archived").length}
+            {archivedCount}
           </h2>
         </div>
       </section>
@@ -349,11 +297,11 @@ export default function AssetsPage() {
               onChange={(event) => setCategoryFilter(event.target.value)}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
-              <option value="All">All Categories</option>
-              <option value="Laptop">Laptop</option>
-              <option value="Monitor">Monitor</option>
-              <option value="Printer">Printer</option>
-              <option value="Network">Network</option>
+              {categoryOptions.map((category) => (
+                <option key={category} value={category}>
+                  {category === "All" ? "All Categories" : category}
+                </option>
+              ))}
             </select>
 
             <select
@@ -361,12 +309,11 @@ export default function AssetsPage() {
               onChange={(event) => setDepartmentFilter(event.target.value)}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
-              <option value="All">All Departments</option>
-              <option value="IT Department">IT Department</option>
-              <option value="IT Store">IT Store</option>
-              <option value="Accounts">Accounts</option>
-              <option value="Admin">Admin</option>
-              <option value="IT Infrastructure">IT Infrastructure</option>
+              {departmentOptions.map((department) => (
+                <option key={department} value={department}>
+                  {department === "All" ? "All Departments" : department}
+                </option>
+              ))}
             </select>
 
             <select
@@ -375,9 +322,11 @@ export default function AssetsPage() {
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             >
               <option value="All">All Conditions</option>
-              <option value="New">New</option>
-              <option value="Good">Good</option>
-              <option value="Needs Repair">Needs Repair</option>
+              {assetConditions.map((condition) => (
+                <option key={condition} value={condition}>
+                  {condition}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -394,13 +343,12 @@ export default function AssetsPage() {
                 Read-only asset records for audit trail
               </h2>
               <p className="mt-1 max-w-3xl text-sm text-gray-600">
-                Archived assets should stay locked after backend approval so
-                work order reference, custodian history, QR code and retirement
-                details remain available during audit.
+                Archived assets stay available for audit, reports and lifecycle
+                history.
               </p>
             </div>
             <span className="inline-flex w-fit rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700">
-              Backend approval pending
+              Backend connected
             </span>
           </div>
         </section>
@@ -437,157 +385,177 @@ export default function AssetsPage() {
         </section>
       )}
 
-      <CompactRecordList
-        records={filteredAssets}
-        titleKey="assetTag"
-        subtitleKey="name"
-        meta={[
-          { label: "Category", key: "category" },
-          { label: "Location", key: "location" },
-          { label: "Department", key: "custodianDepartment" },
-          { label: "Warranty", key: "warrantyExpiry" },
-        ]}
-        statusRender={(asset) => <StatusBadge status={asset.status} />}
-        viewHref={(asset) => `/assets/view/${asset.id}`}
-        editHref={(asset) => `/assets/edit/${asset.id}`}
-        onArchive={handleArchive}
-        emptyTitle="No assets found"
-        emptyDescription="Try changing search, status, category, department or condition filters."
-      />
+      {isLoading && (
+        <LoadingState
+          title="Loading assets"
+          description="Fetching asset records from backend."
+        />
+      )}
 
-      <div className="hidden md:block">
-        <TableWrapper>
-        <table className="min-w-[1700px] w-full text-sm">
-          <thead className="bg-gray-50 text-left">
-            <tr className="border-b border-gray-200">
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Select
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Asset Tag
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Asset Name
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Category
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Serial No.
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Department
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Location
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Lifecycle
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Warranty
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                QR Code
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Documents
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Status
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Actions
-              </th>
-            </tr>
-          </thead>
+      {!isLoading && error && (
+        <ErrorState
+          title="Assets could not be loaded"
+          description={error}
+          onRetry={loadAssets}
+        />
+      )}
 
-          <tbody>
-            {filteredAssets.map((asset) => (
-              <tr
-                key={asset.id}
-                className="border-b border-gray-100 hover:bg-gray-50"
-              >
-                <td className="px-4 py-4">
-                  <input
-                    type="checkbox"
-                    checked={selectedAssets.includes(asset.id)}
-                    onChange={() => toggleAssetSelection(asset.id)}
-                    className="h-4 w-4 rounded border-gray-300 accent-gray-900"
-                    aria-label={`Select ${asset.assetTag}`}
+      {!isLoading && !error && (
+        <>
+          <CompactRecordList
+            records={filteredAssets}
+            titleKey="assetTag"
+            subtitleKey="assetName"
+            meta={[
+              { label: "Category", key: "category" },
+              { label: "Location", key: "location" },
+              { label: "Department", key: "currentDepartmentName" },
+              { label: "Warranty", key: "warrantyExpiry" },
+            ]}
+            statusRender={(asset) => <StatusBadge status={asset.assetStatus} />}
+            viewHref={(asset) => `/assets/view/${asset.id}`}
+            editHref={(asset) => `/assets/edit/${asset.id}`}
+            onArchive={setArchiveTarget}
+            emptyTitle="No assets found"
+            emptyDescription="Try changing search, status, category, department or condition filters."
+          />
+
+          <div className="hidden md:block">
+            <TableWrapper>
+              <table className="min-w-[1500px] w-full text-sm">
+                <thead className="bg-gray-50 text-left">
+                  <tr className="border-b border-gray-200">
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Select
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Asset Tag
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Asset Name
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Category
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Serial No.
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Department
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Receiver
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Lifecycle
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Warranty
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Documents
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Status
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredAssets.map((asset) => (
+                    <tr
+                      key={asset.id}
+                      className="border-b border-gray-100 hover:bg-gray-50"
+                    >
+                      <td className="px-4 py-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedAssets.includes(asset.id)}
+                          onChange={() => toggleAssetSelection(asset.id)}
+                          className="h-4 w-4 rounded border-gray-300 accent-gray-900"
+                          aria-label={`Select ${asset.assetTag}`}
+                        />
+                      </td>
+
+                      <td className="px-4 py-4 font-semibold text-gray-900">
+                        {asset.assetTag}
+                      </td>
+
+                      <td className="px-4 py-4 text-gray-700">
+                        {asset.assetName}
+                      </td>
+
+                      <td className="px-4 py-4 text-gray-700">
+                        {asset.category}
+                      </td>
+
+                      <td className="px-4 py-4 text-gray-700">
+                        {asset.serialNumber}
+                      </td>
+
+                      <td className="px-4 py-4 text-gray-700">
+                        {asset.currentDepartmentName ||
+                          asset.custodianDepartmentName ||
+                          "-"}
+                      </td>
+
+                      <td className="px-4 py-4 text-gray-700">
+                        {asset.currentReceiverName || "-"}
+                      </td>
+
+                      <td className="px-4 py-4 text-gray-700">
+                        {asset.lifecycleStatus}
+                      </td>
+
+                      <td className="px-4 py-4 text-gray-700">
+                        {asset.warrantyExpiry || "-"}
+                      </td>
+
+                      <td className="px-4 py-4 text-gray-700">
+                        {asset.attachmentStatus}
+                      </td>
+
+                      <td className="px-4 py-4">
+                        <StatusBadge status={asset.assetStatus} />
+                      </td>
+
+                      <td className="px-4 py-4">
+                        <ActionButtons
+                          viewHref={`/assets/view/${asset.id}`}
+                          updateHref={`/assets/edit/${asset.id}`}
+                          onDelete={() => setArchiveTarget(asset)}
+                          deleteLabel="Archive"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {filteredAssets.length === 0 && (
+                <div className="p-6">
+                  <EmptyState
+                    title="No assets found"
+                    description="Try changing search, status, category, department or condition filters."
                   />
-                </td>
-
-                <td className="px-4 py-4 font-semibold text-gray-900">
-                  {asset.assetTag}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">{asset.name}</td>
-
-                <td className="px-4 py-4 text-gray-700">{asset.category}</td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.serialNumber}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.assignedTo}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">{asset.location}</td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.lifecycleStatus}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.warrantyExpiry}
-                </td>
-
-                <td className="px-4 py-4 font-medium text-gray-700">
-                  {asset.qrCode}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {asset.attachmentStatus}
-                </td>
-
-                <td className="px-4 py-4">
-                  <StatusBadge status={asset.status} />
-                </td>
-
-                <td className="px-4 py-4">
-                  <ActionButtons
-                    viewHref={`/assets/view/${asset.id}`}
-                    updateHref={`/assets/edit/${asset.id}`}
-                    onDelete={() => handleArchive(asset)}
-                    deleteLabel="Archive"
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-          {filteredAssets.length === 0 && (
-            <div className="p-6">
-              <EmptyState
-                title="No assets found"
-                description="Try changing search, status, category, department or condition filters."
-              />
-            </div>
-          )}
-        </TableWrapper>
-      </div>
+                </div>
+              )}
+            </TableWrapper>
+          </div>
+        </>
+      )}
 
       <ConfirmDialog
-        isOpen={Boolean(archiveAsset)}
+        isOpen={Boolean(archiveTarget)}
         title="Archive asset?"
         description={`Asset ${
-          archiveAsset?.assetTag || ""
-        } will be archived after backend integration. Lifecycle history will remain available for audit and reports.`}
-        confirmLabel="Archive"
-        onCancel={() => setArchiveAsset(null)}
+          archiveTarget?.assetTag || ""
+        } will be archived. Lifecycle history will remain available for audit and reports.`}
+        confirmLabel={isArchiving ? "Archiving..." : "Archive"}
+        onCancel={() => setArchiveTarget(null)}
         onConfirm={confirmArchive}
       />
     </LayoutWrapper>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
@@ -8,107 +8,27 @@ import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
 import CompactRecordList from "@/components/common/CompactRecordList";
-import { EmptyState } from "@/components/common/StateBlock";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
+import { cancelWorkOrder, getWorkOrders } from "@/lib/apiClient";
+import { getSessionToken } from "@/lib/authSession";
+import {
+  formatCurrency,
+  mapWorkOrderFromApi,
+  workOrderStatuses,
+} from "@/lib/workOrderMapper";
 
-const purchases = [
-  {
-    id: "1",
-    poNumber: "WO-2026-001",
-    vendorName: "Dell Technologies",
-    invoiceNumber: "INV-DL-4587",
-    purchaseDate: "2026-01-12",
-    expectedDeliveryDate: "2026-01-18",
-    receivedDate: "2026-01-15",
-    items: 8,
-    approvalStatus: "Approved",
-    approvedBy: "IT Head",
-    paymentStatus: "Paid",
-    receivedStatus: "Fully Received",
-    invoiceStatus: "Verified",
-    attachmentStatus: "WO + Invoice",
-    createdBy: "Procurement Admin",
-    createdAt: "2026-01-12 10:30 AM",
-    updatedBy: "Stores Team",
-    updatedAt: "2026-01-15 04:15 PM",
-    totalAmount: "INR 5,80,000",
-    status: "Received",
-  },
-  {
-    id: "2",
-    poNumber: "WO-2026-002",
-    vendorName: "HP World",
-    invoiceNumber: "INV-HP-7821",
-    purchaseDate: "2026-01-18",
-    expectedDeliveryDate: "2026-01-28",
-    receivedDate: "",
-    items: 5,
-    approvalStatus: "Approved",
-    approvedBy: "IT Head",
-    paymentStatus: "Pending",
-    receivedStatus: "Awaiting Delivery",
-    invoiceStatus: "Pending",
-    attachmentStatus: "WO Uploaded",
-    createdBy: "Procurement Admin",
-    createdAt: "2026-01-18 11:10 AM",
-    updatedBy: "Procurement Admin",
-    updatedAt: "2026-01-18 11:10 AM",
-    totalAmount: "INR 3,25,000",
-    status: "Pending",
-  },
-  {
-    id: "3",
-    poNumber: "WO-2026-003",
-    vendorName: "Canon India",
-    invoiceNumber: "INV-CN-2190",
-    purchaseDate: "2026-02-02",
-    expectedDeliveryDate: "2026-02-07",
-    receivedDate: "2026-02-06",
-    items: 3,
-    approvalStatus: "Approved",
-    approvedBy: "IT Manager",
-    paymentStatus: "Paid",
-    receivedStatus: "Fully Received",
-    invoiceStatus: "Verified",
-    attachmentStatus: "WO + Invoice",
-    createdBy: "Procurement Admin",
-    createdAt: "2026-02-02 09:40 AM",
-    updatedBy: "Stores Team",
-    updatedAt: "2026-02-06 03:20 PM",
-    totalAmount: "INR 78,000",
-    status: "Received",
-  },
-  {
-    id: "4",
-    poNumber: "WO-2026-004",
-    vendorName: "Network Solutions",
-    invoiceNumber: "INV-NS-1002",
-    purchaseDate: "2026-02-10",
-    expectedDeliveryDate: "2026-02-18",
-    receivedDate: "",
-    items: 12,
-    approvalStatus: "Pending",
-    approvedBy: "-",
-    paymentStatus: "Not Started",
-    receivedStatus: "Not Received",
-    invoiceStatus: "Awaiting Invoice",
-    attachmentStatus: "Pending",
-    createdBy: "Procurement Admin",
-    createdAt: "2026-02-10 02:05 PM",
-    updatedBy: "Procurement Admin",
-    updatedAt: "2026-02-10 02:05 PM",
-    totalAmount: "INR 1,42,000",
-    status: "Ordered",
-  },
-];
+const filters = ["All", ...workOrderStatuses];
 
-const filters = ["All", "Received", "Pending", "Ordered", "Cancelled"];
-
-function PurchaseStatusBadge({ status }) {
+function WorkOrderStatusBadge({ status }) {
   const statusStyles = {
-    Received: "bg-green-100 text-green-700 border-green-200",
-    Pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
+    Draft: "bg-gray-100 text-gray-700 border-gray-200",
     Ordered: "bg-blue-100 text-blue-700 border-blue-200",
+    Received: "bg-green-100 text-green-700 border-green-200",
     Cancelled: "bg-red-100 text-red-700 border-red-200",
   };
 
@@ -124,352 +44,343 @@ function PurchaseStatusBadge({ status }) {
 }
 
 export default function PurchasesPage() {
+  const [workOrders, setWorkOrders] = useState([]);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
-  const [archivePurchase, setArchivePurchase] = useState(null);
+  const [cancelTarget, setCancelTarget] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const filteredPurchases = useMemo(() => {
-    return purchases.filter((purchase) => {
+  const loadWorkOrders = useCallback(async () => {
+    const token = getSessionToken();
+
+    if (!token) {
+      setError("Login session not found. Please login again.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setError("");
+      const data = await getWorkOrders(token);
+      setWorkOrders((data || []).map(mapWorkOrderFromApi));
+    } catch (requestError) {
+      setError(requestError.message || "Unable to load work orders.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      loadWorkOrders();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [loadWorkOrders]);
+
+  const filteredWorkOrders = useMemo(() => {
+    return workOrders.filter((workOrder) => {
       const searchText = `
-        ${purchase.poNumber}
-        ${purchase.vendorName}
-        ${purchase.invoiceNumber}
-        ${purchase.purchaseDate}
-        ${purchase.expectedDeliveryDate}
-        ${purchase.receivedDate}
-        ${purchase.totalAmount}
-        ${purchase.approvalStatus}
-        ${purchase.paymentStatus}
-        ${purchase.receivedStatus}
-        ${purchase.invoiceStatus}
-        ${purchase.status}
+        ${workOrder.workOrderNumber}
+        ${workOrder.vendorName}
+        ${workOrder.invoiceNumber}
+        ${workOrder.workOrderDate}
+        ${workOrder.expectedDeliveryDate}
+        ${workOrder.receivedDate}
+        ${formatCurrency(workOrder.totalAmount)}
+        ${workOrder.approvalStatus}
+        ${workOrder.paymentStatus}
+        ${workOrder.receivedStatus}
+        ${workOrder.invoiceStatus}
+        ${workOrder.workOrderStatus}
       `.toLowerCase();
 
       const matchesSearch = searchText.includes(search.toLowerCase());
-
       const matchesFilter =
-        activeFilter === "All" || purchase.status === activeFilter;
+        activeFilter === "All" || workOrder.workOrderStatus === activeFilter;
 
       return matchesSearch && matchesFilter;
     });
-  }, [search, activeFilter]);
+  }, [workOrders, search, activeFilter]);
 
   const receivingSteps = [
     {
       title: "WO Created",
-      detail: "Work Order and vendor invoice reference captured",
-      count: purchases.length,
+      detail: "Work order and vendor reference captured",
+      count: workOrders.length,
     },
     {
       title: "Approved",
       detail: "Approval completed before receiving",
-      count: purchases.filter(
-        (purchase) => purchase.approvalStatus === "Approved"
+      count: workOrders.filter(
+        (workOrder) => workOrder.approvalStatus === "Approved"
       ).length,
     },
     {
       title: "Received",
-      detail: "Items physically received by stores team",
-      count: purchases.filter((purchase) => purchase.status === "Received")
-        .length,
+      detail: "Items physically received by IT/stores team",
+      count: workOrders.filter(
+        (workOrder) => workOrder.workOrderStatus === "Received"
+      ).length,
     },
     {
       title: "Asset Registration",
-      detail: "Serial number and QR code creation pending after backend",
-      count: purchases.filter(
-        (purchase) => purchase.receivedStatus === "Fully Received"
+      detail: "Received items can be registered as assets next",
+      count: workOrders.filter(
+        (workOrder) => workOrder.receivedStatus === "Fully Received"
       ).length,
     },
   ];
 
-  function handleArchive(purchase) {
-    setArchivePurchase(purchase);
-  }
+  async function confirmCancel() {
+    const token = getSessionToken();
 
-  function confirmArchive() {
-    showToast("Purchase archive action added. Backend will be connected later.");
-    setArchivePurchase(null);
+    if (!token || !cancelTarget) {
+      return;
+    }
+
+    try {
+      await cancelWorkOrder(cancelTarget.workOrderId, token);
+      showToast("Work order cancelled successfully.");
+      setCancelTarget(null);
+      await loadWorkOrders();
+    } catch (requestError) {
+      showToast(requestError.message || "Unable to cancel work order.");
+    }
   }
 
   return (
     <LayoutWrapper>
       <PageHeader
-        title="Purchases"
-        description="Track Work Orders, vendor invoices, received items and pending procurement."
+        title="Work Orders"
+        description="Track work orders, vendor invoices, received items and pending procurement."
       />
 
-      <PageActionBar addHref="/purchases/add" addLabel="Add Purchase" />
+      <PageActionBar addHref="/purchases/add" addLabel="Add Work Order" />
 
-      <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Purchases</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {purchases.length}
-          </h2>
-        </div>
+      {isLoading ? (
+        <LoadingState
+          title="Loading work orders"
+          description="Fetching work order records from backend."
+        />
+      ) : error ? (
+        <ErrorState
+          title="Unable to load work orders"
+          description={error}
+          actionLabel="Retry"
+          onAction={loadWorkOrders}
+        />
+      ) : (
+        <>
+          <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <p className="text-sm text-gray-500">Total Work Orders</p>
+              <h2 className="mt-2 text-3xl font-bold text-gray-900">
+                {workOrders.length}
+              </h2>
+            </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Received</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {
-              purchases.filter((purchase) => purchase.status === "Received")
-                .length
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <p className="text-sm text-gray-500">Received</p>
+              <h2 className="mt-2 text-3xl font-bold text-gray-900">
+                {
+                  workOrders.filter(
+                    (workOrder) => workOrder.workOrderStatus === "Received"
+                  ).length
+                }
+              </h2>
+            </div>
+
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <p className="text-sm text-gray-500">Pending Approval</p>
+              <h2 className="mt-2 text-3xl font-bold text-gray-900">
+                {
+                  workOrders.filter(
+                    (workOrder) => workOrder.approvalStatus === "Pending"
+                  ).length
+                }
+              </h2>
+            </div>
+
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <p className="text-sm text-gray-500">Ordered</p>
+              <h2 className="mt-2 text-3xl font-bold text-gray-900">
+                {
+                  workOrders.filter(
+                    (workOrder) => workOrder.workOrderStatus === "Ordered"
+                  ).length
+                }
+              </h2>
+            </div>
+          </section>
+
+          <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <input
+                type="text"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search by WO, vendor, invoice, approval, payment or status..."
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
+              />
+
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {filters.map((filter) => (
+                  <button
+                    key={filter}
+                    type="button"
+                    onClick={() => setActiveFilter(filter)}
+                    className={`whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-medium ${
+                      activeFilter === filter
+                        ? "border-gray-900 bg-gray-900 text-white"
+                        : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-4">
+            {receivingSteps.map((step) => (
+              <div
+                key={step.title}
+                className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+              >
+                <p className="text-sm font-semibold text-gray-900">
+                  {step.title}
+                </p>
+                <p className="mt-1 text-sm text-gray-500">{step.detail}</p>
+                <p className="mt-4 text-2xl font-bold text-gray-900">
+                  {step.count}
+                </p>
+              </div>
+            ))}
+          </section>
+
+          <CompactRecordList
+            records={filteredWorkOrders}
+            getTitle={(workOrder) => workOrder.workOrderNumber}
+            getSubtitle={(workOrder) =>
+              `${workOrder.vendorName} | ${workOrder.invoiceNumber || "No invoice"}`
             }
-          </h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Pending</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {
-              purchases.filter((purchase) => purchase.status === "Pending")
-                .length
-            }
-          </h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Ordered</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {
-              purchases.filter((purchase) => purchase.status === "Ordered")
-                .length
-            }
-          </h2>
-        </div>
-      </section>
-
-      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <input
-            type="text"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by WO, vendor, invoice, approval, payment or status..."
-            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
+            getMeta={(workOrder) => [
+              workOrder.workOrderDate,
+              `${workOrder.itemCount} items`,
+              formatCurrency(workOrder.totalAmount),
+            ]}
+            getStatus={(workOrder) => workOrder.workOrderStatus}
+            getHref={(workOrder) => `/purchases/view/${workOrder.id}`}
+            getEditHref={(workOrder) => `/purchases/edit/${workOrder.id}`}
+            onDelete={setCancelTarget}
+            emptyTitle="No work orders found"
+            emptyDescription="Try changing the search or filter."
           />
 
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {filters.map((filter) => (
-              <button
-                key={filter}
-                type="button"
-                onClick={() => setActiveFilter(filter)}
-                className={`whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-medium ${
-                  activeFilter === filter
-                    ? "border-gray-900 bg-gray-900 text-white"
-                    : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                {filter}
-              </button>
-            ))}
+          <div className="hidden lg:block">
+            <TableWrapper>
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    WO Details
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Vendor / Invoice
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Dates
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Workflow
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Amount
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {filteredWorkOrders.map((workOrder) => (
+                  <tr key={workOrder.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-4">
+                      <p className="text-sm font-semibold text-gray-900">
+                        {workOrder.workOrderNumber}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {workOrder.itemCount} item lines
+                      </p>
+                    </td>
+
+                    <td className="px-4 py-4 text-sm text-gray-700">
+                      <p className="font-medium text-gray-900">
+                        {workOrder.vendorName}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {workOrder.invoiceNumber || "No invoice"}
+                      </p>
+                    </td>
+
+                    <td className="px-4 py-4 text-sm text-gray-700">
+                      <p>WO: {workOrder.workOrderDate || "-"}</p>
+                      <p className="text-xs text-gray-500">
+                        Expected: {workOrder.expectedDeliveryDate || "-"}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Received: {workOrder.receivedDate || "-"}
+                      </p>
+                    </td>
+
+                    <td className="px-4 py-4">
+                      <WorkOrderStatusBadge status={workOrder.workOrderStatus} />
+                      <p className="mt-2 text-xs text-gray-500">
+                        Approval: {workOrder.approvalStatus}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Payment: {workOrder.paymentStatus}
+                      </p>
+                    </td>
+
+                    <td className="px-4 py-4 text-sm font-semibold text-gray-900">
+                      {formatCurrency(workOrder.totalAmount)}
+                    </td>
+
+                    <td className="px-4 py-4 text-right">
+                      <ActionButtons
+                        viewHref={`/purchases/view/${workOrder.id}`}
+                        editHref={`/purchases/edit/${workOrder.id}`}
+                        onDelete={() => setCancelTarget(workOrder)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </TableWrapper>
           </div>
-        </div>
-      </section>
 
-      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Purchase Receiving Flow
-            </p>
-            <h2 className="mt-1 text-lg font-semibold text-gray-900">
-              WO to asset registration tracking
-            </h2>
-            <p className="mt-1 max-w-3xl text-sm text-gray-600">
-              This keeps procurement, stores and asset registration aligned
-              before items become available in inventory.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() =>
-              showToast(
-                "Asset registration handoff is ready for backend API connection."
-              )
-            }
-            className="w-fit rounded-xl border border-gray-900 bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
-          >
-            Prepare Registration
-          </button>
-        </div>
-
-        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {receivingSteps.map((step, index) => (
-            <div
-              key={step.title}
-              className="rounded-xl border border-gray-100 bg-gray-50 p-4"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-bold text-gray-900">
-                  {index + 1}
-                </span>
-                <span className="text-2xl font-bold text-gray-900">
-                  {step.count}
-                </span>
-              </div>
-              <p className="mt-3 text-sm font-semibold text-gray-900">
-                {step.title}
-              </p>
-              <p className="mt-1 text-xs text-gray-500">{step.detail}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <CompactRecordList
-        records={filteredPurchases}
-        titleKey="poNumber"
-        subtitleKey="vendorName"
-        meta={[
-          { label: "Amount", key: "totalAmount" },
-          { label: "Purchase Date", key: "purchaseDate" },
-          { label: "Payment", key: "paymentStatus" },
-          { label: "Approval", key: "approvalStatus" },
-        ]}
-        statusRender={(purchase) => (
-          <PurchaseStatusBadge status={purchase.status} />
-        )}
-        viewHref={(purchase) => `/purchases/view/${purchase.id}`}
-        editHref={(purchase) => `/purchases/edit/${purchase.id}`}
-        onArchive={handleArchive}
-        emptyTitle="No purchases found"
-        emptyDescription="Try changing WO, vendor, payment or status filters."
-      />
-
-      <div className="hidden md:block">
-      <TableWrapper>
-        <table className="min-w-[1550px] w-full text-sm">
-          <thead className="bg-gray-50 text-left">
-            <tr className="border-b border-gray-200">
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                WO Number
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Vendor
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Invoice No.
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Purchase Date
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Expected Delivery
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Received Status
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Items
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Total Amount
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Approval
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Payment
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Invoice
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Status
-              </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">
-                Actions
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredPurchases.map((purchase) => (
-              <tr
-                key={purchase.id}
-                className="border-b border-gray-100 hover:bg-gray-50"
-              >
-                <td className="px-4 py-4 font-semibold text-gray-900">
-                  {purchase.poNumber}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {purchase.vendorName}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {purchase.invoiceNumber}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {purchase.purchaseDate}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {purchase.expectedDeliveryDate}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {purchase.receivedStatus}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">{purchase.items}</td>
-
-                <td className="px-4 py-4 font-semibold text-gray-900">
-                  {purchase.totalAmount}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {purchase.approvalStatus}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {purchase.paymentStatus}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {purchase.invoiceStatus}
-                </td>
-
-                <td className="px-4 py-4">
-                  <PurchaseStatusBadge status={purchase.status} />
-                </td>
-
-                <td className="px-4 py-4">
-                  <ActionButtons
-                    viewHref={`/purchases/view/${purchase.id}`}
-                    updateHref={`/purchases/edit/${purchase.id}`}
-                    onDelete={() => handleArchive(purchase)}
-                    deleteLabel="Archive"
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {filteredPurchases.length === 0 && (
-          <div className="p-6">
+          {filteredWorkOrders.length === 0 && (
             <EmptyState
-              title="No purchases found"
-              description="Try changing WO, vendor, payment or status filters."
+              title="No work orders found"
+              description="Try changing search/filter or add a new work order."
             />
-          </div>
-        )}
-      </TableWrapper>
-      </div>
+          )}
+        </>
+      )}
 
       <ConfirmDialog
-        isOpen={Boolean(archivePurchase)}
-        title="Archive purchase?"
-        description={`Purchase ${
-          archivePurchase?.poNumber || ""
-        } will be archived after backend integration.`}
-        confirmLabel="Archive"
-        onCancel={() => setArchivePurchase(null)}
-        onConfirm={confirmArchive}
+        open={Boolean(cancelTarget)}
+        title="Cancel work order?"
+        description={`This will mark ${
+          cancelTarget?.workOrderNumber || "this work order"
+        } as cancelled.`}
+        confirmLabel="Cancel Work Order"
+        onCancel={() => setCancelTarget(null)}
+        onConfirm={confirmCancel}
       />
     </LayoutWrapper>
   );

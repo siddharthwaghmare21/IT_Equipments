@@ -1,13 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import FormStepper from "@/components/common/FormStepper";
 import HelpTooltip from "@/components/common/HelpTooltip";
 import { showToast } from "@/components/common/ToastHost";
 import useUnsavedChanges from "@/hooks/useUnsavedChanges";
+import { createAsset, getDepartments } from "@/lib/apiClient";
+import { getSessionToken } from "@/lib/authSession";
+import {
+  assetCategories,
+  assetConditions,
+  assetLifecycleStatuses,
+  assetStatuses,
+  createAssetFormData,
+  mapAssetToRequest,
+} from "@/lib/assetMapper";
 
 const assetFormSteps = [
   {
@@ -21,43 +32,37 @@ const assetFormSteps = [
   },
   {
     title: "Documents & Notes",
-    description: "Documents, specifications, description, remarks and tracking.",
+    description: "Specifications, description, remarks and tracking.",
   },
 ];
 
-const initialFormData = {
-  assetTag: "",
-  assetName: "",
-  category: "",
-  brand: "",
-  model: "",
-  serialNumber: "",
-  purchaseDate: "",
-  purchaseRef: "",
-  warrantyExpiry: "",
-  location: "",
-  custodianDepartment: "",
-  assignedTo: "",
-  condition: "New",
-  lifecycleStatus: "In Stock",
-  qrCode: "",
-  attachmentStatus: "Pending",
-  createdBy: "IT Admin",
-  createdAt: "",
-  updatedBy: "IT Admin",
-  updatedAt: "",
-  status: "Available",
-  specifications: "",
-  description: "",
-  remarks: "",
-};
-
 export default function AddAssetPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isDirty, setIsDirty] = useState(false);
-  const [formData, setFormData] = useState(initialFormData);
+  const [isSaving, setIsSaving] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState(createAssetFormData());
 
   useUnsavedChanges(isDirty);
+
+  const loadDepartments = useCallback(async () => {
+    try {
+      const response = await getDepartments(getSessionToken());
+      setDepartments(response.filter((department) => department.isActive));
+    } catch {
+      setDepartments([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadDepartments();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [loadDepartments]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -66,13 +71,25 @@ export default function AddAssetPage() {
       ...previousData,
       [name]: value,
     }));
+    setError("");
     setIsDirty(true);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    setIsDirty(false);
-    showToast("Asset saved successfully. Backend will be connected later.");
+    setIsSaving(true);
+    setError("");
+
+    try {
+      await createAsset(mapAssetToRequest(formData), getSessionToken());
+      setIsDirty(false);
+      showToast("Asset saved successfully.");
+      router.push("/assets");
+    } catch (saveError) {
+      setError(saveError.message || "Asset could not be saved.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -126,16 +143,7 @@ export default function AddAssetPage() {
             name="category"
             value={formData.category}
             onChange={handleChange}
-            options={[
-              "Laptop",
-              "Desktop",
-              "Monitor",
-              "Printer",
-              "Network",
-              "Keyboard",
-              "Mouse",
-              "Other",
-            ]}
+            options={assetCategories}
             required
           />
 
@@ -174,11 +182,19 @@ export default function AddAssetPage() {
 
           <TextInput
             label="Work Order Reference"
-            name="purchaseRef"
-            value={formData.purchaseRef}
+            name="workOrderRef"
+            value={formData.workOrderRef}
             onChange={handleChange}
-            placeholder="WO-2026-0001 / Invoice No."
-            tooltip="WO number, invoice number or purchase reference used for audit and warranty tracking."
+            placeholder="WO-2026-0001"
+            tooltip="WO number used for audit and warranty tracking."
+          />
+
+          <TextInput
+            label="Invoice Number"
+            name="invoiceNumber"
+            value={formData.invoiceNumber}
+            onChange={handleChange}
+            placeholder="INV-0001"
           />
 
           <TextInput
@@ -189,19 +205,28 @@ export default function AddAssetPage() {
             onChange={handleChange}
           />
 
-          <SelectInput
+          <DepartmentSelect
             label="Custodian Department"
-            name="custodianDepartment"
-            value={formData.custodianDepartment}
+            name="custodianDepartmentId"
+            value={formData.custodianDepartmentId}
             onChange={handleChange}
-            options={[
-              "IT Store",
-              "IT Department",
-              "Accounts",
-              "Admin",
-              "HR",
-              "Operations",
-            ]}
+            departments={departments}
+          />
+
+          <DepartmentSelect
+            label="Current Department"
+            name="currentDepartmentId"
+            value={formData.currentDepartmentId}
+            onChange={handleChange}
+            departments={departments}
+          />
+
+          <TextInput
+            label="Current Receiver Name"
+            name="currentReceiverName"
+            value={formData.currentReceiverName}
+            onChange={handleChange}
+            placeholder="Employee/person name if asset is issued"
           />
 
           <TextInput
@@ -212,20 +237,12 @@ export default function AddAssetPage() {
             placeholder="Store Room / IT Dept / Admin Office"
           />
 
-          <TextInput
-            label="Assigned Department"
-            name="assignedTo"
-            value={formData.assignedTo}
-            onChange={handleChange}
-            placeholder="Department name or -"
-          />
-
           <SelectInput
             label="Asset Condition"
-            name="condition"
-            value={formData.condition}
+            name="assetCondition"
+            value={formData.assetCondition}
             onChange={handleChange}
-            options={["New", "Good", "Working", "Needs Repair", "Damaged"]}
+            options={assetConditions}
           />
 
           <SelectInput
@@ -233,27 +250,15 @@ export default function AddAssetPage() {
             name="lifecycleStatus"
             value={formData.lifecycleStatus}
             onChange={handleChange}
-            options={[
-              "In Stock",
-              "In Use",
-              "Under Maintenance",
-              "Retired",
-              "Archived",
-            ]}
+            options={assetLifecycleStatuses}
           />
 
           <SelectInput
             label="Status"
-            name="status"
-            value={formData.status}
+            name="assetStatus"
+            value={formData.assetStatus}
             onChange={handleChange}
-            options={[
-              "Available",
-              "Delivered",
-              "Maintenance",
-              "Damaged",
-              "Scrapped",
-            ]}
+            options={assetStatuses}
           />
 
           <TextInput
@@ -265,23 +270,11 @@ export default function AddAssetPage() {
             tooltip="QR/barcode value used on asset label. Backend can auto-generate this later."
           />
 
-          <SelectInput
-            label="Attachment Status"
-            name="attachmentStatus"
-            value={formData.attachmentStatus}
-            onChange={handleChange}
-            options={["Pending", "Uploaded", "Not Required"]}
-          />
-
           <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Asset Documents
-            </label>
-            <input
-              type="file"
-              multiple
-              className="w-full rounded-xl border border-gray-300 px-4 py-2 text-sm outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white focus:border-gray-900"
-            />
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+              Asset document upload is handled through the document metadata
+              workflow after asset save.
+            </div>
           </div>
 
           <TextareaInput
@@ -312,12 +305,18 @@ export default function AddAssetPage() {
           />
         </div>
 
+        {error && (
+          <p className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">
+            {error}
+          </p>
+        )}
+
         <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
           <h2 className="text-sm font-bold text-gray-900">System Tracking</h2>
           <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-4">
-            <TrackingItem label="Created By" value={formData.createdBy} />
+            <TrackingItem label="Created By" value="Logged-in user" />
             <TrackingItem label="Created At" value="After save" />
-            <TrackingItem label="Updated By" value={formData.updatedBy} />
+            <TrackingItem label="Updated By" value="Logged-in user" />
             <TrackingItem label="Updated At" value="After save" />
           </div>
         </section>
@@ -352,9 +351,10 @@ export default function AddAssetPage() {
 
           <button
             type="submit"
-            className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+            disabled={isSaving}
+            className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Save Asset
+            {isSaving ? "Saving..." : "Save Asset"}
           </button>
         </div>
       </form>
@@ -422,6 +422,30 @@ function SelectInput({
         {options.map((option) => (
           <option key={option} value={option}>
             {option}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function DepartmentSelect({ label, name, value, onChange, departments }) {
+  return (
+    <div>
+      <FieldLabel label={label} />
+      <select
+        name={name}
+        value={value}
+        onChange={onChange}
+        className={inputClass}
+      >
+        <option value="">Select department</option>
+        {departments.map((department) => (
+          <option
+            key={department.departmentId}
+            value={department.departmentId}
+          >
+            {department.departmentName}
           </option>
         ))}
       </select>

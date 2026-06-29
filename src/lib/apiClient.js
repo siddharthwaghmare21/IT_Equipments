@@ -125,3 +125,70 @@ export function archiveVendor(vendorId, token) {
     token,
   });
 }
+
+export function getAssets(token) {
+  return apiRequest("/api/assets", { token });
+}
+
+export function getAsset(assetId, token) {
+  return apiRequest(`/api/assets/${assetId}`, { token });
+}
+
+export function getAssetHistory(assetId, token) {
+  return apiRequest(`/api/assets/${assetId}/history`, { token });
+}
+
+export function createAsset(asset, token) {
+  return apiRequest("/api/assets", {
+    method: "POST",
+    token,
+    body: asset,
+  });
+}
+
+export function updateAsset(assetId, asset, token) {
+  return apiRequest(`/api/assets/${assetId}`, {
+    method: "PUT",
+    token,
+    body: asset,
+  });
+}
+
+export function archiveAsset(assetId, remarks, token) {
+  return apiRequest(`/api/assets/${assetId}/archive`, {
+    method: "POST",
+    token,
+    body: { remarks },
+  });
+}
+
+export function getWorkOrders(token) {
+  return apiRequest("/api/work-orders", { token });
+}
+
+export function getWorkOrder(workOrderId, token) {
+  return apiRequest(`/api/work-orders/${workOrderId}`, { token });
+}
+
+export function createWorkOrder(workOrder, token) {
+  return apiRequest("/api/work-orders", {
+    method: "POST",
+    token,
+    body: workOrder,
+  });
+}
+
+export function updateWorkOrder(workOrderId, workOrder, token) {
+  return apiRequest(`/api/work-orders/${workOrderId}`, {
+    method: "PUT",
+    token,
+    body: workOrder,
+  });
+}
+
+export function cancelWorkOrder(workOrderId, token) {
+  return apiRequest(`/api/work-orders/${workOrderId}`, {
+    method: "DELETE",
+    token,
+  });
+}
