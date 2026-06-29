@@ -192,3 +192,34 @@ export function cancelWorkOrder(workOrderId, token) {
     token,
   });
 }
+
+export function getDeliveries(token) {
+  return apiRequest("/api/deliveries", { token });
+}
+
+export function getDelivery(deliveryId, token) {
+  return apiRequest(`/api/deliveries/${deliveryId}`, { token });
+}
+
+export function createDelivery(delivery, token) {
+  return apiRequest("/api/deliveries", {
+    method: "POST",
+    token,
+    body: delivery,
+  });
+}
+
+export function updateDelivery(deliveryId, delivery, token) {
+  return apiRequest(`/api/deliveries/${deliveryId}`, {
+    method: "PUT",
+    token,
+    body: delivery,
+  });
+}
+
+export function cancelDelivery(deliveryId, token) {
+  return apiRequest(`/api/deliveries/${deliveryId}`, {
+    method: "DELETE",
+    token,
+  });
+}

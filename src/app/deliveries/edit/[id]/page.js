@@ -1,152 +1,79 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
+import { ErrorState, LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
-
-const deliveries = [
-  {
-    id: "1",
-    deliveryCode: "DLV-001",
-    assetTag: "AST-001",
-    assetName: "Dell Latitude 5420",
-    deliveredTo: "Rahul Patil",
-    department: "IT Department",
-    issuedBy: "IT Admin",
-    location: "Pune Office - IT Bay",
-    accessoriesIncluded: "Charger, laptop bag",
-    acknowledgementStatus: "Acknowledged",
-    qrCode: "QR-DLV-001",
-    returnStatus: "Not Due",
-    attachmentStatus: "Uploaded",
-    createdBy: "IT Admin",
-    createdAt: "2026-01-15 10:30",
-    updatedBy: "IT Admin",
-    updatedAt: "2026-01-15 10:30",
-    deliveryDate: "2026-01-15",
-    expectedReturnDate: "2026-12-31",
-    condition: "Good",
-    status: "Delivered",
-    specifications: "Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro",
-    description: "Laptop delivered for development work with charger and bag.",
-    remarks: "Delivery completed successfully.",
-  },
-  {
-    id: "2",
-    deliveryCode: "DLV-002",
-    assetTag: "AST-002",
-    assetName: "HP LaserJet Printer",
-    deliveredTo: "Sneha Jadhav",
-    department: "Accounts",
-    issuedBy: "IT Support",
-    location: "Pune Office - Accounts",
-    accessoriesIncluded: "Power cable, USB cable",
-    acknowledgementStatus: "Acknowledged",
-    qrCode: "QR-DLV-002",
-    returnStatus: "Not Due",
-    attachmentStatus: "Pending",
-    createdBy: "IT Support",
-    createdAt: "2026-01-20 11:15",
-    updatedBy: "IT Support",
-    updatedAt: "2026-01-20 11:15",
-    deliveryDate: "2026-01-20",
-    expectedReturnDate: "2026-12-31",
-    condition: "New",
-    status: "Delivered",
-    specifications: "Laser printer, black and white, network printing support",
-    description: "Printer delivered to accounts department for daily printing.",
-    remarks: "Printer delivered with power cable.",
-  },
-  {
-    id: "3",
-    deliveryCode: "DLV-003",
-    assetTag: "AST-003",
-    assetName: "Logitech Keyboard",
-    deliveredTo: "Amit Shinde",
-    department: "Admin",
-    issuedBy: "IT Support",
-    location: "Admin Desk",
-    accessoriesIncluded: "USB receiver",
-    acknowledgementStatus: "Returned",
-    qrCode: "QR-DLV-003",
-    returnStatus: "Returned",
-    attachmentStatus: "Uploaded",
-    createdBy: "IT Support",
-    createdAt: "2026-02-01 15:45",
-    updatedBy: "IT Admin",
-    updatedAt: "2026-02-10 16:20",
-    deliveryDate: "2026-02-01",
-    expectedReturnDate: "2026-08-01",
-    condition: "Good",
-    status: "Returned",
-    specifications: "USB keyboard, standard layout",
-    description: "Keyboard delivered to admin department.",
-    remarks: "Keyboard returned in working condition.",
-  },
-  {
-    id: "4",
-    deliveryCode: "DLV-004",
-    assetTag: "AST-004",
-    assetName: "Cisco Router",
-    deliveredTo: "Priya More",
-    department: "HR",
-    issuedBy: "IT Admin",
-    location: "HR Network Rack",
-    accessoriesIncluded: "Power adapter, patch cable",
-    acknowledgementStatus: "Pending",
-    qrCode: "QR-DLV-004",
-    returnStatus: "Pending Return",
-    attachmentStatus: "Pending",
-    createdBy: "IT Admin",
-    createdAt: "2026-02-10 12:10",
-    updatedBy: "IT Admin",
-    updatedAt: "2026-02-10 12:10",
-    deliveryDate: "2026-02-10",
-    expectedReturnDate: "2026-09-10",
-    condition: "Working",
-    status: "Pending Return",
-    specifications: "Cisco router, gigabit ports, enterprise network support",
-    description: "Router delivered for HR department network setup.",
-    remarks: "Return confirmation is pending.",
-  },
-];
+import DeliveryForm from "@/components/deliveries/DeliveryForm";
+import {
+  getAssets,
+  getDelivery,
+  getDepartments,
+  updateDelivery,
+} from "@/lib/apiClient";
+import { getSessionToken, readSession } from "@/lib/authSession";
+import { mapAssetFromApi } from "@/lib/assetMapper";
+import { mapDepartmentFromApi } from "@/lib/departmentMapper";
+import {
+  createDeliveryFormData,
+  mapDeliveryFromApi,
+  mapDeliveryToRequest,
+} from "@/lib/deliveryMapper";
 
 export default function EditDeliveryPage() {
   const params = useParams();
+  const router = useRouter();
   const deliveryId = params.id;
+  const [formData, setFormData] = useState(createDeliveryFormData());
+  const [assets, setAssets] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
 
-  const selectedDelivery =
-    deliveries.find((delivery) => delivery.id === deliveryId) || deliveries[0];
+  const loadDelivery = useCallback(async () => {
+    const token = getSessionToken();
 
-  const [formData, setFormData] = useState({
-    deliveryCode: selectedDelivery.deliveryCode,
-    assetTag: selectedDelivery.assetTag,
-    assetName: selectedDelivery.assetName,
-    deliveredTo: selectedDelivery.deliveredTo,
-    department: selectedDelivery.department,
-    issuedBy: selectedDelivery.issuedBy,
-    location: selectedDelivery.location,
-    accessoriesIncluded: selectedDelivery.accessoriesIncluded,
-    acknowledgementStatus: selectedDelivery.acknowledgementStatus,
-    qrCode: selectedDelivery.qrCode,
-    returnStatus: selectedDelivery.returnStatus,
-    attachmentStatus: selectedDelivery.attachmentStatus,
-    createdBy: selectedDelivery.createdBy,
-    createdAt: selectedDelivery.createdAt,
-    updatedBy: selectedDelivery.updatedBy,
-    updatedAt: selectedDelivery.updatedAt,
-    deliveryDate: selectedDelivery.deliveryDate,
-    expectedReturnDate: selectedDelivery.expectedReturnDate,
-    condition: selectedDelivery.condition,
-    status: selectedDelivery.status,
-    specifications: selectedDelivery.specifications,
-    description: selectedDelivery.description,
-    remarks: selectedDelivery.remarks,
-  });
+    if (!token) {
+      setError("Login session not found. Please login again.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setError("");
+      const [deliveryData, assetData, departmentData] = await Promise.all([
+        getDelivery(deliveryId, token),
+        getAssets(token),
+        getDepartments(token),
+      ]);
+      const mappedDelivery = mapDeliveryFromApi(deliveryData);
+
+      setFormData(createDeliveryFormData(mappedDelivery));
+      setAssets((assetData || []).map(mapAssetFromApi));
+      setDepartments(
+        (departmentData || [])
+          .map(mapDepartmentFromApi)
+          .filter((department) => department.isActive)
+      );
+    } catch (requestError) {
+      setError(requestError.message || "Unable to load delivery.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [deliveryId]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      loadDelivery();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [loadDelivery]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -155,26 +82,41 @@ export default function EditDeliveryPage() {
       ...previousData,
       [name]: value,
     }));
+    setError("");
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    setIsSaving(true);
+    setError("");
 
-    showToast("Delivery saved successfully. Backend will be connected later.");
+    try {
+      await updateDelivery(
+        deliveryId,
+        mapDeliveryToRequest(formData, readSession()?.id || null),
+        getSessionToken()
+      );
+      showToast("Delivery saved successfully.");
+      router.push("/deliveries");
+    } catch (saveError) {
+      setError(saveError.message || "Delivery could not be updated.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
     <LayoutWrapper>
       <PageHeader
         title="Edit Delivery"
-        description="Modify equipment/material delivery details, return date, condition and delivery status."
+        description="Modify asset handover details, receiver name, acknowledgement and delivery status."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <BackButton href="/deliveries" label="Deliveries" />
 
         <Link
-          href={`/deliveries/view/${selectedDelivery.id}`}
+          href={`/deliveries/view/${deliveryId}`}
           prefetch={false}
           className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
         >
@@ -182,379 +124,30 @@ export default function EditDeliveryPage() {
         </Link>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
-      >
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Delivery Code
-            </label>
-            <input
-              type="text"
-              name="deliveryCode"
-              value={formData.deliveryCode}
-              onChange={handleChange}
-              placeholder="DLV-001"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Asset Tag
-            </label>
-            <input
-              type="text"
-              name="assetTag"
-              value={formData.assetTag}
-              onChange={handleChange}
-              placeholder="AST-001"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Asset / Material Name
-            </label>
-            <input
-              type="text"
-              name="assetName"
-              value={formData.assetName}
-              onChange={handleChange}
-              placeholder="Dell Latitude 5420"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Receiver / Employee Name
-            </label>
-            <input
-              type="text"
-              name="deliveredTo"
-              value={formData.deliveredTo}
-              onChange={handleChange}
-              placeholder="Name of person collecting asset"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
-            />
-            <p className="mt-1 text-xs text-gray-500">
-              Asset remains allocated to the department; this name records who
-              collected it.
-            </p>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Department
-            </label>
-            <select
-              name="department"
-              value={formData.department}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
-            >
-              <option value="">Select department</option>
-              <option value="IT Department">IT Department</option>
-              <option value="Accounts">Accounts</option>
-              <option value="Admin">Admin</option>
-              <option value="HR">HR</option>
-              <option value="Sales">Sales</option>
-              <option value="Operations">Operations</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Issued By
-            </label>
-            <select
-              name="issuedBy"
-              value={formData.issuedBy}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
-            >
-              <option value="">Select issuer</option>
-              <option value="IT Admin">IT Admin</option>
-              <option value="IT Support">IT Support</option>
-              <option value="IT Manager">IT Manager</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Location
-            </label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              placeholder="Pune Office - IT Bay"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Delivery Date
-            </label>
-            <input
-              type="date"
-              name="deliveryDate"
-              value={formData.deliveryDate}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Expected Return Date
-            </label>
-            <input
-              type="date"
-              name="expectedReturnDate"
-              value={formData.expectedReturnDate}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Asset Condition
-            </label>
-            <select
-              name="condition"
-              value={formData.condition}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            >
-              <option value="New">New</option>
-              <option value="Good">Good</option>
-              <option value="Working">Working</option>
-              <option value="Needs Repair">Needs Repair</option>
-              <option value="Damaged">Damaged</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Delivery Status
-            </label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            >
-              <option value="Delivered">Delivered</option>
-              <option value="Returned">Returned</option>
-              <option value="Pending Return">Pending Return</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Acknowledgement Status
-            </label>
-            <select
-              name="acknowledgementStatus"
-              value={formData.acknowledgementStatus}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            >
-              <option value="Pending">Pending</option>
-              <option value="Acknowledged">Acknowledged</option>
-              <option value="Returned">Returned</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Return Status
-            </label>
-            <select
-              name="returnStatus"
-              value={formData.returnStatus}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            >
-              <option value="Not Due">Not Due</option>
-              <option value="Pending Return">Pending Return</option>
-              <option value="Returned">Returned</option>
-              <option value="Overdue">Overdue</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              QR Code Reference
-            </label>
-            <input
-              type="text"
-              name="qrCode"
-              value={formData.qrCode}
-              onChange={handleChange}
-              placeholder="QR-DLV-001"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Accessories Included
-            </label>
-            <textarea
-              name="accessoriesIncluded"
-              value={formData.accessoriesIncluded}
-              onChange={handleChange}
-              rows="3"
-              placeholder="Example: charger, laptop bag, mouse, keyboard, power cable..."
-              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Attachment Status
-            </label>
-            <select
-              name="attachmentStatus"
-              value={formData.attachmentStatus}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            >
-              <option value="Pending">Pending</option>
-              <option value="Uploaded">Uploaded</option>
-              <option value="Not Required">Not Required</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Delivery Documents
-            </label>
-            <input
-              type="file"
-              multiple
-              className="w-full rounded-xl border border-gray-300 px-4 py-2 text-sm outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white focus:border-gray-900"
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Specifications (optional)
-            </label>
-            <textarea
-              name="specifications"
-              value={formData.specifications}
-              onChange={handleChange}
-              rows="3"
-              placeholder="Example: Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro..."
-              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Description (optional)
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="3"
-              placeholder="Add extra delivery details, included accessories or usage purpose..."
-              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Remarks
-            </label>
-            <textarea
-              name="remarks"
-              value={formData.remarks}
-              onChange={handleChange}
-              rows="4"
-              placeholder="Delivery notes, handover remarks or return comments..."
-              className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-            />
-          </div>
-        </div>
-
-        <section className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
-          <h2 className="text-sm font-bold text-gray-900">System Tracking</h2>
-          <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-4">
-            <div>
-              <p className="text-xs font-medium uppercase text-gray-500">
-                Created By
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-900">
-                {formData.createdBy}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase text-gray-500">
-                Created At
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-900">
-                {formData.createdAt}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase text-gray-500">
-                Updated By
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-900">
-                {formData.updatedBy}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase text-gray-500">
-                Updated At
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-900">
-                {formData.updatedAt}
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <Link
-            href="/deliveries"
-            className="inline-flex justify-center rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-          >
-            Cancel
-          </Link>
-
-          <button
-            type="submit"
-            className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
-          >
-            Save Delivery
-          </button>
-        </div>
-      </form>
+      {isLoading ? (
+        <LoadingState
+          title="Loading delivery"
+          description="Fetching delivery details from backend."
+        />
+      ) : error && !formData.deliveryCode ? (
+        <ErrorState
+          title="Unable to load delivery"
+          description={error}
+          actionLabel="Retry"
+          onAction={loadDelivery}
+        />
+      ) : (
+        <DeliveryForm
+          formData={formData}
+          assets={assets}
+          departments={departments}
+          error={error}
+          isSaving={isSaving}
+          submitLabel="Save Changes"
+          onSubmit={handleSubmit}
+          onChange={handleChange}
+        />
+      )}
     </LayoutWrapper>
   );
 }
-
-
-
-
