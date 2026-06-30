@@ -48,6 +48,51 @@ function defaultMetrics(records, metrics) {
   ];
 }
 
+function ReportHighlights({ items }) {
+  return (
+    <section className="report-print-hidden mb-6 border border-gray-300 bg-white">
+      <div className="border-b border-gray-300 bg-gray-50 px-4 py-3">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-gray-700">
+          Report Highlights
+        </h3>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
+        {items.map((metric) => (
+          <div
+            key={metric.label}
+            className="border-b border-r border-gray-200 px-4 py-3 last:border-r-0 xl:border-b-0"
+          >
+            <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
+              {metric.label}
+            </p>
+            <p className={`mt-2 text-2xl font-bold ${metric.tone}`}>
+              {metric.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ReportOperationalNote({ title }) {
+  return (
+    <section className="report-print-hidden mb-6 border border-gray-300 bg-white">
+      <div className="grid grid-cols-1 text-sm md:grid-cols-[220px_1fr]">
+        <div className="border-b border-gray-200 bg-gray-50 px-4 py-3 font-bold uppercase tracking-wide text-gray-500 md:border-b-0 md:border-r">
+          {title}
+        </div>
+        <div className="px-4 py-3 leading-6 text-gray-700">
+          Live MySQL report data is connected through Phase 6 APIs. CSV,
+          Excel-style spreadsheet download and print/PDF tracking are available
+          in Phase 7. Physical PDF rendering, scheduled exports and backup
+          automation continue in later Phase 7 substeps.
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function BackendReportPage({
   title,
   description,
@@ -97,31 +142,6 @@ export default function BackendReportPage({
     [records, metrics]
   );
 
-  if (isLoading) {
-    return (
-      <LayoutWrapper>
-        <PageHeader title={title} description={description} />
-        <LoadingState
-          title="Loading report"
-          description="Fetching real-time report data from backend."
-        />
-      </LayoutWrapper>
-    );
-  }
-
-  if (error) {
-    return (
-      <LayoutWrapper>
-        <PageHeader title={title} description={description} />
-        <ErrorState
-          title="Report data unavailable"
-          description={error}
-          onRetry={loadReport}
-        />
-      </LayoutWrapper>
-    );
-  }
-
   return (
     <ReportPageShell
       title={title}
@@ -131,75 +151,67 @@ export default function BackendReportPage({
       sourceLabel="MySQL live report API"
       backendStatus="Connected"
     >
-      <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {metricCards.map((metric) => (
-          <div
-            key={metric.label}
-            className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-          >
-            <p className="text-sm text-gray-500">{metric.label}</p>
-            <h2 className={`mt-2 text-3xl font-bold ${metric.tone}`}>
-              {metric.value}
-            </h2>
-          </div>
-        ))}
-      </section>
-
-      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h3 className="text-lg font-bold text-gray-900">{summaryTitle}</h3>
-        <p className="mt-3 text-sm leading-6 text-gray-600">
-          This report is connected to backend MySQL records through the Phase 6
-          report API. Export buttons currently use browser-side output; PDF,
-          Excel and backup automation remain planned for Phase 7.
-        </p>
-      </section>
-
-      {records.length === 0 ? (
+      {isLoading ? (
+        <LoadingState
+          title="Loading report"
+          description="Fetching real-time report data from backend."
+        />
+      ) : error ? (
+        <ErrorState
+          title="Report data unavailable"
+          description={error}
+          onRetry={loadReport}
+        />
+      ) : records.length === 0 ? (
         <EmptyState
           title="No report records found"
           description="The API is connected, but matching records are not available yet."
         />
       ) : (
-        <TableWrapper>
-          <table className="min-w-[1400px] w-full text-sm">
-            <thead className="bg-gray-50 text-left">
-              <tr className="border-b border-gray-200">
-                {columns.map((column) => (
-                  <th
-                    key={column.key}
-                    className="whitespace-nowrap px-4 py-3 font-semibold text-gray-700"
-                  >
-                    {column.label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              {records.map((record, index) => (
-                <tr
-                  key={record.id || `${reportType}-${index}`}
-                  className="border-b border-gray-100 hover:bg-gray-50"
-                >
+        <>
+          <ReportHighlights items={metricCards} />
+          <ReportOperationalNote title={summaryTitle} />
+          <TableWrapper>
+            <table className="min-w-[1400px] w-full text-sm">
+              <thead className="bg-gray-50 text-left">
+                <tr className="border-b border-gray-200">
                   {columns.map((column) => (
-                    <td
+                    <th
                       key={column.key}
-                      className="whitespace-nowrap px-4 py-4 text-gray-700"
+                      className="whitespace-nowrap border-r border-gray-200 px-4 py-3 font-semibold text-gray-700 last:border-r-0"
                     >
-                      {column.status ? (
-                        <StatusBadge
-                          status={formatValue(record[column.key], column)}
-                        />
-                      ) : (
-                        formatValue(record[column.key], column)
-                      )}
-                    </td>
+                      {column.label}
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableWrapper>
+              </thead>
+
+              <tbody>
+                {records.map((record, index) => (
+                  <tr
+                    key={record.id || `${reportType}-${index}`}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
+                    {columns.map((column) => (
+                      <td
+                        key={column.key}
+                        className="whitespace-nowrap border-r border-gray-100 px-4 py-4 text-gray-700 last:border-r-0"
+                      >
+                        {column.status ? (
+                          <StatusBadge
+                            status={formatValue(record[column.key], column)}
+                          />
+                        ) : (
+                          formatValue(record[column.key], column)
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableWrapper>
+        </>
       )}
     </ReportPageShell>
   );

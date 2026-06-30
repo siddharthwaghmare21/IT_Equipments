@@ -1,40 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import { ErrorState, LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
+import { createImportJob, getImportJobs } from "@/lib/apiClient";
+import { getSessionToken } from "@/lib/authSession";
 
 const importModules = [
   {
     title: "Assets",
     format: "assetTag, name, category, serialNumber, warrantyExpiry",
-    status: "Phase 7 Pending",
+    status: "Tracking Connected",
   },
   {
     title: "Vendors",
     format: "vendorName, contactPerson, gstNumber, paymentTerms",
-    status: "Phase 7 Pending",
+    status: "Tracking Connected",
   },
   {
     title: "Purchases",
     format: "workOrderNumber, vendorName, invoiceNumber, purchaseDate, amount",
-    status: "Phase 7 Pending",
+    status: "Tracking Connected",
   },
   {
     title: "Transfers",
     format: "transferCode, assetTag, fromDepartment, toDepartment, newReceiver, status",
-    status: "Phase 7 Pending",
+    status: "Tracking Connected",
   },
   {
     title: "Returns",
     format: "returnCode, assetTag, returnedBy, returnDate, condition, status",
-    status: "Phase 7 Pending",
+    status: "Tracking Connected",
   },
   {
     title: "Maintenance",
     format: "maintenanceCode, assetTag, issueType, vendorName, priority, status",
-    status: "Phase 7 Pending",
+    status: "Tracking Connected",
   },
 ];
 
@@ -65,11 +68,70 @@ const previewRows = [
 export default function ImportDataPage() {
   const [selectedModule, setSelectedModule] = useState("Assets");
   const [showPreview, setShowPreview] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [importJobs, setImportJobs] = useState([]);
+  const [isLoadingJobs, setIsLoadingJobs] = useState(true);
+  const [jobsError, setJobsError] = useState("");
 
-  function handleValidate(moduleName) {
+  const loadImportJobs = useCallback(async () => {
+    const token = getSessionToken();
+
+    if (!token) {
+      setJobsError("Login session expired. Please login again.");
+      setIsLoadingJobs(false);
+      return;
+    }
+
+    setIsLoadingJobs(true);
+    setJobsError("");
+
+    try {
+      setImportJobs(await getImportJobs(token, 10));
+    } catch (error) {
+      setJobsError(error.message || "Import jobs could not be loaded.");
+    } finally {
+      setIsLoadingJobs(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadImportJobs();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [loadImportJobs]);
+
+  async function handleValidate(moduleName) {
     setSelectedModule(moduleName);
     setShowPreview(true);
-    showToast(`${moduleName} preview opened. Backend import validation is planned in Phase 7.`);
+    const token = getSessionToken();
+
+    if (!token) {
+      showToast("Login session expired. Import tracking was not saved.", "warning");
+      return;
+    }
+
+    try {
+      const fileName = selectedFile?.name || `${moduleName.toLowerCase()}-template.csv`;
+      const fileSize = selectedFile?.size || 0;
+      await createImportJob(
+        {
+          importModule: moduleName,
+          sourceFileName: fileName,
+          sourceFileSizeBytes: fileSize,
+          totalRows: previewRows.length,
+          validRows: previewRows.filter((row) => row.status === "Valid").length,
+          invalidRows: previewRows.filter((row) => row.status !== "Valid").length,
+          remarks: "Frontend preview validation recorded. Actual database import remains controlled.",
+        },
+        token
+      );
+      showToast(`${moduleName} import validation tracked.`);
+      loadImportJobs();
+    } catch (error) {
+      showToast(error.message || "Import tracking could not be saved.", "warning");
+    }
   }
 
   return (
@@ -80,9 +142,9 @@ export default function ImportDataPage() {
       />
 
       <section className="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">
-        Import job tracking tables exist in the database, but file parsing,
-        template download and database upload APIs are planned for Phase 7.
-        Until then, this page only confirms the workflow opens correctly.
+        Import job tracking is connected to backend APIs. File parsing,
+        template download and direct database import will be added in the next
+        Phase 7 substep after tracking is verified.
       </section>
 
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -113,8 +175,9 @@ export default function ImportDataPage() {
               <input
                 type="file"
                 accept=".csv,.xlsx,.xls"
-                onChange={() => {
+                onChange={(event) => {
                   setSelectedModule(item.title);
+                  setSelectedFile(event.target.files?.[0] || null);
                   setShowPreview(true);
                 }}
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white focus:border-gray-900"
@@ -212,6 +275,84 @@ export default function ImportDataPage() {
           </div>
         </section>
       )}
+
+      <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">
+              Recent Import Jobs
+            </h2>
+            <p className="mt-1 text-sm text-gray-600">
+              Backend import tracking history from MySQL.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={loadImportJobs}
+            className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+          >
+            Refresh
+          </button>
+        </div>
+
+        <div className="mt-4">
+          {isLoadingJobs ? (
+            <LoadingState
+              title="Loading import jobs"
+              description="Fetching recent import tracking records."
+            />
+          ) : jobsError ? (
+            <ErrorState
+              title="Import jobs unavailable"
+              description={jobsError}
+              onRetry={loadImportJobs}
+            />
+          ) : importJobs.length === 0 ? (
+            <p className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600">
+              No import tracking jobs are available yet.
+            </p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead className="bg-gray-50 text-left">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold text-gray-700">Module</th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">File</th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">Rows</th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">Valid</th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">Invalid</th>
+                    <th className="px-4 py-3 font-semibold text-gray-700">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {importJobs.map((job) => (
+                    <tr key={job.importJobId} className="border-b border-gray-100">
+                      <td className="px-4 py-3 font-semibold text-gray-900">
+                        {job.importModule}
+                      </td>
+                      <td className="px-4 py-3 text-gray-700">
+                        {job.sourceFileName || "-"}
+                      </td>
+                      <td className="px-4 py-3 text-gray-700">
+                        {job.totalRows ?? "-"}
+                      </td>
+                      <td className="px-4 py-3 text-gray-700">
+                        {job.validRows ?? "-"}
+                      </td>
+                      <td className="px-4 py-3 text-gray-700">
+                        {job.invalidRows ?? "-"}
+                      </td>
+                      <td className="px-4 py-3 text-gray-700">
+                        {job.importStatus}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </section>
     </LayoutWrapper>
   );
 }

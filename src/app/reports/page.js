@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import { getExportJobs } from "@/lib/apiClient";
+import { getSessionToken } from "@/lib/authSession";
 
 const reportCards = [
   {
@@ -72,33 +74,39 @@ const reportCards = [
   },
 ];
 
-const recentExports = [
-  {
-    name: "Asset Summary CSV",
-    module: "Assets",
-    date: "2026-06-20",
-    status: "Downloaded",
-  },
-  {
-    name: "Warranty Review",
-    module: "Warranty",
-    date: "2026-06-18",
-    status: "Preview",
-  },
-  {
-    name: "Maintenance Cost",
-    module: "Maintenance",
-    date: "2026-06-15",
-    status: "Connected",
-  },
-];
-
 export default function ReportsPage() {
   const [search, setSearch] = useState("");
   const [activeGroup, setActiveGroup] = useState("All");
   const [reportView, setReportView] = useState("Summary");
   const [reportTemplate, setReportTemplate] = useState("Executive");
   const [printPreviewMode, setPrintPreviewMode] = useState(false);
+  const [recentExports, setRecentExports] = useState([]);
+  const [exportHistoryStatus, setExportHistoryStatus] = useState("Loading");
+
+  const loadRecentExports = useCallback(async () => {
+    const token = getSessionToken();
+
+    if (!token) {
+      setExportHistoryStatus("Login Required");
+      return;
+    }
+
+    try {
+      const exportJobs = await getExportJobs(token, 5);
+      setRecentExports(exportJobs || []);
+      setExportHistoryStatus("Connected");
+    } catch {
+      setExportHistoryStatus("Unavailable");
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadRecentExports();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [loadRecentExports]);
 
   const filteredReports = useMemo(() => {
     return reportCards.filter((report) => {
@@ -271,23 +279,33 @@ export default function ReportsPage() {
 
       <section className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
-          <h2 className="text-lg font-bold text-gray-900">Recent Exports</h2>
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-bold text-gray-900">Recent Exports</h2>
+            <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700">
+              {exportHistoryStatus}
+            </span>
+          </div>
           <div className="mt-4 divide-y divide-gray-100">
+            {recentExports.length === 0 && (
+              <p className="py-3 text-sm text-gray-600">
+                No backend export tracking jobs are available yet.
+              </p>
+            )}
             {recentExports.map((item) => (
               <div
-                key={`${item.name}-${item.date}`}
+                key={item.exportJobId}
                 className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div>
                   <p className="text-sm font-semibold text-gray-900">
-                    {item.name}
+                    {item.exportModule}
                   </p>
                   <p className="mt-1 text-xs text-gray-500">
-                    {item.module} | {item.date}
+                    {item.exportType} | {item.rowCount ?? 0} rows
                   </p>
                 </div>
                 <span className="w-fit rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700">
-                  {item.status}
+                  {item.exportStatus}
                 </span>
               </div>
             ))}

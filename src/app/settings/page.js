@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import { ErrorState, LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
-import { readSession } from "@/lib/authSession";
+import { createBackupJob, getBackupJobs } from "@/lib/apiClient";
+import { getSessionToken, readSession } from "@/lib/authSession";
 
 const REPORT_BRANDING_KEY = "itReportBranding";
 const settingsTabs = [
@@ -19,6 +21,9 @@ const settingsTabs = [
 export default function SettingsPage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeSettingsTab, setActiveSettingsTab] = useState("General");
+  const [backupJobs, setBackupJobs] = useState([]);
+  const [isLoadingBackupJobs, setIsLoadingBackupJobs] = useState(true);
+  const [backupJobsError, setBackupJobsError] = useState("");
   const [settings, setSettings] = useState({
     companyName: "IT Assets Management",
     companyEmail: "admin@company.com",
@@ -64,6 +69,27 @@ export default function SettingsPage() {
     defaultReportView: "Summary",
   });
 
+  const loadBackupJobs = useCallback(async () => {
+    const token = getSessionToken();
+
+    if (!token) {
+      setBackupJobsError("Login session expired. Please login again.");
+      setIsLoadingBackupJobs(false);
+      return;
+    }
+
+    setIsLoadingBackupJobs(true);
+    setBackupJobsError("");
+
+    try {
+      setBackupJobs(await getBackupJobs(token, 10));
+    } catch (error) {
+      setBackupJobsError(error.message || "Backup jobs could not be loaded.");
+    } finally {
+      setIsLoadingBackupJobs(false);
+    }
+  }, []);
+
   useEffect(() => {
     const savedSession = readSession();
     const savedBranding = JSON.parse(
@@ -85,6 +111,14 @@ export default function SettingsPage() {
       }));
     }, 0);
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadBackupJobs();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [loadBackupJobs]);
 
   const canUseBackup = currentUser?.role !== "Viewer";
 
@@ -114,6 +148,30 @@ export default function SettingsPage() {
     );
 
     showToast("Report branding saved locally. Backend settings storage is planned later.");
+  }
+
+  async function handleCreateBackupJob() {
+    const token = getSessionToken();
+
+    if (!token) {
+      showToast("Login session expired. Backup tracking was not saved.", "warning");
+      return;
+    }
+
+    try {
+      await createBackupJob(
+        {
+          backupType: "Manual",
+          backupScope: "Full Database",
+          remarks: `Manual backup tracking requested from settings. Frequency: ${settings.backupFrequency}.`,
+        },
+        token
+      );
+      showToast("Backup tracking job created.");
+      loadBackupJobs();
+    } catch (error) {
+      showToast(error.message || "Backup tracking job could not be created.", "warning");
+    }
   }
 
   function openSettingsSection(tab) {
@@ -304,6 +362,91 @@ export default function SettingsPage() {
                 {item}
               </p>
             ))}
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-yellow-200 bg-white/80 p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h3 className="text-base font-bold text-yellow-950">
+                  Backup Job Tracking
+                </h3>
+                <p className="mt-1 text-sm leading-6 text-yellow-800">
+                  Records backup requests in MySQL. Physical database dump and
+                  restore execution remain in the next Phase 7 substep.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleCreateBackupJob}
+                disabled={!canUseBackup}
+                className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300"
+              >
+                Create Backup Job
+              </button>
+            </div>
+
+            <div className="mt-4">
+              {isLoadingBackupJobs ? (
+                <LoadingState
+                  title="Loading backup jobs"
+                  description="Fetching backup tracking records."
+                />
+              ) : backupJobsError ? (
+                <ErrorState
+                  title="Backup jobs unavailable"
+                  description={backupJobsError}
+                  onRetry={loadBackupJobs}
+                />
+              ) : backupJobs.length === 0 ? (
+                <p className="rounded-xl border border-yellow-100 bg-yellow-50 p-3 text-sm text-yellow-900">
+                  No backup tracking jobs are available yet.
+                </p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead className="bg-yellow-50 text-left">
+                      <tr>
+                        <th className="px-4 py-3 font-semibold text-yellow-900">
+                          Type
+                        </th>
+                        <th className="px-4 py-3 font-semibold text-yellow-900">
+                          Scope
+                        </th>
+                        <th className="px-4 py-3 font-semibold text-yellow-900">
+                          Status
+                        </th>
+                        <th className="px-4 py-3 font-semibold text-yellow-900">
+                          Created
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {backupJobs.map((job) => (
+                        <tr
+                          key={job.backupJobId}
+                          className="border-b border-yellow-100"
+                        >
+                          <td className="px-4 py-3 font-semibold text-gray-900">
+                            {job.backupType}
+                          </td>
+                          <td className="px-4 py-3 text-gray-700">
+                            {job.backupScope}
+                          </td>
+                          <td className="px-4 py-3 text-gray-700">
+                            {job.backupStatus}
+                          </td>
+                          <td className="px-4 py-3 text-gray-700">
+                            {job.createdAt
+                              ? new Date(job.createdAt).toLocaleString("en-IN")
+                              : "-"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         </section>
 

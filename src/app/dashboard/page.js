@@ -715,9 +715,9 @@ export default function DashboardPage() {
           <h2 className="text-lg font-bold text-gray-900">Recent Activity</h2>
 
           <div className="mt-4 space-y-3">
-            {recentActivities.map((activity) => (
+            {recentActivities.map((activity, index) => (
               <div
-                key={activity.title}
+                key={`${activity.title}-${activity.meta}-${index}`}
                 className="rounded-xl border border-gray-100 bg-gray-50 p-3"
               >
                 <p className="text-sm font-semibold text-gray-800">

@@ -340,6 +340,48 @@ export function getReportData(reportType, token) {
   });
 }
 
+export function getExportJobs(token, limit = 100) {
+  return apiRequest(`/api/export-jobs?limit=${encodeURIComponent(limit)}`, {
+    token,
+  });
+}
+
+export function createExportJob(exportJob, token) {
+  return apiRequest("/api/export-jobs", {
+    method: "POST",
+    token,
+    body: exportJob,
+  });
+}
+
+export function getImportJobs(token, limit = 100) {
+  return apiRequest(`/api/import-jobs?limit=${encodeURIComponent(limit)}`, {
+    token,
+  });
+}
+
+export function createImportJob(importJob, token) {
+  return apiRequest("/api/import-jobs", {
+    method: "POST",
+    token,
+    body: importJob,
+  });
+}
+
+export function getBackupJobs(token, limit = 100) {
+  return apiRequest(`/api/backup-jobs?limit=${encodeURIComponent(limit)}`, {
+    token,
+  });
+}
+
+export function createBackupJob(backupJob, token) {
+  return apiRequest("/api/backup-jobs", {
+    method: "POST",
+    token,
+    body: backupJob,
+  });
+}
+
 export function approveUserAccess(approvalRequestId, decision, token) {
   return apiRequest(`/api/approvals/user-access/${approvalRequestId}/approve`, {
     method: "POST",
