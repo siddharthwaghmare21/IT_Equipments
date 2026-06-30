@@ -1,13 +1,32 @@
 using ITEquipment.Api.Data;
 using ITEquipment.Api.Endpoints;
 using ITEquipment.Api.Middleware;
+using ITEquipment.Api.Models;
 using ITEquipment.Api.Security;
 using ITEquipment.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+if (builder.Environment.IsDevelopment())
+{
+    var dataProtectionPath = Path.Combine(
+        Path.GetTempPath(),
+        "ITEquipment.Api",
+        "DataProtectionKeys");
+    Directory.CreateDirectory(dataProtectionPath);
+    builder.Services
+        .AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(dataProtectionPath));
+}
 
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<MySqlConnectionFactory>();
@@ -28,6 +47,8 @@ builder.Services.AddScoped<ReportRepository>();
 builder.Services.AddScoped<ExportImportBackupRepository>();
 builder.Services.AddSingleton<PasswordHashService>();
 builder.Services.AddSingleton<OtpService>();
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.SectionName));
+builder.Services.AddSingleton<EmailSenderService>();
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 builder.Services.AddSingleton<JwtTokenService>();
 var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
@@ -104,6 +125,57 @@ app.MapGet("/api/health", () =>
     return Results.Ok(response);
 })
 .WithName("HealthCheck");
+
+app.MapGet("/api/backups/download", async (
+    string? scope,
+    System.Security.Claims.ClaimsPrincipal user,
+    ExportImportBackupRepository repository,
+    IHostEnvironment environment,
+    CancellationToken cancellationToken) =>
+{
+    var backupScope = string.IsNullOrWhiteSpace(scope) ? "Full Database" : scope.Trim();
+    var validScopes = new[] { "Full Database", "Schema Only", "Data Only" };
+
+    if (!validScopes.Contains(backupScope, StringComparer.OrdinalIgnoreCase))
+    {
+        return Results.BadRequest(new { message = "Backup scope must be Full Database, Schema Only or Data Only." });
+    }
+
+    try
+    {
+        var normalizedScope = validScopes.First(validScope =>
+            validScope.Equals(backupScope, StringComparison.OrdinalIgnoreCase));
+        var snapshot = await repository.CreateBackupSnapshotAsync(
+            normalizedScope,
+            user.Identity?.Name ?? "Authenticated User",
+            cancellationToken);
+        var json = JsonSerializer.Serialize(
+            snapshot,
+            new JsonSerializerOptions { WriteIndented = true });
+        var bytes = Encoding.UTF8.GetBytes(json);
+        var timestamp = DateTimeOffset.UtcNow.ToString("yyyyMMdd-HHmmss");
+
+        return Results.File(
+            bytes,
+            "application/json",
+            $"it-equipment-backup-{timestamp}.json");
+    }
+    catch (InvalidOperationException exception)
+    {
+        return Results.Problem(exception.Message, statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+    catch (MySqlConnector.MySqlException exception)
+    {
+        var detail = environment.IsDevelopment()
+            ? $"Database connection failed: {exception.Message}"
+            : "Database connection failed.";
+
+        return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+})
+.RequireAuthorization(AppAuthorizationPolicies.RequireBackupAccess)
+.WithTags("Backup")
+.WithName("DownloadBackupSnapshot");
 
 app.MapRoleEndpoints();
 app.MapDepartmentEndpoints();

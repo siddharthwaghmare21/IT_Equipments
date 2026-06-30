@@ -212,6 +212,7 @@ public static class AuthEndpoints
             OtpRequest request,
             AuthRepository repository,
             OtpService otpService,
+            EmailSenderService emailSenderService,
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
@@ -228,11 +229,29 @@ public static class AuthEndpoints
             try
             {
                 var response = await repository.CreateEmailOtpAsync(request.Email, purpose, otpHash, cancellationToken);
-                var responseWithDevOtp = environment.IsDevelopment()
-                    ? response with { DevelopmentOtpCode = otpCode }
-                    : response;
+                var emailResult = await emailSenderService.SendOtpAsync(
+                    response.Email,
+                    response.Purpose,
+                    otpCode,
+                    response.ExpiresAt,
+                    cancellationToken);
 
-                return Results.Created($"/api/auth/email-otp/{response.OtpRequestId}", responseWithDevOtp);
+                if (!emailResult.Sent && !environment.IsDevelopment())
+                {
+                    return Results.Problem(
+                        emailResult.Message,
+                        statusCode: StatusCodes.Status503ServiceUnavailable);
+                }
+
+                var responseWithDeliveryStatus = response with
+                {
+                    Message = emailResult.Sent
+                        ? "OTP sent to registered email."
+                        : "SMTP is not configured. Development OTP is available in response.",
+                    DevelopmentOtpCode = environment.IsDevelopment() ? otpCode : null
+                };
+
+                return Results.Created($"/api/auth/email-otp/{response.OtpRequestId}", responseWithDeliveryStatus);
             }
             catch (InvalidOperationException exception)
             {

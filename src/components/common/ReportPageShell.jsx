@@ -215,8 +215,8 @@ export default function ReportPageShell({
             <span className="font-bold text-gray-900">
               {selectedPrintFormat.label}:
             </span>{" "}
-            {selectedPrintFormat.description}. Backend PDF export will use this
-            same format later.
+            {selectedPrintFormat.description}. Browser print/PDF export uses
+            this same report format.
           </div>
         </div>
 

@@ -52,10 +52,65 @@ export async function apiRequest(path, options = {}) {
   return data;
 }
 
+export async function apiFileRequest(path, options = {}) {
+  const token = options.token;
+  const headers = {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...options.headers,
+  };
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers,
+  });
+
+  if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("itAssetUserSession");
+      if (!["/login", "/admin-setup", "/admin-request-access"].includes(window.location.pathname)) {
+        window.location.assign("/login");
+      }
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    const errorData = contentType.includes("application/json")
+      ? await response.json()
+      : null;
+
+    throw new ApiError(
+      errorData?.message || errorData?.title || response.statusText || "Download failed.",
+      response.status,
+      errorData
+    );
+  }
+
+  return {
+    blob: await response.blob(),
+    fileName:
+      response.headers
+        .get("content-disposition")
+        ?.match(/filename="?([^";]+)"?/i)?.[1] || "download.json",
+  };
+}
+
 export function loginUser({ email, password }) {
   return apiRequest("/api/auth/login", {
     method: "POST",
     body: { email, password },
+  });
+}
+
+export function requestEmailOtp({ email, purpose }) {
+  return apiRequest("/api/auth/email-otp/request", {
+    method: "POST",
+    body: { email, purpose },
+  });
+}
+
+export function verifyEmailOtp({ email, purpose, otpCode }) {
+  return apiRequest("/api/auth/email-otp/verify", {
+    method: "POST",
+    body: { email, purpose, otpCode },
   });
 }
 
@@ -334,6 +389,10 @@ export function getPendingUserAccessApprovals(token) {
   return apiRequest("/api/approvals/user-access/pending", { token });
 }
 
+export function getEmailStatus(token) {
+  return apiRequest("/api/security/email-status", { token });
+}
+
 export function getReportData(reportType, token) {
   return apiRequest(`/api/reports/${encodeURIComponent(reportType)}`, {
     token,
@@ -380,6 +439,13 @@ export function createBackupJob(backupJob, token) {
     token,
     body: backupJob,
   });
+}
+
+export function downloadBackupSnapshot(scope, token) {
+  return apiFileRequest(
+    `/api/backups/download?scope=${encodeURIComponent(scope)}`,
+    { token }
+  );
 }
 
 export function approveUserAccess(approvalRequestId, decision, token) {

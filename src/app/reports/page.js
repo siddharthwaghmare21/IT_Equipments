@@ -140,18 +140,18 @@ export default function ReportsPage() {
   const exportQueue = [
     {
       name: "Monthly Asset Summary",
-      format: "PDF",
-      status: "Phase 7 Pending",
+      format: "Print/PDF",
+      status: "Tracking Active",
     },
     {
       name: "Warranty Review",
       format: "Excel",
-      status: "Phase 7 Pending",
+      status: "Download Active",
     },
     {
       name: "Maintenance Risk Pack",
-      format: "PDF",
-      status: "Phase 7 Pending",
+      format: "CSV",
+      status: "Download Active",
     },
   ];
   const savedReportViews = [
@@ -174,7 +174,7 @@ export default function ReportsPage() {
       frequency: "Weekly",
       format: "PDF",
       recipients: "IT Admins",
-      status: "Phase 7 Pending",
+      status: "SMTP Phase Pending",
     },
     {
       name: "Monthly Warranty Review",
@@ -198,7 +198,7 @@ export default function ReportsPage() {
   ];
   const cleanupChecklist = [
     "Report APIs connected",
-    "Connect PDF and Excel export APIs",
+    "CSV, Excel and print/PDF tracking connected",
     "Bind report branding to database settings",
     "Backend report responses connected",
   ];
@@ -250,8 +250,8 @@ export default function ReportsPage() {
           </div>
         </div>
         <p className="mt-3 text-sm text-gray-600">
-          Selected template: {reportTemplate}. Backend phase will connect this
-          template choice to actual PDF/Excel generation.
+          Selected template: {reportTemplate}. Current export uses CSV, Excel
+          spreadsheet and browser print/PDF with backend tracking.
         </p>
       </section>
 
@@ -314,11 +314,12 @@ export default function ReportsPage() {
 
         <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
           <h2 className="text-lg font-bold text-yellow-900">
-            Backend Export Queue
+            Export Status
           </h2>
           <p className="mt-2 text-sm leading-6 text-yellow-800">
-            PDF export, Excel export, scheduled reports and email summary will
-            be connected after backend APIs and database are ready.
+            CSV, Excel-style spreadsheet and print/PDF exports are available
+            with backend tracking. Scheduled email summaries continue in the
+            SMTP phase.
           </p>
         </div>
       </section>
@@ -333,8 +334,9 @@ export default function ReportsPage() {
               Prepare filters before backend export jobs
             </h2>
             <p className="mt-1 max-w-3xl text-sm text-gray-600">
-              These controls are frontend-ready. Backend integration will use
-              the same choices for PDF, Excel and scheduled report generation.
+              These controls are frontend-ready for report filtering. Export
+              tracking is connected; scheduled delivery will use the same
+              choices after SMTP is configured.
             </p>
           </div>
 
@@ -408,14 +410,18 @@ export default function ReportsPage() {
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
-          {["PDF Export", "Excel Export", "Scheduled Email"].map((item) => (
+          {[
+            ["Print/PDF Export", "Active with browser print"],
+            ["Excel Export", "Active as spreadsheet download"],
+            ["Scheduled Email", "SMTP phase pending"],
+          ].map(([item, status]) => (
             <div
               key={item}
               className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"
             >
               <p className="text-sm font-semibold text-gray-900">{item}</p>
               <p className="mt-1 text-xs text-gray-500">
-                Phase 7 connection pending
+                {status}
               </p>
             </div>
           ))}
@@ -566,8 +572,8 @@ export default function ReportsPage() {
         <p className="mt-2 text-sm leading-6 text-gray-600">
           Report pages are connected to Phase 6 backend report APIs for asset,
           purchase, delivery, transfer, return, warranty, maintenance and
-          damaged asset records. PDF, Excel and scheduled exports remain in
-          Phase 7.
+          damaged asset records. CSV, Excel and print/PDF tracking are active;
+          scheduled email delivery remains in the SMTP phase.
         </p>
       </section>
       </div>

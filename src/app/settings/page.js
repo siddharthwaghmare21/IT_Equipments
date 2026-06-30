@@ -5,7 +5,12 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import { ErrorState, LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
-import { createBackupJob, getBackupJobs } from "@/lib/apiClient";
+import {
+  createBackupJob,
+  downloadBackupSnapshot,
+  getBackupJobs,
+  getEmailStatus,
+} from "@/lib/apiClient";
 import { getSessionToken, readSession } from "@/lib/authSession";
 
 const REPORT_BRANDING_KEY = "itReportBranding";
@@ -24,6 +29,10 @@ export default function SettingsPage() {
   const [backupJobs, setBackupJobs] = useState([]);
   const [isLoadingBackupJobs, setIsLoadingBackupJobs] = useState(true);
   const [backupJobsError, setBackupJobsError] = useState("");
+  const [emailStatus, setEmailStatus] = useState({
+    isConfigured: false,
+    message: "Checking SMTP email status.",
+  });
   const [settings, setSettings] = useState({
     companyName: "IT Assets Management",
     companyEmail: "admin@company.com",
@@ -50,8 +59,8 @@ export default function SettingsPage() {
 
     csvExport: true,
     printReport: true,
-    pdfExport: false,
-    excelExport: false,
+    pdfExport: true,
+    excelExport: true,
 
     loginSecurity: true,
     roleBasedAccess: true,
@@ -59,6 +68,7 @@ export default function SettingsPage() {
     activityLogs: true,
     deleteConfirmation: true,
     dataBackup: false,
+    backupScope: "Full Database",
     backupFrequency: "Weekly",
     auditRetention: "365",
     assetTagPrefix: "IT",
@@ -90,6 +100,27 @@ export default function SettingsPage() {
     }
   }, []);
 
+  const loadEmailStatus = useCallback(async () => {
+    const token = getSessionToken();
+
+    if (!token) {
+      setEmailStatus({
+        isConfigured: false,
+        message: "Login session required to check SMTP status.",
+      });
+      return;
+    }
+
+    try {
+      setEmailStatus(await getEmailStatus(token));
+    } catch (error) {
+      setEmailStatus({
+        isConfigured: false,
+        message: error.message || "SMTP status could not be loaded.",
+      });
+    }
+  }, []);
+
   useEffect(() => {
     const savedSession = readSession();
     const savedBranding = JSON.parse(
@@ -115,12 +146,13 @@ export default function SettingsPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       loadBackupJobs();
+      loadEmailStatus();
     }, 0);
 
     return () => clearTimeout(timer);
-  }, [loadBackupJobs]);
+  }, [loadBackupJobs, loadEmailStatus]);
 
-  const canUseBackup = currentUser?.role !== "Viewer";
+  const canUseBackup = Boolean(currentUser) && currentUser.role !== "Viewer";
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
@@ -162,7 +194,7 @@ export default function SettingsPage() {
       await createBackupJob(
         {
           backupType: "Manual",
-          backupScope: "Full Database",
+          backupScope: settings.backupScope,
           remarks: `Manual backup tracking requested from settings. Frequency: ${settings.backupFrequency}.`,
         },
         token
@@ -171,6 +203,39 @@ export default function SettingsPage() {
       loadBackupJobs();
     } catch (error) {
       showToast(error.message || "Backup tracking job could not be created.", "warning");
+    }
+  }
+
+  async function handleDownloadBackupSnapshot() {
+    const token = getSessionToken();
+
+    if (!token) {
+      showToast("Login session expired. Backup download was not started.", "warning");
+      return;
+    }
+
+    try {
+      await createBackupJob(
+        {
+          backupType: "Manual",
+          backupScope: settings.backupScope,
+          remarks: `Manual ${settings.backupScope} JSON backup downloaded from settings.`,
+        },
+        token
+      );
+      const backupFile = await downloadBackupSnapshot(settings.backupScope, token);
+      const url = URL.createObjectURL(backupFile.blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = backupFile.fileName;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+      showToast("Backup JSON file downloaded.");
+      loadBackupJobs();
+    } catch (error) {
+      showToast(error.message || "Backup file could not be downloaded.", "warning");
     }
   }
 
@@ -183,9 +248,9 @@ export default function SettingsPage() {
   }
 
   const backendRequiredItems = [
-    "Real email OTP and password hashing",
-    "PDF and Excel export jobs",
-    "MySQL backup and restore",
+    "Company SMTP setup for OTP delivery",
+    "Physical PDF package generation",
+    "Backup restore approval workflow",
     "Scheduled report email summary",
   ];
 
@@ -350,8 +415,9 @@ export default function SettingsPage() {
             Backend Required
           </h2>
           <p className="mt-1 text-sm leading-6 text-yellow-800">
-            These settings are visible in frontend so the process is ready, but
-            real execution will start in the export, backup and SMTP phases.
+            Export tracking, CSV/Excel downloads and controlled JSON backup are
+            active. SMTP, physical PDF package generation and restore workflows
+            remain parked for later phases.
           </p>
           <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
             {backendRequiredItems.map((item) => (
@@ -371,18 +437,53 @@ export default function SettingsPage() {
                   Backup Job Tracking
                 </h3>
                 <p className="mt-1 text-sm leading-6 text-yellow-800">
-                  Records backup requests in MySQL. Physical database dump and
-                  restore execution remain in the next Phase 7 substep.
+                  Records backup requests in MySQL and downloads a controlled
+                  JSON backup snapshot. Restore execution remains locked for a
+                  later approved maintenance step.
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={handleCreateBackupJob}
-                disabled={!canUseBackup}
-                className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300"
-              >
-                Create Backup Job
-              </button>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={handleCreateBackupJob}
+                  disabled={!canUseBackup}
+                  className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
+                >
+                  Create Backup Job
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDownloadBackupSnapshot}
+                  disabled={!canUseBackup}
+                  className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300"
+                >
+                  Download Backup
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-yellow-950">
+                  Backup Scope
+                </label>
+                <select
+                  name="backupScope"
+                  value={settings.backupScope}
+                  onChange={handleChange}
+                  disabled={!canUseBackup}
+                  className="w-full rounded-xl border border-yellow-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-yellow-700 disabled:bg-yellow-100"
+                >
+                  <option value="Full Database">Full Database</option>
+                  <option value="Schema Only">Schema Only</option>
+                  <option value="Data Only">Data Only</option>
+                </select>
+              </div>
+              <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-900">
+                Backup files are generated as JSON snapshots from approved
+                tables only. Restore/import from backup is intentionally not
+                enabled yet.
+              </div>
             </div>
 
             <div className="mt-4">
@@ -599,11 +700,31 @@ export default function SettingsPage() {
 
               <SettingToggle
                 title="Email Notifications"
-                description="Send important alerts by email after backend SMTP/API integration."
+                description={
+                  emailStatus.isConfigured
+                    ? "SMTP is configured and ready for future OTP/email notifications."
+                    : "SMTP is not configured. OTP email delivery is parked for deployment."
+                }
                 name="emailNotifications"
                 checked={settings.emailNotifications}
                 onChange={handleChange}
               />
+
+              <div
+                className={`rounded-xl border p-4 text-sm leading-6 ${
+                  emailStatus.isConfigured
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                    : "border-yellow-200 bg-yellow-50 text-yellow-800"
+                }`}
+              >
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="font-bold">SMTP Status</span>
+                  <span className="w-fit rounded-full bg-white/70 px-3 py-1 text-xs font-bold">
+                    {emailStatus.isConfigured ? "Configured" : "Not Configured"}
+                  </span>
+                </div>
+                <p className="mt-2">{emailStatus.message}</p>
+              </div>
 
               <SettingToggle
                 title="In-app Notifications"
@@ -655,20 +776,18 @@ export default function SettingsPage() {
 
               <SettingToggle
                 title="PDF Export"
-                description="Will be added later using PDF package."
+                description="Allow browser print/PDF export with backend tracking."
                 name="pdfExport"
                 checked={settings.pdfExport}
                 onChange={handleChange}
-                disabled
               />
 
               <SettingToggle
                 title="Excel Export"
-                description="Will be added after backend/database integration."
+                description="Allow reports to download Excel-compatible spreadsheet files."
                 name="excelExport"
                 checked={settings.excelExport}
                 onChange={handleChange}
-                disabled
               />
             </div>
           </div>
@@ -732,7 +851,7 @@ export default function SettingsPage() {
               title="Data Backup"
               description={
                 canUseBackup
-                  ? "Allowed for Super Admin, Admin and Employee. Backend backup job will be connected later."
+                  ? "Allowed for Super Admin, Admin and Employee. Backup tracking and JSON download are connected."
                   : "Viewer role cannot access backup controls."
               }
               name="dataBackup"

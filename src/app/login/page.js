@@ -17,9 +17,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasSuperAdmin, setHasSuperAdmin] = useState(false);
   const [authStep, setAuthStep] = useState("login");
-  const [pendingLogin, setPendingLogin] = useState(null);
-  const [otp, setOtp] = useState("");
-  const [resendTimer, setResendTimer] = useState(0);
   const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
@@ -46,16 +43,6 @@ export default function LoginPage() {
       setIsLoading(false);
     }, 0);
   }, [router]);
-
-  useEffect(() => {
-    if (resendTimer === 0) return;
-
-    const timer = setTimeout(() => {
-      setResendTimer((currentValue) => Math.max(currentValue - 1, 0));
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [resendTimer]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -111,10 +98,9 @@ export default function LoginPage() {
         password: formData.password,
       });
 
-      setPendingLogin(loginResponse);
-      setAuthStep("otp");
-      setResendTimer(30);
-      showToast("Login verified. Use demo OTP 123456 until email OTP is connected.");
+      saveLoginSession(loginResponse);
+      showToast("Login successful.");
+      router.push("/dashboard");
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.status === 401) {
@@ -132,26 +118,6 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false);
     }
-  }
-
-  function handleOtpSubmit(event) {
-    event.preventDefault();
-
-    if (otp !== "123456") {
-      setErrors({ otp: "Invalid OTP. Use demo OTP 123456." });
-      return;
-    }
-
-    saveLoginSession(pendingLogin);
-
-    showToast("Login successful.");
-
-    router.push("/dashboard");
-  }
-
-  function handleResendOtp() {
-    setResendTimer(30);
-    showToast("Demo OTP resent. Use 123456 until backend email OTP is connected.");
   }
 
   if (isLoading) {
@@ -228,83 +194,6 @@ export default function LoginPage() {
             >
               Back to Login
             </button>
-          </section>
-        </div>
-      </main>
-    );
-  }
-
-  if (authStep === "otp") {
-    return (
-      <main className="min-h-screen bg-gray-100 px-4 py-10">
-        <div className="mx-auto flex min-h-[80vh] max-w-xl items-center justify-center">
-          <section className="w-full rounded-3xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-900 text-xl font-bold text-white">
-              OTP
-            </div>
-
-            <h1 className="mt-6 text-center text-2xl font-bold text-gray-900">
-              Verify Email OTP
-            </h1>
-
-            <p className="mt-3 text-center text-sm leading-6 text-gray-600">
-              OTP verification screen is ready. Backend email service will send
-              real OTP later. For frontend demo, use 123456.
-            </p>
-
-            <form onSubmit={handleOtpSubmit} className="mt-6 space-y-4">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  One Time Password
-                </label>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(event) => {
-                    setOtp(event.target.value);
-                    setErrors((previousErrors) => ({
-                      ...previousErrors,
-                      otp: "",
-                    }));
-                  }}
-                  inputMode="numeric"
-                  maxLength="6"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-center text-lg font-bold tracking-[0.35em] outline-none focus:border-gray-900"
-                  required
-                />
-                {errors.otp && (
-                  <p className="mt-2 text-xs font-semibold text-red-600">
-                    {errors.otp}
-                  </p>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                className="w-full rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
-              >
-                Verify & Open Dashboard
-              </button>
-            </form>
-
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-between">
-              <button
-                type="button"
-                onClick={() => setAuthStep("login")}
-                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-              >
-                Change Login
-              </button>
-
-              <button
-                type="button"
-                onClick={handleResendOtp}
-                disabled={resendTimer > 0}
-                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend OTP"}
-              </button>
-            </div>
           </section>
         </div>
       </main>
@@ -444,8 +333,8 @@ export default function LoginPage() {
 
           <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
             Note: Backend login verifies email and password with JWT session.
-            Internal access code and email OTP are frontend checks until secure
-            server-side access-code policy and SMTP OTP are connected.
+            The account must already be email-verified in backend. OTP email
+            delivery is parked for future company deployment.
           </p>
         </section>
       </div>

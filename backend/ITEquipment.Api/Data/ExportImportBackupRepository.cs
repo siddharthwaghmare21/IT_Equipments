@@ -5,6 +5,32 @@ namespace ITEquipment.Api.Data;
 
 public sealed class ExportImportBackupRepository(MySqlConnectionFactory connectionFactory)
 {
+    private static readonly string[] BackupTables =
+    [
+        "roles",
+        "departments",
+        "users",
+        "vendors",
+        "system_settings",
+        "activity_logs",
+        "assets",
+        "asset_documents",
+        "asset_lifecycle_history",
+        "work_orders",
+        "work_order_items",
+        "work_order_documents",
+        "deliveries",
+        "transfers",
+        "returns",
+        "maintenance_records",
+        "approval_requests",
+        "notifications",
+        "backup_jobs",
+        "export_jobs",
+        "import_jobs",
+        "email_otp_requests"
+    ];
+
     public async Task<IReadOnlyList<ExportJobDto>> GetExportJobsAsync(int limit, CancellationToken cancellationToken)
     {
         const string sql = """
@@ -183,6 +209,55 @@ public sealed class ExportImportBackupRepository(MySqlConnectionFactory connecti
             ?? throw new InvalidOperationException("Backup job was created but could not be loaded.");
     }
 
+    public async Task<Dictionary<string, object>> CreateBackupSnapshotAsync(
+        string backupScope,
+        string requestedBy,
+        CancellationToken cancellationToken)
+    {
+        await using var connection = connectionFactory.CreateConnection();
+        await connection.OpenAsync(cancellationToken);
+
+        var includeSchema = backupScope.Equals("Full Database", StringComparison.OrdinalIgnoreCase) ||
+            backupScope.Equals("Schema Only", StringComparison.OrdinalIgnoreCase);
+        var includeData = backupScope.Equals("Full Database", StringComparison.OrdinalIgnoreCase) ||
+            backupScope.Equals("Data Only", StringComparison.OrdinalIgnoreCase);
+
+        var snapshot = new Dictionary<string, object>
+        {
+            ["backupFormat"] = "ITEquipment.JsonBackup.v1",
+            ["backupScope"] = backupScope,
+            ["generatedAtUtc"] = DateTimeOffset.UtcNow,
+            ["requestedBy"] = requestedBy,
+            ["tables"] = new Dictionary<string, object>()
+        };
+
+        var tables = (Dictionary<string, object>)snapshot["tables"];
+        foreach (var tableName in BackupTables)
+        {
+            var tableSnapshot = new Dictionary<string, object>();
+
+            if (includeSchema)
+            {
+                tableSnapshot["columns"] = await GetTableColumnsAsync(
+                    connection,
+                    tableName,
+                    cancellationToken);
+            }
+
+            if (includeData)
+            {
+                tableSnapshot["rows"] = await GetTableRowsAsync(
+                    connection,
+                    tableName,
+                    cancellationToken);
+            }
+
+            tables[tableName] = tableSnapshot;
+        }
+
+        return snapshot;
+    }
+
     private static async Task<ExportJobDto?> GetExportJobByIdAsync(
         MySqlConnection connection,
         long exportJobId,
@@ -300,6 +375,62 @@ public sealed class ExportImportBackupRepository(MySqlConnectionFactory connecti
             Remarks: GetNullableString(reader, "remarks"),
             CreatedAt: GetDateTimeOffset(reader, "created_at"),
             UpdatedAt: GetDateTimeOffset(reader, "updated_at"));
+    }
+
+    private static async Task<IReadOnlyList<Dictionary<string, object?>>> GetTableColumnsAsync(
+        MySqlConnection connection,
+        string tableName,
+        CancellationToken cancellationToken)
+    {
+        const string sql = """
+            SELECT column_name, column_type, is_nullable, column_key, column_default, extra
+            FROM information_schema.columns
+            WHERE table_schema = DATABASE() AND table_name = @TableName
+            ORDER BY ordinal_position;
+            """;
+
+        await using var command = new MySqlCommand(sql, connection);
+        command.Parameters.AddWithValue("@TableName", tableName);
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+
+        var columns = new List<Dictionary<string, object?>>();
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            columns.Add(new Dictionary<string, object?>
+            {
+                ["name"] = reader.GetString("column_name"),
+                ["type"] = reader.GetString("column_type"),
+                ["nullable"] = reader.GetString("is_nullable"),
+                ["key"] = reader.GetString("column_key"),
+                ["default"] = GetNullableString(reader, "column_default"),
+                ["extra"] = reader.GetString("extra")
+            });
+        }
+
+        return columns;
+    }
+
+    private static async Task<IReadOnlyList<Dictionary<string, object?>>> GetTableRowsAsync(
+        MySqlConnection connection,
+        string tableName,
+        CancellationToken cancellationToken)
+    {
+        await using var command = new MySqlCommand($"SELECT * FROM `{tableName}`;", connection);
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+
+        var rows = new List<Dictionary<string, object?>>();
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            var row = new Dictionary<string, object?>();
+            for (var index = 0; index < reader.FieldCount; index += 1)
+            {
+                row[reader.GetName(index)] = reader.IsDBNull(index) ? null : reader.GetValue(index);
+            }
+
+            rows.Add(row);
+        }
+
+        return rows;
     }
 
     private static string? GetNullableString(MySqlDataReader reader, string columnName)

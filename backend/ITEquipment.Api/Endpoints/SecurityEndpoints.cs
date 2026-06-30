@@ -1,4 +1,5 @@
 using ITEquipment.Api.Security;
+using ITEquipment.Api.Services;
 
 namespace ITEquipment.Api.Endpoints;
 
@@ -21,6 +22,18 @@ public static class SecurityEndpoints
             return Results.Ok(response);
         })
         .WithName("GetRolePermissions");
+
+        group.MapGet("/email-status", (EmailSenderService emailSenderService) =>
+        {
+            return Results.Ok(new
+            {
+                isConfigured = emailSenderService.IsConfigured,
+                message = emailSenderService.IsConfigured
+                    ? "SMTP email delivery is configured."
+                    : "SMTP email delivery is not configured."
+            });
+        })
+        .WithName("GetEmailStatus");
 
         return group;
     }
