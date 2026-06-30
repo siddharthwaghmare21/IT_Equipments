@@ -3,17 +3,17 @@
 import { useEffect, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
-
-const SESSION_KEY = "itAssetUserSession";
+import { ErrorState } from "@/components/common/StateBlock";
+import { readSession } from "@/lib/authSession";
 
 const fallbackProfile = {
-  fullName: "Admin",
-  email: "itadmin@company.com",
-  phone: "+91 98765 12345",
-  department: "IT Department",
-  role: "Admin",
-  status: "Active",
-  loginAt: "2026-03-05T10:30:00.000Z",
+  fullName: "-",
+  email: "-",
+  phone: "-",
+  department: "-",
+  role: "-",
+  status: "-",
+  loginAt: "",
 };
 
 function formatDate(dateValue) {
@@ -40,38 +40,64 @@ function DetailItem({ label, value }) {
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState(fallbackProfile);
+  const [hasSession, setHasSession] = useState(true);
 
   useEffect(() => {
-    const savedSession = JSON.parse(
-      localStorage.getItem(SESSION_KEY) || "null"
-    );
+    const savedSession = readSession();
 
     setTimeout(() => {
       setProfile(savedSession || fallbackProfile);
+      setHasSession(Boolean(savedSession));
     }, 0);
   }, []);
 
-  const accessAreas = [
-    "Dashboard",
-    "Assets",
-    "Purchases",
-    "Delivery",
-    "Returns",
-    "Maintenance",
-    "Reports",
-    "Activity Logs",
-  ];
+  const accessAreasByRole = {
+    "Super Admin": [
+      "Dashboard",
+      "Assets",
+      "Purchases",
+      "Delivery",
+      "Returns",
+      "Maintenance",
+      "Reports",
+      "Activity Logs",
+      "Admin Requests",
+      "Settings",
+    ],
+    Admin: [
+      "Dashboard",
+      "Assets",
+      "Purchases",
+      "Delivery",
+      "Returns",
+      "Maintenance",
+      "Reports",
+      "Activity Logs",
+    ],
+    Employee: [
+      "Dashboard",
+      "Assets",
+      "Purchases",
+      "Delivery",
+      "Returns",
+      "Maintenance",
+      "Reports",
+    ],
+    Viewer: ["Dashboard", "Assets", "Reports", "Activity Logs"],
+  };
+
+  const accessAreas = accessAreasByRole[profile.role] || ["Dashboard"];
 
   const profileSummary = [
-    { label: "Assigned Assets", value: "3" },
-    { label: "Pending Approvals", value: profile.role === "Viewer" ? "0" : "4" },
-    { label: "Recent Actions", value: "8" },
+    { label: "User ID", value: profile.id || "-" },
+    { label: "Role Code", value: profile.roleCode || "-" },
+    { label: "Session Status", value: hasSession ? "Active" : "Missing" },
   ];
 
   const recentActions = [
-    "Viewed asset warranty report",
-    "Reviewed maintenance follow-up",
-    "Opened delivery acknowledgement",
+    `Logged in ${formatDate(profile.loginAt)}`,
+    `Access role: ${profile.role || "-"}`,
+    `Department: ${profile.department || "-"}`,
   ];
 
   return (
@@ -80,6 +106,15 @@ export default function ProfilePage() {
         title="Profile"
         description="View your account details, role, department and access summary."
       />
+
+      {!hasSession && (
+        <div className="mb-6">
+          <ErrorState
+            title="Login session not found"
+            description="Please login again to view authenticated profile details."
+          />
+        </div>
+      )}
 
       <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
         <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:justify-between">
@@ -106,7 +141,7 @@ export default function ProfilePage() {
           <DetailItem label="Department" value={profile.department} />
           <DetailItem label="Account Status" value={profile.status} />
           <DetailItem label="Last Login" value={formatDate(profile.loginAt)} />
-          <DetailItem label="Authentication" value="Frontend Demo" />
+          <DetailItem label="Authentication" value="JWT session" />
         </div>
       </section>
 
@@ -178,9 +213,9 @@ export default function ProfilePage() {
       </section>
 
       <section className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">
-        Profile data currently comes from frontend session storage. Backend
-        integration later will load this securely from authenticated API
-        endpoints.
+        Profile data currently comes from the authenticated login session.
+        Dedicated profile edit and password management APIs are planned for the
+        RBAC/security polish phase.
       </section>
     </LayoutWrapper>
   );

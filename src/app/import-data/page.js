@@ -9,22 +9,32 @@ const importModules = [
   {
     title: "Assets",
     format: "assetTag, name, category, serialNumber, warrantyExpiry",
-    status: "Template Ready",
+    status: "Phase 7 Pending",
   },
   {
     title: "Vendors",
     format: "vendorName, contactPerson, gstNumber, paymentTerms",
-    status: "Template Ready",
+    status: "Phase 7 Pending",
   },
   {
     title: "Purchases",
     format: "workOrderNumber, vendorName, invoiceNumber, purchaseDate, amount",
-    status: "Backend Pending",
+    status: "Phase 7 Pending",
   },
   {
     title: "Transfers",
     format: "transferCode, assetTag, fromDepartment, toDepartment, newReceiver, status",
-    status: "Backend Pending",
+    status: "Phase 7 Pending",
+  },
+  {
+    title: "Returns",
+    format: "returnCode, assetTag, returnedBy, returnDate, condition, status",
+    status: "Phase 7 Pending",
+  },
+  {
+    title: "Maintenance",
+    format: "maintenanceCode, assetTag, issueType, vendorName, priority, status",
+    status: "Phase 7 Pending",
   },
 ];
 
@@ -59,7 +69,7 @@ export default function ImportDataPage() {
   function handleValidate(moduleName) {
     setSelectedModule(moduleName);
     setShowPreview(true);
-    showToast(`${moduleName} file preview validated for frontend demo.`);
+    showToast(`${moduleName} preview opened. Backend import validation is planned in Phase 7.`);
   }
 
   return (
@@ -70,8 +80,9 @@ export default function ImportDataPage() {
       />
 
       <section className="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">
-        File parsing and database upload will be connected with backend APIs.
-        This page is ready as a frontend workflow placeholder.
+        Import job tracking tables exist in the database, but file parsing,
+        template download and database upload APIs are planned for Phase 7.
+        Until then, this page only confirms the workflow opens correctly.
       </section>
 
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -114,7 +125,7 @@ export default function ImportDataPage() {
               <button
                 type="button"
                 onClick={() =>
-                  showToast(`${item.title} template download will be connected later.`)
+                  showToast(`${item.title} template download is planned in Phase 7.`)
                 }
                 className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
               >
@@ -140,11 +151,11 @@ export default function ImportDataPage() {
                 {selectedModule} Import Preview
               </h2>
               <p className="mt-1 text-sm text-gray-600">
-                Sample preview only. Real parsing will run through backend API.
+                Preview format only. Real parsing will run through backend import APIs.
               </p>
             </div>
             <span className="rounded-full border border-yellow-200 bg-yellow-50 px-3 py-1 text-xs font-semibold text-yellow-800">
-              Backend Required
+              Phase 7 Required
             </span>
           </div>
 
@@ -189,7 +200,7 @@ export default function ImportDataPage() {
 
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-gray-600">
-              2 valid rows, 1 row needs review, 0 duplicates found.
+              Preview result only. Real row validation will run after import APIs are connected.
             </p>
             <button
               type="button"

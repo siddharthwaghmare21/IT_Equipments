@@ -24,6 +24,7 @@ builder.Services.AddScoped<MaintenanceRepository>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<ApprovalRepository>();
 builder.Services.AddScoped<ActivityLogRepository>();
+builder.Services.AddScoped<ReportRepository>();
 builder.Services.AddSingleton<PasswordHashService>();
 builder.Services.AddSingleton<OtpService>();
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
@@ -82,7 +83,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseCors("Frontend");
 app.UseAuthentication();
 app.UseAuthorization();
@@ -111,6 +115,7 @@ app.MapTransferEndpoints();
 app.MapReturnEndpoints();
 app.MapMaintenanceEndpoints();
 app.MapActivityLogEndpoints();
+app.MapReportEndpoints();
 app.MapAuthEndpoints();
 app.MapSecurityEndpoints();
 app.MapApprovalEndpoints();

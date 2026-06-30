@@ -6,8 +6,20 @@ export function readSession() {
   }
 
   try {
-    return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+    const session = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+
+    if (!session) {
+      return null;
+    }
+
+    if (session.tokenExpiresAt && new Date(session.tokenExpiresAt) <= new Date()) {
+      clearSession();
+      return null;
+    }
+
+    return session;
   } catch {
+    clearSession();
     return null;
   }
 }
@@ -38,4 +50,12 @@ export function saveLoginSession(loginResponse) {
 
 export function getSessionToken() {
   return readSession()?.token || null;
+}
+
+export function clearSession() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  localStorage.removeItem(SESSION_KEY);
 }

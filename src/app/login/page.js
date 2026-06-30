@@ -443,9 +443,9 @@ export default function LoginPage() {
           </div>
 
           <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
-            Note: This is frontend demo authentication. Backend integration
-            later will verify users, passwords and access code securely on the
-            server.
+            Note: Backend login verifies email and password with JWT session.
+            Internal access code and email OTP are frontend checks until secure
+            server-side access-code policy and SMTP OTP are connected.
           </p>
         </section>
       </div>

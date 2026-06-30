@@ -57,6 +57,8 @@ export default function ReportPageShell({
   description,
   data = [],
   fileName,
+  sourceLabel = "MySQL live report API",
+  backendStatus = "Connected",
   children,
 }) {
   const [branding, setBranding] = useState(defaultBranding);
@@ -101,8 +103,8 @@ export default function ReportPageShell({
     { label: "Report ID", value: reportId },
     { label: "Generated On", value: `${generatedDate}, ${generatedTime}` },
     { label: "Prepared By", value: branding.reportPreparedBy },
-    { label: "Source", value: "Frontend sample data" },
-    { label: "Backend Status", value: "Pending integration" },
+    { label: "Source", value: sourceLabel },
+    { label: "Backend Status", value: backendStatus },
     { label: "Print Format", value: selectedPrintFormat.label },
     { label: "Version", value: "v1.0" },
   ];
@@ -300,7 +302,7 @@ export default function ReportPageShell({
               {[
                 "Verify records marked as pending, damaged, expired or under review.",
                 "Confirm department-wise ownership before final circulation.",
-                "Replace sample data with backend records before official export.",
+                "Verify generated records before official export circulation.",
               ].map((note, index) => (
                 <div
                   key={note}

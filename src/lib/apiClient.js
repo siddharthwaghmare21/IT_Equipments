@@ -35,6 +35,13 @@ export async function apiRequest(path, options = {}) {
   const data = hasJson ? await response.json() : null;
 
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("itAssetUserSession");
+      if (!["/login", "/admin-setup", "/admin-request-access"].includes(window.location.pathname)) {
+        window.location.assign("/login");
+      }
+    }
+
     throw new ApiError(
       data?.message || data?.title || response.statusText || "Request failed.",
       response.status,
@@ -283,5 +290,68 @@ export function cancelMaintenanceRecord(maintenanceId, token) {
   return apiRequest(`/api/maintenance/${maintenanceId}`, {
     method: "DELETE",
     token,
+  });
+}
+
+export function getTransfers(token) {
+  return apiRequest("/api/transfers", { token });
+}
+
+export function getTransfer(transferId, token) {
+  return apiRequest(`/api/transfers/${transferId}`, { token });
+}
+
+export function createTransfer(transfer, token) {
+  return apiRequest("/api/transfers", {
+    method: "POST",
+    token,
+    body: transfer,
+  });
+}
+
+export function updateTransfer(transferId, transfer, token) {
+  return apiRequest(`/api/transfers/${transferId}`, {
+    method: "PUT",
+    token,
+    body: transfer,
+  });
+}
+
+export function cancelTransfer(transferId, token) {
+  return apiRequest(`/api/transfers/${transferId}`, {
+    method: "DELETE",
+    token,
+  });
+}
+
+export function getActivityLogs(token, limit = 100) {
+  return apiRequest(`/api/activity-logs?limit=${encodeURIComponent(limit)}`, {
+    token,
+  });
+}
+
+export function getPendingUserAccessApprovals(token) {
+  return apiRequest("/api/approvals/user-access/pending", { token });
+}
+
+export function getReportData(reportType, token) {
+  return apiRequest(`/api/reports/${encodeURIComponent(reportType)}`, {
+    token,
+  });
+}
+
+export function approveUserAccess(approvalRequestId, decision, token) {
+  return apiRequest(`/api/approvals/user-access/${approvalRequestId}/approve`, {
+    method: "POST",
+    token,
+    body: decision,
+  });
+}
+
+export function rejectUserAccess(approvalRequestId, decision, token) {
+  return apiRequest(`/api/approvals/user-access/${approvalRequestId}/reject`, {
+    method: "POST",
+    token,
+    body: decision,
   });
 }

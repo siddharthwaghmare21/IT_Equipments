@@ -1,23 +1,118 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
-import { EmptyState } from "@/components/common/StateBlock";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@/components/common/StateBlock";
+import {
+  getAssets,
+  getDeliveries,
+  getMaintenanceRecords,
+  getReturns,
+  getTransfers,
+  getVendors,
+  getWorkOrders,
+} from "@/lib/apiClient";
+import { getSessionToken } from "@/lib/authSession";
+import { mapAssetFromApi } from "@/lib/assetMapper";
+import { mapDeliveryFromApi } from "@/lib/deliveryMapper";
+import { mapMaintenanceFromApi } from "@/lib/maintenanceMapper";
+import { mapReturnFromApi } from "@/lib/returnMapper";
+import { mapTransferFromApi } from "@/lib/transferMapper";
+import { mapVendorFromApi } from "@/lib/vendorMapper";
+import { mapWorkOrderFromApi } from "@/lib/workOrderMapper";
 
-const searchItems = [
-  { type: "Asset", title: "IT-LAP-001", detail: "Dell Latitude 5420 assigned to IT Department", href: "/assets/view/1" },
-  { type: "Asset", title: "IT-MON-001", detail: "Dell 24 Inch Monitor in Accounts", href: "/assets" },
-  { type: "Work Order", title: "WO-2026-004", detail: "Network Solutions work order approval pending", href: "/purchases" },
-  { type: "Vendor", title: "Dell Technologies", detail: "Laptop supplier, compliant vendor", href: "/vendors" },
-  { type: "Maintenance", title: "MNT-001", detail: "Battery issue, high priority service", href: "/maintenance" },
-  { type: "Report", title: "Warranty Report", detail: "Assets with warranty expiring soon", href: "/reports/warranty" },
-  { type: "Delivery", title: "DLV-001", detail: "Laptop issued to IT Department, received by Rahul Patil", href: "/deliveries/view/1" },
-  { type: "Transfer", title: "TRF-001", detail: "Dell Latitude 5420 moved from IT Department to Accounts", href: "/transfers/view/1" },
+const reportSearchItems = [
+  {
+    type: "Report",
+    title: "Assets Report",
+    detail: "Asset category, status and availability summary",
+    href: "/reports/assets",
+  },
+  {
+    type: "Report",
+    title: "Warranty Report",
+    detail: "Warranty expiry, expired assets and upcoming alerts",
+    href: "/reports/warranty",
+  },
+  {
+    type: "Report",
+    title: "Maintenance Report",
+    detail: "Repair status, vendor support and maintenance cost",
+    href: "/reports/maintenance",
+  },
+  {
+    type: "Report",
+    title: "Transfers Report",
+    detail: "Department movement, reassignment and acknowledgement records",
+    href: "/reports/transfers",
+  },
 ];
 
-const typeFilters = ["All", "Asset", "Work Order", "Vendor", "Maintenance", "Delivery", "Transfer", "Report"];
+const typeFilters = [
+  "All",
+  "Asset",
+  "Work Order",
+  "Vendor",
+  "Maintenance",
+  "Delivery",
+  "Transfer",
+  "Return",
+  "Report",
+];
+
+function buildSearchItems(records) {
+  return [
+    ...records.assets.map((asset) => ({
+      type: "Asset",
+      title: asset.assetTag || asset.assetName,
+      detail: `${asset.assetName} | ${asset.category} | ${asset.currentDepartmentName || asset.location || "No location"} | ${asset.assetStatus}`,
+      href: `/assets/view/${asset.id}`,
+    })),
+    ...records.workOrders.map((workOrder) => ({
+      type: "Work Order",
+      title: workOrder.workOrderNumber,
+      detail: `${workOrder.vendorName} | ${workOrder.invoiceNumber || "No invoice"} | ${workOrder.approvalStatus} | ${workOrder.workOrderStatus}`,
+      href: `/purchases/view/${workOrder.id}`,
+    })),
+    ...records.vendors.map((vendor) => ({
+      type: "Vendor",
+      title: vendor.vendorName,
+      detail: `${vendor.vendorCode} | ${vendor.contactPerson || "No contact"} | ${vendor.serviceCategory || "No category"} | ${vendor.complianceStatus}`,
+      href: `/vendors/view/${vendor.id}`,
+    })),
+    ...records.deliveries.map((delivery) => ({
+      type: "Delivery",
+      title: delivery.deliveryCode,
+      detail: `${delivery.assetTag} ${delivery.assetName} | ${delivery.receiverName} | ${delivery.departmentName} | ${delivery.deliveryStatus}`,
+      href: `/deliveries/view/${delivery.id}`,
+    })),
+    ...records.transfers.map((transfer) => ({
+      type: "Transfer",
+      title: transfer.transferCode,
+      detail: `${transfer.assetTag} ${transfer.assetName} | ${transfer.fromDepartmentName} to ${transfer.toDepartmentName} | ${transfer.transferStatus}`,
+      href: `/transfers/view/${transfer.id}`,
+    })),
+    ...records.returns.map((returnRecord) => ({
+      type: "Return",
+      title: returnRecord.returnCode,
+      detail: `${returnRecord.assetTag} ${returnRecord.assetName} | ${returnRecord.returnedByName} | ${returnRecord.returnCondition} | ${returnRecord.returnStatus}`,
+      href: `/returns/view/${returnRecord.id}`,
+    })),
+    ...records.maintenance.map((record) => ({
+      type: "Maintenance",
+      title: record.maintenanceCode,
+      detail: `${record.assetTag} ${record.assetName} | ${record.issueType} | ${record.priority} | ${record.maintenanceStatus}`,
+      href: `/maintenance/view/${record.id}`,
+    })),
+    ...reportSearchItems,
+  ].filter((item) => item.title);
+}
 
 export default function SearchPage() {
   const params = useSearchParams();
@@ -25,6 +120,64 @@ export default function SearchPage() {
   const initialQuery = params.get("q") || "";
   const [query, setQuery] = useState(initialQuery);
   const [typeFilter, setTypeFilter] = useState("All");
+  const [searchItems, setSearchItems] = useState(reportSearchItems);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadSearchItems = useCallback(async () => {
+    const token = getSessionToken();
+
+    if (!token) {
+      setError("Login session not found. Please login again.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setError("");
+      const [
+        assets,
+        workOrders,
+        vendors,
+        deliveries,
+        transfers,
+        returns,
+        maintenance,
+      ] = await Promise.all([
+        getAssets(token),
+        getWorkOrders(token),
+        getVendors(token),
+        getDeliveries(token),
+        getTransfers(token),
+        getReturns(token),
+        getMaintenanceRecords(token),
+      ]);
+
+      setSearchItems(
+        buildSearchItems({
+          assets: (assets || []).map(mapAssetFromApi),
+          workOrders: (workOrders || []).map(mapWorkOrderFromApi),
+          vendors: (vendors || []).map(mapVendorFromApi),
+          deliveries: (deliveries || []).map(mapDeliveryFromApi),
+          transfers: (transfers || []).map(mapTransferFromApi),
+          returns: (returns || []).map(mapReturnFromApi),
+          maintenance: (maintenance || []).map(mapMaintenanceFromApi),
+        })
+      );
+    } catch (requestError) {
+      setError(requestError.message || "Unable to load search records.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      loadSearchItems();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [loadSearchItems]);
 
   const results = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -39,7 +192,7 @@ export default function SearchPage() {
 
       return matchesType && matchesQuery;
     });
-  }, [query, typeFilter]);
+  }, [query, searchItems, typeFilter]);
 
   return (
     <LayoutWrapper>
@@ -77,7 +230,18 @@ export default function SearchPage() {
         </div>
       </section>
 
-      {results.length === 0 ? (
+      {isLoading ? (
+        <LoadingState
+          title="Loading search"
+          description="Fetching searchable records from backend modules."
+        />
+      ) : error ? (
+        <ErrorState
+          title="Unable to load search"
+          description={error}
+          onRetry={loadSearchItems}
+        />
+      ) : results.length === 0 ? (
         <EmptyState
           title="No search results"
           description="Try another asset tag, WO number, vendor name or module name."

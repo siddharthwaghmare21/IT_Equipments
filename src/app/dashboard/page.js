@@ -1,10 +1,104 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
+import { ErrorState, LoadingState } from "@/components/common/StateBlock";
+import {
+  getActivityLogs,
+  getAssets,
+  getDeliveries,
+  getMaintenanceRecords,
+  getPendingUserAccessApprovals,
+  getReturns,
+  getTransfers,
+  getVendors,
+  getWorkOrders,
+} from "@/lib/apiClient";
+import { getSessionToken, readSession } from "@/lib/authSession";
+import { mapAssetFromApi } from "@/lib/assetMapper";
+import { mapDeliveryFromApi } from "@/lib/deliveryMapper";
+import { mapMaintenanceFromApi } from "@/lib/maintenanceMapper";
+import { mapReturnFromApi } from "@/lib/returnMapper";
+import { mapTransferFromApi } from "@/lib/transferMapper";
+import { mapVendorFromApi } from "@/lib/vendorMapper";
+import { mapWorkOrderFromApi } from "@/lib/workOrderMapper";
 
-const SESSION_KEY = "itAssetUserSession";
+const emptyDashboardRecords = {
+  assets: [],
+  workOrders: [],
+  deliveries: [],
+  transfers: [],
+  returns: [],
+  maintenance: [],
+  vendors: [],
+  activityLogs: [],
+  accessRequests: [],
+};
+
+function percentWidth(value, total) {
+  if (!total) return "0%";
+  return `${Math.min(Math.round((value / total) * 100), 100)}%`;
+}
+
+function isOpenStatus(status) {
+  return !["Completed", "Cancelled", "Rejected", "Returned"].includes(status);
+}
+
+function isWarrantyExpiringSoon(asset) {
+  if (!asset.warrantyExpiry) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const warrantyDate = new Date(asset.warrantyExpiry);
+  const daysLeft = (warrantyDate - today) / (1000 * 60 * 60 * 24);
+
+  return daysLeft >= 0 && daysLeft <= 30;
+}
+
+function buildAssetSummary(assets) {
+  const summary = new Map();
+
+  assets.forEach((asset) => {
+    const category = asset.category || "Other";
+    const current = summary.get(category) || {
+      category,
+      total: 0,
+      delivered: 0,
+      available: 0,
+      maintenance: 0,
+    };
+
+    current.total += 1;
+    if (asset.assetStatus === "Delivered" || asset.lifecycleStatus === "In Use") {
+      current.delivered += 1;
+    }
+    if (asset.assetStatus === "Available") {
+      current.available += 1;
+    }
+    if (
+      asset.assetStatus === "Maintenance" ||
+      asset.lifecycleStatus === "Under Maintenance"
+    ) {
+      current.maintenance += 1;
+    }
+
+    summary.set(category, current);
+  });
+
+  return Array.from(summary.values()).sort((first, second) =>
+    first.category.localeCompare(second.category)
+  );
+}
+
+function formatActivityDate(dateValue) {
+  if (!dateValue) return "-";
+
+  return new Date(dateValue).toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -16,7 +110,7 @@ export default function DashboardPage() {
       };
     }
 
-    const savedSession = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+    const savedSession = readSession();
 
     return (
       savedSession || {
@@ -26,100 +120,193 @@ export default function DashboardPage() {
     );
   });
   const [previewRole, setPreviewRole] = useState(currentUser?.role || "Super Admin");
+  const [dashboardRecords, setDashboardRecords] = useState(emptyDashboardRecords);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadDashboard = useCallback(async () => {
+    const token = getSessionToken();
+    const session = readSession();
+
+    if (!token) {
+      setError("Login session not found. Please login again.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setError("");
+      const coreRequests = await Promise.all([
+        getAssets(token),
+        getWorkOrders(token),
+        getDeliveries(token),
+        getTransfers(token),
+        getReturns(token),
+        getMaintenanceRecords(token),
+        getVendors(token),
+      ]);
+      const [assets, workOrders, deliveries, transfers, returns, maintenance, vendors] =
+        coreRequests;
+
+      const canLoadAdminWidgets =
+        session?.role === "Super Admin" || session?.role === "Admin";
+      const [activityLogResult, accessRequestResult] = canLoadAdminWidgets
+        ? await Promise.allSettled([
+            getActivityLogs(token, 5),
+            getPendingUserAccessApprovals(token),
+          ])
+        : [{ status: "fulfilled", value: [] }, { status: "fulfilled", value: [] }];
+
+      setDashboardRecords({
+        assets: (assets || []).map(mapAssetFromApi),
+        workOrders: (workOrders || []).map(mapWorkOrderFromApi),
+        deliveries: (deliveries || []).map(mapDeliveryFromApi),
+        transfers: (transfers || []).map(mapTransferFromApi),
+        returns: (returns || []).map(mapReturnFromApi),
+        maintenance: (maintenance || []).map(mapMaintenanceFromApi),
+        vendors: (vendors || []).map(mapVendorFromApi),
+        activityLogs:
+          activityLogResult.status === "fulfilled" ? activityLogResult.value || [] : [],
+        accessRequests:
+          accessRequestResult.status === "fulfilled"
+            ? accessRequestResult.value || []
+            : [],
+      });
+    } catch (requestError) {
+      setError(requestError.message || "Unable to load dashboard records.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      loadDashboard();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [loadDashboard]);
+
+  const {
+    assets,
+    workOrders,
+    deliveries,
+    transfers,
+    returns,
+    maintenance,
+    vendors,
+    activityLogs,
+    accessRequests,
+  } = dashboardRecords;
+
+  const deliveredAssets = assets.filter(
+    (asset) => asset.assetStatus === "Delivered" || asset.lifecycleStatus === "In Use"
+  ).length;
+  const availableAssets = assets.filter(
+    (asset) => asset.assetStatus === "Available"
+  ).length;
+  const maintenanceAssets = assets.filter(
+    (asset) =>
+      asset.assetStatus === "Maintenance" ||
+      asset.lifecycleStatus === "Under Maintenance"
+  ).length;
+  const openMaintenance = maintenance.filter((record) =>
+    isOpenStatus(record.maintenanceStatus)
+  ).length;
+  const highPriorityMaintenance = maintenance.filter(
+    (record) =>
+      ["High", "Critical"].includes(record.priority) &&
+      isOpenStatus(record.maintenanceStatus)
+  ).length;
 
   const stats = [
     {
       title: "Total Assets",
-      value: "248",
+      value: String(assets.length),
       description: "Registered IT equipment",
-      trend: "12 added this month",
+      trend: `${assets.filter((asset) => asset.createdAt).length} records synced`,
     },
     {
       title: "Delivered Assets",
-      value: "156",
+      value: String(deliveredAssets),
       description: "Issued to departments",
-      trend: "63% allocation",
+      trend: `${percentWidth(deliveredAssets, assets.length)} allocation`,
     },
     {
       title: "Available Assets",
-      value: "64",
+      value: String(availableAssets),
       description: "Ready for delivery",
-      trend: "24 laptops available",
+      trend: `${availableAssets} assets available`,
     },
     {
       title: "Under Maintenance",
-      value: "18",
+      value: String(maintenanceAssets || openMaintenance),
       description: "Repair or service active",
-      trend: "4 high priority",
+      trend: `${highPriorityMaintenance} high priority`,
     },
   ];
 
-  const assetSummary = [
-    {
-      category: "Laptops",
-      total: "95",
-      delivered: "72",
-      available: "23",
-      maintenance: "6",
-    },
-    {
-      category: "Desktops",
-      total: "48",
-      delivered: "35",
-      available: "13",
-      maintenance: "2",
-    },
-    {
-      category: "Monitors",
-      total: "61",
-      delivered: "38",
-      available: "23",
-      maintenance: "4",
-    },
-    {
-      category: "Printers",
-      total: "14",
-      delivered: "6",
-      available: "8",
-      maintenance: "3",
-    },
-  ];
+  const assetSummary = buildAssetSummary(assets);
 
   const chartData = [
-    { label: "Assets", value: 248, width: "100%" },
-    { label: "Delivered", value: 156, width: "63%" },
-    { label: "Available", value: 64, width: "26%" },
-    { label: "Maintenance", value: 18, width: "8%" },
+    { label: "Assets", value: assets.length, width: assets.length ? "100%" : "0%" },
+    {
+      label: "Delivered",
+      value: deliveredAssets,
+      width: percentWidth(deliveredAssets, assets.length),
+    },
+    {
+      label: "Available",
+      value: availableAssets,
+      width: percentWidth(availableAssets, assets.length),
+    },
+    {
+      label: "Maintenance",
+      value: maintenanceAssets || openMaintenance,
+      width: percentWidth(maintenanceAssets || openMaintenance, assets.length),
+    },
   ];
 
   const lowStockItems = [
-    { item: "USB Keyboard", stock: "4", minimum: "10" },
-    { item: "Wireless Mouse", stock: "6", minimum: "15" },
-    { item: "HDMI Cable", stock: "3", minimum: "8" },
+    {
+      item: "Inventory Thresholds",
+      stock: "Phase 7",
+      minimum: "Import/Export",
+    },
   ];
 
   const workflowSummary = [
     {
       title: "Pending Deliveries",
-      value: "9",
-      description: "Approved but not issued",
+      value: String(
+        deliveries.filter((delivery) => delivery.deliveryStatus === "Pending").length
+      ),
+      description: "Not yet delivered",
       href: "/deliveries",
     },
     {
       title: "Pending Transfers",
-      value: "4",
+      value: String(
+        transfers.filter((transfer) => isOpenStatus(transfer.transferStatus)).length
+      ),
       description: "Movement or reassignment open",
       href: "/transfers",
     },
     {
       title: "Purchase Approvals",
-      value: "3",
+      value: String(
+        workOrders.filter((workOrder) => workOrder.approvalStatus === "Pending")
+          .length
+      ),
       description: "Pending procurement review",
       href: "/purchases",
     },
     {
       title: "Vendor Reviews",
-      value: "2",
+      value: String(
+        vendors.filter((vendor) => vendor.complianceStatus === "Review Required")
+          .length
+      ),
       description: "Compliance needs attention",
       href: "/vendors",
     },
@@ -128,43 +315,29 @@ export default function DashboardPage() {
   const alerts = [
     {
       title: "Warranty Expiring Soon",
-      detail: "3 assets need warranty review",
+      detail: `${assets.filter(isWarrantyExpiringSoon).length} assets need warranty review`,
       href: "/reports/warranty",
     },
     {
       title: "High Priority Maintenance",
-      detail: "4 repair records require follow-up",
+      detail: `${highPriorityMaintenance} repair records require follow-up`,
       href: "/maintenance",
     },
     {
       title: "Damaged Asset Decisions",
-      detail: "2 inspection decisions pending",
+      detail: `${
+        returns.filter((record) => record.damageDecision === "Pending").length
+      } inspection decisions pending`,
       href: "/reports/damaged",
     },
   ];
 
-  const recentActivities = [
-    {
-      title: "Laptop delivered to Rahul Patil",
-      meta: "Delivery | Today 10:30 AM",
-    },
-    {
-      title: "Work Order WO-2026-004 submitted",
-      meta: "Purchases | Pending approval",
-    },
-    {
-      title: "Asset transfer TRF-001 completed",
-      meta: "Transfers | IT Department to Accounts",
-    },
-    {
-      title: "HP LaserJet maintenance completed",
-      meta: "Maintenance | Service report attached",
-    },
-    {
-      title: "Dell Mouse marked damaged",
-      meta: "Damaged Assets | Repair approved",
-    },
-  ];
+  const recentActivities = activityLogs.map((activity) => ({
+    title: activity.actionName || activity.ActionName || "System activity",
+    meta: `${activity.moduleName || activity.ModuleName || "System"} | ${formatActivityDate(
+      activity.createdAt || activity.CreatedAt
+    )}`,
+  }));
 
   const roleActions = {
     "Super Admin": [
@@ -190,19 +363,41 @@ export default function DashboardPage() {
   };
 
   const dueDates = [
-    { date: "2026-06-24", title: "Warranty review", meta: "3 assets" },
-    { date: "2026-06-26", title: "Expected return", meta: "DLV-004" },
-    { date: "2026-06-29", title: "Transfer follow-up", meta: "TRF-002" },
-    { date: "2026-07-01", title: "Stock audit", meta: "IT Store" },
+    ...assets
+      .filter(isWarrantyExpiringSoon)
+      .slice(0, 4)
+      .map((asset) => ({
+        date: asset.warrantyExpiry,
+        title: "Warranty review",
+        meta: asset.assetTag || asset.assetName,
+      })),
   ];
 
   const visibleRoleActions =
     roleActions[previewRole] || roleActions.Employee;
   const dataQualityItems = [
-    { label: "Missing Serial Numbers", value: "2", status: "Review" },
-    { label: "Missing Warranty Dates", value: "5", status: "Action Needed" },
-    { label: "Pending Documents", value: "7", status: "Follow-up" },
-    { label: "Duplicate Asset Tags", value: "0", status: "Clean" },
+    {
+      label: "Missing Serial Numbers",
+      value: String(assets.filter((asset) => !asset.serialNumber).length),
+      status: "Review",
+    },
+    {
+      label: "Missing Warranty Dates",
+      value: String(assets.filter((asset) => !asset.warrantyExpiry).length),
+      status: "Action Needed",
+    },
+    {
+      label: "Pending Documents",
+      value: String(
+        assets.filter((asset) => asset.attachmentStatus === "Pending").length
+      ),
+      status: "Follow-up",
+    },
+    {
+      label: "Pending Access Requests",
+      value: String(accessRequests.length),
+      status: accessRequests.length ? "Review" : "Clean",
+    },
   ];
   const reportShortcuts = [
     {
@@ -269,6 +464,19 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      {isLoading ? (
+        <LoadingState
+          title="Loading dashboard"
+          description="Fetching operational summary from backend modules."
+        />
+      ) : error ? (
+        <ErrorState
+          title="Unable to load dashboard"
+          description={error}
+          onRetry={loadDashboard}
+        />
+      ) : (
+        <>
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4">
         {stats.map((item) => (
           <div
@@ -613,6 +821,8 @@ export default function DashboardPage() {
           </div>
         </div>
       </section>
+        </>
+      )}
     </LayoutWrapper>
   );
 }

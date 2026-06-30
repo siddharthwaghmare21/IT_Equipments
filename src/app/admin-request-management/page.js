@@ -1,20 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
-import { EmptyState } from "@/components/common/StateBlock";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
-
-const USERS_KEY = "itAssetUsers";
-const REQUESTS_KEY = "itAssetAccessRequests";
-const SESSION_KEY = "itAssetUserSession";
-
-function createClientId() {
-  return globalThis.crypto?.randomUUID?.() || String(Date.now());
-}
+import {
+  approveUserAccess,
+  getPendingUserAccessApprovals,
+  rejectUserAccess,
+} from "@/lib/apiClient";
+import { getSessionToken, readSession } from "@/lib/authSession";
 
 function StatusBadge({ status }) {
   const styles = {
@@ -62,26 +64,69 @@ function formatDate(dateValue) {
   });
 }
 
+function mapApprovalRequestFromApi(request) {
+  return {
+    id: request.approvalRequestId || request.ApprovalRequestId,
+    fullName:
+      request.requestedUserName || request.RequestedUserName || "Pending User",
+    email: request.requestedUserEmail || request.RequestedUserEmail || "-",
+    phone: "-",
+    department: "IT Department",
+    requestedRole:
+      request.requestedRoleName ||
+      request.RequestedRoleName ||
+      request.requestedRoleCode ||
+      request.RequestedRoleCode ||
+      "-",
+    status: request.approvalStatus || request.ApprovalStatus || "Pending",
+    requestedAt: request.createdAt || request.CreatedAt,
+    reason:
+      request.remarks ||
+      request.Remarks ||
+      request.entityName ||
+      request.EntityName ||
+      "User access approval requested.",
+  };
+}
+
 export default function AdminRequestManagementPage() {
   const [requests, setRequests] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [statusFilter, setStatusFilter] = useState("All");
   const [pendingDecision, setPendingDecision] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadRequests = useCallback(async () => {
+    const token = getSessionToken();
+    const savedSession = readSession();
+
+    setCurrentUser(savedSession);
+
+    if (!token) {
+      setError("Login session not found. Please login again.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setError("");
+      const data = await getPendingUserAccessApprovals(token);
+      setRequests((data || []).map(mapApprovalRequestFromApi));
+    } catch (requestError) {
+      setError(requestError.message || "Unable to load access requests.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const savedRequests = JSON.parse(
-      localStorage.getItem(REQUESTS_KEY) || "[]"
-    );
-
-    const savedSession = JSON.parse(
-      localStorage.getItem(SESSION_KEY) || "null"
-    );
-
-    setTimeout(() => {
-      setRequests(savedRequests);
-      setCurrentUser(savedSession);
+    const timer = window.setTimeout(() => {
+      loadRequests();
     }, 0);
-  }, []);
+
+    return () => window.clearTimeout(timer);
+  }, [loadRequests]);
 
   const isSuperAdmin = currentUser?.role === "Super Admin";
   const canApproveAccess =
@@ -103,11 +148,6 @@ export default function AdminRequestManagementPage() {
   const rejectedRequests = requests.filter(
     (request) => request.status === "Rejected"
   ).length;
-
-  function updateRequestsInStorage(updatedRequests) {
-    localStorage.setItem(REQUESTS_KEY, JSON.stringify(updatedRequests));
-    setRequests(updatedRequests);
-  }
 
   function approveRequest(requestId) {
     if (!canApproveAccess) {
@@ -135,63 +175,33 @@ export default function AdminRequestManagementPage() {
       return;
     }
 
-    if (!selectedRequest.password) {
-      showToast(
-        "Password missing in this request. Ask user to submit request again.",
-        "error"
-      );
-      return;
-    }
-
     setPendingDecision({ type: "approve", request: selectedRequest });
   }
 
-  function confirmApproveRequest(selectedRequest) {
-    const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+  async function confirmApproveRequest(selectedRequest) {
+    const token = getSessionToken();
+    const approvedByUserId = currentUser?.id;
 
-
-    const emailAlreadyExists = savedUsers.some(
-      (user) =>
-        user.email.toLowerCase() === selectedRequest.email.toLowerCase()
-    );
-
-    if (emailAlreadyExists) {
-      showToast("This email already exists in users list.", "warning");
-      setPendingDecision(null);
+    if (!token || !approvedByUserId) {
+      showToast("Login session not found. Please login again.", "error");
       return;
     }
 
-    const newUser = {
-      id: createClientId(),
-      fullName: selectedRequest.fullName,
-      email: selectedRequest.email,
-      phone: selectedRequest.phone,
-      department: selectedRequest.department || "IT Department",
-      role: selectedRequest.requestedRole,
-      status: "Active",
-      password: selectedRequest.password,
-      createdAt: new Date().toISOString(),
-      approvedFromRequestId: selectedRequest.id,
-      approvedBy: currentUser?.fullName || "Super Admin",
-    };
-
-    localStorage.setItem(USERS_KEY, JSON.stringify([newUser, ...savedUsers]));
-
-    const updatedRequests = requests.map((request) =>
-      request.id === requestId
-        ? {
-            ...request,
-            status: "Approved",
-            approvedAt: new Date().toISOString(),
-            approvedBy: currentUser?.fullName || "Super Admin",
-          }
-        : request
-    );
-
-    updateRequestsInStorage(updatedRequests);
-
-    showToast("Access request approved successfully.");
-    setPendingDecision(null);
+    try {
+      await approveUserAccess(
+        selectedRequest.id,
+        {
+          approvedByUserId,
+          remarks: `Approved by ${currentUser?.fullName || "Admin"}.`,
+        },
+        token
+      );
+      showToast("Access request approved successfully.");
+      setPendingDecision(null);
+      await loadRequests();
+    } catch (requestError) {
+      showToast(requestError.message || "Unable to approve access request.", "error");
+    }
   }
 
   function rejectRequest(requestId) {
@@ -215,35 +225,41 @@ export default function AdminRequestManagementPage() {
     setPendingDecision({ type: "reject", request: selectedRequest });
   }
 
-  function confirmRejectRequest(selectedRequest) {
-    const requestId = selectedRequest.id;
+  async function confirmRejectRequest(selectedRequest) {
+    const token = getSessionToken();
+    const approvedByUserId = currentUser?.id;
 
-    const updatedRequests = requests.map((request) =>
-      request.id === requestId
-        ? {
-            ...request,
-            status: "Rejected",
-            rejectedAt: new Date().toISOString(),
-            rejectedBy: currentUser?.fullName || "Super Admin",
-          }
-        : request
-    );
-
-    updateRequestsInStorage(updatedRequests);
-
-    showToast("Access request rejected.", "warning");
-    setPendingDecision(null);
-  }
-
-  function confirmPendingDecision() {
-    if (!pendingDecision) return;
-
-    if (pendingDecision.type === "approve") {
-      confirmApproveRequest(pendingDecision.request);
+    if (!token || !approvedByUserId) {
+      showToast("Login session not found. Please login again.", "error");
       return;
     }
 
-    confirmRejectRequest(pendingDecision.request);
+    try {
+      await rejectUserAccess(
+        selectedRequest.id,
+        {
+          approvedByUserId,
+          remarks: `Rejected by ${currentUser?.fullName || "Admin"}.`,
+        },
+        token
+      );
+      showToast("Access request rejected.", "warning");
+      setPendingDecision(null);
+      await loadRequests();
+    } catch (requestError) {
+      showToast(requestError.message || "Unable to reject access request.", "error");
+    }
+  }
+
+  async function confirmPendingDecision() {
+    if (!pendingDecision) return;
+
+    if (pendingDecision.type === "approve") {
+      await confirmApproveRequest(pendingDecision.request);
+      return;
+    }
+
+    await confirmRejectRequest(pendingDecision.request);
   }
 
   return (
@@ -256,11 +272,23 @@ export default function AdminRequestManagementPage() {
       {!canApproveAccess && (
         <section className="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm sm:p-5">
           You are not logged in as Super Admin or Admin. Approval and rejection
-          actions are disabled. Backend authentication will handle this securely
-          later.
+          actions are disabled.
         </section>
       )}
 
+      {isLoading ? (
+        <LoadingState
+          title="Loading access requests"
+          description="Fetching pending user access approvals from backend."
+        />
+      ) : error ? (
+        <ErrorState
+          title="Unable to load access requests"
+          description={error}
+          onRetry={loadRequests}
+        />
+      ) : (
+        <>
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Total Requests</p>
@@ -423,10 +451,11 @@ export default function AdminRequestManagementPage() {
       </TableWrapper>
 
       <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
-        Note: This is frontend demo approval. Backend integration later will use
-        secure database records, password hashing, email OTP verification and
-        server-side role validation.
+        Note: This page now reads pending access requests from backend approval
+        records. Email OTP sending is still pending for the SMTP phase.
       </p>
+        </>
+      )}
 
       <ConfirmDialog
         isOpen={Boolean(pendingDecision)}

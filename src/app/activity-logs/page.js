@@ -1,126 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ReportExportButtons from "@/components/common/ReportExportButtons";
-import { EmptyState } from "@/components/common/StateBlock";
-
-const activityLogs = [
-  {
-    id: 1,
-    date: "2026-03-01",
-    time: "10:15 AM",
-    module: "Assets",
-    action: "Asset Added",
-    description: "New asset AST-001 - Dell Latitude 5420 was added.",
-    performedBy: "IT Admin",
-    role: "Admin",
-    status: "Success",
-  },
-  {
-    id: 2,
-    date: "2026-03-01",
-    time: "11:05 AM",
-    module: "Purchases",
-    action: "Purchase Created",
-    description: "Work Order WO-2026-001 was created for Dell Technologies.",
-    performedBy: "IT Admin",
-    role: "Admin",
-    status: "Success",
-  },
-  {
-    id: 3,
-    date: "2026-03-02",
-    time: "09:30 AM",
-    module: "Vendors",
-    action: "Vendor Updated",
-    description: "Vendor details for HP World were updated.",
-    performedBy: "IT Manager",
-    role: "Manager",
-    status: "Success",
-  },
-  {
-    id: 4,
-    date: "2026-03-02",
-    time: "12:45 PM",
-    module: "Deliveries",
-    action: "Asset Delivered",
-    description: "Asset AST-001 was delivered to Rahul Patil.",
-    performedBy: "IT Admin",
-    role: "Admin",
-    status: "Success",
-  },
-  {
-    id: 5,
-    date: "2026-03-03",
-    time: "01:45 PM",
-    module: "Transfers",
-    action: "Asset Transferred",
-    description: "Transfer TRF-001 moved IT-LAP-001 from IT Department to Accounts.",
-    performedBy: "IT Admin",
-    role: "Admin",
-    status: "Success",
-  },
-  {
-    id: 6,
-    date: "2026-03-03",
-    time: "03:20 PM",
-    module: "Returns",
-    action: "Asset Returned",
-    description: "Asset AST-003 was returned by Amit Shinde.",
-    performedBy: "IT Support",
-    role: "Support",
-    status: "Success",
-  },
-  {
-    id: 7,
-    date: "2026-03-04",
-    time: "04:10 PM",
-    module: "Maintenance",
-    action: "Maintenance Updated",
-    description: "Maintenance record MNT-001 status changed to In Progress.",
-    performedBy: "IT Admin",
-    role: "Admin",
-    status: "Success",
-  },
-  {
-    id: 8,
-    date: "2026-03-05",
-    time: "01:25 PM",
-    module: "Departments",
-    action: "Department Updated",
-    description: "Accounts department receiver tracking details were updated.",
-    performedBy: "IT Admin",
-    role: "Admin",
-    status: "Success",
-  },
-  {
-    id: 9,
-    date: "2026-03-05",
-    time: "05:40 PM",
-    module: "Login",
-    action: "Login Failed",
-    description: "Invalid login attempt detected for admin account.",
-    performedBy: "Unknown User",
-    role: "Guest",
-    status: "Failed",
-  },
-];
-
-const moduleFilters = [
-  "All",
-  "Assets",
-  "Purchases",
-  "Vendors",
-  "Departments",
-  "Deliveries",
-  "Transfers",
-  "Returns",
-  "Maintenance",
-  "Login",
-];
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@/components/common/StateBlock";
+import { getActivityLogs } from "@/lib/apiClient";
+import { getSessionToken } from "@/lib/authSession";
 
 function ActivityStatusBadge({ status }) {
   const statusStyles = {
@@ -140,12 +31,74 @@ function ActivityStatusBadge({ status }) {
   );
 }
 
+function formatLogDate(dateValue) {
+  if (!dateValue) return "-";
+
+  return new Date(dateValue).toLocaleDateString("en-CA");
+}
+
+function formatLogTime(dateValue) {
+  if (!dateValue) return "-";
+
+  return new Date(dateValue).toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function mapActivityLogFromApi(log) {
+  const createdAt = log.createdAt || log.CreatedAt;
+
+  return {
+    id: log.activityLogId || log.ActivityLogId,
+    date: formatLogDate(createdAt),
+    time: formatLogTime(createdAt),
+    module: log.moduleName || log.ModuleName || "-",
+    action: log.actionName || log.ActionName || "-",
+    description: log.description || log.Description || "-",
+    performedBy: log.userFullName || log.UserFullName || "System",
+    role: log.userRoleName || log.UserRoleName || "-",
+    status: log.status || log.Status || "-",
+  };
+}
+
 export default function ActivityLogsPage() {
+  const [activityLogs, setActivityLogs] = useState([]);
   const [search, setSearch] = useState("");
   const [activeModule, setActiveModule] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [userFilter, setUserFilter] = useState("All");
   const [dateFilter, setDateFilter] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadActivityLogs = useCallback(async () => {
+    const token = getSessionToken();
+
+    if (!token) {
+      setError("Login session not found. Please login again.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setError("");
+      const data = await getActivityLogs(token);
+      setActivityLogs((data || []).map(mapActivityLogFromApi));
+    } catch (requestError) {
+      setError(requestError.message || "Unable to load activity logs.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      loadActivityLogs();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [loadActivityLogs]);
 
   const filteredLogs = useMemo(() => {
     return activityLogs.filter((log) => {
@@ -175,7 +128,7 @@ export default function ActivityLogsPage() {
 
       return matchesSearch && matchesModule && matchesStatus && matchesUser && matchesDate;
     });
-  }, [search, activeModule, statusFilter, userFilter, dateFilter]);
+  }, [activityLogs, search, activeModule, statusFilter, userFilter, dateFilter]);
 
   const successLogs = activityLogs.filter(
     (log) => log.status === "Success"
@@ -185,8 +138,18 @@ export default function ActivityLogsPage() {
     .length;
 
   const uniqueModules = new Set(activityLogs.map((log) => log.module)).size;
-  const userFilters = ["All", ...new Set(activityLogs.map((log) => log.performedBy))];
-  const statusFilters = ["All", "Success", "Failed", "Warning"];
+  const moduleFilters = [
+    "All",
+    ...new Set(activityLogs.map((log) => log.module).filter(Boolean)),
+  ];
+  const userFilters = [
+    "All",
+    ...new Set(activityLogs.map((log) => log.performedBy).filter(Boolean)),
+  ];
+  const statusFilters = [
+    "All",
+    ...new Set(activityLogs.map((log) => log.status).filter(Boolean)),
+  ];
 
   return (
     <LayoutWrapper>
@@ -195,6 +158,19 @@ export default function ActivityLogsPage() {
         description="Track system activities, user actions, login events and audit history."
       />
 
+      {isLoading ? (
+        <LoadingState
+          title="Loading activity logs"
+          description="Fetching audit records from backend."
+        />
+      ) : error ? (
+        <ErrorState
+          title="Unable to load activity logs"
+          description={error}
+          onRetry={loadActivityLogs}
+        />
+      ) : (
+        <>
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Total Logs</p>
@@ -401,11 +377,13 @@ export default function ActivityLogsPage() {
         <h3 className="text-lg font-bold text-gray-900">Audit Note</h3>
 
         <p className="mt-2 text-sm leading-6 text-gray-600">
-          Activity logs are read-only audit records. After backend integration,
-          logs will be automatically created whenever users add, edit, delete,
-          deliver, transfer, return or update IT asset records.
+          Activity logs are read-only audit records from the backend. New logs
+          are automatically created when users add, edit, archive, deliver,
+          transfer, return or update IT asset records.
         </p>
       </section>
+        </>
+      )}
     </LayoutWrapper>
   );
 }

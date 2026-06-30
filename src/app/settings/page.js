@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import { showToast } from "@/components/common/ToastHost";
+import { readSession } from "@/lib/authSession";
 
-const SESSION_KEY = "itAssetUserSession";
 const REPORT_BRANDING_KEY = "itReportBranding";
 const settingsTabs = [
   { label: "General", target: "settings-general" },
@@ -65,22 +65,25 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    const savedSession = JSON.parse(
-      localStorage.getItem(SESSION_KEY) || "null"
-    );
+    const savedSession = readSession();
     const savedBranding = JSON.parse(
       localStorage.getItem(REPORT_BRANDING_KEY) || "null"
     );
 
-    setTimeout(() => setCurrentUser(savedSession), 0);
-    if (savedBranding) {
-      setTimeout(() => {
-        setSettings((currentSettings) => ({
-          ...currentSettings,
-          ...savedBranding,
-        }));
-      }, 0);
-    }
+    setTimeout(() => {
+      setCurrentUser(savedSession);
+      setSettings((currentSettings) => ({
+        ...currentSettings,
+        ...(savedSession
+          ? {
+              adminName: savedSession.fullName || currentSettings.adminName,
+              adminEmail: savedSession.email || currentSettings.adminEmail,
+              adminPhone: savedSession.phone || currentSettings.adminPhone,
+            }
+          : {}),
+        ...(savedBranding || {}),
+      }));
+    }, 0);
   }, []);
 
   const canUseBackup = currentUser?.role !== "Viewer";
@@ -110,7 +113,7 @@ export default function SettingsPage() {
       })
     );
 
-    showToast("Settings saved successfully. Backend will be connected later.");
+    showToast("Report branding saved locally. Backend settings storage is planned later.");
   }
 
   function openSettingsSection(tab) {
@@ -229,8 +232,8 @@ export default function SettingsPage() {
                 Report Branding
               </h3>
               <p className="mt-1 text-sm text-gray-600">
-                These values will be used in professional report headers after
-                backend/settings storage is connected.
+                These values are used in frontend report headers and will move
+                to backend settings storage later.
               </p>
             </div>
 
@@ -290,7 +293,7 @@ export default function SettingsPage() {
           </h2>
           <p className="mt-1 text-sm leading-6 text-yellow-800">
             These settings are visible in frontend so the process is ready, but
-            real execution will start after backend APIs are connected.
+            real execution will start in the export, backup and SMTP phases.
           </p>
           <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
             {backendRequiredItems.map((item) => (

@@ -89,7 +89,7 @@ const recentExports = [
     name: "Maintenance Cost",
     module: "Maintenance",
     date: "2026-06-15",
-    status: "Pending Backend",
+    status: "Connected",
   },
 ];
 
@@ -133,17 +133,17 @@ export default function ReportsPage() {
     {
       name: "Monthly Asset Summary",
       format: "PDF",
-      status: "Requested",
+      status: "Phase 7 Pending",
     },
     {
       name: "Warranty Review",
       format: "Excel",
-      status: "Processing",
+      status: "Phase 7 Pending",
     },
     {
       name: "Maintenance Risk Pack",
       format: "PDF",
-      status: "Ready after backend",
+      status: "Phase 7 Pending",
     },
   ];
   const savedReportViews = [
@@ -166,7 +166,7 @@ export default function ReportsPage() {
       frequency: "Weekly",
       format: "PDF",
       recipients: "IT Admins",
-      status: "Active after backend",
+      status: "Phase 7 Pending",
     },
     {
       name: "Monthly Warranty Review",
@@ -177,10 +177,10 @@ export default function ReportsPage() {
     },
   ];
   const dataSourceStatus = [
-    { label: "API Status", value: "Pending Backend" },
-    { label: "Last Sync", value: "Frontend demo" },
-    { label: "Records Fetched", value: "Sample data" },
-    { label: "Database", value: "MySQL planned" },
+    { label: "API Status", value: "Connected" },
+    { label: "Last Sync", value: "Live on open" },
+    { label: "Records Fetched", value: "Backend report API" },
+    { label: "Database", value: "MySQL connected" },
   ];
   const frontendQaItems = [
     "Mobile and laptop spacing review",
@@ -189,10 +189,10 @@ export default function ReportsPage() {
     "Dark mode contrast review",
   ];
   const cleanupChecklist = [
-    "Remove frontend demo labels",
+    "Report APIs connected",
     "Connect PDF and Excel export APIs",
     "Bind report branding to database settings",
-    "Replace sample data with backend responses",
+    "Backend report responses connected",
   ];
 
   return (
@@ -397,7 +397,7 @@ export default function ReportsPage() {
             >
               <p className="text-sm font-semibold text-gray-900">{item}</p>
               <p className="mt-1 text-xs text-gray-500">
-                Backend connection pending
+                Phase 7 connection pending
               </p>
             </div>
           ))}
@@ -546,9 +546,10 @@ export default function ReportsPage() {
         <h3 className="text-lg font-bold text-gray-900">Report Note</h3>
 
         <p className="mt-2 text-sm leading-6 text-gray-600">
-          These reports are currently using sample frontend data. After MySQL
-          backend integration, all reports will show real-time asset,
-          purchase, delivery, transfer, return, warranty and maintenance records.
+          Report pages are connected to Phase 6 backend report APIs for asset,
+          purchase, delivery, transfer, return, warranty, maintenance and
+          damaged asset records. PDF, Excel and scheduled exports remain in
+          Phase 7.
         </p>
       </section>
       </div>
