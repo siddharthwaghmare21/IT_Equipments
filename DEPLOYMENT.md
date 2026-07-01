@@ -12,16 +12,15 @@ Vercel alone cannot run the full system because the frontend must call the ASP.N
 
 1. Create hosted MySQL database.
 2. Run database scripts from `database/smkc/001_database_setup.sql` through `database/smkc/009_email_otp_schema.sql`.
-3. Optional local/demo data only: run `database/smkc/010_test_data.sql`.
-4. Deploy backend API.
-5. Confirm backend health endpoint:
+3. Deploy backend API.
+4. Confirm backend health endpoint:
 
 ```text
 https://your-backend-api-domain/api/health
 ```
 
-6. Add backend origin to `Cors__AllowedOrigins__0` using your Vercel URL.
-7. Deploy frontend to Vercel with:
+5. Add backend origin to `Cors__AllowedOrigins__0` using your Vercel URL.
+6. Deploy frontend to Vercel with:
 
 ```text
 NEXT_PUBLIC_API_BASE_URL=https://your-backend-api-domain
