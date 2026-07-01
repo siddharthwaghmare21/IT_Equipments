@@ -23,7 +23,7 @@ export default function PageActionBar({
       return;
     }
 
-    showToast("Page refreshed for frontend preview.");
+    showToast("Page refreshed.");
   }
 
   function handleExport() {
@@ -32,7 +32,7 @@ export default function PageActionBar({
       return;
     }
 
-    showToast("Export will be connected with backend/report module.", "warning");
+    showToast("Use the report pages for backend-connected exports.", "warning");
   }
 
   function handlePrint() {

@@ -80,18 +80,18 @@ export default function Header({
 
   const notifications = [
     {
-      title: "Warranty Expiring",
-      detail: "3 assets need warranty review",
+      title: "Warranty Report",
+      detail: "Open warranty records that need review.",
       href: "/reports/warranty",
     },
     {
-      title: "Pending Approvals",
-      detail: "5 access or workflow approvals pending",
+      title: "Approval Queue",
+      detail: "Review pending access requests.",
       href: "/admin-request-management",
     },
     {
-      title: "Maintenance Follow-up",
-      detail: "4 high priority service records",
+      title: "Maintenance Records",
+      detail: "Open maintenance follow-up records.",
       href: "/maintenance",
     },
   ];
@@ -158,7 +158,6 @@ export default function Header({
             aria-label="Open notifications"
           >
             <BellIcon />
-            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
           </button>
           <button
             type="button"
@@ -190,7 +189,6 @@ export default function Header({
             aria-label="Open notifications"
           >
             <BellIcon />
-            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
           </button>
         </div>
 
@@ -252,7 +250,12 @@ export default function Header({
           </div>
 
           <div className="mt-3 space-y-2">
-            {visibleNotifications.map((item) => (
+            {visibleNotifications.length === 0 ? (
+              <p className="rounded-xl border border-gray-100 bg-gray-50 p-3 text-sm text-gray-500">
+                No quick notifications are available for your current role.
+              </p>
+            ) : (
+              visibleNotifications.map((item) => (
               <button
                 key={item.title}
                 type="button"
@@ -267,7 +270,8 @@ export default function Header({
                 </p>
                 <p className="mt-1 text-xs text-gray-500">{item.detail}</p>
               </button>
-            ))}
+              ))
+            )}
           </div>
         </div>
       )}

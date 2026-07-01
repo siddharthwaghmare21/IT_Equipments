@@ -7,9 +7,19 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import BackButton from "@/components/common/BackButton";
 import { ErrorState, LoadingState } from "@/components/common/StateBlock";
-import { getDepartment } from "@/lib/apiClient";
+import {
+  getAssets,
+  getDeliveries,
+  getDepartment,
+  getReturns,
+  getTransfers,
+} from "@/lib/apiClient";
 import { getSessionToken } from "@/lib/authSession";
+import { mapAssetFromApi } from "@/lib/assetMapper";
 import { mapDepartmentFromApi } from "@/lib/departmentMapper";
+import { mapDeliveryFromApi } from "@/lib/deliveryMapper";
+import { mapReturnFromApi } from "@/lib/returnMapper";
+import { mapTransferFromApi } from "@/lib/transferMapper";
 
 function DetailItem({ label, value }) {
   return (
@@ -46,6 +56,12 @@ export default function ViewDepartmentPage() {
   const departmentId = params.id;
 
   const [department, setDepartment] = useState(null);
+  const [departmentStats, setDepartmentStats] = useState({
+    assetCount: 0,
+    inUseAssets: 0,
+    workflowCount: 0,
+    openWorkflows: 0,
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -54,8 +70,79 @@ export default function ViewDepartmentPage() {
     setError("");
 
     try {
-      const response = await getDepartment(departmentId, getSessionToken());
-      setDepartment(mapDepartmentFromApi(response));
+      const token = getSessionToken();
+      const response = await getDepartment(departmentId, token);
+      const mappedDepartment = mapDepartmentFromApi(response);
+      setDepartment(mappedDepartment);
+
+      const [assetsResult, deliveriesResult, transfersResult, returnsResult] =
+        await Promise.allSettled([
+          getAssets(token),
+          getDeliveries(token),
+          getTransfers(token),
+          getReturns(token),
+        ]);
+
+      const normalizedDepartmentId = String(mappedDepartment.departmentId);
+      const assets =
+        assetsResult.status === "fulfilled"
+          ? assetsResult.value.map(mapAssetFromApi)
+          : [];
+      const deliveries =
+        deliveriesResult.status === "fulfilled"
+          ? deliveriesResult.value.map(mapDeliveryFromApi)
+          : [];
+      const transfers =
+        transfersResult.status === "fulfilled"
+          ? transfersResult.value.map(mapTransferFromApi)
+          : [];
+      const returns =
+        returnsResult.status === "fulfilled"
+          ? returnsResult.value.map(mapReturnFromApi)
+          : [];
+
+      const departmentAssets = assets.filter(
+        (asset) =>
+          String(asset.currentDepartmentId) === normalizedDepartmentId ||
+          String(asset.custodianDepartmentId) === normalizedDepartmentId
+      );
+      const departmentDeliveries = deliveries.filter(
+        (delivery) => String(delivery.departmentId) === normalizedDepartmentId
+      );
+      const departmentTransfers = transfers.filter(
+        (transfer) =>
+          String(transfer.fromDepartmentId) === normalizedDepartmentId ||
+          String(transfer.toDepartmentId) === normalizedDepartmentId
+      );
+      const departmentReturns = returns.filter(
+        (returnRecord) =>
+          String(returnRecord.departmentId) === normalizedDepartmentId
+      );
+      const workflows = [
+        ...departmentDeliveries,
+        ...departmentTransfers,
+        ...departmentReturns,
+      ];
+
+      setDepartmentStats({
+        assetCount: departmentAssets.length,
+        inUseAssets: departmentAssets.filter(
+          (asset) => asset.lifecycleStatus === "In Use"
+        ).length,
+        workflowCount: workflows.length,
+        openWorkflows:
+          departmentDeliveries.filter(
+            (delivery) => delivery.deliveryStatus === "Pending"
+          ).length +
+          departmentTransfers.filter(
+            (transfer) => transfer.transferStatus === "Pending"
+          ).length +
+          departmentReturns.filter(
+            (returnRecord) =>
+              returnRecord.returnStatus === "Pending Inspection" ||
+              returnRecord.inspectionStatus === "Pending"
+          ).length,
+      });
     } catch (loadError) {
       setError(loadError.message || "Department could not be loaded.");
     } finally {
@@ -158,22 +245,22 @@ export default function ViewDepartmentPage() {
             <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
               <p className="text-sm text-gray-500">Asset Allocation</p>
               <h3 className="mt-2 text-lg font-bold text-gray-900">
-                Pending asset integration
+                {departmentStats.assetCount} assets linked
               </h3>
               <p className="mt-2 text-sm text-gray-600">
-                Department-wise asset counts will be calculated from real asset
-                records after Assets integration.
+                {departmentStats.inUseAssets} assets are currently marked as in
+                use for this department.
               </p>
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
               <p className="text-sm text-gray-500">Activity Summary</p>
               <h3 className="mt-2 text-lg font-bold text-gray-900">
-                Pending workflow integration
+                {departmentStats.workflowCount} workflow records
               </h3>
               <p className="mt-2 text-sm text-gray-600">
-                Delivery, transfer, return and maintenance activity will appear
-                here after module integration.
+                {departmentStats.openWorkflows} linked delivery, transfer or
+                return records need follow-up.
               </p>
             </div>
           </section>

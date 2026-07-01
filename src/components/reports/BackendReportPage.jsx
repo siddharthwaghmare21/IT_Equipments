@@ -85,8 +85,8 @@ function ReportOperationalNote({ title }) {
         <div className="px-4 py-3 leading-6 text-gray-700">
           Live MySQL report data is connected through Phase 6 APIs. CSV,
           Excel-style spreadsheet download and print/PDF tracking are available
-          in Phase 7. Physical PDF package generation and scheduled email
-          delivery remain parked for later SMTP/export automation work.
+          in Phase 7. Scheduled email delivery is enabled only after company
+          SMTP credentials are configured.
         </div>
       </div>
     </section>

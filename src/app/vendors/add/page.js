@@ -236,8 +236,8 @@ export default function AddVendorPage() {
 
           <div className="md:col-span-2">
             <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
-              PAN, bank proof, ratings and vendor documents will be connected
-              through vendor document workflow later.
+              PAN, bank proof, ratings and vendor documents are managed through
+              the vendor document workflow after vendor creation.
             </div>
           </div>
         </div>

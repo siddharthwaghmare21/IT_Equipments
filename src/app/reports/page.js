@@ -174,7 +174,7 @@ export default function ReportsPage() {
       frequency: "Weekly",
       format: "PDF",
       recipients: "IT Admins",
-      status: "SMTP Phase Pending",
+      status: "Requires SMTP Setup",
     },
     {
       name: "Monthly Warranty Review",
@@ -190,17 +190,17 @@ export default function ReportsPage() {
     { label: "Records Fetched", value: "Backend report API" },
     { label: "Database", value: "MySQL connected" },
   ];
-  const frontendQaItems = [
-    "Mobile and laptop spacing review",
-    "Print footer and watermark review",
-    "Table overflow and compact mode review",
-    "Dark mode contrast review",
+  const reportReadinessItems = [
+    "Live MySQL report APIs connected",
+    "CSV export available",
+    "Excel-compatible export available",
+    "Browser print/PDF available",
   ];
-  const cleanupChecklist = [
-    "Report APIs connected",
-    "CSV, Excel and print/PDF tracking connected",
-    "Bind report branding to database settings",
+  const reportSystemStatus = [
     "Backend report responses connected",
+    "Report branding loaded from database settings",
+    "Export tracking jobs connected",
+    "Scheduled email requires company SMTP deployment",
   ];
 
   return (
@@ -328,15 +328,15 @@ export default function ReportsPage() {
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Report Builder Preview
+              Report Builder
             </p>
             <h2 className="mt-1 text-lg font-bold text-gray-900">
-              Prepare filters before backend export jobs
+              Prepare report filters and export format
             </h2>
             <p className="mt-1 max-w-3xl text-sm text-gray-600">
-              These controls are frontend-ready for report filtering. Export
-              tracking is connected; scheduled delivery will use the same
-              choices after SMTP is configured.
+              These controls filter backend-connected report pages. Export
+              tracking is active; scheduled delivery will use the same choices
+              after SMTP is configured.
             </p>
           </div>
 
@@ -373,7 +373,7 @@ export default function ReportsPage() {
         <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[1fr_1fr]">
           <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
             <p className="text-sm font-bold text-gray-900">
-              Column Visibility Preview
+              Column Visibility
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {columnPreview[reportView].map((column) => (
@@ -389,7 +389,7 @@ export default function ReportsPage() {
 
           <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
             <p className="text-sm font-bold text-gray-900">
-              Export Queue Preview
+              Export Queue
             </p>
             <div className="mt-3 space-y-2">
               {exportQueue.map((item) => (
@@ -413,7 +413,7 @@ export default function ReportsPage() {
           {[
             ["Print/PDF Export", "Active with browser print"],
             ["Excel Export", "Active as spreadsheet download"],
-            ["Scheduled Email", "SMTP phase pending"],
+            ["Scheduled Email", "Requires SMTP setup"],
           ].map(([item, status]) => (
             <div
               key={item}
@@ -499,10 +499,10 @@ export default function ReportsPage() {
       <section className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <h2 className="text-lg font-bold text-gray-900">
-            Frontend QA Checklist
+            Report Readiness
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {frontendQaItems.map((item) => (
+            {reportReadinessItems.map((item) => (
               <div
                 key={item}
                 className="rounded-xl border border-gray-100 bg-gray-50 p-3 text-sm font-semibold text-gray-700"
@@ -515,10 +515,10 @@ export default function ReportsPage() {
 
         <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
           <h2 className="text-lg font-bold text-yellow-900">
-            Final Frontend Cleanup Checklist
+            Report System Status
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {cleanupChecklist.map((item) => (
+            {reportSystemStatus.map((item) => (
               <div
                 key={item}
                 className="rounded-xl border border-yellow-200 bg-white/70 p-3 text-sm font-semibold text-yellow-900"

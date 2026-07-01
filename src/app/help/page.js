@@ -34,33 +34,25 @@ const sopSteps = [
   },
 ];
 
-const cleanupItems = [
-  "Keep NEXT_PUBLIC_TEMP_AUTH_BYPASS disabled outside temporary frontend review",
-  "Remove or hide Frontend Demo badges",
-  "Replace sample arrays with API responses",
-  "Connect import preview/validation to backend APIs",
-  "Enable real PDF, Excel and backup jobs",
-];
-
 const shortcuts = [
   { keys: "Ctrl + K", action: "Open quick action command palette" },
   { keys: "Ctrl + F", action: "Use browser/page search" },
   { keys: "Ctrl + P", action: "Print delivery, return or report page" },
 ];
 
-const frontendCompletion = [
-  "Dashboard, reports, assets and workflow screens are frontend-ready",
-  "Temporary login bypass is controlled by NEXT_PUBLIC_TEMP_AUTH_BYPASS",
-  "PDF, Excel, backup and email jobs are backend pending",
-  "Report branding can be previewed from Settings",
+const systemReadiness = [
+  "Dashboard, reports, assets and workflow screens use backend API data",
+  "Role-based page visibility and write actions are enforced in the UI",
+  "CSV, Excel-compatible downloads, print/PDF and backup tracking are active",
+  "Report branding is loaded from backend system settings",
 ];
 
-const backendPreparation = [
-  "Auth APIs: login, signup request, email OTP, approval workflow",
-  "Master APIs: assets, departments, vendors and receiver tracking",
-  "Workflow APIs: purchase, delivery, transfer, return, maintenance, damage review",
-  "Report APIs: filters, PDF/Excel export, scheduled email, audit trail",
-  "System APIs: backup, restore, role permissions, activity logs",
+const connectedBackendAreas = [
+  "Auth APIs: login, signup request and approval workflow",
+  "Master APIs: assets, departments, vendors and user management",
+  "Workflow APIs: purchase, delivery, transfer, return and maintenance",
+  "Report APIs: live MySQL reports with export tracking",
+  "System APIs: backup tracking, role permissions, activity logs and settings",
 ];
 
 const namingStandards = [
@@ -112,15 +104,15 @@ export default function HelpPage() {
       </section>
 
       <section className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
-          <h2 className="text-lg font-bold text-yellow-900">
-            Backend Cleanup Checklist
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-emerald-900">
+            Backend Connection Status
           </h2>
           <div className="mt-4 space-y-3">
-            {cleanupItems.map((item) => (
+            {connectedBackendAreas.map((item) => (
               <p
                 key={item}
-                className="rounded-xl border border-yellow-200 bg-white/70 p-3 text-sm font-semibold text-yellow-900"
+                className="rounded-xl border border-emerald-200 bg-white/80 p-3 text-sm font-semibold text-emerald-900"
               >
                 {item}
               </p>
@@ -153,26 +145,10 @@ export default function HelpPage() {
       <section className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <h2 className="text-lg font-bold text-gray-900">
-            Frontend Completion Notes
+            System Readiness
           </h2>
           <div className="mt-4 space-y-3">
-            {frontendCompletion.map((item) => (
-              <p
-                key={item}
-                className="rounded-xl bg-gray-50 p-3 text-sm font-semibold text-gray-700"
-              >
-                {item}
-              </p>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900">
-            Backend Preparation
-          </h2>
-          <div className="mt-4 space-y-3">
-            {backendPreparation.map((item) => (
+            {systemReadiness.map((item) => (
               <p
                 key={item}
                 className="rounded-xl bg-gray-50 p-3 text-sm font-semibold text-gray-700"

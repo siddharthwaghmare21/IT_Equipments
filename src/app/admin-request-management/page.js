@@ -452,7 +452,7 @@ export default function AdminRequestManagementPage() {
 
       <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
         Note: This page now reads pending access requests from backend approval
-        records. Email OTP sending is still pending for the SMTP phase.
+        records. Email OTP sending requires company SMTP configuration.
       </p>
         </>
       )}

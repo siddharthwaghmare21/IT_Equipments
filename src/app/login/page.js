@@ -334,7 +334,7 @@ export default function LoginPage() {
           <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
             Note: Backend login verifies email and password with JWT session.
             The account must already be email-verified in backend. OTP email
-            delivery is parked for future company deployment.
+            delivery requires company SMTP configuration.
           </p>
         </section>
       </div>

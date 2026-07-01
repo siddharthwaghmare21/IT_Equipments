@@ -120,7 +120,6 @@ export default function DashboardPage() {
       }
     );
   });
-  const [previewRole, setPreviewRole] = useState(currentUser?.role || "Super Admin");
   const [dashboardRecords, setDashboardRecords] = useState(emptyDashboardRecords);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -374,8 +373,9 @@ export default function DashboardPage() {
       })),
   ];
 
+  const currentRole = currentUser?.role || "Employee";
   const visibleRoleActions =
-    (roleActions[previewRole] || roleActions.Employee).filter((action) =>
+    (roleActions[currentRole] || roleActions.Employee).filter((action) =>
       canAccessPath(currentUser, action.href)
     );
   const dataQualityItems = [
@@ -525,19 +525,12 @@ export default function DashboardPage() {
                 Role Based Actions
               </h2>
               <p className="mt-1 text-sm text-gray-600">
-                Preview quick actions before backend permissions are connected.
+                Quick actions available for your current backend role.
               </p>
             </div>
-            <select
-              value={previewRole}
-              onChange={(event) => setPreviewRole(event.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 sm:w-48"
-            >
-              <option value="Super Admin">Super Admin</option>
-              <option value="Admin">Admin</option>
-              <option value="Employee">Employee</option>
-              <option value="Viewer">Viewer</option>
-            </select>
+            <span className="w-fit rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-bold text-gray-700">
+              {currentRole}
+            </span>
           </div>
 
           <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -554,7 +547,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            {rolePermissionPreview[previewRole].map((permission) => (
+            {(rolePermissionPreview[currentRole] || rolePermissionPreview.Employee).map((permission) => (
               <div
                 key={permission}
                 className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700"
@@ -589,7 +582,7 @@ export default function DashboardPage() {
           Data Quality Dashboard
         </h2>
         <p className="mt-1 text-sm text-gray-600">
-          Frontend checks that will become backend validation rules later.
+          Live record checks calculated from backend-connected module data.
         </p>
 
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -764,15 +757,15 @@ export default function DashboardPage() {
           <div className="mt-4 space-y-3 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Frontend Build</span>
-              <span className="font-semibold text-green-700">Passing</span>
+              <span className="font-semibold text-green-700">Ready</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Backend</span>
-              <span className="font-semibold text-yellow-700">Pending</span>
+              <span className="font-semibold text-green-700">API Connected</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Database</span>
-              <span className="font-semibold text-yellow-700">MySQL Pending</span>
+              <span className="font-semibold text-green-700">MySQL Connected</span>
             </div>
           </div>
         </div>

@@ -16,6 +16,12 @@ const importModules = [
     status: "Tracking Connected",
   },
   {
+    title: "Departments",
+    requiredColumns: ["departmentCode", "departmentName", "headOfDepartment", "email", "location"],
+    sampleRow: ["DEP-001", "IT Department", "Rahul Patil", "it@company.com", "Main Office"],
+    status: "Tracking Connected",
+  },
+  {
     title: "Vendors",
     requiredColumns: ["vendorName", "contactPerson", "gstNumber", "paymentTerms"],
     sampleRow: ["ABC Computers", "Rahul Sharma", "27ABCDE1234F1Z5", "30 Days"],
@@ -321,8 +327,8 @@ export default function ImportDataPage() {
 
       <section className="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">
         Import job tracking is connected to backend APIs. CSV template download
-        and browser-side validation are active. Direct database import remains
-        locked until approved data loading and final testing.
+        and browser-side validation are active. Bulk database loading is kept
+        under approved final data-loading control.
       </section>
 
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -386,7 +392,7 @@ export default function ImportDataPage() {
                 {selectedModule} Import Preview
               </h2>
               <p className="mt-1 text-sm text-gray-600">
-                CSV validation preview with backend tracking. Database import is still locked.
+                CSV validation preview with backend tracking for the final data-loading step.
               </p>
             </div>
             <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">
@@ -529,7 +535,7 @@ export default function ImportDataPage() {
                 disabled
                 className="rounded-xl bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-600"
               >
-                Import to Database
+                Final Data Load Controlled
               </button>
             </div>
           </div>

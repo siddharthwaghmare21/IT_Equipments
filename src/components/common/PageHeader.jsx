@@ -13,10 +13,6 @@ export default function PageHeader({
           <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
             {title}
           </h1>
-
-          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-600">
-            Frontend Demo
-          </span>
         </div>
 
         {description && (

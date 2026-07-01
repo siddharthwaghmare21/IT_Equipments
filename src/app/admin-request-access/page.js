@@ -485,7 +485,7 @@ export default function AdminRequestAccessPage() {
 
           <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
             Note: This request is now saved through the backend API with secure
-            password hashing. Email OTP is parked for later company deployment.
+            password hashing. Email OTP requires company SMTP configuration.
           </p>
         </section>
       </div>

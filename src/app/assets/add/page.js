@@ -267,7 +267,7 @@ export default function AddAssetPage() {
             value={formData.qrCode}
             onChange={handleChange}
             placeholder="Auto-generated after save"
-            tooltip="QR/barcode value used on asset label. Backend can auto-generate this later."
+            tooltip="QR/barcode value used on asset label. Leave blank to generate it after save."
           />
 
           <div className="md:col-span-2">

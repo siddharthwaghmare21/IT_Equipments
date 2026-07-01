@@ -27,6 +27,52 @@ const reportBrandingFieldMap = {
   report_classification: "reportClassification",
 };
 
+const defaultSettings = {
+  companyName: "IT Assets Management",
+  companyEmail: "admin@company.com",
+  companyPhone: "+91 98765 43210",
+  companyAddress: "Main Office, Maharashtra, India",
+  reportLogoText: "IT",
+  reportPreparedBy: "IT Department",
+  reportClassification: "Internal",
+
+  adminName: "Admin",
+  adminEmail: "itadmin@company.com",
+  adminPhone: "+91 98765 12345",
+  defaultRole: "Viewer",
+  sessionTimeout: "30",
+  passwordExpiryDays: "90",
+
+  lowStockAlert: true,
+  warrantyExpiryAlert: true,
+  maintenanceAlert: true,
+  deliveryAlert: true,
+  emailNotifications: true,
+  inAppNotifications: true,
+  weeklySummary: true,
+
+  csvExport: true,
+  printReport: true,
+  pdfExport: true,
+  excelExport: true,
+
+  loginSecurity: true,
+  roleBasedAccess: true,
+  requestApproval: true,
+  activityLogs: true,
+  deleteConfirmation: true,
+  dataBackup: false,
+  backupScope: "Full Database",
+  backupFrequency: "Weekly",
+  auditRetention: "365",
+  assetTagPrefix: "IT",
+  fiscalYearStart: "April",
+  warrantyLeadDays: "30",
+  assetLabelSize: "Standard",
+  dateFormat: "DD-MM-YYYY",
+  defaultReportView: "Summary",
+};
+
 function mapSettingsFromApi(apiSettings = []) {
   return apiSettings.reduce((mappedSettings, setting) => {
     const settingKey = setting.settingKey || setting.SettingKey;
@@ -66,51 +112,7 @@ export default function SettingsPage() {
     isConfigured: false,
     message: "Checking SMTP email status.",
   });
-  const [settings, setSettings] = useState({
-    companyName: "IT Assets Management",
-    companyEmail: "admin@company.com",
-    companyPhone: "+91 98765 43210",
-    companyAddress: "Main Office, Maharashtra, India",
-    reportLogoText: "IT",
-    reportPreparedBy: "IT Department",
-    reportClassification: "Internal",
-
-    adminName: "Admin",
-    adminEmail: "itadmin@company.com",
-    adminPhone: "+91 98765 12345",
-    defaultRole: "Viewer",
-    sessionTimeout: "30",
-    passwordExpiryDays: "90",
-
-    lowStockAlert: true,
-    warrantyExpiryAlert: true,
-    maintenanceAlert: true,
-    deliveryAlert: true,
-    emailNotifications: true,
-    inAppNotifications: true,
-    weeklySummary: true,
-
-    csvExport: true,
-    printReport: true,
-    pdfExport: true,
-    excelExport: true,
-
-    loginSecurity: true,
-    roleBasedAccess: true,
-    requestApproval: true,
-    activityLogs: true,
-    deleteConfirmation: true,
-    dataBackup: false,
-    backupScope: "Full Database",
-    backupFrequency: "Weekly",
-    auditRetention: "365",
-    assetTagPrefix: "IT",
-    fiscalYearStart: "April",
-    warrantyLeadDays: "30",
-    assetLabelSize: "Standard",
-    dateFormat: "DD-MM-YYYY",
-    defaultReportView: "Summary",
-  });
+  const [settings, setSettings] = useState(defaultSettings);
 
   const loadBackupJobs = useCallback(async () => {
     const token = getSessionToken();
@@ -246,6 +248,20 @@ export default function SettingsPage() {
     }
   }
 
+  function handleReset() {
+    setSettings({
+      ...defaultSettings,
+      ...(currentUser
+        ? {
+            adminName: currentUser.fullName || defaultSettings.adminName,
+            adminEmail: currentUser.email || defaultSettings.adminEmail,
+            adminPhone: currentUser.phone || defaultSettings.adminPhone,
+          }
+        : {}),
+    });
+    showToast("Settings form reset to default values.");
+  }
+
   async function handleCreateBackupJob() {
     const token = getSessionToken();
 
@@ -311,8 +327,15 @@ export default function SettingsPage() {
     });
   }
 
-  const backendRequiredItems = [
-    "Company SMTP setup for OTP delivery",
+  const connectedBackupItems = [
+    "MySQL backup job tracking",
+    "Controlled JSON snapshot download",
+    "Role-based backup access",
+    "Activity log and report export tracking",
+  ];
+
+  const futureDeploymentItems = [
+    "SMTP email delivery setup",
     "Physical PDF package generation",
     "Backup restore approval workflow",
     "Scheduled report email summary",
@@ -473,38 +496,44 @@ export default function SettingsPage() {
 
         <section
           id="settings-backup"
-          className="scroll-mt-24 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 shadow-sm sm:p-6"
+          className="scroll-mt-24 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm sm:p-6"
         >
-          <h2 className="text-lg font-bold text-yellow-900">
-            Backend Required
+          <h2 className="text-lg font-bold text-emerald-950">
+            Database Backup
           </h2>
-          <p className="mt-1 text-sm leading-6 text-yellow-800">
-            Export tracking, CSV/Excel downloads and controlled JSON backup are
-            active. SMTP, physical PDF package generation and restore workflows
-            remain parked for later phases.
+          <p className="mt-1 text-sm leading-6 text-emerald-900">
+            Backup job tracking and JSON snapshot download are connected to the
+            backend and MySQL. Restore execution stays locked until an approved
+            maintenance process is defined.
           </p>
           <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
-            {backendRequiredItems.map((item) => (
+            {connectedBackupItems.map((item) => (
               <p
                 key={item}
-                className="rounded-xl border border-yellow-200 bg-white/70 p-3 text-sm font-semibold text-yellow-900"
+                className="rounded-xl border border-emerald-200 bg-white/80 p-3 text-sm font-semibold text-emerald-900"
               >
                 {item}
               </p>
             ))}
           </div>
 
-          <div className="mt-5 rounded-2xl border border-yellow-200 bg-white/80 p-4">
+          <div className="mt-5 rounded-2xl border border-emerald-200 bg-white/85 p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="text-base font-bold text-yellow-950">
-                  Backup Job Tracking
+                <h3 className="text-base font-bold text-emerald-950">
+                  Connected Backup Controls
                 </h3>
-                <p className="mt-1 text-sm leading-6 text-yellow-800">
+                <p className="mt-1 text-sm leading-6 text-emerald-900">
                   Records backup requests in MySQL and downloads a controlled
                   JSON backup snapshot. Restore execution remains locked for a
-                  later approved maintenance step.
+                  separately approved maintenance step.
                 </p>
+                {!canUseBackup && (
+                  <p className="mt-2 text-xs font-semibold text-yellow-800">
+                    Backup controls are available only for roles with backup
+                    export permission.
+                  </p>
+                )}
               </div>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button
@@ -528,7 +557,7 @@ export default function SettingsPage() {
 
             <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="mb-1 block text-sm font-medium text-yellow-950">
+                <label className="mb-1 block text-sm font-medium text-emerald-950">
                   Backup Scope
                 </label>
                 <select
@@ -536,14 +565,14 @@ export default function SettingsPage() {
                   value={settings.backupScope}
                   onChange={handleChange}
                   disabled={!canUseBackup}
-                  className="w-full rounded-xl border border-yellow-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-yellow-700 disabled:bg-yellow-100"
+                  className="w-full rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-emerald-700 disabled:bg-gray-100"
                 >
                   <option value="Full Database">Full Database</option>
                   <option value="Schema Only">Schema Only</option>
                   <option value="Data Only">Data Only</option>
                 </select>
               </div>
-              <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-900">
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-emerald-900">
                 Backup files are generated as JSON snapshots from approved
                 tables only. Restore/import from backup is intentionally not
                 enabled yet.
@@ -563,24 +592,24 @@ export default function SettingsPage() {
                   onRetry={loadBackupJobs}
                 />
               ) : backupJobs.length === 0 ? (
-                <p className="rounded-xl border border-yellow-100 bg-yellow-50 p-3 text-sm text-yellow-900">
+                <p className="rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-sm text-emerald-900">
                   No backup tracking jobs are available yet.
                 </p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">
-                    <thead className="bg-yellow-50 text-left">
+                    <thead className="bg-emerald-50 text-left">
                       <tr>
-                        <th className="px-4 py-3 font-semibold text-yellow-900">
+                        <th className="px-4 py-3 font-semibold text-emerald-900">
                           Type
                         </th>
-                        <th className="px-4 py-3 font-semibold text-yellow-900">
+                        <th className="px-4 py-3 font-semibold text-emerald-900">
                           Scope
                         </th>
-                        <th className="px-4 py-3 font-semibold text-yellow-900">
+                        <th className="px-4 py-3 font-semibold text-emerald-900">
                           Status
                         </th>
-                        <th className="px-4 py-3 font-semibold text-yellow-900">
+                        <th className="px-4 py-3 font-semibold text-emerald-900">
                           Created
                         </th>
                       </tr>
@@ -589,7 +618,7 @@ export default function SettingsPage() {
                       {backupJobs.map((job) => (
                         <tr
                           key={job.backupJobId}
-                          className="border-b border-yellow-100"
+                          className="border-b border-emerald-100"
                         >
                           <td className="px-4 py-3 font-semibold text-gray-900">
                             {job.backupType}
@@ -611,6 +640,22 @@ export default function SettingsPage() {
                   </table>
                 </div>
               )}
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-yellow-200 bg-white/80 p-4">
+            <h3 className="text-sm font-bold text-yellow-950">
+              Future Deployment Controls
+            </h3>
+            <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+              {futureDeploymentItems.map((item) => (
+                <p
+                  key={item}
+                  className="rounded-xl bg-yellow-50 p-3 text-sm font-semibold text-yellow-900"
+                >
+                  {item}
+                </p>
+              ))}
             </div>
           </div>
         </section>
@@ -767,7 +812,7 @@ export default function SettingsPage() {
                 description={
                   emailStatus.isConfigured
                     ? "SMTP is configured and ready for future OTP/email notifications."
-                    : "SMTP is not configured. OTP email delivery is parked for deployment."
+                    : "SMTP is not configured. OTP email delivery requires company SMTP setup."
                 }
                 name="emailNotifications"
                 checked={settings.emailNotifications}
@@ -1068,9 +1113,7 @@ export default function SettingsPage() {
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button
             type="button"
-            onClick={() =>
-              showToast("Settings reset action will be connected later.", "warning")
-            }
+            onClick={handleReset}
             className="inline-flex justify-center rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
           >
             Reset
