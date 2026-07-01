@@ -25,6 +25,8 @@ URLs:
 
 The frontend can be deployed to Vercel, but the full system needs a separately hosted ASP.NET Core backend and a hosted MySQL database. Vercel alone is not enough because the browser frontend must call the backend API, and the backend must connect to MySQL.
 
+Full deployment handover is documented in `DEPLOYMENT.md`.
+
 Frontend environment variable for Vercel:
 
 ```text
@@ -171,3 +173,10 @@ Final deployment readiness:
 - Apply database scripts `001` through `009` in production.
 - Configure production JWT signing key, DB connection, setup key and CORS origin.
 - Configure SMTP only when company email credentials are available.
+
+Production endpoint flow:
+
+- Backend health: `https://your-backend-api-domain/api/health`
+- Frontend Vercel URL: `https://your-vercel-domain.vercel.app`
+- Backend CORS origin: `Cors__AllowedOrigins__0=https://your-vercel-domain.vercel.app`
+- Frontend API base URL: `NEXT_PUBLIC_API_BASE_URL=https://your-backend-api-domain`
