@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# IT Equipment Management
 
-## Getting Started
+Next.js frontend with ASP.NET Core Web API backend and local MySQL database.
 
-First, run the development server:
+## Local Run
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Frontend:
+
+```powershell
+npm.cmd run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Backend:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```powershell
+dotnet run --project backend\ITEquipment.Api\ITEquipment.Api.csproj
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+URLs:
 
-## Learn More
+- Frontend: http://localhost:3000
+- Backend health: http://localhost:5168/api/health
 
-To learn more about Next.js, take a look at the following resources:
+## Phase Status
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Phase 1 Local Setup: complete
+- Phase 2 Database Design: complete
+- Phase 3 Authentication: complete for current scope
+- Phase 4 Core APIs: complete
+- Phase 5 Frontend Integration: complete
+- Phase 6 Reports: complete
+- Phase 7 Export, Import and Backup Tracking: complete for current scope
+- Phase 8 Email/Security: email verification current scope complete; SMTP/OTP parked for company deployment
+- Phase 9 RBAC/Admin/Profile/Settings: complete
+- Phase 10 Final Testing: in progress
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Phase 10 Final Testing Checklist
 
-## Deploy on Vercel
+Current rule: only page open/load and build checks are done until original/new data is added. Full add/edit/delete and end-to-end testing must be done after test data is ready.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Pre-test checks:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Run backend and confirm `/api/health` returns healthy.
+- Run frontend and confirm `/login` opens.
+- Confirm `npm.cmd run lint` passes.
+- Confirm `npm.cmd run build` passes.
+- Confirm backend build passes.
+
+Authentication and roles:
+
+- Login as Super Admin.
+- Verify invalid access code is rejected.
+- Verify unverified email login is blocked by backend.
+- Submit access request from `/admin-request-access`.
+- Approve/reject access request from `/admin-request-management`.
+- Verify `/admin-user-management` is Super Admin only.
+- Verify Viewer can read records/reports but cannot add/edit/archive/cancel.
+
+Core modules:
+
+- Departments: list, add, edit, view, archive.
+- Vendors: list, add, edit, view, archive.
+- Assets: list, add, edit, view, archive, history.
+- Purchases/Work Orders: list, add, edit, view, cancel.
+- Deliveries: list, add, edit, view, cancel.
+- Transfers: list, add, edit, view, cancel.
+- Returns: list, add, edit, view, reject.
+- Maintenance: list, add, edit, view, cancel.
+
+Reports and exports:
+
+- Open all report pages.
+- Verify live data appears after records are added.
+- Verify CSV export.
+- Verify Excel-compatible export.
+- Verify browser print/PDF.
+- Verify report branding from Settings appears in report letterhead.
+
+Import, backup and settings:
+
+- Validate CSV template flow on Import Data page.
+- Create import tracking job after validating a file.
+- Create backup tracking job.
+- Download JSON backup snapshot.
+- Verify backup restore remains disabled/parked.
+- Save report branding in Settings and verify it persists through backend settings.
+
+Final deployment readiness:
+
+- Set `NEXT_PUBLIC_API_BASE_URL` for hosted backend.
+- Host ASP.NET Core backend separately from Vercel.
+- Move MySQL from local DB to hosted/cloud DB.
+- Apply database scripts `001` through `009` in production.
+- Configure production JWT signing key, DB connection, setup key and CORS origin.
+- Configure SMTP only when company email credentials are available.
