@@ -18,7 +18,7 @@ public static class VendorEndpoints
     {
         var group = routes.MapGroup("/api/vendors")
             .WithTags("Vendors")
-            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/", async (
             VendorRepository repository,
@@ -102,6 +102,7 @@ public static class VendorEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CreateVendor");
 
         group.MapPut("/{vendorId:long}", async (
@@ -145,6 +146,7 @@ public static class VendorEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("UpdateVendor");
 
         group.MapDelete("/{vendorId:long}", async (
@@ -173,6 +175,7 @@ public static class VendorEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("DeactivateVendor");
 
         return group;
@@ -320,3 +323,4 @@ public static class VendorEndpoints
         return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
 }
+

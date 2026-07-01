@@ -24,7 +24,7 @@ public static class DeliveryEndpoints
     {
         var group = routes.MapGroup("/api/deliveries")
             .WithTags("Deliveries")
-            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/", async (
             DeliveryRepository repository,
@@ -122,6 +122,7 @@ public static class DeliveryEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CreateDelivery");
 
         group.MapPut("/{deliveryId:long}", async (
@@ -178,6 +179,7 @@ public static class DeliveryEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("UpdateDelivery");
 
         group.MapDelete("/{deliveryId:long}", async (
@@ -205,6 +207,7 @@ public static class DeliveryEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CancelDelivery");
 
         return group;
@@ -301,3 +304,4 @@ public static class DeliveryEndpoints
         return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
 }
+

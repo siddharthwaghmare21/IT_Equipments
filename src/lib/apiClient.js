@@ -126,6 +126,33 @@ export function bootstrapSuperAdmin(setupKey, superAdmin) {
   });
 }
 
+export function createSignupRequest(request) {
+  return apiRequest("/api/auth/signup-request", {
+    method: "POST",
+    body: request,
+  });
+}
+
+export function getUsers(token) {
+  return apiRequest("/api/users", { token });
+}
+
+export function updateUserRole(userId, roleCode, token) {
+  return apiRequest(`/api/users/${userId}/role`, {
+    method: "PATCH",
+    token,
+    body: { roleCode },
+  });
+}
+
+export function updateUserStatus(userId, accountStatus, token) {
+  return apiRequest(`/api/users/${userId}/status`, {
+    method: "PATCH",
+    token,
+    body: { accountStatus },
+  });
+}
+
 export function getDepartments(token) {
   return apiRequest("/api/departments", { token });
 }
@@ -391,6 +418,18 @@ export function getPendingUserAccessApprovals(token) {
 
 export function getEmailStatus(token) {
   return apiRequest("/api/security/email-status", { token });
+}
+
+export function getReportBrandingSettings() {
+  return apiRequest("/api/settings/report-branding");
+}
+
+export function updateReportBrandingSettings(settings, token) {
+  return apiRequest("/api/settings/report-branding", {
+    method: "PUT",
+    token,
+    body: settings,
+  });
 }
 
 export function getReportData(reportType, token) {

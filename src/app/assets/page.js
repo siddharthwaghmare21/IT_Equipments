@@ -16,7 +16,8 @@ import {
 } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
 import { archiveAsset, getAssets } from "@/lib/apiClient";
-import { getSessionToken } from "@/lib/authSession";
+import { getSessionToken, readSession } from "@/lib/authSession";
+import { canUseBackupExport, canUseWriteActions } from "@/lib/rbac";
 import {
   assetConditions,
   assetStatuses,
@@ -37,6 +38,9 @@ export default function AssetsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isArchiving, setIsArchiving] = useState(false);
   const [error, setError] = useState("");
+  const currentUser = readSession();
+  const canExportSelected = canUseBackupExport(currentUser);
+  const canCreateSelectedWorkflow = canUseWriteActions(currentUser);
 
   const loadAssets = useCallback(async () => {
     setIsLoading(true);
@@ -361,18 +365,22 @@ export default function AssetsPage() {
               {selectedAssets.length} assets selected
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
-              <button
-                type="button"
-                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-              >
-                Export Selected
-              </button>
-              <button
-                type="button"
-                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-              >
-                Create Maintenance
-              </button>
+              {canExportSelected && (
+                <button
+                  type="button"
+                  className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+                >
+                  Export Selected
+                </button>
+              )}
+              {canCreateSelectedWorkflow && (
+                <button
+                  type="button"
+                  className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+                >
+                  Create Maintenance
+                </button>
+              )}
               <button
                 type="button"
                 onClick={clearSelectedAssets}

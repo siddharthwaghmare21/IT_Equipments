@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { canAccessPath } from "@/lib/rbac";
 
 function getInitials(name) {
   if (!name) return "IT";
@@ -94,6 +95,9 @@ export default function Header({
       href: "/maintenance",
     },
   ];
+  const visibleNotifications = notifications.filter((item) =>
+    canAccessPath(currentUser, item.href)
+  );
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
@@ -248,7 +252,7 @@ export default function Header({
           </div>
 
           <div className="mt-3 space-y-2">
-            {notifications.map((item) => (
+            {visibleNotifications.map((item) => (
               <button
                 key={item.title}
                 type="button"

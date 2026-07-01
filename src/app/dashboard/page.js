@@ -23,6 +23,7 @@ import { mapReturnFromApi } from "@/lib/returnMapper";
 import { mapTransferFromApi } from "@/lib/transferMapper";
 import { mapVendorFromApi } from "@/lib/vendorMapper";
 import { mapWorkOrderFromApi } from "@/lib/workOrderMapper";
+import { canAccessPath } from "@/lib/rbac";
 
 const emptyDashboardRecords = {
   assets: [],
@@ -149,7 +150,7 @@ export default function DashboardPage() {
         coreRequests;
 
       const canLoadAdminWidgets =
-        session?.role === "Super Admin" || session?.role === "Admin";
+        session?.roleCode === "SUPER_ADMIN" || session?.roleCode === "ADMIN";
       const [activityLogResult, accessRequestResult] = canLoadAdminWidgets
         ? await Promise.allSettled([
             getActivityLogs(token, 5),
@@ -374,7 +375,9 @@ export default function DashboardPage() {
   ];
 
   const visibleRoleActions =
-    roleActions[previewRole] || roleActions.Employee;
+    (roleActions[previewRole] || roleActions.Employee).filter((action) =>
+      canAccessPath(currentUser, action.href)
+    );
   const dataQualityItems = [
     {
       label: "Missing Serial Numbers",

@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
+import { ApiError, createSignupRequest, getBootstrapStatus } from "@/lib/apiClient";
 
 const ACCESS_CODE = "DataCenterSMKC";
-const USERS_KEY = "itAssetUsers";
-const REQUESTS_KEY = "itAssetAccessRequests";
 
 function isStrongPassword(password) {
   const hasMinimumLength = password.length >= 8;
@@ -18,11 +17,6 @@ function isStrongPassword(password) {
 }
 
 const rolePermissions = {
-  "Super Admin": [
-    "Full module access",
-    "User approval and role management",
-    "Settings, backup and export control",
-  ],
   Admin: [
     "Most module access",
     "Employee/Admin request approval",
@@ -44,6 +38,7 @@ export default function AdminRequestAccessPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasSuperAdmin, setHasSuperAdmin] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -62,16 +57,33 @@ export default function AdminRequestAccessPage() {
   });
 
   useEffect(() => {
-    const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+    let isMounted = true;
 
-    const superAdminExists = savedUsers.some(
-      (user) => user.role === "Super Admin"
-    );
+    async function loadBootstrapStatus() {
+      try {
+        const status = await getBootstrapStatus();
+        if (isMounted) {
+          setHasSuperAdmin(Boolean(status?.hasActiveSuperAdmin));
+        }
+      } catch (error) {
+        showToast(
+          error instanceof ApiError
+            ? error.message
+            : "Unable to check Super Admin setup status.",
+          "error"
+        );
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
 
-    setTimeout(() => {
-      setHasSuperAdmin(superAdminExists);
-      setIsLoading(false);
-    }, 0);
+    loadBootstrapStatus();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   function handleChange(event) {
@@ -90,7 +102,7 @@ export default function AdminRequestAccessPage() {
     }
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     if (!isStrongPassword(formData.password)) {
@@ -115,52 +127,55 @@ export default function AdminRequestAccessPage() {
       return;
     }
 
-    const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
-    const savedRequests = JSON.parse(
-      localStorage.getItem(REQUESTS_KEY) || "[]"
-    );
+    setIsSubmitting(true);
 
-    const email = formData.email.trim().toLowerCase();
+    try {
+      await createSignupRequest({
+        fullName: formData.fullName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim() || null,
+        departmentId: null,
+        requestedRoleCode: formData.requestedRole.toUpperCase(),
+        password: formData.password,
+      });
 
-    const userAlreadyExists = savedUsers.some(
-      (user) => user.email.toLowerCase() === email
-    );
+      setIsSubmitted(true);
+      showToast("Access request submitted successfully.");
+    } catch (error) {
+      showToast(
+        error instanceof ApiError
+          ? error.message
+          : "Access request could not be submitted.",
+        "error"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
-    if (userAlreadyExists) {
-      showToast("This email already has an account. Please login.", "warning");
+  function getRequestedRoleCode(role) {
+    if (role === "Admin") {
+      return "ADMIN";
+    }
+
+    if (role === "Viewer") {
+      return "VIEWER";
+    }
+
+    return "EMPLOYEE";
+  }
+
+  function handleRoleChange(event) {
+    const nextRole = event.target.value;
+
+    if (!rolePermissions[nextRole]) {
       return;
     }
 
-    const pendingRequestExists = savedRequests.some(
-      (request) =>
-        request.email.toLowerCase() === email && request.status === "Pending"
-    );
-
-    if (pendingRequestExists) {
-      showToast("Access request already submitted for this email.", "warning");
-      return;
-    }
-
-    const newRequest = {
-      id: Date.now(),
-      fullName: formData.fullName,
-      email: formData.email,
-      phone: formData.phone,
-      department: "IT Department",
-      requestedRole: formData.requestedRole,
-      password: formData.password,
-      reason: formData.reason,
-      status: "Pending",
-      requestedAt: new Date().toISOString(),
-    };
-
-    localStorage.setItem(
-      REQUESTS_KEY,
-      JSON.stringify([newRequest, ...savedRequests])
-    );
-
-    setIsSubmitted(true);
-    showToast("Access request submitted successfully.");
+    setFormData((previousData) => ({
+      ...previousData,
+      requestedRole: nextRole,
+    }));
   }
 
   if (isLoading) {
@@ -269,7 +284,7 @@ export default function AdminRequestAccessPage() {
               <li>- Only IT Department staff can request access</li>
               <li>- Internal access code is required</li>
               <li>- Existing Super Admin approval is required</li>
-              <li>- Multiple Super Admin accounts are supported</li>
+              <li>- Super Admin can promote users after approval</li>
               <li>- Password must contain 8 characters, 1 capital letter and 1 symbol</li>
             </ul>
           </div>
@@ -341,19 +356,17 @@ export default function AdminRequestAccessPage() {
               <select
                 name="requestedRole"
                 value={formData.requestedRole}
-                onChange={handleChange}
+                onChange={handleRoleChange}
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
                 required
               >
-                <option value="Super Admin">Super Admin</option>
                 <option value="Admin">Admin</option>
                 <option value="Employee">Employee</option>
                 <option value="Viewer">Viewer</option>
               </select>
 
               <p className="mt-2 text-xs leading-5 text-gray-500">
-                Super Admin request will require approval from an existing Super
-                Admin.
+                Selected request code: {getRequestedRoleCode(formData.requestedRole)}
               </p>
 
               <div className="mt-3 rounded-2xl border border-gray-200 bg-gray-50 p-4">
@@ -454,9 +467,10 @@ export default function AdminRequestAccessPage() {
 
             <button
               type="submit"
+              disabled={isSubmitting}
               className="w-full rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
             >
-              Submit Access Request
+              {isSubmitting ? "Submitting..." : "Submit Access Request"}
             </button>
           </form>
 
@@ -470,8 +484,8 @@ export default function AdminRequestAccessPage() {
           </div>
 
           <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
-            Note: Password is stored only for frontend demo. Backend integration
-            later will use secure password hashing and email OTP verification.
+            Note: This request is now saved through the backend API with secure
+            password hashing. Email OTP is parked for later company deployment.
           </p>
         </section>
       </div>

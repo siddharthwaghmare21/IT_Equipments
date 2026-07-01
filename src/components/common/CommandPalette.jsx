@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { canAccessPath } from "@/lib/rbac";
 
 const commands = [
   { label: "Open Dashboard", href: "/dashboard", keywords: "home overview" },
@@ -16,7 +17,7 @@ const commands = [
   { label: "Open Settings", href: "/settings", keywords: "system preferences" },
 ];
 
-export default function CommandPalette() {
+export default function CommandPalette({ currentUser }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -41,12 +42,16 @@ export default function CommandPalette() {
   const filteredCommands = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    if (!normalizedQuery) return commands;
+    const allowedCommands = commands.filter((command) =>
+      canAccessPath(currentUser, command.href)
+    );
 
-    return commands.filter((command) =>
+    if (!normalizedQuery) return allowedCommands;
+
+    return allowedCommands.filter((command) =>
       `${command.label} ${command.keywords}`.toLowerCase().includes(normalizedQuery)
     );
-  }, [query]);
+  }, [currentUser, query]);
 
   if (!isOpen) return null;
 

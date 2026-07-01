@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { showToast } from "./ToastHost";
+import { readSession } from "@/lib/authSession";
+import { canUseBackupExport, canUseWriteActions } from "@/lib/rbac";
 
 export default function PageActionBar({
   addHref,
@@ -11,6 +13,10 @@ export default function PageActionBar({
   onPrint,
   children,
 }) {
+  const currentUser = readSession();
+  const canAddRecords = canUseWriteActions(currentUser);
+  const canExportRecords = canUseBackupExport(currentUser);
+
   function handleRefresh() {
     if (onRefresh) {
       onRefresh();
@@ -41,7 +47,7 @@ export default function PageActionBar({
   return (
     <section className="mb-6 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
       <div className="flex flex-wrap gap-2">
-        {addHref && (
+        {addHref && canAddRecords && (
           <Link
             href={addHref}
             className="inline-flex justify-center rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
@@ -57,13 +63,15 @@ export default function PageActionBar({
         >
           Refresh
         </button>
-        <button
-          type="button"
-          onClick={handleExport}
-          className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-        >
-          Export
-        </button>
+        {canExportRecords && (
+          <button
+            type="button"
+            onClick={handleExport}
+            className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+          >
+            Export
+          </button>
+        )}
         <button
           type="button"
           onClick={handlePrint}

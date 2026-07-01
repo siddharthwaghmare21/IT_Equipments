@@ -44,7 +44,7 @@ public static class TransferEndpoints
     {
         var group = routes.MapGroup("/api/transfers")
             .WithTags("Transfers")
-            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/", async (
             TransferRepository repository,
@@ -157,6 +157,7 @@ public static class TransferEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CreateTransfer");
 
         group.MapPut("/{transferId:long}", async (
@@ -224,6 +225,7 @@ public static class TransferEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("UpdateTransfer");
 
         group.MapDelete("/{transferId:long}", async (
@@ -251,6 +253,7 @@ public static class TransferEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CancelTransfer");
 
         return group;
@@ -388,3 +391,4 @@ public static class TransferEndpoints
         return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
 }
+

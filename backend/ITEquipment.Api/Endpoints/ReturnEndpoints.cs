@@ -35,7 +35,7 @@ public static class ReturnEndpoints
     {
         var group = routes.MapGroup("/api/returns")
             .WithTags("Returns")
-            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/", async (ReturnRepository repository, IHostEnvironment environment, CancellationToken cancellationToken) =>
         {
@@ -134,6 +134,7 @@ public static class ReturnEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CreateReturn");
 
         group.MapPut("/{returnId:long}", async (long returnId, ReturnUpdateRequest request, ReturnRepository repository, IHostEnvironment environment, CancellationToken cancellationToken) =>
@@ -193,6 +194,7 @@ public static class ReturnEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("UpdateReturn");
 
         group.MapDelete("/{returnId:long}", async (long returnId, ReturnRepository repository, IHostEnvironment environment, CancellationToken cancellationToken) =>
@@ -216,6 +218,7 @@ public static class ReturnEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("RejectReturn");
 
         return group;
@@ -279,3 +282,4 @@ public static class ReturnEndpoints
         return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
 }
+

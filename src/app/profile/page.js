@@ -213,9 +213,9 @@ export default function ProfilePage() {
       </section>
 
       <section className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">
-        Profile data currently comes from the authenticated login session.
-        Dedicated profile edit and password management APIs are planned for the
-        RBAC/security polish phase.
+        Profile data is loaded from the authenticated backend login session.
+        Profile editing and password reset remain controlled security actions
+        and will be handled during final account-management hardening.
       </section>
     </LayoutWrapper>
   );

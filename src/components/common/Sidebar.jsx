@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sidebarLinks } from "@/data/sidebarLinks";
+import { canAccessSidebarPath } from "@/lib/rbac";
 
 const SIDEBAR_SCROLL_KEY = "itAssetSidebarScroll";
 
@@ -176,21 +177,24 @@ export default function Sidebar({
 }) {
   const pathname = usePathname();
   const navRef = useRef(null);
+  const visibleSidebarLinks = sidebarLinks.filter((link) =>
+    canAccessSidebarPath(currentUser, link.path)
+  );
 
   const groupedLinks = [
     {
       title: "Overview",
-      links: sidebarLinks.filter((link) => link.path === "/dashboard"),
+      links: visibleSidebarLinks.filter((link) => link.path === "/dashboard"),
     },
     {
       title: "Procurement",
-      links: sidebarLinks.filter((link) =>
+      links: visibleSidebarLinks.filter((link) =>
         ["/import-data", "/purchases", "/vendors"].includes(link.path)
       ),
     },
     {
       title: "Asset Lifecycle",
-      links: sidebarLinks.filter((link) =>
+      links: visibleSidebarLinks.filter((link) =>
         [
           "/assets",
           "/departments",
@@ -203,7 +207,7 @@ export default function Sidebar({
     },
     {
       title: "Reports",
-      links: sidebarLinks.filter((link) =>
+      links: visibleSidebarLinks.filter((link) =>
         ["/reports", "/activity-logs"].includes(link.path)
       ),
     },
@@ -216,7 +220,7 @@ export default function Sidebar({
     },
     {
       title: "System",
-      links: sidebarLinks.filter((link) =>
+      links: visibleSidebarLinks.filter((link) =>
         ["/settings", "/profile", "/help"].includes(link.path)
       ),
     },

@@ -47,7 +47,7 @@ public static class WorkOrderEndpoints
     {
         var group = routes.MapGroup("/api/work-orders")
             .WithTags("Work Orders")
-            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/", async (
             WorkOrderRepository repository,
@@ -158,6 +158,7 @@ public static class WorkOrderEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CreateWorkOrder");
 
         group.MapPut("/{workOrderId:long}", async (
@@ -223,6 +224,7 @@ public static class WorkOrderEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("UpdateWorkOrder");
 
         group.MapDelete("/{workOrderId:long}", async (
@@ -250,6 +252,7 @@ public static class WorkOrderEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CancelWorkOrder");
 
         return group;
@@ -424,3 +427,4 @@ public static class WorkOrderEndpoints
         return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
 }
+

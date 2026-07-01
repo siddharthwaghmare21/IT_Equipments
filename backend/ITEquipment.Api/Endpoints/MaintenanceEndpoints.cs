@@ -25,7 +25,7 @@ public static class MaintenanceEndpoints
     {
         var group = routes.MapGroup("/api/maintenance")
             .WithTags("Maintenance")
-            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/", async (MaintenanceRepository repository, IHostEnvironment environment, CancellationToken cancellationToken) =>
         {
@@ -121,6 +121,7 @@ public static class MaintenanceEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CreateMaintenanceRecord");
 
         group.MapPut("/{maintenanceId:long}", async (long maintenanceId, MaintenanceUpdateRequest request, MaintenanceRepository repository, IHostEnvironment environment, CancellationToken cancellationToken) =>
@@ -179,6 +180,7 @@ public static class MaintenanceEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("UpdateMaintenanceRecord");
 
         group.MapDelete("/{maintenanceId:long}", async (long maintenanceId, MaintenanceRepository repository, IHostEnvironment environment, CancellationToken cancellationToken) =>
@@ -202,6 +204,7 @@ public static class MaintenanceEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CancelMaintenanceRecord");
 
         return group;
@@ -266,3 +269,4 @@ public static class MaintenanceEndpoints
         return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
 }
+

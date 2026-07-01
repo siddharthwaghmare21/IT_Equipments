@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { EmptyState } from "./StateBlock";
+import { readSession } from "@/lib/authSession";
+import { canUseWriteActions } from "@/lib/rbac";
 
 export default function CompactRecordList({
   records,
@@ -16,6 +18,9 @@ export default function CompactRecordList({
   emptyTitle = "No records found",
   emptyDescription = "Try changing filters or search terms.",
 }) {
+  const currentUser = readSession();
+  const canWrite = canUseWriteActions(currentUser);
+
   if (records.length === 0) {
     return (
       <div className="md:hidden">
@@ -60,7 +65,7 @@ export default function CompactRecordList({
                 View
               </Link>
             )}
-            {editHref && (
+            {editHref && canWrite && (
               <Link
                 href={editHref(record)}
                 className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800"
@@ -68,7 +73,7 @@ export default function CompactRecordList({
                 Edit
               </Link>
             )}
-            {onArchive && (
+            {onArchive && canWrite && (
               <button
                 type="button"
                 onClick={() => onArchive(record)}

@@ -10,10 +10,43 @@ import {
   downloadBackupSnapshot,
   getBackupJobs,
   getEmailStatus,
+  getReportBrandingSettings,
+  updateReportBrandingSettings,
 } from "@/lib/apiClient";
 import { getSessionToken, readSession } from "@/lib/authSession";
+import { canUseBackupExport } from "@/lib/rbac";
 
 const REPORT_BRANDING_KEY = "itReportBranding";
+const reportBrandingFieldMap = {
+  company_name: "companyName",
+  company_email: "companyEmail",
+  company_phone: "companyPhone",
+  company_address: "companyAddress",
+  report_logo_text: "reportLogoText",
+  report_prepared_by: "reportPreparedBy",
+  report_classification: "reportClassification",
+};
+
+function mapSettingsFromApi(apiSettings = []) {
+  return apiSettings.reduce((mappedSettings, setting) => {
+    const settingKey = setting.settingKey || setting.SettingKey;
+    const settingValue = setting.settingValue ?? setting.SettingValue ?? "";
+    const fieldName = reportBrandingFieldMap[settingKey];
+
+    if (fieldName) {
+      mappedSettings[fieldName] = settingValue;
+    }
+
+    return mappedSettings;
+  }, {});
+}
+
+function mapReportBrandingToApi(settings) {
+  return Object.entries(reportBrandingFieldMap).map(([settingKey, fieldName]) => ({
+    settingKey,
+    settingValue: settings[fieldName] || "",
+  }));
+}
 const settingsTabs = [
   { label: "General", target: "settings-general" },
   { label: "Roles", target: "settings-roles" },
@@ -121,12 +154,33 @@ export default function SettingsPage() {
     }
   }, []);
 
+  const loadReportBranding = useCallback(async () => {
+    try {
+      const apiSettings = await getReportBrandingSettings();
+      const mappedSettings = mapSettingsFromApi(apiSettings);
+
+      setSettings((currentSettings) => ({
+        ...currentSettings,
+        ...mappedSettings,
+      }));
+
+      localStorage.setItem(REPORT_BRANDING_KEY, JSON.stringify(mappedSettings));
+    } catch {
+      const savedBranding = JSON.parse(
+        localStorage.getItem(REPORT_BRANDING_KEY) || "null"
+      );
+
+      if (savedBranding) {
+        setSettings((currentSettings) => ({
+          ...currentSettings,
+          ...savedBranding,
+        }));
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const savedSession = readSession();
-    const savedBranding = JSON.parse(
-      localStorage.getItem(REPORT_BRANDING_KEY) || "null"
-    );
-
     setTimeout(() => {
       setCurrentUser(savedSession);
       setSettings((currentSettings) => ({
@@ -138,7 +192,6 @@ export default function SettingsPage() {
               adminPhone: savedSession.phone || currentSettings.adminPhone,
             }
           : {}),
-        ...(savedBranding || {}),
       }));
     }, 0);
   }, []);
@@ -147,12 +200,13 @@ export default function SettingsPage() {
     const timer = setTimeout(() => {
       loadBackupJobs();
       loadEmailStatus();
+      loadReportBranding();
     }, 0);
 
     return () => clearTimeout(timer);
-  }, [loadBackupJobs, loadEmailStatus]);
+  }, [loadBackupJobs, loadEmailStatus, loadReportBranding]);
 
-  const canUseBackup = Boolean(currentUser) && currentUser.role !== "Viewer";
+  const canUseBackup = canUseBackupExport(currentUser);
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
@@ -163,23 +217,33 @@ export default function SettingsPage() {
     }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    localStorage.setItem(
-      REPORT_BRANDING_KEY,
-      JSON.stringify({
-        companyName: settings.companyName,
-        companyEmail: settings.companyEmail,
-        companyPhone: settings.companyPhone,
-        companyAddress: settings.companyAddress,
-        reportLogoText: settings.reportLogoText,
-        reportPreparedBy: settings.reportPreparedBy,
-        reportClassification: settings.reportClassification,
-      })
-    );
+    const reportBranding = {
+      companyName: settings.companyName,
+      companyEmail: settings.companyEmail,
+      companyPhone: settings.companyPhone,
+      companyAddress: settings.companyAddress,
+      reportLogoText: settings.reportLogoText,
+      reportPreparedBy: settings.reportPreparedBy,
+      reportClassification: settings.reportClassification,
+    };
+    localStorage.setItem(REPORT_BRANDING_KEY, JSON.stringify(reportBranding));
 
-    showToast("Report branding saved locally. Backend settings storage is planned later.");
+    try {
+      await updateReportBrandingSettings(
+        mapReportBrandingToApi(settings),
+        getSessionToken()
+      );
+      showToast("Report branding saved to backend settings.");
+    } catch (error) {
+      showToast(
+        error.message ||
+          "Report branding was saved locally, but backend settings update failed.",
+        "warning"
+      );
+    }
   }
 
   async function handleCreateBackupJob() {
@@ -355,8 +419,8 @@ export default function SettingsPage() {
                 Report Branding
               </h3>
               <p className="mt-1 text-sm text-gray-600">
-                These values are used in frontend report headers and will move
-                to backend settings storage later.
+                These values are stored in backend settings and used in report
+                headers.
               </p>
             </div>
 

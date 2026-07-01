@@ -40,7 +40,7 @@ public static class AssetEndpoints
     {
         var group = routes.MapGroup("/api/assets")
             .WithTags("Assets")
-            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/", async (
             AssetRepository repository,
@@ -165,6 +165,7 @@ public static class AssetEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CreateAsset");
 
         group.MapPut("/{assetId:long}", async (
@@ -214,6 +215,7 @@ public static class AssetEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("UpdateAsset");
 
         group.MapDelete("/{assetId:long}", async (
@@ -241,6 +243,7 @@ public static class AssetEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("ArchiveAsset");
 
         group.MapPost("/{assetId:long}/archive", async (
@@ -274,6 +277,7 @@ public static class AssetEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("ArchiveAssetWithRemarks");
 
         return group;
@@ -465,3 +469,4 @@ public static class AssetEndpoints
         return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
 }
+

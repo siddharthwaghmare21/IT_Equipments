@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ConfirmDialog from "./ConfirmDialog";
@@ -10,9 +10,11 @@ import CommandPalette from "./CommandPalette";
 import { showToast } from "./ToastHost";
 import { SESSION_KEY } from "@/lib/authConfig";
 import { readSession } from "@/lib/authSession";
+import { canAccessPath } from "@/lib/rbac";
 
 export default function LayoutWrapper({ children }) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -22,9 +24,10 @@ export default function LayoutWrapper({ children }) {
     setTimeout(() => setCurrentUser(readSession()), 0);
   }, []);
 
-  const isSuperAdmin = currentUser?.role === "Super Admin";
+  const isSuperAdmin = currentUser?.roleCode === "SUPER_ADMIN";
   const canManageAccessRequests =
-    currentUser?.role === "Super Admin" || currentUser?.role === "Admin";
+    currentUser?.roleCode === "SUPER_ADMIN" || currentUser?.roleCode === "ADMIN";
+  const canAccessCurrentPage = !currentUser || canAccessPath(currentUser, pathname);
 
   function handleLogout() {
     setShowLogoutConfirm(true);
@@ -80,7 +83,17 @@ export default function LayoutWrapper({ children }) {
 
         <main className="p-4 sm:p-6 lg:p-8">
           <Breadcrumbs />
-          {children}
+          {canAccessCurrentPage ? (
+            children
+          ) : (
+            <section className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-800 shadow-sm">
+              <h2 className="text-lg font-bold">Access restricted</h2>
+              <p className="mt-2 text-sm leading-6">
+                Your current role does not have permission to open this page.
+                Please contact Super Admin if access is required.
+              </p>
+            </section>
+          )}
         </main>
       </div>
 
@@ -94,7 +107,7 @@ export default function LayoutWrapper({ children }) {
         onConfirm={confirmLogout}
       />
 
-      <CommandPalette />
+      <CommandPalette currentUser={currentUser} />
     </div>
   );
 }

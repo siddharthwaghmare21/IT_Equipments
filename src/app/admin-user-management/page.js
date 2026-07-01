@@ -5,13 +5,19 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
-import { EmptyState } from "@/components/common/StateBlock";
+import { EmptyState, LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
+import { ApiError, getUsers, updateUserRole, updateUserStatus } from "@/lib/apiClient";
+import { readSession } from "@/lib/authSession";
 
-const USERS_KEY = "itAssetUsers";
-const SESSION_KEY = "itAssetUserSession";
+const roles = [
+  { label: "Super Admin", code: "SUPER_ADMIN" },
+  { label: "Admin", code: "ADMIN" },
+  { label: "Employee", code: "EMPLOYEE" },
+  { label: "Viewer", code: "VIEWER" },
+];
 
-const roles = ["Super Admin", "Admin", "Employee", "Viewer"];
+const statuses = ["Pending", "Active", "Rejected", "Suspended", "Inactive"];
 
 function RoleBadge({ role }) {
   const styles = {
@@ -35,8 +41,10 @@ function RoleBadge({ role }) {
 function StatusBadge({ status }) {
   const styles = {
     Active: "bg-green-100 text-green-700 border-green-200",
-    Blocked: "bg-red-100 text-red-700 border-red-200",
+    Suspended: "bg-red-100 text-red-700 border-red-200",
     Inactive: "bg-yellow-100 text-yellow-700 border-yellow-200",
+    Pending: "bg-blue-100 text-blue-700 border-blue-200",
+    Rejected: "bg-gray-100 text-gray-700 border-gray-200",
   };
 
   return (
@@ -59,36 +67,81 @@ function formatDate(dateValue) {
   });
 }
 
+function normalizeUser(user) {
+  return {
+    id: user.userId,
+    fullName: user.fullName,
+    email: user.email,
+    phone: user.phone,
+    role: user.roleName,
+    roleCode: user.roleCode,
+    department: user.departmentName || "IT Department",
+    status: user.accountStatus,
+    emailVerified: user.emailVerified,
+    lastLoginAt: user.lastLoginAt,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+}
+
 export default function AdminUsersManagementPage() {
   const [users, setUsers] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser] = useState(() => readSession());
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [pendingAction, setPendingAction] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    const savedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
-    const savedSession = JSON.parse(
-      localStorage.getItem(SESSION_KEY) || "null"
-    );
+    let isMounted = true;
 
-    setTimeout(() => {
-      setUsers(savedUsers);
-      setCurrentUser(savedSession);
-    }, 0);
-  }, []);
+    async function loadUsers() {
+      if (!currentUser?.token) {
+        setErrorMessage("Login session expired. Please login again.");
+        setIsLoading(false);
+        return;
+      }
 
-  const isSuperAdmin = currentUser?.role === "Super Admin";
+      try {
+        const apiUsers = await getUsers(currentUser.token);
+        if (isMounted) {
+          setUsers(apiUsers.map(normalizeUser));
+        }
+      } catch (error) {
+        if (isMounted) {
+          setErrorMessage(
+            error instanceof ApiError
+              ? error.message
+              : "Unable to load users from backend."
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadUsers();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentUser]);
+
+  const isSuperAdmin = currentUser?.roleCode === "SUPER_ADMIN";
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
+      const search = searchTerm.toLowerCase();
       const matchesSearch =
-        user.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.phone?.toLowerCase().includes(searchTerm.toLowerCase());
+        user.fullName?.toLowerCase().includes(search) ||
+        user.email?.toLowerCase().includes(search) ||
+        user.phone?.toLowerCase().includes(search);
 
-      const matchesRole = roleFilter === "All" || user.role === roleFilter;
+      const matchesRole = roleFilter === "All" || user.roleCode === roleFilter;
       const matchesStatus =
         statusFilter === "All" || user.status === statusFilter;
 
@@ -98,24 +151,27 @@ export default function AdminUsersManagementPage() {
 
   const totalUsers = users.length;
   const activeUsers = users.filter((user) => user.status === "Active").length;
-  const blockedUsers = users.filter((user) => user.status === "Blocked").length;
-  const superAdmins = users.filter((user) => user.role === "Super Admin").length;
+  const suspendedUsers = users.filter((user) => user.status === "Suspended").length;
+  const superAdmins = users.filter((user) => user.roleCode === "SUPER_ADMIN").length;
 
-  function updateUsersInStorage(updatedUsers) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
-    setUsers(updatedUsers);
+  function replaceUser(updatedUser) {
+    const normalized = normalizeUser(updatedUser);
+    setUsers((previousUsers) =>
+      previousUsers.map((user) => (user.id === normalized.id ? normalized : user))
+    );
   }
 
-  function handleRoleChange(userId, newRole) {
+  function handleRoleChange(userId, newRoleCode) {
     if (!isSuperAdmin) {
       showToast("Only Super Admin can change user roles.", "error");
       return;
     }
 
     const selectedUser = users.find((user) => user.id === userId);
+    const selectedRole = roles.find((role) => role.code === newRoleCode);
 
-    if (!selectedUser) {
-      showToast("User not found.", "error");
+    if (!selectedUser || !selectedRole) {
+      showToast("User or role not found.", "error");
       return;
     }
 
@@ -123,7 +179,8 @@ export default function AdminUsersManagementPage() {
       type: "role",
       userId,
       fullName: selectedUser.fullName,
-      nextRole: newRole,
+      nextRole: selectedRole.label,
+      nextRoleCode: selectedRole.code,
     });
   }
 
@@ -141,98 +198,93 @@ export default function AdminUsersManagementPage() {
     }
 
     if (selectedUser.id === currentUser?.id) {
-      showToast("You cannot block your own account.", "warning");
+      showToast("You cannot suspend your own account.", "warning");
       return;
     }
 
-    const newStatus = selectedUser.status === "Active" ? "Blocked" : "Active";
+    const nextStatus =
+      selectedUser.status === "Active" ? "Suspended" : "Active";
 
     setPendingAction({
       type: "status",
       userId,
       fullName: selectedUser.fullName,
-      nextStatus: newStatus,
+      nextStatus,
     });
   }
 
-  function confirmPendingAction() {
-    if (!pendingAction) return;
+  async function confirmPendingAction() {
+    if (!pendingAction || !currentUser?.token) return;
 
-    if (pendingAction.type === "role") {
-      const updatedUsers = users.map((user) =>
-        user.id === pendingAction.userId
-          ? {
-              ...user,
-              role: pendingAction.nextRole,
-              updatedAt: new Date().toISOString(),
-              updatedBy: currentUser?.fullName || "Super Admin",
-            }
-          : user
+    try {
+      const updatedUser =
+        pendingAction.type === "role"
+          ? await updateUserRole(
+              pendingAction.userId,
+              pendingAction.nextRoleCode,
+              currentUser.token
+            )
+          : await updateUserStatus(
+              pendingAction.userId,
+              pendingAction.nextStatus,
+              currentUser.token
+            );
+
+      replaceUser(updatedUser);
+      showToast(
+        pendingAction.type === "role"
+          ? "User role updated successfully."
+          : `User ${pendingAction.nextStatus.toLowerCase()} successfully.`
       );
-
-      updateUsersInStorage(updatedUsers);
-      showToast("User role updated successfully.");
+    } catch (error) {
+      showToast(
+        error instanceof ApiError ? error.message : "User update failed.",
+        "error"
+      );
+    } finally {
       setPendingAction(null);
-      return;
     }
-
-    const updatedUsers = users.map((user) =>
-      user.id === pendingAction.userId
-        ? {
-            ...user,
-            status: pendingAction.nextStatus,
-            updatedAt: new Date().toISOString(),
-            updatedBy: currentUser?.fullName || "Super Admin",
-          }
-        : user
-    );
-
-    updateUsersInStorage(updatedUsers);
-    showToast(`User ${pendingAction.nextStatus.toLowerCase()} successfully.`);
-    setPendingAction(null);
   }
 
   return (
     <LayoutWrapper>
       <PageHeader
         title="Admin Users Management"
-        description="Manage approved IT staff users, roles and account status. This page is intended for Super Admin only."
+        description="Manage approved IT staff users, roles and account status. Super Admin access is required."
       />
 
       {!isSuperAdmin && (
         <section className="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm sm:p-5">
-          You are not logged in as Super Admin. Role and status actions are
-          disabled. Backend authentication will handle this securely later.
+          You are not logged in as Super Admin. User management actions are
+          disabled by backend authorization.
+        </section>
+      )}
+
+      {errorMessage && (
+        <section className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-700 shadow-sm sm:p-5">
+          {errorMessage}
         </section>
       )}
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Total Users</p>
-          <h2 className="mt-2 text-2xl font-bold text-gray-900">
-            {totalUsers}
-          </h2>
+          <h2 className="mt-2 text-2xl font-bold text-gray-900">{totalUsers}</h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Active Users</p>
-          <h2 className="mt-2 text-2xl font-bold text-green-700">
-            {activeUsers}
-          </h2>
+          <h2 className="mt-2 text-2xl font-bold text-green-700">{activeUsers}</h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Blocked Users</p>
-          <h2 className="mt-2 text-2xl font-bold text-red-700">
-            {blockedUsers}
-          </h2>
+          <p className="text-sm text-gray-500">Suspended Users</p>
+          <h2 className="mt-2 text-2xl font-bold text-red-700">{suspendedUsers}</h2>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Super Admins</p>
-          <h2 className="mt-2 text-2xl font-bold text-purple-700">
-            {superAdmins}
-          </h2>
+          <h2 className="mt-2 text-2xl font-bold text-purple-700">{superAdmins}</h2>
         </div>
       </section>
 
@@ -253,8 +305,8 @@ export default function AdminUsersManagementPage() {
           >
             <option value="All">All Roles</option>
             {roles.map((role) => (
-              <option key={role} value={role}>
-                {role}
+              <option key={role.code} value={role.code}>
+                {role.label}
               </option>
             ))}
           </select>
@@ -265,122 +317,112 @@ export default function AdminUsersManagementPage() {
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           >
             <option value="All">All Status</option>
-            <option value="Active">Active</option>
-            <option value="Blocked">Blocked</option>
-            <option value="Inactive">Inactive</option>
+            {statuses.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
           </select>
         </div>
       </section>
 
-      <TableWrapper>
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
-                User
-              </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
-                Contact
-              </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
-                Role
-              </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
-                Status
-              </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
-                Created At
-              </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
-                Manage Role
-              </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
-                Action
-              </th>
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {filteredUsers.length === 0 ? (
+      {isLoading ? (
+        <LoadingState
+          title="Loading users"
+          description="Fetching user records from backend."
+        />
+      ) : (
+        <TableWrapper>
+          <table className="min-w-full divide-y divide-gray-200 text-sm">
+            <thead className="bg-gray-50">
               <tr>
-                <td colSpan="7" className="px-4 py-8">
-                  <EmptyState
-                    title="No users found"
-                    description="Try changing name, email, role or status filters."
-                  />
-                </td>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">User</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Contact</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Role</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Status</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Created At</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Manage Role</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Action</th>
               </tr>
-            ) : (
-              filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-4 py-4">
-                    <p className="font-semibold text-gray-900">
-                      {user.fullName}
-                    </p>
-                    <p className="mt-1 text-xs text-gray-500">
-                      {user.department || "IT Department"}
-                    </p>
-                  </td>
+            </thead>
 
-                  <td className="whitespace-nowrap px-4 py-4 text-gray-700">
-                    <p>{user.email}</p>
-                    <p className="mt-1 text-xs text-gray-500">{user.phone}</p>
-                  </td>
-
-                  <td className="whitespace-nowrap px-4 py-4">
-                    <RoleBadge role={user.role} />
-                  </td>
-
-                  <td className="whitespace-nowrap px-4 py-4">
-                    <StatusBadge status={user.status} />
-                  </td>
-
-                  <td className="whitespace-nowrap px-4 py-4 text-gray-700">
-                    {formatDate(user.createdAt)}
-                  </td>
-
-                  <td className="whitespace-nowrap px-4 py-4">
-                    <select
-                      value={user.role}
-                      onChange={(event) =>
-                        handleRoleChange(user.id, event.target.value)
-                      }
-                      disabled={!isSuperAdmin}
-                      className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold outline-none focus:border-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
-                    >
-                      {roles.map((role) => (
-                        <option key={role} value={role}>
-                          {role}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-
-                  <td className="whitespace-nowrap px-4 py-4">
-                    <button
-                      type="button"
-                      onClick={() => toggleUserStatus(user.id)}
-                      disabled={!isSuperAdmin}
-                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 ${
-                        user.status === "Active"
-                          ? "border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
-                          : "bg-green-700 text-white hover:bg-green-800"
-                      }`}
-                    >
-                      {user.status === "Active" ? "Block" : "Activate"}
-                    </button>
+            <tbody className="divide-y divide-gray-200 bg-white">
+              {filteredUsers.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="px-4 py-8">
+                    <EmptyState
+                      title="No users found"
+                      description="Try changing name, email, role or status filters."
+                    />
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </TableWrapper>
+              ) : (
+                filteredUsers.map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-50">
+                    <td className="whitespace-nowrap px-4 py-4">
+                      <p className="font-semibold text-gray-900">{user.fullName}</p>
+                      <p className="mt-1 text-xs text-gray-500">{user.department}</p>
+                    </td>
 
-      <p className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800">
-        Note: This is frontend demo user management. Backend integration later
-        will use secure database records, password hashing, OTP verification and
-        server-side role permissions.
+                    <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                      <p>{user.email}</p>
+                      <p className="mt-1 text-xs text-gray-500">{user.phone || "-"}</p>
+                    </td>
+
+                    <td className="whitespace-nowrap px-4 py-4">
+                      <RoleBadge role={user.role} />
+                    </td>
+
+                    <td className="whitespace-nowrap px-4 py-4">
+                      <StatusBadge status={user.status} />
+                    </td>
+
+                    <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                      {formatDate(user.createdAt)}
+                    </td>
+
+                    <td className="whitespace-nowrap px-4 py-4">
+                      <select
+                        value={user.roleCode}
+                        onChange={(event) =>
+                          handleRoleChange(user.id, event.target.value)
+                        }
+                        disabled={!isSuperAdmin}
+                        className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold outline-none focus:border-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+                      >
+                        {roles.map((role) => (
+                          <option key={role.code} value={role.code}>
+                            {role.label}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+
+                    <td className="whitespace-nowrap px-4 py-4">
+                      <button
+                        type="button"
+                        onClick={() => toggleUserStatus(user.id)}
+                        disabled={!isSuperAdmin || user.id === currentUser?.id}
+                        className={`rounded-lg px-3 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 ${
+                          user.status === "Active"
+                            ? "border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
+                            : "bg-green-700 text-white hover:bg-green-800"
+                        }`}
+                      >
+                        {user.status === "Active" ? "Suspend" : "Activate"}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </TableWrapper>
+      )}
+
+      <p className="mt-6 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm leading-6 text-green-800">
+        User records, role changes and account status updates are now connected
+        to backend APIs with Super Admin authorization.
       </p>
 
       <ConfirmDialog

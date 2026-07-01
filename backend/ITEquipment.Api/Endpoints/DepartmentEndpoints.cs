@@ -11,7 +11,7 @@ public static class DepartmentEndpoints
     {
         var group = routes.MapGroup("/api/departments")
             .WithTags("Departments")
-            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/", async (
             DepartmentRepository repository,
@@ -90,6 +90,7 @@ public static class DepartmentEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CreateDepartment");
 
         group.MapPut("/{departmentId:long}", async (
@@ -128,6 +129,7 @@ public static class DepartmentEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("UpdateDepartment");
 
         group.MapDelete("/{departmentId:long}", async (
@@ -156,6 +158,7 @@ public static class DepartmentEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("DeactivateDepartment");
 
         return group;
@@ -268,3 +271,4 @@ public static class DepartmentEndpoints
         return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
 }
+

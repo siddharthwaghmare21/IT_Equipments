@@ -5,6 +5,7 @@ import BackButton from "./BackButton";
 import LayoutWrapper from "./LayoutWrapper";
 import PageHeader from "./PageHeader";
 import ReportExportButtons from "./ReportExportButtons";
+import { getReportBrandingSettings } from "@/lib/apiClient";
 
 const REPORT_BRANDING_KEY = "itReportBranding";
 const defaultBranding = {
@@ -16,6 +17,29 @@ const defaultBranding = {
   reportPreparedBy: "IT Department",
   reportClassification: "Internal",
 };
+const reportBrandingFieldMap = {
+  company_name: "companyName",
+  company_email: "companyEmail",
+  company_phone: "companyPhone",
+  company_address: "companyAddress",
+  report_logo_text: "reportLogoText",
+  report_prepared_by: "reportPreparedBy",
+  report_classification: "reportClassification",
+};
+
+function mapSettingsFromApi(apiSettings = []) {
+  return apiSettings.reduce((mappedSettings, setting) => {
+    const settingKey = setting.settingKey || setting.SettingKey;
+    const settingValue = setting.settingValue ?? setting.SettingValue ?? "";
+    const fieldName = reportBrandingFieldMap[settingKey];
+
+    if (fieldName) {
+      mappedSettings[fieldName] = settingValue;
+    }
+
+    return mappedSettings;
+  }, {});
+}
 
 const attentionWords = [
   "Pending",
@@ -117,15 +141,32 @@ export default function ReportPageShell({
   ];
 
   useEffect(() => {
-    const savedBranding = JSON.parse(
-      localStorage.getItem(REPORT_BRANDING_KEY) || "null"
-    );
+    let isMounted = true;
 
-    if (savedBranding) {
-      setTimeout(() => {
-        setBranding((current) => ({ ...current, ...savedBranding }));
-      }, 0);
+    async function loadBranding() {
+      try {
+        const apiSettings = await getReportBrandingSettings();
+        const mappedSettings = mapSettingsFromApi(apiSettings);
+
+        if (isMounted) {
+          setBranding((current) => ({ ...current, ...mappedSettings }));
+        }
+      } catch {
+        const savedBranding = JSON.parse(
+          localStorage.getItem(REPORT_BRANDING_KEY) || "null"
+        );
+
+        if (isMounted && savedBranding) {
+          setBranding((current) => ({ ...current, ...savedBranding }));
+        }
+      }
     }
+
+    loadBranding();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

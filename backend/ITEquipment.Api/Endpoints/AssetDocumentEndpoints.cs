@@ -21,7 +21,7 @@ public static class AssetDocumentEndpoints
     {
         var group = routes.MapGroup("/api/assets")
             .WithTags("Asset Documents")
-            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite);
+            .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireReportsRead);
 
         group.MapGet("/document-storage-plan", () =>
         {
@@ -115,6 +115,7 @@ public static class AssetDocumentEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("CreateAssetDocumentMetadata");
 
         group.MapDelete("/{assetId:long}/documents/{documentId:long}", async (
@@ -144,6 +145,7 @@ public static class AssetDocumentEndpoints
                 return DatabaseProblem(environment, exception);
             }
         })
+        .RequireAuthorization(ITEquipment.Api.Security.AppAuthorizationPolicies.RequireAssetWrite)
         .WithName("DeleteAssetDocumentMetadata");
 
         return group;
@@ -211,3 +213,4 @@ public static class AssetDocumentEndpoints
         return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
 }
+
