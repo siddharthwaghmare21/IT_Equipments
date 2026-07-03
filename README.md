@@ -1,8 +1,17 @@
 # IT Equipment Management
 
-Next.js frontend with ASP.NET Core Web API backend and local MySQL database.
+Next.js frontend with ASP.NET Core Web API backend and MySQL database.
+
+Current completion strategy: finish and verify the full project locally first, load original organization data at the final testing stage, and purchase/configure production hosting only at the end.
 
 ## Local Run
+
+Prerequisites:
+
+- Node.js/npm dependencies installed with `npm.cmd install`
+- .NET 10 SDK
+- MySQL Server running locally
+- Database scripts applied from `database/smkc/001_database_setup.sql` through `database/smkc/009_email_otp_schema.sql`
 
 Frontend:
 
@@ -24,6 +33,8 @@ URLs:
 ## Deployment Readiness
 
 The frontend can be deployed to Vercel, but the full system needs a separately hosted ASP.NET Core backend and a hosted MySQL database. Vercel alone is not enough because the browser frontend must call the backend API, and the backend must connect to MySQL.
+
+Hosting purchase/account verification can be deferred until the project is fully complete locally. When a hosted backend and hosted MySQL are available, update only the production environment values and run the same database scripts on the hosted database.
 
 Full deployment handover is documented in `DEPLOYMENT.md`.
 
@@ -83,6 +94,7 @@ Production database setup:
 - Activity Logs, Dashboard, Settings, Reports, Help, Admin pages and core modules read backend/API data.
 - Original organization data is intentionally not loaded yet; add it at the final testing stage.
 - Full add/edit/delete/end-to-end testing must be done after original data or approved test data is available.
+- Hosting is intentionally kept as the final step. Local development and submission demo can run with local MySQL; public 24/7 usage requires hosted backend plus hosted MySQL.
 - Vercel can host the Next.js frontend only. ASP.NET Core API and MySQL must be hosted separately for full production use.
 - SMTP/OTP email delivery needs real company SMTP credentials; without SMTP, keep email OTP out of the production login flow.
 - Backup download/tracking is active; restore/import-from-backup remains a controlled maintenance operation.
@@ -113,6 +125,14 @@ Minimum columns to prepare:
 - Maintenance: `maintenanceCode`, `assetTag`, `issueType`, `reportedByName`, `vendorCode`, `serviceType`, `priority`, `serviceDate`, `expectedCompletionDate`, `completionDate`, `downtimeHours`, `warrantyClaim`, `approvalStatus`, `maintenanceCost`, `maintenanceStatus`
 
 Final test data rule: keep asset tags, department codes, vendor codes, work order numbers and workflow codes unique. Use real values only after taking a database backup or before the first production launch.
+
+Recommended final data process:
+
+1. Take a backup from Settings before loading real records.
+2. Add departments and vendors first.
+3. Add work orders before assets when assets reference purchase details.
+4. Add assets before deliveries, transfers, returns and maintenance.
+5. Run full add/edit/delete/view/search/report tests after real records are loaded.
 
 ## Phase 10 Final Testing Checklist
 
