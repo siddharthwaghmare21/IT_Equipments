@@ -10,7 +10,7 @@ const sopSteps = [
   },
   {
     title: "Register Asset",
-    details: "Register received equipment with serial number, warranty, QR reference and documents.",
+    details: "Register received equipment with serial number, warranty, department, location and documents.",
   },
   {
     title: "Delivery",
@@ -95,7 +95,7 @@ export default function HelpPage() {
         <h2 className="text-lg font-bold text-gray-900">Support Rules</h2>
         <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
           <p className="rounded-xl bg-gray-50 p-4 text-sm text-gray-700">
-            Use archive instead of permanent delete so audit history remains available.
+            Use controlled delete actions so audit history remains available.
           </p>
           <p className="rounded-xl bg-gray-50 p-4 text-sm text-gray-700">
             Upload invoices, service reports and acknowledgement proofs wherever available.

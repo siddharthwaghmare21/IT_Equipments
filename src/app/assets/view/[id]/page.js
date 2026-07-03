@@ -166,7 +166,6 @@ export default function ViewAssetPage() {
                 value={asset.custodianDepartmentName}
               />
               <DetailItem label="Location" value={asset.location} />
-              <DetailItem label="QR Code Reference" value={asset.qrCode} />
               <DetailItem
                 label="Document Status"
                 value={`${asset.attachmentStatus} (${asset.documentCount})`}
@@ -275,28 +274,15 @@ export default function ViewAssetPage() {
 
               <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
                 <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                  QR / Barcode Label
+                  Asset Label
                 </p>
 
-                <div className="mt-4 rounded-xl border border-dashed border-gray-300 bg-white p-4 text-center">
-                  <div className="mx-auto grid h-36 w-36 grid-cols-4 gap-1 rounded-lg bg-gray-900 p-2">
-                    {Array.from({ length: 16 }).map((_, index) => (
-                      <span
-                        key={index}
-                        className={`rounded-sm ${
-                          [1, 2, 4, 7, 8, 11, 13, 14].includes(index)
-                            ? "bg-white"
-                            : "bg-gray-900"
-                        }`}
-                      />
-                    ))}
-                  </div>
-
-                  <p className="mt-3 text-sm font-bold text-gray-900">
+                <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 text-center">
+                  <p className="text-sm font-bold text-gray-900">
                     {asset.assetTag}
                   </p>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {asset.qrCode || "QR pending"}
+                  <p className="mt-2 text-xs leading-5 text-gray-500">
+                    Print this page when a physical asset label is required.
                   </p>
                 </div>
 

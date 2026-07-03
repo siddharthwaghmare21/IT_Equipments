@@ -121,7 +121,14 @@ export default function DeliveriesPage() {
         description="Track department-wise IT equipment delivery records, receiver details and acknowledgement status."
       />
 
-      <PageActionBar addHref="/deliveries/delivery" addLabel="Add Delivery" />
+      <PageActionBar
+        addHref="/deliveries/delivery"
+        addLabel="Add Delivery"
+        exportData={filteredDeliveries}
+        exportFileName="deliveries"
+        printTitle="Deliveries"
+        printDescription="Official delivery register generated from the current filtered delivery records."
+      />
 
       {isLoading ? (
         <LoadingState

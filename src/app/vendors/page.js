@@ -121,11 +121,11 @@ export default function VendorsPage() {
 
     try {
       await archiveVendor(archiveTarget.vendorId, getSessionToken());
-      showToast("Vendor archived successfully.");
+      showToast("Vendor deleted successfully.");
       setArchiveTarget(null);
       await loadVendors();
     } catch (archiveError) {
-      showToast(archiveError.message || "Vendor could not be archived.");
+      showToast(archiveError.message || "Vendor could not be deleted.");
     } finally {
       setIsArchiving(false);
     }
@@ -147,7 +147,14 @@ export default function VendorsPage() {
         description="Manage IT equipment suppliers, contact details, compliance status and purchase sources."
       />
 
-      <PageActionBar addHref="/vendors/add" addLabel="Add Vendor" />
+      <PageActionBar
+        addHref="/vendors/add"
+        addLabel="Add Vendor"
+        exportData={filteredVendors}
+        exportFileName="vendors"
+        printTitle="Vendors"
+        printDescription="Official vendor register generated from the current filtered vendor records."
+      />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -334,7 +341,6 @@ export default function VendorsPage() {
                       viewHref={`/vendors/view/${vendor.id}`}
                       updateHref={`/vendors/edit/${vendor.id}`}
                       onDelete={() => setArchiveTarget(vendor)}
-                      deleteLabel="Archive"
                     />
                   </td>
                 </tr>
@@ -355,11 +361,11 @@ export default function VendorsPage() {
 
       <ConfirmDialog
         isOpen={Boolean(archiveTarget)}
-        title="Archive vendor?"
+        title="Delete vendor?"
         description={`Vendor ${
           archiveTarget?.vendorName || ""
-        } will be marked inactive.`}
-        confirmLabel={isArchiving ? "Archiving..." : "Archive"}
+        } will be removed from active vendor lists. Purchase and audit history will remain available.`}
+        confirmLabel={isArchiving ? "Deleting..." : "Delete"}
         onCancel={() => setArchiveTarget(null)}
         onConfirm={confirmArchive}
       />

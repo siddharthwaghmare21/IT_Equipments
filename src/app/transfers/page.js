@@ -143,7 +143,14 @@ export default function TransfersPage() {
         description="Manage department transfers, IT collection and reassignment of issued IT assets."
       />
 
-      <PageActionBar addHref="/transfers/add" addLabel="Add Transfer" />
+      <PageActionBar
+        addHref="/transfers/add"
+        addLabel="Add Transfer"
+        exportData={filteredTransfers}
+        exportFileName="transfers"
+        printTitle="Transfers"
+        printDescription="Official transfer register generated from the current filtered transfer records."
+      />
 
       {isLoading ? (
         <LoadingState

@@ -96,7 +96,6 @@ export default function AssetsPage() {
         ${asset.workOrderRef}
         ${asset.invoiceNumber}
         ${asset.warrantyExpiry}
-        ${asset.qrCode}
         ${asset.assetCondition}
         ${asset.attachmentStatus}
       `.toLowerCase();
@@ -143,17 +142,17 @@ export default function AssetsPage() {
     try {
       await archiveAsset(
         archiveTarget.assetId,
-        `Archived from assets page: ${archiveTarget.assetTag}`,
+        `Deleted from assets page: ${archiveTarget.assetTag}`,
         getSessionToken()
       );
-      showToast(`Asset ${archiveTarget.assetTag} archived successfully.`);
+      showToast(`Asset ${archiveTarget.assetTag} deleted successfully.`);
       setArchiveTarget(null);
       setSelectedAssets((previousAssets) =>
         previousAssets.filter((id) => id !== archiveTarget.id)
       );
       await loadAssets();
     } catch (archiveError) {
-      showToast(archiveError.message || "Asset could not be archived.");
+      showToast(archiveError.message || "Asset could not be deleted.");
     } finally {
       setIsArchiving(false);
     }
@@ -205,7 +204,14 @@ export default function AssetsPage() {
         description="Manage all IT equipment, assignment status, serial numbers and locations."
       />
 
-      <PageActionBar addHref="/assets/add" addLabel="Add Asset" />
+      <PageActionBar
+        addHref="/assets/add"
+        addLabel="Add Asset"
+        exportData={filteredAssets}
+        exportFileName="assets"
+        printTitle="Assets"
+        printDescription="Official asset register generated from the current filtered asset records."
+      />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -250,7 +256,7 @@ export default function AssetsPage() {
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by asset tag, name, serial number, department, work order ref, QR or location..."
+            placeholder="Search by asset tag, name, serial number, department, work order ref or location..."
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
 
@@ -535,7 +541,6 @@ export default function AssetsPage() {
                           viewHref={`/assets/view/${asset.id}`}
                           updateHref={`/assets/edit/${asset.id}`}
                           onDelete={() => setArchiveTarget(asset)}
-                          deleteLabel="Archive"
                         />
                       </td>
                     </tr>
@@ -558,11 +563,11 @@ export default function AssetsPage() {
 
       <ConfirmDialog
         isOpen={Boolean(archiveTarget)}
-        title="Archive asset?"
+        title="Delete asset?"
         description={`Asset ${
           archiveTarget?.assetTag || ""
-        } will be archived. Lifecycle history will remain available for audit and reports.`}
-        confirmLabel={isArchiving ? "Archiving..." : "Archive"}
+        } will be removed from active asset lists. Lifecycle history will remain available for audit and reports.`}
+        confirmLabel={isArchiving ? "Deleting..." : "Delete"}
         onCancel={() => setArchiveTarget(null)}
         onConfirm={confirmArchive}
       />

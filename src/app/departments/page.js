@@ -96,11 +96,11 @@ export default function DepartmentsPage() {
 
     try {
       await archiveDepartment(archiveTarget.departmentId, getSessionToken());
-      showToast("Department archived successfully.");
+      showToast("Department deleted successfully.");
       setArchiveTarget(null);
       await loadDepartments();
     } catch (archiveError) {
-      showToast(archiveError.message || "Department could not be archived.");
+      showToast(archiveError.message || "Department could not be deleted.");
     } finally {
       setIsArchiving(false);
     }
@@ -116,7 +116,14 @@ export default function DepartmentsPage() {
         description="Manage company departments, department heads and asset delivery structure."
       />
 
-      <PageActionBar addHref="/departments/add" addLabel="Add Department" />
+      <PageActionBar
+        addHref="/departments/add"
+        addLabel="Add Department"
+        exportData={filteredDepartments}
+        exportFileName="departments"
+        printTitle="Departments"
+        printDescription="Official department register generated from the current filtered department records."
+      />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -263,7 +270,6 @@ export default function DepartmentsPage() {
                       viewHref={`/departments/view/${department.id}`}
                       updateHref={`/departments/edit/${department.id}`}
                       onDelete={() => setArchiveTarget(department)}
-                      deleteLabel="Archive"
                     />
                   </td>
                 </tr>
@@ -284,11 +290,11 @@ export default function DepartmentsPage() {
 
       <ConfirmDialog
         isOpen={Boolean(archiveTarget)}
-        title="Archive department?"
+        title="Delete department?"
         description={`Department ${
           archiveTarget?.departmentName || ""
-        } will be marked inactive.`}
-        confirmLabel={isArchiving ? "Archiving..." : "Archive"}
+        } will be removed from active department lists. Audit history will remain available.`}
+        confirmLabel={isArchiving ? "Deleting..." : "Delete"}
         onCancel={() => setArchiveTarget(null)}
         onConfirm={confirmArchive}
       />

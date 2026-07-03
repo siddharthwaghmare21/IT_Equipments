@@ -4,7 +4,11 @@ import { showToast } from "./ToastHost";
 import { createExportJob } from "@/lib/apiClient";
 import { getSessionToken } from "@/lib/authSession";
 
-export default function ReportExportButtons({ data = [], fileName = "report" }) {
+export default function ReportExportButtons({
+  data = [],
+  fileName = "report",
+  showDataExports = true,
+}) {
   async function createTrackingJob(exportType) {
     const token = getSessionToken();
 
@@ -115,21 +119,25 @@ export default function ReportExportButtons({ data = [], fileName = "report" }) 
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
-      <button
-        type="button"
-        onClick={exportToCSV}
-        className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-      >
-        Export CSV
-      </button>
+      {showDataExports && (
+        <>
+          <button
+            type="button"
+            onClick={exportToCSV}
+            className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+          >
+            Export CSV
+          </button>
 
-      <button
-        type="button"
-        onClick={exportToExcel}
-        className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-      >
-        Export Excel
-      </button>
+          <button
+            type="button"
+            onClick={exportToExcel}
+            className="inline-flex justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+          >
+            Export Excel
+          </button>
+        </>
+      )}
 
       <button
         type="button"

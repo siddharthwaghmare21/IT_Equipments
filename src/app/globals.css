@@ -222,6 +222,10 @@ textarea:user-invalid {
   border-color: #d1d5db;
 }
 
+.print-only {
+  display: none;
+}
+
 @media print {
   @page {
     size: A4 portrait;

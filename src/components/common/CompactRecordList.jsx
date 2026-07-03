@@ -14,7 +14,7 @@ export default function CompactRecordList({
   viewHref,
   editHref,
   onArchive,
-  archiveLabel = "Archive",
+  archiveLabel = "Delete",
   emptyTitle = "No records found",
   emptyDescription = "Try changing filters or search terms.",
 }) {

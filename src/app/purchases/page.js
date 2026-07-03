@@ -157,7 +157,14 @@ export default function PurchasesPage() {
         description="Track work orders, vendor invoices, received items and pending procurement."
       />
 
-      <PageActionBar addHref="/purchases/add" addLabel="Add Work Order" />
+      <PageActionBar
+        addHref="/purchases/add"
+        addLabel="Add Work Order"
+        exportData={filteredWorkOrders}
+        exportFileName="work-orders"
+        printTitle="Work Orders"
+        printDescription="Official work order register generated from the current filtered procurement records."
+      />
 
       {isLoading ? (
         <LoadingState

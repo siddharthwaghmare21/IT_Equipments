@@ -257,13 +257,6 @@ export default function EditAssetPage() {
               options={assetStatuses}
             />
 
-            <TextInput
-              label="QR Code Reference"
-              name="qrCode"
-              value={formData.qrCode}
-              onChange={handleChange}
-            />
-
             <TextareaInput
               label="Specifications"
               name="specifications"

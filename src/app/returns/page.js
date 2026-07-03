@@ -127,7 +127,14 @@ export default function ReturnsPage() {
         description="Manage returned IT assets, return condition, received-by details and inspection status."
       />
 
-      <PageActionBar addHref="/returns/add" addLabel="Add Return" />
+      <PageActionBar
+        addHref="/returns/add"
+        addLabel="Add Return"
+        exportData={filteredReturnRecords}
+        exportFileName="returns"
+        printTitle="Returns"
+        printDescription="Official return register generated from the current filtered return records."
+      />
 
       {isLoading ? (
         <LoadingState

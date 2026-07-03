@@ -261,15 +261,6 @@ export default function AddAssetPage() {
             options={assetStatuses}
           />
 
-          <TextInput
-            label="QR Code Reference"
-            name="qrCode"
-            value={formData.qrCode}
-            onChange={handleChange}
-            placeholder="Auto-generated after save"
-            tooltip="QR/barcode value used on asset label. Leave blank to generate it after save."
-          />
-
           <div className="md:col-span-2">
             <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
               Asset document upload is handled through the document metadata

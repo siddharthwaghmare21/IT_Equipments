@@ -162,7 +162,14 @@ export default function MaintenancePage() {
         description="Manage asset repair, servicing, issue tracking, vendor support and maintenance status."
       />
 
-      <PageActionBar addHref="/maintenance/add" addLabel="Add Maintenance" />
+      <PageActionBar
+        addHref="/maintenance/add"
+        addLabel="Add Maintenance"
+        exportData={filteredMaintenanceRecords}
+        exportFileName="maintenance"
+        printTitle="Maintenance"
+        printDescription="Official maintenance register generated from the current filtered maintenance records."
+      />
 
       {isLoading ? (
         <LoadingState

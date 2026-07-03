@@ -378,7 +378,7 @@ export default function ActivityLogsPage() {
 
         <p className="mt-2 text-sm leading-6 text-gray-600">
           Activity logs are read-only audit records from the backend. New logs
-          are automatically created when users add, edit, archive, deliver,
+          are automatically created when users add, edit, delete, deliver,
           transfer, return or update IT asset records.
         </p>
       </section>
