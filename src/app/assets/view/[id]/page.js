@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import ProfessionalPrintDocument from "@/components/common/ProfessionalPrintDocument";
 import StatusBadge from "@/components/common/StatusBadge";
 import BackButton from "@/components/common/BackButton";
 import { ErrorState, LoadingState } from "@/components/common/StateBlock";
@@ -78,6 +79,56 @@ export default function ViewAssetPage() {
 
     return [...steps, "Transfer", "Return", "Retire"];
   }, [asset]);
+  const assetPrintSections = useMemo(() => {
+    if (!asset) return null;
+
+    return [
+      {
+        title: "Asset Label Details",
+        items: [
+          { label: "Asset Tag", value: asset.assetTag },
+          { label: "Asset Name", value: asset.assetName },
+          { label: "Category", value: asset.category },
+          { label: "Brand", value: asset.brand },
+          { label: "Model", value: asset.model },
+          { label: "Serial Number", value: asset.serialNumber },
+        ],
+      },
+      {
+        title: "Ownership & Location",
+        items: [
+          { label: "Current Receiver", value: asset.currentReceiverName },
+          { label: "Current Department", value: asset.currentDepartmentName },
+          { label: "Custodian Department", value: asset.custodianDepartmentName },
+          { label: "Location", value: asset.location },
+          { label: "Lifecycle Status", value: asset.lifecycleStatus },
+          { label: "Asset Status", value: asset.assetStatus },
+        ],
+      },
+      {
+        title: "Purchase & Documents",
+        items: [
+          { label: "Work Order Ref", value: asset.workOrderRef },
+          { label: "Invoice Number", value: asset.invoiceNumber },
+          { label: "Purchase Date", value: asset.purchaseDate },
+          { label: "Warranty Expiry", value: asset.warrantyExpiry },
+          { label: "Condition", value: asset.assetCondition },
+          {
+            label: "Document Status",
+            value: `${asset.attachmentStatus} (${asset.documentCount})`,
+          },
+        ],
+      },
+      {
+        title: "Notes",
+        items: [
+          { label: "Specifications", value: asset.specifications },
+          { label: "Description", value: asset.description },
+          { label: "Remarks", value: asset.remarks },
+        ],
+      },
+    ];
+  }, [asset]);
 
   function handlePrintLabel() {
     showToast("Print preview opened.");
@@ -119,7 +170,7 @@ export default function ViewAssetPage() {
 
       {!isLoading && !error && asset && (
         <>
-          <section className="print-area rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+          <section className="no-print rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
             <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">
@@ -328,7 +379,7 @@ export default function ViewAssetPage() {
             </div>
           </section>
 
-          <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+          <section className="no-print mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
             <h3 className="text-lg font-bold text-gray-900">
               Maintenance History
             </h3>
@@ -337,6 +388,20 @@ export default function ViewAssetPage() {
               Maintenance records will be connected from the Maintenance module.
             </p>
           </section>
+
+          <ProfessionalPrintDocument
+            title="Asset Label"
+            description="Official asset label and asset detail report generated from the selected asset record."
+            data={[asset]}
+            detailSections={assetPrintSections}
+            reviewerNotes={[
+              "Verify asset tag, serial number and department before attaching a physical label.",
+              "Confirm warranty and document status before official circulation.",
+              "Use this print only for internal IT asset identification and audit records.",
+            ]}
+            signOffLabels={["Prepared By", "Verified By", "Approved By"]}
+            fileName={`asset-label-${asset.assetTag || asset.id}`}
+          />
         </>
       )}
     </LayoutWrapper>

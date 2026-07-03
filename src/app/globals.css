@@ -242,11 +242,27 @@ textarea:user-invalid {
     margin: 10mm 9mm 14mm;
   }
 
+  body * {
+    visibility: hidden !important;
+  }
+
+  .print-area,
+  .print-area *,
+  .report-letterhead,
+  .report-letterhead * {
+    visibility: visible !important;
+  }
+
   .no-print,
+  .no-print *,
   nav[aria-label="Breadcrumb"],
+  nav[aria-label="Breadcrumb"] *,
   header:not(.report-letterhead),
-  aside {
+  header:not(.report-letterhead) *,
+  aside,
+  aside * {
     display: none !important;
+    visibility: hidden !important;
   }
 
   body {
@@ -259,6 +275,8 @@ textarea:user-invalid {
   }
 
   .print-area {
+    display: block !important;
+    position: static !important;
     page: report-portrait;
     width: 100% !important;
     max-width: 100% !important;
@@ -269,6 +287,14 @@ textarea:user-invalid {
     overflow: visible !important;
     break-before: avoid !important;
     page-break-before: avoid !important;
+  }
+
+  .print-area.report-document {
+    margin: 0 !important;
+    padding: 0 0 72px !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
   }
 
   .report-letterhead {
@@ -326,14 +352,6 @@ textarea:user-invalid {
   .report-section:first-child {
     break-before: avoid !important;
     page-break-before: avoid !important;
-  }
-
-  .report-print-hidden {
-    display: none !important;
-  }
-
-  .report-body > .report-section > section:not(:has(table)) {
-    display: none !important;
   }
 
   .report-section-title {

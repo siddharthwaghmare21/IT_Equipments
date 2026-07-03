@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import ProfessionalPrintDocument from "@/components/common/ProfessionalPrintDocument";
 import BackButton from "@/components/common/BackButton";
 import { ErrorState, LoadingState } from "@/components/common/StateBlock";
 import { getDelivery } from "@/lib/apiClient";
@@ -76,6 +77,43 @@ export default function ViewDeliveryPage() {
 
     return () => window.clearTimeout(timer);
   }, [loadDelivery]);
+  const deliveryPrintSections = useMemo(() => {
+    if (!delivery) return null;
+
+    return [
+      {
+        title: "Delivery Information",
+        items: [
+          { label: "Delivery Code", value: delivery.deliveryCode },
+          { label: "Delivery Date", value: delivery.deliveryDate },
+          { label: "Delivery Status", value: delivery.deliveryStatus },
+          {
+            label: "Acknowledgement",
+            value: delivery.acknowledgementStatus,
+          },
+        ],
+      },
+      {
+        title: "Asset & Receiver",
+        items: [
+          { label: "Asset Tag", value: delivery.assetTag },
+          { label: "Asset Name", value: delivery.assetName },
+          { label: "Receiver", value: delivery.receiverName },
+          { label: "Department", value: delivery.departmentName },
+          { label: "Delivered By", value: delivery.deliveredByName },
+        ],
+      },
+      {
+        title: "Handover Notes",
+        items: [
+          { label: "Accessories", value: delivery.accessories },
+          { label: "Remarks", value: delivery.remarks },
+          { label: "Created At", value: delivery.createdAt },
+          { label: "Updated At", value: delivery.updatedAt },
+        ],
+      },
+    ];
+  }, [delivery]);
 
   return (
     <LayoutWrapper>
@@ -121,7 +159,8 @@ export default function ViewDeliveryPage() {
           onAction={loadDelivery}
         />
       ) : (
-        <section className="print-area rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <>
+        <section className="no-print rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm font-medium text-gray-500">
@@ -205,6 +244,25 @@ export default function ViewDeliveryPage() {
             </div>
           </div>
         </section>
+
+        <ProfessionalPrintDocument
+          title="Delivery Acknowledgement"
+          description="Official equipment delivery acknowledgement generated from the selected delivery record."
+          data={[delivery]}
+          detailSections={deliveryPrintSections}
+          reviewerNotes={[
+            "Verify receiver name, department and asset tag before sign-off.",
+            "Confirm all listed accessories were handed over physically.",
+            "Receiver and IT department signatures are required for final acknowledgement.",
+          ]}
+          signOffLabels={[
+            "Receiver Acknowledgement",
+            "IT Department Handover",
+            "Approved By",
+          ]}
+          fileName={`delivery-acknowledgement-${delivery.deliveryCode || delivery.id}`}
+        />
+        </>
       )}
     </LayoutWrapper>
   );

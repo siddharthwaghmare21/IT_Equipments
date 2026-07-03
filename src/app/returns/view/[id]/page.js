@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
+import ProfessionalPrintDocument from "@/components/common/ProfessionalPrintDocument";
 import BackButton from "@/components/common/BackButton";
 import { ErrorState, LoadingState } from "@/components/common/StateBlock";
 import { getReturn } from "@/lib/apiClient";
@@ -78,6 +79,53 @@ export default function ViewReturnPage() {
 
     return () => window.clearTimeout(timer);
   }, [loadReturn]);
+  const returnPrintSections = useMemo(() => {
+    if (!returnRecord) return null;
+
+    return [
+      {
+        title: "Return Information",
+        items: [
+          { label: "Return Code", value: returnRecord.returnCode },
+          { label: "Delivery Code", value: returnRecord.deliveryCode },
+          { label: "Return Date", value: returnRecord.returnDate },
+          { label: "Return Status", value: returnRecord.returnStatus },
+        ],
+      },
+      {
+        title: "Asset & Department",
+        items: [
+          { label: "Asset Tag", value: returnRecord.assetTag },
+          { label: "Asset Name", value: returnRecord.assetName },
+          { label: "Returned By", value: returnRecord.returnedByName },
+          { label: "Department", value: returnRecord.departmentName },
+          { label: "Return Condition", value: returnRecord.returnCondition },
+        ],
+      },
+      {
+        title: "Inspection & Receipt",
+        items: [
+          { label: "Received By", value: returnRecord.receivedByName },
+          { label: "Received Location", value: returnRecord.receivedLocation },
+          {
+            label: "Acknowledgement",
+            value: returnRecord.acknowledgementStatus,
+          },
+          { label: "Inspection Status", value: returnRecord.inspectionStatus },
+          { label: "Inspection By", value: returnRecord.inspectionByName },
+          { label: "Damage Decision", value: returnRecord.damageDecision },
+        ],
+      },
+      {
+        title: "Notes",
+        items: [
+          { label: "Remarks", value: returnRecord.remarks },
+          { label: "Created At", value: returnRecord.createdAt },
+          { label: "Updated At", value: returnRecord.updatedAt },
+        ],
+      },
+    ];
+  }, [returnRecord]);
 
   return (
     <LayoutWrapper>
@@ -123,7 +171,8 @@ export default function ViewReturnPage() {
           onAction={loadReturn}
         />
       ) : (
-        <section className="print-area rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <>
+        <section className="no-print rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm font-medium text-gray-500">
@@ -216,6 +265,25 @@ export default function ViewReturnPage() {
             </div>
           </div>
         </section>
+
+        <ProfessionalPrintDocument
+          title="Return Receipt"
+          description="Official asset return receipt generated from the selected return record."
+          data={[returnRecord]}
+          detailSections={returnPrintSections}
+          reviewerNotes={[
+            "Verify returned asset condition before accepting receipt.",
+            "Confirm inspection status and damage decision before final closure.",
+            "Returned-by and IT receipt signatures are required for audit records.",
+          ]}
+          signOffLabels={[
+            "Receiver Return Confirmation",
+            "IT Department Receipt",
+            "Approved By",
+          ]}
+          fileName={`return-receipt-${returnRecord.returnCode || returnRecord.id}`}
+        />
+        </>
       )}
     </LayoutWrapper>
   );

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
-import ReportExportButtons from "@/components/common/ReportExportButtons";
+import PageActionBar from "@/components/common/PageActionBar";
 import {
   EmptyState,
   ErrorState,
@@ -171,6 +171,14 @@ export default function ActivityLogsPage() {
         />
       ) : (
         <>
+      <PageActionBar
+        onRefresh={loadActivityLogs}
+        exportData={filteredLogs}
+        exportFileName="activity-logs"
+        printTitle="Activity Logs"
+        printDescription="Official activity log report generated from the current filtered audit records."
+      />
+
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Total Logs</p>
@@ -263,7 +271,7 @@ export default function ActivityLogsPage() {
         </div>
       </section>
 
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="no-print mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-gray-600">
           Showing{" "}
           <span className="font-semibold text-gray-900">
@@ -271,8 +279,6 @@ export default function ActivityLogsPage() {
           </span>{" "}
           activity log records
         </p>
-
-        <ReportExportButtons data={filteredLogs} fileName="activity-logs" />
       </div>
 
       <TableWrapper>

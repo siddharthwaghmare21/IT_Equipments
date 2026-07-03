@@ -1,11 +1,35 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import ProfessionalPrintDocument from "./ProfessionalPrintDocument";
 import ReportExportButtons from "./ReportExportButtons";
 import { showToast } from "./ToastHost";
 import { readSession } from "@/lib/authSession";
 import { canUseBackupExport, canUseWriteActions } from "@/lib/rbac";
+
+const printFormats = [
+  {
+    value: "a4-portrait",
+    label: "A4 Portrait",
+    description: "Official readable format",
+  },
+  {
+    value: "a4-landscape",
+    label: "A4 Landscape",
+    description: "Full wide table format",
+  },
+  {
+    value: "compact",
+    label: "Compact Portrait",
+    description: "Dense table format",
+  },
+  {
+    value: "appendix",
+    label: "Portrait + Appendix",
+    description: "Key columns with details below",
+  },
+];
 
 export default function PageActionBar({
   addHref,
@@ -22,6 +46,10 @@ export default function PageActionBar({
   const currentUser = readSession();
   const canAddRecords = canUseWriteActions(currentUser);
   const canExportRecords = canUseBackupExport(currentUser);
+  const [printFormat, setPrintFormat] = useState("a4-portrait");
+  const selectedPrintFormat =
+    printFormats.find((format) => format.value === printFormat) ||
+    printFormats[0];
 
   function handleRefresh() {
     if (onRefresh) {
@@ -52,7 +80,8 @@ export default function PageActionBar({
 
   return (
     <>
-    <section className="no-print mb-6 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+    <section className="no-print mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex flex-wrap gap-2">
         {addHref && canAddRecords && (
           <Link
@@ -80,11 +109,27 @@ export default function PageActionBar({
           </button>
         )}
         {exportData ? (
-          <ReportExportButtons
-            data={exportData}
-            fileName={exportFileName || "records"}
-            showDataExports={canExportRecords}
-          />
+          <>
+            <label className="flex flex-col gap-1 text-xs font-semibold text-gray-600">
+              Print Format
+              <select
+                value={printFormat}
+                onChange={(event) => setPrintFormat(event.target.value)}
+                className="min-w-44 rounded-xl border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 outline-none focus:border-gray-900"
+              >
+                {printFormats.map((format) => (
+                  <option key={format.value} value={format.value}>
+                    {format.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <ReportExportButtons
+              data={exportData}
+              fileName={exportFileName || "records"}
+              showDataExports={canExportRecords}
+            />
+          </>
         ) : (
           <button
             type="button"
@@ -97,6 +142,17 @@ export default function PageActionBar({
       </div>
 
       {children && <div className="flex flex-wrap gap-2">{children}</div>}
+      </div>
+
+      {exportData && (
+        <div className="mt-4 border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">
+          <span className="font-bold text-gray-900">
+            {selectedPrintFormat.label}:
+          </span>{" "}
+          {selectedPrintFormat.description}. Browser print/PDF export uses
+          this same report format.
+        </div>
+      )}
     </section>
     {exportData && (
       <ProfessionalPrintDocument
@@ -107,6 +163,7 @@ export default function PageActionBar({
         }
         data={exportData}
         fileName={exportFileName || "records"}
+        printFormat={printFormat}
       />
     )}
     </>

@@ -33,6 +33,39 @@ const hiddenColumns = new Set([
   "maintenanceId",
   "transferId",
 ]);
+const attentionWords = [
+  "Pending",
+  "Damaged",
+  "Expired",
+  "Maintenance",
+  "Rejected",
+  "Under Review",
+  "Under Inspection",
+  "Cancelled",
+  "Needs Repair",
+];
+const printFormats = [
+  {
+    value: "a4-portrait",
+    label: "A4 Portrait",
+    description: "Official readable format",
+  },
+  {
+    value: "a4-landscape",
+    label: "A4 Landscape",
+    description: "Full wide table format",
+  },
+  {
+    value: "compact",
+    label: "Compact Portrait",
+    description: "Dense table format",
+  },
+  {
+    value: "appendix",
+    label: "Portrait + Appendix",
+    description: "Key columns with details below",
+  },
+];
 
 function mapSettingsFromApi(apiSettings = []) {
   return apiSettings.reduce((mappedSettings, setting) => {
@@ -59,11 +92,18 @@ export default function ProfessionalPrintDocument({
   title,
   description,
   data = [],
+  detailSections = null,
+  reviewerNotes = null,
+  signOffLabels = null,
   fileName = "records",
   sourceLabel = "MySQL live API",
   backendStatus = "Connected",
+  printFormat = "a4-portrait",
 }) {
   const [branding, setBranding] = useState(defaultBranding);
+  const selectedPrintFormat =
+    printFormats.find((format) => format.value === printFormat) ||
+    printFormats[0];
 
   const generatedDate = new Date().toLocaleDateString("en-IN", {
     day: "2-digit",
@@ -82,6 +122,54 @@ export default function ProfessionalPrintDocument({
       .filter((column) => !hiddenColumns.has(column))
       .slice(0, 12);
   }, [data]);
+  const reportMetrics = useMemo(() => {
+    const attentionRecords = data.filter((item) =>
+      Object.values(item).some((value) =>
+        attentionWords.some((word) => String(value).includes(word))
+      )
+    ).length;
+    const completedRecords = data.filter((item) =>
+      ["Completed", "Delivered", "Returned", "Received", "Active", "Approved"].some(
+        (word) =>
+          Object.values(item).some((value) => String(value).includes(word))
+      )
+    ).length;
+
+    return [
+      { label: "Total Records", value: data.length },
+      { label: "Completed / Active", value: completedRecords },
+      { label: "Needs Attention", value: attentionRecords },
+      { label: "Classification", value: branding.reportClassification },
+    ];
+  }, [data, branding.reportClassification]);
+
+  const reportMeta = [
+    { label: "Report ID", value: reportId },
+    { label: "Generated On", value: `${generatedDate}, ${generatedTime}` },
+    { label: "Prepared By", value: branding.reportPreparedBy },
+    { label: "Source", value: sourceLabel },
+    { label: "Backend Status", value: backendStatus },
+    { label: "Print Format", value: selectedPrintFormat.label },
+    { label: "Version", value: "v1.0" },
+  ];
+
+  const appliedFilters = [
+    { label: "Date Range", value: "All available records" },
+    { label: "Department", value: "All departments" },
+    { label: "Status", value: "Current page filters" },
+    { label: "Report View", value: "Detailed audit view" },
+  ];
+  const notes =
+    reviewerNotes || [
+      "Verify records marked as pending, damaged, expired or under review.",
+      "Confirm department-wise ownership before final circulation.",
+      "Verify generated records before official export circulation.",
+    ];
+  const approvalLabels = signOffLabels || [
+    "Prepared By",
+    "Reviewed By",
+    "Approved By",
+  ];
 
   useEffect(() => {
     let isMounted = true;
@@ -113,7 +201,9 @@ export default function ProfessionalPrintDocument({
   }, []);
 
   return (
-    <section className="print-only print-area report-document report-format-a4-landscape overflow-hidden border border-gray-200 bg-white shadow-sm">
+    <section
+      className={`print-only print-area report-document report-format-${printFormat} overflow-hidden border border-gray-200 bg-white shadow-sm`}
+    >
       <header className="report-letterhead border-b-4 border-gray-900 bg-white px-5 py-5">
         <div className="grid gap-5 lg:grid-cols-[1fr_280px] lg:items-start">
           <div className="flex items-start gap-4">
@@ -137,20 +227,16 @@ export default function ProfessionalPrintDocument({
           </div>
 
           <div className="border border-gray-300">
-            {[
-              ["Report ID", reportId],
-              ["Generated On", `${generatedDate}, ${generatedTime}`],
-              ["Prepared By", branding.reportPreparedBy],
-            ].map(([label, value]) => (
+            {reportMeta.slice(0, 3).map((item) => (
               <div
-                key={label}
+                key={item.label}
                 className="grid grid-cols-[105px_1fr] border-b border-gray-200 text-xs last:border-b-0"
               >
                 <span className="bg-gray-50 px-3 py-2 font-bold uppercase text-gray-500">
-                  {label}
+                  {item.label}
                 </span>
                 <span className="px-3 py-2 font-semibold text-gray-900">
-                  {value}
+                  {item.value}
                 </span>
               </div>
             ))}
@@ -159,13 +245,17 @@ export default function ProfessionalPrintDocument({
       </header>
 
       <div className="report-title-block border-b border-gray-200 px-5 py-5">
-        <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
-          Official Report
-        </p>
-        <h1 className="mt-1 text-3xl font-bold text-gray-950">{title}</h1>
-        <p className="mt-2 max-w-4xl text-sm leading-6 text-gray-600">
-          {description}
-        </p>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
+              Official Report
+            </p>
+            <h1 className="mt-1 text-3xl font-bold text-gray-950">{title}</h1>
+            <p className="mt-2 max-w-4xl text-sm leading-6 text-gray-600">
+              {description}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="report-body space-y-5 px-5 py-5">
@@ -174,18 +264,52 @@ export default function ProfessionalPrintDocument({
           <div className="overflow-hidden border border-gray-300">
             <table className="w-full text-sm">
               <tbody>
-                {[
-                  ["Source", sourceLabel],
-                  ["Backend Status", backendStatus],
-                  ["Classification", branding.reportClassification],
-                  ["Total Records", data.length],
-                ].map(([label, value]) => (
-                  <tr key={label} className="border-b border-gray-200">
+                {reportMeta.map((item) => (
+                  <tr key={item.label} className="border-b border-gray-200">
                     <th className="w-52 bg-gray-50 px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">
-                      {label}
+                      {item.label}
                     </th>
                     <td className="px-4 py-3 font-semibold text-gray-900">
-                      {value}
+                      {item.value}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="report-section report-print-hidden">
+          <h2 className="report-section-title">Executive Summary</h2>
+          <div className="grid grid-cols-2 border border-gray-300 lg:grid-cols-4">
+            {reportMetrics.map((item) => (
+              <div
+                key={item.label}
+                className="border-b border-r border-gray-200 px-4 py-3 last:border-r-0 lg:border-b-0"
+              >
+                <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-xl font-bold text-gray-950">
+                  {item.value}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="report-section report-print-hidden">
+          <h2 className="report-section-title">Applied Filters</h2>
+          <div className="overflow-hidden border border-gray-300">
+            <table className="w-full text-sm">
+              <tbody>
+                {appliedFilters.map((filter) => (
+                  <tr key={filter.label} className="border-b border-gray-200">
+                    <th className="w-52 bg-gray-50 px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">
+                      {filter.label}
+                    </th>
+                    <td className="px-4 py-3 font-semibold text-gray-900">
+                      {filter.value}
                     </td>
                   </tr>
                 ))}
@@ -195,64 +319,114 @@ export default function ProfessionalPrintDocument({
         </section>
 
         <section className="report-section">
-          <div className="mb-3 flex items-end justify-between">
+          <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="report-section-title">Detailed Records</h2>
               <p className="text-sm text-gray-600">
-                Official printable view generated from current page records.
+                Tables below are the official report body for review, print
+                and export.
               </p>
             </div>
-            <span className="border border-gray-300 px-3 py-1 text-xs font-bold uppercase text-gray-600">
+            <span className="w-fit border border-gray-300 px-3 py-1 text-xs font-bold uppercase text-gray-600">
               {data.length} records
             </span>
           </div>
 
-          <div className="overflow-hidden border border-gray-300">
-            <table className="w-full text-xs">
-              <thead className="bg-gray-50">
-                <tr>
-                  {columns.map((column) => (
-                    <th
-                      key={column}
-                      className="border-b border-r border-gray-200 px-3 py-2 text-left font-bold uppercase tracking-wide text-gray-500 last:border-r-0"
-                    >
-                      {formatColumnName(column)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((record, index) => (
-                  <tr key={`${fileName}-${index}`} className="border-b border-gray-100">
-                    {columns.map((column) => (
-                      <td
-                        key={column}
-                        className="border-r border-gray-100 px-3 py-2 font-medium text-gray-800 last:border-r-0"
+          {detailSections ? (
+            <div className="space-y-4">
+              {detailSections.map((section) => (
+                <div key={section.title} className="overflow-hidden border border-gray-300">
+                  <div className="bg-gray-50 px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-500">
+                    {section.title}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2">
+                    {section.items.map((item, itemIndex) => (
+                      <div
+                        key={`${section.title}-${item.label}-${itemIndex}`}
+                        className="grid grid-cols-[145px_1fr] border-b border-r border-gray-200 text-sm"
                       >
-                        {String(record[column] ?? "-")}
-                      </td>
+                        <span className="bg-gray-50 px-3 py-3 text-xs font-bold uppercase tracking-wide text-gray-500">
+                          {item.label}
+                        </span>
+                        <span className="px-3 py-3 font-semibold text-gray-900">
+                          {item.value || "-"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="overflow-hidden border border-gray-300">
+              <table className="w-full text-xs">
+                <thead className="bg-gray-50">
+                  <tr>
+                    {columns.map((column) => (
+                      <th
+                        key={column}
+                        className="border-b border-r border-gray-200 px-3 py-2 text-left font-bold uppercase tracking-wide text-gray-500 last:border-r-0"
+                      >
+                        {formatColumnName(column)}
+                      </th>
                     ))}
                   </tr>
-                ))}
-                {data.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={Math.max(columns.length, 1)}
-                      className="px-4 py-6 text-center font-semibold text-gray-500"
+                </thead>
+                <tbody>
+                  {data.map((record, index) => (
+                    <tr
+                      key={`${fileName}-${index}`}
+                      className="border-b border-gray-100"
                     >
-                      No records available.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                      {columns.map((column) => (
+                        <td
+                          key={column}
+                          className="border-r border-gray-100 px-3 py-2 font-medium text-gray-800 last:border-r-0"
+                        >
+                          {String(record[column] ?? "-")}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                  {data.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={Math.max(columns.length, 1)}
+                        className="px-4 py-6 text-center font-semibold text-gray-500"
+                      >
+                        No records available.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        <section className="report-section">
+          <h2 className="report-section-title">Reviewer Notes</h2>
+          <div className="border border-gray-300">
+            {notes.map((note, index) => (
+              <div
+                key={note}
+                className="grid grid-cols-[44px_1fr] border-b border-gray-200 text-sm last:border-b-0"
+              >
+                <span className="bg-gray-50 px-4 py-3 font-bold text-gray-500">
+                  {index + 1}
+                </span>
+                <span className="px-4 py-3 font-semibold text-gray-800">
+                  {note}
+                </span>
+              </div>
+            ))}
           </div>
         </section>
 
         <section className="report-section">
           <h2 className="report-section-title">Approval & Sign-off</h2>
           <div className="grid grid-cols-1 border border-gray-300 md:grid-cols-3">
-            {["Prepared By", "Reviewed By", "Approved By"].map((label) => (
+            {approvalLabels.map((label) => (
               <div
                 key={label}
                 className="border-b border-r border-gray-200 p-4 last:border-r-0 md:border-b-0"
@@ -270,7 +444,7 @@ export default function ProfessionalPrintDocument({
       </div>
 
       <footer className="report-footer border-t border-gray-300 bg-gray-50 px-5 py-3 text-xs text-gray-600">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-semibold">
             Confidential - For internal IT department use only
           </p>
