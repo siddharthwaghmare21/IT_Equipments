@@ -7,16 +7,17 @@ export default function PageHeader({
   buttonHref,
 }) {
   return (
-    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mb-4 rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+          <h1 className="text-xl font-bold text-slate-950 sm:text-2xl">
             {title}
           </h1>
         </div>
 
         {description && (
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
             {description}
           </p>
         )}
@@ -25,11 +26,12 @@ export default function PageHeader({
       {buttonText && buttonHref && (
         <Link
           href={buttonHref}
-          className="inline-flex w-full sm:w-auto items-center justify-center rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+          className="inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-indigo-700 hover:to-violet-700 sm:w-auto"
         >
           {buttonText}
         </Link>
       )}
+      </div>
     </div>
   );
 }

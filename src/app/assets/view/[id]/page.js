@@ -129,6 +129,28 @@ export default function ViewAssetPage() {
       },
     ];
   }, [asset]);
+  const assetLabelCard = useMemo(() => {
+    if (!asset) return null;
+
+    return {
+      eyebrow: "Official IT Asset Label",
+      primary: asset.assetTag,
+      secondary: asset.assetName,
+      fields: [
+        { label: "Category", value: asset.category },
+        { label: "Brand", value: asset.brand },
+        { label: "Model", value: asset.model },
+        { label: "Serial", value: asset.serialNumber },
+        {
+          label: "Department",
+          value: asset.currentDepartmentName || asset.custodianDepartmentName,
+        },
+        { label: "Location", value: asset.location },
+        { label: "Condition", value: asset.assetCondition },
+        { label: "Status", value: asset.assetStatus },
+      ],
+    };
+  }, [asset]);
 
   function handlePrintLabel() {
     showToast("Print preview opened.");
@@ -390,9 +412,10 @@ export default function ViewAssetPage() {
           </section>
 
           <ProfessionalPrintDocument
-            title="Asset Label"
-            description="Official asset label and asset detail report generated from the selected asset record."
+            title="Asset Identification Label"
+            description="Official asset label generated for physical tagging, ownership verification and IT audit reference."
             data={[asset]}
+            labelCard={assetLabelCard}
             detailSections={assetPrintSections}
             reviewerNotes={[
               "Verify asset tag, serial number and department before attaching a physical label.",

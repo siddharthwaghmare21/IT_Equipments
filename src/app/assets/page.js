@@ -211,6 +211,7 @@ export default function AssetsPage() {
         exportFileName="assets"
         printTitle="Assets"
         printDescription="Official asset register generated from the current filtered asset records."
+        importModule="Assets"
       />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">

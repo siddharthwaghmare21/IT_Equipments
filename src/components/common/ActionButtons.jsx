@@ -7,6 +7,7 @@ import { canUseWriteActions } from "@/lib/rbac";
 export default function ActionButtons({
   viewHref,
   updateHref,
+  editHref,
   onDelete,
   deleteLabel = "Delete",
 }) {
@@ -17,15 +18,15 @@ export default function ActionButtons({
     <div className="flex flex-wrap gap-2">
       <Link
         href={viewHref}
-        className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+        className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
       >
         View
       </Link>
 
       {canWrite && (
         <Link
-          href={updateHref}
-          className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800"
+          href={editHref || updateHref}
+          className="rounded-lg bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
         >
           Edit
         </Link>

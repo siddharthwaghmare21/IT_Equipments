@@ -169,6 +169,7 @@ export default function MaintenancePage() {
         exportFileName="maintenance"
         printTitle="Maintenance"
         printDescription="Official maintenance register generated from the current filtered maintenance records."
+        importModule="Maintenance"
       />
 
       {isLoading ? (

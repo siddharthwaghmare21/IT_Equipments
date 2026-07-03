@@ -26,16 +26,16 @@ const filters = ["All", ...workOrderStatuses];
 
 function WorkOrderStatusBadge({ status }) {
   const statusStyles = {
-    Draft: "bg-gray-100 text-gray-700 border-gray-200",
-    Ordered: "bg-blue-100 text-blue-700 border-blue-200",
-    Received: "bg-green-100 text-green-700 border-green-200",
+    Draft: "bg-slate-100 text-slate-700 border-slate-200",
+    Ordered: "bg-sky-100 text-sky-700 border-sky-200",
+    Received: "bg-emerald-100 text-emerald-700 border-emerald-200",
     Cancelled: "bg-red-100 text-red-700 border-red-200",
   };
 
   return (
     <span
       className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
-        statusStyles[status] || "bg-gray-100 text-gray-700 border-gray-200"
+        statusStyles[status] || "bg-slate-100 text-slate-700 border-slate-200"
       }`}
     >
       {status}
@@ -164,6 +164,7 @@ export default function PurchasesPage() {
         exportFileName="work-orders"
         printTitle="Work Orders"
         printDescription="Official work order register generated from the current filtered procurement records."
+        importModule="Purchases"
       />
 
       {isLoading ? (
@@ -180,56 +181,14 @@ export default function PurchasesPage() {
         />
       ) : (
         <>
-          <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-              <p className="text-sm text-gray-500">Total Work Orders</p>
-              <h2 className="mt-2 text-3xl font-bold text-gray-900">
-                {workOrders.length}
-              </h2>
-            </div>
-
-            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-              <p className="text-sm text-gray-500">Received</p>
-              <h2 className="mt-2 text-3xl font-bold text-gray-900">
-                {
-                  workOrders.filter(
-                    (workOrder) => workOrder.workOrderStatus === "Received"
-                  ).length
-                }
-              </h2>
-            </div>
-
-            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-              <p className="text-sm text-gray-500">Pending Approval</p>
-              <h2 className="mt-2 text-3xl font-bold text-gray-900">
-                {
-                  workOrders.filter(
-                    (workOrder) => workOrder.approvalStatus === "Pending"
-                  ).length
-                }
-              </h2>
-            </div>
-
-            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-              <p className="text-sm text-gray-500">Ordered</p>
-              <h2 className="mt-2 text-3xl font-bold text-gray-900">
-                {
-                  workOrders.filter(
-                    (workOrder) => workOrder.workOrderStatus === "Ordered"
-                  ).length
-                }
-              </h2>
-            </div>
-          </section>
-
-          <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+          <section className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <input
                 type="text"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search by WO, vendor, invoice, approval, payment or status..."
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white lg:max-w-md"
               />
 
               <div className="flex gap-2 overflow-x-auto pb-1">
@@ -238,10 +197,10 @@ export default function PurchasesPage() {
                     key={filter}
                     type="button"
                     onClick={() => setActiveFilter(filter)}
-                    className={`whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-medium ${
+                    className={`whitespace-nowrap rounded-lg border px-4 py-2 text-sm font-semibold ${
                       activeFilter === filter
-                        ? "border-gray-900 bg-gray-900 text-white"
-                        : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                        ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
+                        : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-white"
                     }`}
                   >
                     {filter}
@@ -251,21 +210,44 @@ export default function PurchasesPage() {
             </div>
           </section>
 
-          <section className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-4">
-            {receivingSteps.map((step) => (
+          <section className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-base font-bold text-slate-950">
+                  Procurement Lifecycle
+                </h2>
+                <p className="text-sm text-slate-500">
+                  Work order movement from creation to asset registration.
+                </p>
+              </div>
+              <span className="w-fit rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">
+                {filteredWorkOrders.length} visible
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-4">
+            {receivingSteps.map((step, index) => (
               <div
                 key={step.title}
-                className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+                className="rounded-lg border border-slate-100 bg-slate-50 p-3"
               >
-                <p className="text-sm font-semibold text-gray-900">
-                  {step.title}
+                <div className="flex items-center gap-3">
+                  <span className="grid h-8 w-8 place-items-center rounded-lg bg-slate-950 text-xs font-bold text-white">
+                    {index + 1}
+                  </span>
+                  <p className="text-sm font-semibold text-slate-950">
+                    {step.title}
+                  </p>
+                </div>
+                <p className="mt-2 text-xs leading-5 text-slate-500">
+                  {step.detail}
                 </p>
-                <p className="mt-1 text-sm text-gray-500">{step.detail}</p>
-                <p className="mt-4 text-2xl font-bold text-gray-900">
+                <p className="mt-3 text-xl font-bold text-slate-950">
                   {step.count}
                 </p>
               </div>
             ))}
+            </div>
           </section>
 
           <CompactRecordList
@@ -290,56 +272,56 @@ export default function PurchasesPage() {
           <div className="hidden lg:block">
             <TableWrapper>
               <table className="min-w-[1180px] w-full text-sm">
-                <thead className="bg-gray-50">
+                <thead className="bg-slate-50">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                       WO Details
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Vendor / Invoice
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Dates
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Workflow
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Amount
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Actions
                     </th>
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className="divide-y divide-slate-100 bg-white">
                   {filteredWorkOrders.map((workOrder) => (
-                    <tr key={workOrder.id} className="hover:bg-gray-50">
+                    <tr key={workOrder.id} className="hover:bg-slate-50">
                       <td className="px-4 py-4">
-                        <p className="text-sm font-semibold text-gray-900">
+                        <p className="text-sm font-semibold text-slate-950">
                           {workOrder.workOrderNumber}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-slate-500">
                           {workOrder.itemCount} item lines
                         </p>
                       </td>
 
-                      <td className="px-4 py-4 text-sm text-gray-700">
-                        <p className="font-medium text-gray-900">
+                      <td className="px-4 py-4 text-sm text-slate-700">
+                        <p className="font-medium text-slate-950">
                           {workOrder.vendorName}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-slate-500">
                           {workOrder.invoiceNumber || "No invoice"}
                         </p>
                       </td>
 
-                      <td className="px-4 py-4 text-sm text-gray-700">
+                      <td className="px-4 py-4 text-sm text-slate-700">
                         <p>WO: {workOrder.workOrderDate || "-"}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-slate-500">
                           Expected: {workOrder.expectedDeliveryDate || "-"}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-slate-500">
                           Received: {workOrder.receivedDate || "-"}
                         </p>
                       </td>
@@ -348,15 +330,15 @@ export default function PurchasesPage() {
                         <WorkOrderStatusBadge
                           status={workOrder.workOrderStatus}
                         />
-                        <p className="mt-2 text-xs text-gray-500">
+                        <p className="mt-2 text-xs text-slate-500">
                           Approval: {workOrder.approvalStatus}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-slate-500">
                           Payment: {workOrder.paymentStatus}
                         </p>
                       </td>
 
-                      <td className="px-4 py-4 text-sm font-semibold text-gray-900">
+                      <td className="px-4 py-4 text-sm font-semibold text-slate-950">
                         {formatCurrency(workOrder.totalAmount)}
                       </td>
 

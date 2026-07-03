@@ -5,11 +5,6 @@ export const sidebarLinks = [
     short: "DB",
   },
   {
-    label: "Import Data",
-    path: "/import-data",
-    short: "IM",
-  },
-  {
     label: "Purchases",
     path: "/purchases",
     short: "PU",

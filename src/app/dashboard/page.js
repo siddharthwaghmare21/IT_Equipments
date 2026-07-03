@@ -101,6 +101,279 @@ function formatActivityDate(dateValue) {
   });
 }
 
+function buildMonthlyTrend(records, dateKeys) {
+  const monthFormatter = new Intl.DateTimeFormat("en-IN", {
+    month: "short",
+  });
+  const buckets = new Map();
+  const today = new Date();
+
+  for (let monthOffset = 5; monthOffset >= 0; monthOffset -= 1) {
+    const date = new Date(today.getFullYear(), today.getMonth() - monthOffset, 1);
+    const key = `${date.getFullYear()}-${date.getMonth()}`;
+    buckets.set(key, {
+      label: monthFormatter.format(date),
+      value: 0,
+    });
+  }
+
+  records.forEach((record) => {
+    const dateValue = dateKeys.map((key) => record[key]).find(Boolean);
+    if (!dateValue) return;
+
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) return;
+
+    const key = `${date.getFullYear()}-${date.getMonth()}`;
+    const bucket = buckets.get(key);
+    if (bucket) {
+      bucket.value += 1;
+    }
+  });
+
+  return Array.from(buckets.values());
+}
+
+function DashboardIcon({ children, tone = "violet" }) {
+  const tones = {
+    violet: "bg-violet-100 text-violet-700",
+    cyan: "bg-cyan-100 text-cyan-700",
+    emerald: "bg-emerald-100 text-emerald-700",
+    rose: "bg-rose-100 text-rose-700",
+    amber: "bg-amber-100 text-amber-700",
+  };
+
+  return (
+    <span
+      className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${tones[tone]}`}
+    >
+      {children}
+    </span>
+  );
+}
+
+function MiniIcon({ type }) {
+  const commonProps = {
+    "aria-hidden": true,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: "h-5 w-5",
+  };
+
+  const paths = {
+    assets: (
+      <>
+        <path d="M4 7.5 12 3l8 4.5-8 4.5-8-4.5Z" />
+        <path d="M4 12.5 12 17l8-4.5" />
+        <path d="M4 17.5 12 22l8-4.5" />
+      </>
+    ),
+    delivered: (
+      <>
+        <path d="M4 7h11v10H4z" />
+        <path d="M15 10h3l2 3v4h-5z" />
+        <path d="M7 17.5h.01" />
+        <path d="M17 17.5h.01" />
+      </>
+    ),
+    available: (
+      <>
+        <path d="M20 6 9 17l-5-5" />
+      </>
+    ),
+    maintenance: (
+      <>
+        <path d="m14.7 6.3 3 3" />
+        <path d="M5 19l4.5-1 8.2-8.2a2.1 2.1 0 0 0-3-3L6.5 15 5 19Z" />
+      </>
+    ),
+  };
+
+  return <svg {...commonProps}>{paths[type]}</svg>;
+}
+
+function DonutChart({ title, value, total, color = "#7c3aed", items = [] }) {
+  const safeTotal = total || 1;
+  const percent = Math.round((value / safeTotal) * 100);
+
+  return (
+    <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-bold text-slate-950">{title}</p>
+          <p className="mt-1 text-xs text-slate-500">
+            {value} of {total} records
+          </p>
+        </div>
+        <div
+          className="grid h-20 w-20 shrink-0 place-items-center rounded-full"
+          style={{
+            background: `conic-gradient(${color} ${percent}%, #e2e8f0 ${percent}% 100%)`,
+          }}
+        >
+          <div className="grid h-14 w-14 place-items-center rounded-full bg-white">
+            <span className="text-base font-bold text-slate-950">{percent}%</span>
+          </div>
+        </div>
+      </div>
+
+      {items.length > 0 && (
+        <div className="mt-3 grid gap-2">
+          {items.map((item) => (
+            <div key={item.label} className="flex items-center justify-between text-xs">
+              <span className="flex items-center gap-2 text-slate-600">
+                <span
+                  className="h-2.5 w-2.5 rounded-full"
+                  style={{ backgroundColor: item.color }}
+                />
+                {item.label}
+              </span>
+              <span className="font-bold text-slate-900">{item.value}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PieChartCard({ title, description, items }) {
+  const total = items.reduce((sum, item) => sum + item.value, 0);
+  let offset = 0;
+  const gradientStops = items
+    .map((item) => {
+      const start = offset;
+      const size = total ? (item.value / total) * 100 : 0;
+      offset += size;
+      return `${item.color} ${start}% ${offset}%`;
+    })
+    .join(", ");
+  const background = total ? `conic-gradient(${gradientStops})` : "#e2e8f0";
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-slate-950">{title}</h2>
+          <p className="mt-1 text-sm text-slate-500">{description}</p>
+        </div>
+        <div
+          className="grid h-28 w-28 shrink-0 place-items-center rounded-full"
+          style={{ background }}
+        >
+          <div className="grid h-16 w-16 place-items-center rounded-full bg-white text-center shadow-sm">
+            <span className="text-xl font-bold text-slate-950">{total}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-3">
+        {items.map((item) => (
+          <div key={item.label}>
+            <div className="mb-1 flex items-center justify-between text-xs">
+              <span className="flex items-center gap-2 font-semibold text-slate-700">
+                <span
+                  className="h-2.5 w-2.5 rounded-full"
+                  style={{ backgroundColor: item.color }}
+                />
+                {item.label}
+              </span>
+              <span className="font-bold text-slate-950">{item.value}</span>
+            </div>
+            <div className="h-2 rounded-full bg-slate-100">
+              <div
+                className="h-2 rounded-full"
+                style={{
+                  width: `${total ? Math.round((item.value / total) * 100) : 0}%`,
+                  backgroundColor: item.color,
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LineChartCard({ title, description, points }) {
+  const maxValue = Math.max(...points.map((point) => point.value), 1);
+  const chartPoints = points.map((point, index) => {
+    const x = points.length === 1 ? 50 : (index / (points.length - 1)) * 100;
+    const y = 100 - (point.value / maxValue) * 80 - 10;
+    return { ...point, x, y };
+  });
+  const polyline = chartPoints.map((point) => `${point.x},${point.y}`).join(" ");
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-slate-950">{title}</h2>
+          <p className="mt-1 text-sm text-slate-500">{description}</p>
+        </div>
+        <span className="w-fit rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-orange-700">
+          Monthly
+        </span>
+      </div>
+
+      <div className="mt-4 rounded-lg bg-slate-50 p-3">
+        <svg
+          aria-label={title}
+          viewBox="0 0 100 100"
+          className="h-44 w-full overflow-visible"
+          preserveAspectRatio="none"
+        >
+          {[20, 40, 60, 80].map((line) => (
+            <line
+              key={line}
+              x1="0"
+              x2="100"
+              y1={line}
+              y2={line}
+              stroke="#e2e8f0"
+              strokeWidth="0.8"
+            />
+          ))}
+          <polyline
+            fill="none"
+            points={polyline}
+            stroke="#fb7185"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="3"
+            vectorEffect="non-scaling-stroke"
+          />
+          {chartPoints.map((point) => (
+            <circle
+              key={point.label}
+              cx={point.x}
+              cy={point.y}
+              r="2.4"
+              fill="#fff"
+              stroke="#fb7185"
+              strokeWidth="2"
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+        </svg>
+        <div className="mt-3 grid grid-cols-6 gap-2 text-center text-xs text-slate-500">
+          {chartPoints.map((point) => (
+            <div key={point.label}>
+              <p className="font-bold text-slate-900">{point.value}</p>
+              <p className="mt-1 truncate">{point.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [currentUser] = useState(() => {
@@ -225,24 +498,32 @@ export default function DashboardPage() {
       value: String(assets.length),
       description: "Registered IT equipment",
       trend: `${assets.filter((asset) => asset.createdAt).length} records synced`,
+      tone: "violet",
+      icon: "assets",
     },
     {
       title: "Delivered Assets",
       value: String(deliveredAssets),
       description: "Issued to departments",
       trend: `${percentWidth(deliveredAssets, assets.length)} allocation`,
+      tone: "cyan",
+      icon: "delivered",
     },
     {
       title: "Available Assets",
       value: String(availableAssets),
       description: "Ready for delivery",
       trend: `${availableAssets} assets available`,
+      tone: "emerald",
+      icon: "available",
     },
     {
       title: "Under Maintenance",
       value: String(maintenanceAssets || openMaintenance),
       description: "Repair or service active",
       trend: `${highPriorityMaintenance} high priority`,
+      tone: "rose",
+      icon: "maintenance",
     },
   ];
 
@@ -266,14 +547,74 @@ export default function DashboardPage() {
       width: percentWidth(maintenanceAssets || openMaintenance, assets.length),
     },
   ];
-
-  const lowStockItems = [
+  const maxChartValue = Math.max(...chartData.map((item) => item.value), 1);
+  const utilizationPercent = assets.length
+    ? Math.round((deliveredAssets / assets.length) * 100)
+    : 0;
+  const dashboardHealth =
+    highPriorityMaintenance > 0 || maintenanceAssets > 0
+      ? "Needs Review"
+      : "Stable";
+  const activityTrendBars = chartData.map((item) => ({
+    ...item,
+    height: `${Math.max(Math.round((item.value / maxChartValue) * 100), item.value ? 18 : 6)}%`,
+  }));
+  const assetStatusPie = [
     {
-      item: "Inventory Thresholds",
-      stock: "Phase 7",
-      minimum: "Import/Export",
+      label: "Delivered",
+      value: deliveredAssets,
+      color: "#7c3aed",
+    },
+    {
+      label: "Available",
+      value: availableAssets,
+      color: "#14b8a6",
+    },
+    {
+      label: "Maintenance",
+      value: maintenanceAssets,
+      color: "#fb7185",
+    },
+    {
+      label: "Other",
+      value: Math.max(
+        assets.length - deliveredAssets - availableAssets - maintenanceAssets,
+        0
+      ),
+      color: "#94a3b8",
     },
   ];
+  const workflowPie = [
+    {
+      label: "Deliveries",
+      value: deliveries.filter((delivery) => delivery.deliveryStatus === "Pending")
+        .length,
+      color: "#38bdf8",
+    },
+    {
+      label: "Transfers",
+      value: transfers.filter((transfer) => isOpenStatus(transfer.transferStatus))
+        .length,
+      color: "#8b5cf6",
+    },
+    {
+      label: "Purchases",
+      value: workOrders.filter(
+        (workOrder) => workOrder.approvalStatus === "Pending"
+      ).length,
+      color: "#f97316",
+    },
+    {
+      label: "Maintenance",
+      value: openMaintenance,
+      color: "#ef4444",
+    },
+  ];
+  const maintenanceTrend = buildMonthlyTrend(maintenance, [
+    "reportedDate",
+    "scheduledDate",
+    "createdAt",
+  ]);
 
   const workflowSummary = [
     {
@@ -458,13 +799,34 @@ export default function DashboardPage() {
 
   return (
     <LayoutWrapper>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-          Dashboard
-        </h1>
-        <p className="mt-1 text-sm text-gray-600">
-          Overview of IT assets, equipment delivery and maintenance activity.
-        </p>
+      <div className="mb-4 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+        <div className="bg-gradient-to-r from-indigo-600 via-violet-600 to-sky-500 px-4 py-4 text-white sm:px-5">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-indigo-100">
+                IT Equipment Control Center
+              </p>
+              <h1 className="mt-1 text-2xl font-bold">
+                Dashboard Overview
+              </h1>
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-indigo-50">
+                Live summary of assets, delivery workflows, maintenance alerts,
+                approvals and report readiness.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-sm sm:min-w-72">
+              <div className="rounded-lg bg-white/15 p-2.5 backdrop-blur">
+                <p className="text-xs text-indigo-100">System Health</p>
+                <p className="mt-1 font-bold">{dashboardHealth}</p>
+              </div>
+              <div className="rounded-lg bg-white/15 p-2.5 backdrop-blur">
+                <p className="text-xs text-indigo-100">Asset Utilization</p>
+                <p className="mt-1 font-bold">{utilizationPercent}%</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {isLoading ? (
@@ -480,55 +842,169 @@ export default function DashboardPage() {
         />
       ) : (
         <>
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((item) => (
           <div
             key={item.title}
-            className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+            className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
           >
-            <p className="text-sm font-medium text-gray-500">{item.title}</p>
-
-            <h2 className="mt-3 text-3xl font-bold text-gray-900">
+            <div className="flex items-center justify-between gap-4">
+              <DashboardIcon tone={item.tone}>
+                <MiniIcon type={item.icon} />
+              </DashboardIcon>
+              <span className="text-xl text-slate-300">...</span>
+            </div>
+            <h2 className="mt-3 text-2xl font-bold text-slate-950">
               {item.value}
             </h2>
-
-            <p className="mt-2 text-xs text-gray-500">{item.description}</p>
-            <p className="mt-3 text-xs font-semibold text-gray-700">
+            <p className="mt-1 text-sm font-semibold text-slate-700">
+              {item.title}
+            </p>
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              {item.description}
+            </p>
+            <p className="mt-3 w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
               {item.trend}
             </p>
           </div>
         ))}
       </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+        <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div className="flex flex-col gap-2 border-b border-slate-100 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-base font-bold text-slate-950">
+                Asset Operations Trend
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Distribution from backend-connected asset records
+              </p>
+            </div>
+            <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">
+              Live Data
+            </span>
+          </div>
+
+          <div className="grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_210px]">
+            <div className="flex h-60 items-end gap-3 rounded-lg bg-slate-50 px-3 py-4">
+              {activityTrendBars.map((item) => (
+                <div key={item.label} className="flex min-w-0 flex-1 flex-col items-center gap-3">
+                  <div className="flex h-40 w-full items-end rounded-lg border border-dashed border-slate-200 bg-white px-2 pb-2">
+                    <div
+                      className="w-full rounded-t-lg bg-gradient-to-t from-indigo-600 to-emerald-400"
+                      style={{ height: item.height }}
+                    />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs font-bold text-slate-900">{item.value}</p>
+                    <p className="mt-1 truncate text-xs text-slate-500">{item.label}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col justify-between rounded-lg bg-slate-950 p-4 text-white">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+                  Utilization
+                </p>
+                <div
+                  className="mx-auto mt-4 grid h-28 w-28 place-items-center rounded-full"
+                  style={{
+                    background: `conic-gradient(#7c3aed ${utilizationPercent}%, #1e293b ${utilizationPercent}% 100%)`,
+                  }}
+                >
+                  <div className="grid h-20 w-20 place-items-center rounded-full bg-slate-950">
+                    <span className="text-xl font-bold">{utilizationPercent}%</span>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-4 text-xs leading-5 text-slate-300">
+                Delivered assets compared with total registered equipment.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div className="border-b border-slate-100 px-4 py-3">
+            <h2 className="text-base font-bold text-slate-950">Workflow Queue</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Open operational counts by module
+            </p>
+          </div>
+          <div className="grid gap-2 p-4">
         {workflowSummary.map((item) => (
           <button
             key={item.title}
             type="button"
             onClick={() => router.push(item.href)}
-            className="rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm hover:border-gray-300 hover:bg-gray-50"
+                className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-left transition hover:border-indigo-200 hover:bg-white"
           >
-            <p className="text-sm font-medium text-gray-500">{item.title}</p>
-            <h2 className="mt-3 text-3xl font-bold text-gray-900">
+                <p className="text-sm font-semibold text-slate-600">{item.title}</p>
+                <h2 className="mt-2 text-2xl font-bold text-slate-950">
               {item.value}
             </h2>
-            <p className="mt-2 text-xs text-gray-500">{item.description}</p>
+                <p className="mt-1 text-xs leading-5 text-slate-500">
+                  {item.description}
+                </p>
           </button>
         ))}
+          </div>
+        </div>
       </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm xl:col-span-2">
+      <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
+        <PieChartCard
+          title="Asset Status Mix"
+          description="Pie-style status split calculated from asset records"
+          items={assetStatusPie}
+        />
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
+          <DonutChart
+            title="Delivered Utilization"
+            value={deliveredAssets}
+            total={assets.length}
+            color="#7c3aed"
+            items={[
+              { label: "Delivered", value: deliveredAssets, color: "#7c3aed" },
+              { label: "Available", value: availableAssets, color: "#14b8a6" },
+            ]}
+          />
+          <DonutChart
+            title="Open Workflow Load"
+            value={workflowPie.reduce((sum, item) => sum + item.value, 0)}
+            total={
+              deliveries.length + transfers.length + workOrders.length + maintenance.length
+            }
+            color="#0ea5e9"
+            items={workflowPie}
+          />
+        </div>
+      </section>
+
+      <section className="mt-4">
+        <LineChartCard
+          title="Maintenance Activity Trend"
+          description="Six-month maintenance activity based on maintenance record dates"
+          points={maintenanceTrend}
+        />
+      </section>
+
+      <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm xl:col-span-2">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 className="text-lg font-bold text-gray-900">
+              <h2 className="text-lg font-bold text-slate-950">
                 Role Based Actions
               </h2>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-slate-600">
                 Quick actions available for your current backend role.
               </p>
             </div>
-            <span className="w-fit rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-bold text-gray-700">
+            <span className="w-fit rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700">
               {currentRole}
             </span>
           </div>
@@ -539,7 +1015,7 @@ export default function DashboardPage() {
                 key={action.label}
                 type="button"
                 onClick={() => router.push(action.href)}
-                className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-left text-sm font-semibold text-gray-800 hover:bg-white"
+                className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-left text-sm font-semibold text-slate-800 hover:bg-white"
               >
                 {action.label}
               </button>
@@ -550,7 +1026,7 @@ export default function DashboardPage() {
             {(rolePermissionPreview[currentRole] || rolePermissionPreview.Employee).map((permission) => (
               <div
                 key={permission}
-                className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700"
+                className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700"
               >
                 {permission}
               </div>
@@ -558,30 +1034,30 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900">Due Dates</h2>
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-950">Due Dates</h2>
           <div className="mt-4 space-y-3">
             {dueDates.map((item) => (
               <div
                 key={`${item.date}-${item.title}`}
-                className="rounded-xl border border-gray-100 bg-gray-50 p-3"
+                className="rounded-lg border border-slate-100 bg-slate-50 p-3"
               >
-                <p className="text-xs font-bold text-gray-500">{item.date}</p>
-                <p className="mt-1 text-sm font-semibold text-gray-900">
+                <p className="text-xs font-bold text-slate-500">{item.date}</p>
+                <p className="mt-1 text-sm font-semibold text-slate-950">
                   {item.title}
                 </p>
-                <p className="mt-1 text-xs text-gray-500">{item.meta}</p>
+                <p className="mt-1 text-xs text-slate-500">{item.meta}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-bold text-gray-900">
+      <section className="mt-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+        <h2 className="text-lg font-bold text-slate-950">
           Data Quality Dashboard
         </h2>
-        <p className="mt-1 text-sm text-gray-600">
+        <p className="mt-1 text-sm text-slate-600">
           Live record checks calculated from backend-connected module data.
         </p>
 
@@ -589,13 +1065,13 @@ export default function DashboardPage() {
           {dataQualityItems.map((item) => (
             <div
               key={item.label}
-              className="rounded-xl border border-gray-100 bg-gray-50 p-4"
+              className="rounded-lg border border-slate-100 bg-slate-50 p-4"
             >
-              <p className="text-sm text-gray-500">{item.label}</p>
-              <p className="mt-2 text-2xl font-bold text-gray-900">
+              <p className="text-sm text-slate-500">{item.label}</p>
+              <p className="mt-2 text-2xl font-bold text-slate-950">
                 {item.value}
               </p>
-              <p className="mt-1 text-xs font-semibold text-gray-600">
+              <p className="mt-1 text-xs font-semibold text-slate-600">
                 {item.status}
               </p>
             </div>
@@ -603,20 +1079,20 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <section className="mt-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-slate-950">
               Report Shortcuts
             </h2>
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-1 text-sm text-slate-600">
               Open management reports directly from dashboard review.
             </p>
           </div>
           <button
             type="button"
             onClick={() => router.push("/reports")}
-            className="w-full rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 sm:w-auto"
+            className="w-full rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 sm:w-auto"
           >
             All Reports
           </button>
@@ -628,12 +1104,12 @@ export default function DashboardPage() {
               type="button"
               aria-label={`Open ${report.title}`}
               onClick={() => router.push(report.href)}
-              className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-left hover:bg-white"
+              className="rounded-lg border border-slate-100 bg-slate-50 p-4 text-left hover:bg-white"
             >
-              <p className="text-sm font-bold text-gray-900">
+              <p className="text-sm font-bold text-slate-950">
                 {report.title}
               </p>
-              <p className="mt-1 text-xs leading-5 text-gray-500">
+              <p className="mt-1 text-xs leading-5 text-slate-500">
                 {report.description}
               </p>
             </button>
@@ -641,14 +1117,14 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm xl:col-span-2">
+      <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm xl:col-span-2">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-lg font-bold text-gray-900">
+              <h2 className="text-lg font-bold text-slate-950">
                 Asset Summary
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-500">
                 Current equipment distribution
               </p>
             </div>
@@ -656,29 +1132,29 @@ export default function DashboardPage() {
             <button
               type="button"
               onClick={() => router.push("/assets")}
-              className="inline-flex w-full justify-center rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 sm:w-auto"
+              className="inline-flex w-full justify-center rounded-lg bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 sm:w-auto"
             >
               View Assets
             </button>
           </div>
 
-          <div className="mt-5 overflow-x-auto">
+          <div className="mt-4 overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 text-left">
-                  <th className="px-4 py-3 font-semibold text-gray-700">
+                <tr className="border-b border-slate-200 bg-slate-50 text-left">
+                  <th className="px-4 py-3 font-semibold text-slate-700">
                     Category
                   </th>
-                  <th className="px-4 py-3 font-semibold text-gray-700">
+                  <th className="px-4 py-3 font-semibold text-slate-700">
                     Total
                   </th>
-                  <th className="px-4 py-3 font-semibold text-gray-700">
+                  <th className="px-4 py-3 font-semibold text-slate-700">
                     Delivered
                   </th>
-                  <th className="px-4 py-3 font-semibold text-gray-700">
+                  <th className="px-4 py-3 font-semibold text-slate-700">
                     Available
                   </th>
-                  <th className="px-4 py-3 font-semibold text-gray-700">
+                  <th className="px-4 py-3 font-semibold text-slate-700">
                     Maintenance
                   </th>
                 </tr>
@@ -686,18 +1162,18 @@ export default function DashboardPage() {
 
               <tbody>
                 {assetSummary.map((row) => (
-                  <tr key={row.category} className="border-b border-gray-100">
-                    <td className="px-4 py-3 font-medium text-gray-900">
+                  <tr key={row.category} className="border-b border-slate-100">
+                    <td className="px-4 py-3 font-medium text-slate-950">
                       {row.category}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{row.total}</td>
-                    <td className="px-4 py-3 text-gray-600">
+                    <td className="px-4 py-3 text-slate-600">{row.total}</td>
+                    <td className="px-4 py-3 text-slate-600">
                       {row.delivered}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
+                    <td className="px-4 py-3 text-slate-600">
                       {row.available}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
+                    <td className="px-4 py-3 text-slate-600">
                       {row.maintenance}
                     </td>
                   </tr>
@@ -707,28 +1183,28 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900">Recent Activity</h2>
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-950">Recent Activity</h2>
 
           <div className="mt-4 space-y-3">
             {recentActivities.map((activity, index) => (
               <div
                 key={`${activity.title}-${activity.meta}-${index}`}
-                className="rounded-xl border border-gray-100 bg-gray-50 p-3"
+                className="rounded-lg border border-slate-100 bg-slate-50 p-3"
               >
-                <p className="text-sm font-semibold text-gray-800">
+                <p className="text-sm font-semibold text-slate-800">
                   {activity.title}
                 </p>
-                <p className="mt-1 text-xs text-gray-500">{activity.meta}</p>
+                <p className="mt-1 text-xs text-slate-500">{activity.meta}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
-          <h2 className="text-lg font-bold text-gray-900">
+      <section className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+          <h2 className="text-lg font-bold text-slate-950">
             Operational Alerts
           </h2>
 
@@ -738,12 +1214,12 @@ export default function DashboardPage() {
                 key={alert.title}
                 type="button"
                 onClick={() => router.push(alert.href)}
-                className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-left hover:border-gray-300 hover:bg-white"
+                className="rounded-lg border border-slate-100 bg-slate-50 p-4 text-left hover:border-gray-300 hover:bg-white"
               >
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-semibold text-slate-950">
                   {alert.title}
                 </p>
-                <p className="mt-2 text-xs leading-5 text-gray-500">
+                <p className="mt-2 text-xs leading-5 text-slate-500">
                   {alert.detail}
                 </p>
               </button>
@@ -751,72 +1227,26 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900">System Readiness</h2>
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-950">System Readiness</h2>
 
           <div className="mt-4 space-y-3 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-600">Frontend Build</span>
+              <span className="text-slate-600">Frontend Build</span>
               <span className="font-semibold text-green-700">Ready</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Backend</span>
+              <span className="text-slate-600">Backend</span>
               <span className="font-semibold text-green-700">API Connected</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Database</span>
+              <span className="text-slate-600">Database</span>
               <span className="font-semibold text-green-700">MySQL Connected</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm xl:col-span-2">
-          <h2 className="text-lg font-bold text-gray-900">
-            Asset Distribution Chart
-          </h2>
-
-          <div className="mt-5 space-y-4">
-            {chartData.map((item) => (
-              <div key={item.label}>
-                <div className="mb-1 flex justify-between text-sm">
-                  <span className="font-medium text-gray-700">{item.label}</span>
-                  <span className="font-semibold text-gray-900">
-                    {item.value}
-                  </span>
-                </div>
-                <div className="h-3 rounded-full bg-gray-100">
-                  <div
-                    className="h-3 rounded-full bg-gray-900"
-                    style={{ width: item.width }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-red-100 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900">Low Stock Alerts</h2>
-
-          <div className="mt-4 space-y-3">
-            {lowStockItems.map((item) => (
-              <div
-                key={item.item}
-                className="rounded-xl border border-red-100 bg-red-50 p-3"
-              >
-                <p className="text-sm font-semibold text-red-800">
-                  {item.item}
-                </p>
-                <p className="mt-1 text-xs text-red-700">
-                  Stock {item.stock} / Minimum {item.minimum}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
         </>
       )}
     </LayoutWrapper>

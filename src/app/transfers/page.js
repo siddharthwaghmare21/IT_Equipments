@@ -150,6 +150,7 @@ export default function TransfersPage() {
         exportFileName="transfers"
         printTitle="Transfers"
         printDescription="Official transfer register generated from the current filtered transfer records."
+        importModule="Transfers"
       />
 
       {isLoading ? (

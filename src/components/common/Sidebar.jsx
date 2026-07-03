@@ -189,7 +189,7 @@ export default function Sidebar({
     {
       title: "Procurement",
       links: visibleSidebarLinks.filter((link) =>
-        ["/import-data", "/purchases", "/vendors"].includes(link.path)
+        ["/purchases", "/vendors"].includes(link.path)
       ),
     },
     {
@@ -243,17 +243,17 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="flex h-full w-72 flex-col bg-gray-950 text-white">
-      <div className="flex h-16 items-center justify-between border-b border-gray-800 px-5">
+    <aside className="flex h-full w-72 flex-col border-r border-slate-800 bg-slate-950 text-white shadow-2xl">
+      <div className="flex h-16 items-center justify-between border-b border-slate-800 px-5">
         <div>
           <h2 className="text-lg font-bold">IT Assets</h2>
-          <p className="text-xs text-gray-400">Management System</p>
+          <p className="text-xs text-slate-400">Management System</p>
         </div>
 
         <button
           type="button"
           onClick={onClose}
-          className="h-9 w-9 rounded-lg border border-gray-700 text-gray-300 hover:bg-gray-800 lg:hidden"
+          className="h-9 w-9 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800"
           aria-label="Close menu"
         >
           x
@@ -267,7 +267,7 @@ export default function Sidebar({
       >
         {groupedLinks.map((group) => (
           <div key={group.title} className="space-y-1">
-            <p className="px-3 pt-3 text-[11px] font-bold uppercase tracking-wide text-gray-500">
+            <p className="px-3 pt-3 text-[11px] font-bold uppercase tracking-wide text-slate-500">
               {group.title}
             </p>
 
@@ -280,17 +280,17 @@ export default function Sidebar({
                   key={link.path}
                   href={link.path}
                   onClick={onClose}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
                     isActive
-                      ? "bg-white font-semibold text-gray-950"
-                      : "text-gray-300 hover:bg-gray-900 hover:text-white"
+                      ? "bg-white font-semibold text-slate-950 shadow-sm"
+                      : "text-slate-300 hover:bg-slate-900 hover:text-white"
                   }`}
                 >
                   <span
                     className={`flex h-8 w-8 items-center justify-center rounded-lg ${
                       isActive
-                        ? "bg-gray-950 text-white"
-                        : "bg-gray-800 text-gray-300"
+                        ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white"
+                        : "bg-slate-800 text-slate-300"
                     }`}
                   >
                     <SidebarIcon path={link.path} />
@@ -304,18 +304,18 @@ export default function Sidebar({
         ))}
       </nav>
 
-      <div className="border-t border-gray-800 p-4">
-        <div className="rounded-xl bg-gray-900 p-4">
+      <div className="border-t border-slate-800 p-4">
+        <div className="rounded-lg border border-slate-800 bg-slate-900 p-4">
           <p className="text-sm font-semibold">
             {currentUser?.fullName || "IT Staff"}
           </p>
 
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs text-slate-400">
             {currentUser?.role || "Frontend setup in progress"}
           </p>
 
           {currentUser?.email && (
-            <p className="mt-1 truncate text-xs text-gray-500">
+            <p className="mt-1 truncate text-xs text-slate-500">
               {currentUser.email}
             </p>
           )}
@@ -324,7 +324,7 @@ export default function Sidebar({
             <button
               type="button"
               onClick={onLogout}
-              className="mt-4 w-full rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-gray-300 hover:bg-gray-800 hover:text-white"
+              className="mt-4 w-full rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white"
             >
               Logout
             </button>

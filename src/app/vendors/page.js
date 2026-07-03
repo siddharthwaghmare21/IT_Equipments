@@ -154,6 +154,7 @@ export default function VendorsPage() {
         exportFileName="vendors"
         printTitle="Vendors"
         printDescription="Official vendor register generated from the current filtered vendor records."
+        importModule="Vendors"
       />
 
       <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

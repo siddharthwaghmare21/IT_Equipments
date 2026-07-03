@@ -134,6 +134,7 @@ export default function ReturnsPage() {
         exportFileName="returns"
         printTitle="Returns"
         printDescription="Official return register generated from the current filtered return records."
+        importModule="Returns"
       />
 
       {isLoading ? (

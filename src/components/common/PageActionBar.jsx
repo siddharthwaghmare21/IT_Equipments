@@ -41,6 +41,7 @@ export default function PageActionBar({
   exportFileName,
   printTitle,
   printDescription,
+  importModule,
   children,
 }) {
   const currentUser = readSession();
@@ -80,22 +81,30 @@ export default function PageActionBar({
 
   return (
     <>
-    <section className="no-print mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+    <section className="no-print mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+      <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex flex-wrap gap-2">
         {addHref && canAddRecords && (
           <Link
             href={addHref}
-            className="inline-flex justify-center rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
+            className="inline-flex justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:from-indigo-700 hover:to-violet-700"
           >
             {addLabel}
+          </Link>
+        )}
+        {importModule && canExportRecords && (
+          <Link
+            href={`/import-data?module=${encodeURIComponent(importModule)}`}
+            className="inline-flex justify-center rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white"
+          >
+            Import
           </Link>
         )}
 
         <button
           type="button"
           onClick={handleRefresh}
-          className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+          className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white"
         >
           Refresh
         </button>
@@ -103,19 +112,19 @@ export default function PageActionBar({
           <button
             type="button"
             onClick={handleExport}
-            className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white"
           >
             Export
           </button>
         )}
         {exportData ? (
           <>
-            <label className="flex flex-col gap-1 text-xs font-semibold text-gray-600">
+            <label className="flex flex-col gap-1 text-xs font-semibold text-slate-600">
               Print Format
               <select
                 value={printFormat}
                 onChange={(event) => setPrintFormat(event.target.value)}
-                className="min-w-44 rounded-xl border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 outline-none focus:border-gray-900"
+                className="min-w-44 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700 outline-none focus:border-indigo-500 focus:bg-white"
               >
                 {printFormats.map((format) => (
                   <option key={format.value} value={format.value}>
@@ -134,7 +143,7 @@ export default function PageActionBar({
           <button
             type="button"
             onClick={handlePrint}
-            className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white"
           >
             Print / PDF
           </button>
@@ -145,8 +154,8 @@ export default function PageActionBar({
       </div>
 
       {exportData && (
-        <div className="mt-4 border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">
-          <span className="font-bold text-gray-900">
+        <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+          <span className="font-bold text-slate-950">
             {selectedPrintFormat.label}:
           </span>{" "}
           {selectedPrintFormat.description}. Browser print/PDF export uses

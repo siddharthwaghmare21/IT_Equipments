@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import { ErrorState, LoadingState } from "@/components/common/StateBlock";
@@ -31,6 +32,12 @@ const importModules = [
     title: "Purchases",
     requiredColumns: ["workOrderNumber", "vendorName", "invoiceNumber", "purchaseDate", "amount"],
     sampleRow: ["WO-2026-001", "ABC Computers", "INV-1001", "2026-06-30", "125000"],
+    status: "Tracking Connected",
+  },
+  {
+    title: "Deliveries",
+    requiredColumns: ["deliveryCode", "assetTag", "receiverName", "departmentName", "deliveryDate", "status"],
+    sampleRow: ["DL-2026-001", "IT-LAP-010", "Amit Patil", "Accounts", "2026-06-30", "Delivered"],
     status: "Tracking Connected",
   },
   {
@@ -172,7 +179,12 @@ function validateRows(moduleName, headers, rows) {
 }
 
 export default function ImportDataPage() {
-  const [selectedModule, setSelectedModule] = useState("Assets");
+  const searchParams = useSearchParams();
+  const queryModule = searchParams.get("module");
+  const initialModule = importModules.some((item) => item.title === queryModule)
+    ? queryModule
+    : "Assets";
+  const [selectedModule, setSelectedModule] = useState(initialModule);
   const [showPreview, setShowPreview] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewRows, setPreviewRows] = useState([]);
@@ -312,6 +324,10 @@ export default function ImportDataPage() {
   }
 
   const selectedModuleConfig = getModuleConfig(selectedModule);
+  const orderedImportModules = [
+    selectedModuleConfig,
+    ...importModules.filter((item) => item.title !== selectedModuleConfig.title),
+  ];
   const previewHeaders = selectedModuleConfig.requiredColumns;
   const headerLookup = validationSummary.headers.reduce((lookup, header) => {
     lookup[header.toLowerCase()] = header;
@@ -321,8 +337,8 @@ export default function ImportDataPage() {
   return (
     <LayoutWrapper>
       <PageHeader
-        title="Import Data"
-        description="Prepare bulk import files for assets, departments, vendors, work orders and transfer records."
+        title={`${selectedModuleConfig.title} Import`}
+        description="Prepare bulk import files for selected module records with CSV validation and backend tracking."
       />
 
       <section className="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">
@@ -332,16 +348,20 @@ export default function ImportDataPage() {
       </section>
 
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {importModules.map((item) => (
+        {orderedImportModules.map((item) => (
           <div
             key={item.title}
-            className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+            className={`rounded-2xl border bg-white p-5 shadow-sm ${
+              item.title === selectedModule
+                ? "border-gray-900 ring-2 ring-gray-900/10"
+                : "border-gray-200"
+            }`}
           >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-lg font-bold text-gray-900">
-                  {item.title} Import
-                </h2>
+                {item.title} Import
+              </h2>
                 <p className="mt-2 text-sm leading-6 text-gray-600">
                   Required columns: {item.requiredColumns.join(", ")}
                 </p>

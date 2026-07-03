@@ -128,6 +128,7 @@ export default function DeliveriesPage() {
         exportFileName="deliveries"
         printTitle="Deliveries"
         printDescription="Official delivery register generated from the current filtered delivery records."
+        importModule="Deliveries"
       />
 
       {isLoading ? (

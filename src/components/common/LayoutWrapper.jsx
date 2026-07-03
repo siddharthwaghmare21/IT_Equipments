@@ -42,18 +42,9 @@ export default function LayoutWrapper({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:block">
-        <Sidebar
-          currentUser={currentUser}
-          isSuperAdmin={isSuperAdmin}
-          canManageAccessRequests={canManageAccessRequests}
-          onLogout={handleLogout}
-        />
-      </div>
-
+    <div className="min-h-screen bg-slate-100">
       {isSidebarOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="fixed inset-0 z-50">
           <button
             type="button"
             aria-label="Close sidebar overlay"
@@ -73,7 +64,7 @@ export default function LayoutWrapper({ children }) {
         </div>
       )}
 
-      <div className="lg:pl-72">
+      <div>
         <Header
           currentUser={currentUser}
           isSuperAdmin={isSuperAdmin}
@@ -81,7 +72,7 @@ export default function LayoutWrapper({ children }) {
           onMenuClick={() => setIsSidebarOpen(true)}
         />
 
-        <main className="p-4 sm:p-6 lg:p-8">
+        <main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
           <Breadcrumbs />
           {canAccessCurrentPage ? (
             children

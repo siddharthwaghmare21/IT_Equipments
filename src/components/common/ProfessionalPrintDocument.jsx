@@ -92,6 +92,7 @@ export default function ProfessionalPrintDocument({
   title,
   description,
   data = [],
+  labelCard = null,
   detailSections = null,
   reviewerNotes = null,
   signOffLabels = null,
@@ -331,6 +332,56 @@ export default function ProfessionalPrintDocument({
               {data.length} records
             </span>
           </div>
+
+          {labelCard && (
+            <div className="mb-5 border-2 border-gray-900 bg-white">
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_220px]">
+                <div className="p-5">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
+                    {labelCard.eyebrow || "Official Asset Identification Label"}
+                  </p>
+                  <h3 className="mt-2 text-3xl font-black tracking-wide text-gray-950">
+                    {labelCard.primary || "-"}
+                  </h3>
+                  <p className="mt-2 text-base font-bold text-gray-900">
+                    {labelCard.secondary || "-"}
+                  </p>
+                  <div className="mt-4 grid grid-cols-1 gap-0 border border-gray-300 sm:grid-cols-2">
+                    {(labelCard.fields || []).map((field, fieldIndex) => (
+                      <div
+                        key={`${field.label}-${fieldIndex}`}
+                        className="grid grid-cols-[110px_1fr] border-b border-r border-gray-200 text-sm"
+                      >
+                        <span className="bg-gray-50 px-3 py-2 text-xs font-bold uppercase tracking-wide text-gray-500">
+                          {field.label}
+                        </span>
+                        <span className="px-3 py-2 font-semibold text-gray-900">
+                          {field.value || "-"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-900 bg-gray-50 p-5 md:border-l md:border-t-0">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
+                    Label Control
+                  </p>
+                  <div className="mt-4 border border-gray-300 bg-white p-4 text-center">
+                    <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
+                      Asset Tag
+                    </p>
+                    <p className="mt-2 text-xl font-black text-gray-950">
+                      {labelCard.primary || "-"}
+                    </p>
+                  </div>
+                  <div className="mt-8 border-t border-gray-400 pt-2 text-xs font-semibold text-gray-500">
+                    Verified signature / date
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {detailSections ? (
             <div className="space-y-4">
