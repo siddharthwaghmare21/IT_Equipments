@@ -34,13 +34,6 @@ function SidebarIcon({ path }) {
         <path d="M4 15h6v4H4z" />
       </>
     ),
-    "/import-data": (
-      <>
-        <path d="M12 4v10" />
-        <path d="m8 8 4-4 4 4" />
-        <path d="M5 16v3h14v-3" />
-      </>
-    ),
     "/purchases": (
       <>
         <path d="M7 6h14l-2 8H8z" />
@@ -173,7 +166,6 @@ export default function Sidebar({
   currentUser,
   isSuperAdmin = false,
   canManageAccessRequests = false,
-  onLogout,
 }) {
   const pathname = usePathname();
   const navRef = useRef(null);
@@ -304,33 +296,6 @@ export default function Sidebar({
         ))}
       </nav>
 
-      <div className="border-t border-slate-800 p-4">
-        <div className="rounded-lg border border-slate-800 bg-slate-900 p-4">
-          <p className="text-sm font-semibold">
-            {currentUser?.fullName || "IT Staff"}
-          </p>
-
-          <p className="mt-1 text-xs text-slate-400">
-            {currentUser?.role || "Frontend setup in progress"}
-          </p>
-
-          {currentUser?.email && (
-            <p className="mt-1 truncate text-xs text-slate-500">
-              {currentUser.email}
-            </p>
-          )}
-
-          {onLogout && (
-            <button
-              type="button"
-              onClick={onLogout}
-              className="mt-4 w-full rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white"
-            >
-              Logout
-            </button>
-          )}
-        </div>
-      </div>
     </aside>
   );
 }

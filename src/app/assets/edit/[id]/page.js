@@ -176,9 +176,10 @@ export default function EditAssetPage() {
             <TextInput
               label="Work Order Date"
               name="purchaseDate"
-              type="date"
+              type="text"
               value={formData.purchaseDate}
               onChange={handleChange}
+              placeholder="YYYY-MM-DD"
             />
 
             <TextInput
@@ -198,9 +199,10 @@ export default function EditAssetPage() {
             <TextInput
               label="Warranty Expiry"
               name="warrantyExpiry"
-              type="date"
+              type="text"
               value={formData.warrantyExpiry}
               onChange={handleChange}
+              placeholder="YYYY-MM-DD"
             />
 
             <DepartmentSelect

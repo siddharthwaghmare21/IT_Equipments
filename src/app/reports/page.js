@@ -255,28 +255,6 @@ export default function ReportsPage() {
         </p>
       </section>
 
-      <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Reports</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">8</h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Asset Reports</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">2</h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Operational Reports</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">5</h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Finance Reports</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">1</h2>
-        </div>
-      </section>
-
       <section className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
           <div className="flex items-center justify-between gap-3">

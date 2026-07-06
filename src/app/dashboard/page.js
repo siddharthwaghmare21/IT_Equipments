@@ -1236,12 +1236,28 @@ export default function DashboardPage() {
               <span className="font-semibold text-green-700">Ready</span>
             </div>
             <div className="flex justify-between">
+              <span className="text-slate-600">Next.js</span>
+              <span className="font-semibold text-slate-950">16.2.9</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-600">React</span>
+              <span className="font-semibold text-slate-950">19.2.4</span>
+            </div>
+            <div className="flex justify-between">
               <span className="text-slate-600">Backend</span>
               <span className="font-semibold text-green-700">API Connected</span>
             </div>
             <div className="flex justify-between">
+              <span className="text-slate-600">ASP.NET Core</span>
+              <span className="font-semibold text-slate-950">.NET 10.0</span>
+            </div>
+            <div className="flex justify-between">
               <span className="text-slate-600">Database</span>
               <span className="font-semibold text-green-700">MySQL Connected</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-600">DB Driver</span>
+              <span className="font-semibold text-slate-950">MySqlConnector 2.6.1</span>
             </div>
           </div>
         </div>

@@ -184,19 +184,6 @@ export default function AssetsPage() {
     }
   }
 
-  const availableCount = assets.filter(
-    (asset) => asset.assetStatus === "Available"
-  ).length;
-  const deliveredCount = assets.filter(
-    (asset) => asset.assetStatus === "Delivered"
-  ).length;
-  const maintenanceCount = assets.filter(
-    (asset) => asset.assetStatus === "Maintenance"
-  ).length;
-  const archivedCount = assets.filter(
-    (asset) => asset.assetStatus === "Archived"
-  ).length;
-
   return (
     <LayoutWrapper>
       <PageHeader
@@ -211,54 +198,16 @@ export default function AssetsPage() {
         exportFileName="assets"
         printTitle="Assets"
         printDescription="Official asset register generated from the current filtered asset records."
-        importModule="Assets"
       />
 
-      <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Assets</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {assets.length}
-          </h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Available</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {availableCount}
-          </h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Delivered</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {deliveredCount}
-          </h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Maintenance</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {maintenanceCount}
-          </h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Archived</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {archivedCount}
-          </h2>
-        </div>
-      </section>
-
-      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-col gap-4">
+      <section className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="flex flex-col gap-3">
           <input
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by asset tag, name, serial number, department, work order ref or location..."
-            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
           />
 
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -267,10 +216,10 @@ export default function AssetsPage() {
                 key={filter}
                 type="button"
                 onClick={() => setActiveFilter(filter)}
-                className={`whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-medium ${
+                className={`whitespace-nowrap rounded-lg border px-4 py-2 text-sm font-semibold ${
                   activeFilter === filter
-                    ? "border-gray-900 bg-gray-900 text-white"
-                    : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
+                    ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
+                    : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-white"
                 }`}
               >
                 {filter}
@@ -282,21 +231,21 @@ export default function AssetsPage() {
             <button
               type="button"
               onClick={() => applyQuickView("available-laptops")}
-              className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+              className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-white"
             >
               Available Laptops
             </button>
             <button
               type="button"
               onClick={() => applyQuickView("maintenance")}
-              className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+              className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-white"
             >
               Repair Queue
             </button>
             <button
               type="button"
               onClick={() => applyQuickView("pending-documents")}
-              className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+              className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-white"
             >
               Pending Documents
             </button>
@@ -306,7 +255,7 @@ export default function AssetsPage() {
             <select
               value={categoryFilter}
               onChange={(event) => setCategoryFilter(event.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
             >
               {categoryOptions.map((category) => (
                 <option key={category} value={category}>
@@ -318,7 +267,7 @@ export default function AssetsPage() {
             <select
               value={departmentFilter}
               onChange={(event) => setDepartmentFilter(event.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
             >
               {departmentOptions.map((department) => (
                 <option key={department} value={department}>
@@ -330,7 +279,7 @@ export default function AssetsPage() {
             <select
               value={conditionFilter}
               onChange={(event) => setConditionFilter(event.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
             >
               <option value="All">All Conditions</option>
               {assetConditions.map((condition) => (
@@ -344,21 +293,21 @@ export default function AssetsPage() {
       </section>
 
       {activeFilter === "Archived" && (
-        <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <section className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Archive View
               </p>
-              <h2 className="mt-1 text-lg font-semibold text-gray-900">
+              <h2 className="mt-1 text-base font-semibold text-slate-950">
                 Read-only asset records for audit trail
               </h2>
-              <p className="mt-1 max-w-3xl text-sm text-gray-600">
+              <p className="mt-1 max-w-3xl text-sm text-slate-600">
                 Archived assets stay available for audit, reports and lifecycle
                 history.
               </p>
             </div>
-            <span className="inline-flex w-fit rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700">
+            <span className="inline-flex w-fit rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">
               Backend connected
             </span>
           </div>
@@ -366,16 +315,16 @@ export default function AssetsPage() {
       )}
 
       {selectedAssets.length > 0 && (
-        <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+        <section className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-slate-950">
               {selectedAssets.length} assets selected
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
               {canExportSelected && (
                 <button
                   type="button"
-                  className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+                  className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white"
                 >
                   Export Selected
                 </button>
@@ -383,7 +332,7 @@ export default function AssetsPage() {
               {canCreateSelectedWorkflow && (
                 <button
                   type="button"
-                  className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+                  className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white"
                 >
                   Create Maintenance
                 </button>
@@ -391,7 +340,7 @@ export default function AssetsPage() {
               <button
                 type="button"
                 onClick={clearSelectedAssets}
-                className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
+                className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
               >
                 Clear
               </button>
@@ -438,42 +387,42 @@ export default function AssetsPage() {
           <div className="hidden md:block">
             <TableWrapper>
               <table className="min-w-[1500px] w-full text-sm">
-                <thead className="bg-gray-50 text-left">
-                  <tr className="border-b border-gray-200">
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                <thead className="bg-slate-50 text-left">
+                  <tr className="border-b border-slate-200">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Select
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Asset Tag
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Asset Name
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Category
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Serial No.
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Department
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Receiver
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Lifecycle
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Warranty
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Documents
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Status
                     </th>
-                    <th className="px-4 py-3 font-semibold text-gray-700">
+                    <th className="px-4 py-3 font-semibold text-slate-700">
                       Actions
                     </th>
                   </tr>
@@ -483,53 +432,53 @@ export default function AssetsPage() {
                   {filteredAssets.map((asset) => (
                     <tr
                       key={asset.id}
-                      className="border-b border-gray-100 hover:bg-gray-50"
+                      className="border-b border-slate-100 hover:bg-slate-50"
                     >
                       <td className="px-4 py-4">
                         <input
                           type="checkbox"
                           checked={selectedAssets.includes(asset.id)}
                           onChange={() => toggleAssetSelection(asset.id)}
-                          className="h-4 w-4 rounded border-gray-300 accent-gray-900"
+                          className="h-4 w-4 rounded border-slate-300 accent-indigo-600"
                           aria-label={`Select ${asset.assetTag}`}
                         />
                       </td>
 
-                      <td className="px-4 py-4 font-semibold text-gray-900">
+                      <td className="px-4 py-4 font-semibold text-slate-950">
                         {asset.assetTag}
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700">
+                      <td className="px-4 py-4 text-slate-700">
                         {asset.assetName}
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700">
+                      <td className="px-4 py-4 text-slate-700">
                         {asset.category}
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700">
+                      <td className="px-4 py-4 text-slate-700">
                         {asset.serialNumber}
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700">
+                      <td className="px-4 py-4 text-slate-700">
                         {asset.currentDepartmentName ||
                           asset.custodianDepartmentName ||
                           "-"}
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700">
+                      <td className="px-4 py-4 text-slate-700">
                         {asset.currentReceiverName || "-"}
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700">
+                      <td className="px-4 py-4 text-slate-700">
                         {asset.lifecycleStatus}
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700">
+                      <td className="px-4 py-4 text-slate-700">
                         {asset.warrantyExpiry || "-"}
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700">
+                      <td className="px-4 py-4 text-slate-700">
                         {asset.attachmentStatus}
                       </td>
 

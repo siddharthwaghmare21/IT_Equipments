@@ -53,9 +53,9 @@ export default function AuthProvider({ children }) {
 
   if (isChecking) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-        <div className="rounded-2xl border border-gray-200 bg-white px-6 py-4 shadow-sm">
-          <p className="text-sm font-semibold text-gray-700">
+      <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 dark:bg-slate-950">
+        <div className="rounded-lg border border-slate-200 bg-white px-6 py-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
             Checking access...
           </p>
         </div>

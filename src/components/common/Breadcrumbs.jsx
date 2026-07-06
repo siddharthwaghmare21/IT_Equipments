@@ -22,7 +22,6 @@ const labels = {
   profile: "Profile",
   help: "Help / SOP",
   "activity-logs": "Activity Logs",
-  "import-data": "Import Data",
   "admin-request-management": "Admin Requests",
   "admin-user-management": "User Management",
 };

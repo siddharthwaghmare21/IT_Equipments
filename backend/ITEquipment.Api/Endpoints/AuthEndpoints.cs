@@ -10,6 +10,7 @@ public static class AuthEndpoints
 {
     private static readonly HashSet<string> AllowedSignupRoleCodes = new(StringComparer.OrdinalIgnoreCase)
     {
+        "SUPER_ADMIN",
         "ADMIN",
         "EMPLOYEE",
         "VIEWER"
@@ -417,7 +418,7 @@ public static class AuthEndpoints
 
         return AllowedSignupRoleCodes.Contains(request.RequestedRoleCode)
             ? null
-            : "Requested role must be Admin, Employee, or Viewer.";
+            : "Requested role must be Super Admin, Admin, Employee, or Viewer.";
     }
 
     private static string? ValidateOtpRequest(string email, string purpose)

@@ -109,10 +109,12 @@ export default function WorkOrderForm({
 
         <Field label="Work Order Date">
           <input
-            type="date"
+            type="text"
             name="workOrderDate"
             value={formData.workOrderDate}
             onChange={onChange}
+            placeholder="YYYY-MM-DD"
+            pattern="\d{4}-\d{2}-\d{2}"
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             required
           />
@@ -120,20 +122,24 @@ export default function WorkOrderForm({
 
         <Field label="Expected Delivery Date">
           <input
-            type="date"
+            type="text"
             name="expectedDeliveryDate"
             value={formData.expectedDeliveryDate}
             onChange={onChange}
+            placeholder="YYYY-MM-DD"
+            pattern="\d{4}-\d{2}-\d{2}"
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
         </Field>
 
         <Field label="Received Date">
           <input
-            type="date"
+            type="text"
             name="receivedDate"
             value={formData.receivedDate}
             onChange={onChange}
+            placeholder="YYYY-MM-DD"
+            pattern="\d{4}-\d{2}-\d{2}"
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
         </Field>

@@ -160,7 +160,10 @@ public sealed class AuthRepository(MySqlConnectionFactory connectionFactory)
         await using var approvalCommand = new MySqlCommand(approvalSql, connection, transaction);
         approvalCommand.Parameters.AddWithValue("@UserId", userId);
         approvalCommand.Parameters.AddWithValue("@RequestedRoleCode", request.RequestedRoleCode.Trim().ToUpperInvariant());
-        approvalCommand.Parameters.AddWithValue("@Remarks", $"Access request created for {request.RequestedRoleCode.Trim().ToUpperInvariant()} role.");
+        var signupRemarks = string.IsNullOrWhiteSpace(request.Remarks)
+            ? $"Access request created for {request.RequestedRoleCode.Trim().ToUpperInvariant()} role."
+            : request.Remarks.Trim();
+        approvalCommand.Parameters.AddWithValue("@Remarks", signupRemarks);
 
         var approvalRequestId = Convert.ToInt64(await approvalCommand.ExecuteScalarAsync(cancellationToken));
         await transaction.CommitAsync(cancellationToken);

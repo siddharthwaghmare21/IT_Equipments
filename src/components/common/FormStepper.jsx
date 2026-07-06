@@ -2,7 +2,7 @@
 
 export default function FormStepper({ steps, currentStep, onStepChange }) {
   return (
-    <div className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-950">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {steps.map((step, index) => {
           const isActive = index === currentStep;
@@ -13,12 +13,12 @@ export default function FormStepper({ steps, currentStep, onStepChange }) {
               key={step.title}
               type="button"
               onClick={() => onStepChange(index)}
-              className={`rounded-xl border p-3 text-left ${
+              className={`rounded-lg border p-3 text-left ${
                 isActive
-                  ? "border-gray-900 bg-gray-900 text-white"
+                  ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
                   : isComplete
-                    ? "border-green-200 bg-green-50 text-green-800"
-                    : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100"
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200"
+                    : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-white dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
               }`}
             >
               <span className="text-xs font-bold uppercase">

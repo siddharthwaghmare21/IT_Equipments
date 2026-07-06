@@ -27,11 +27,11 @@ function formatDate(dateValue) {
 
 function DetailItem({ label, value }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900">
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
         {label}
       </p>
-      <p className="mt-1 text-sm font-semibold text-gray-900">
+      <p className="mt-1 text-sm font-semibold text-slate-950 dark:text-slate-100">
         {value || "-"}
       </p>
     </div>
@@ -88,16 +88,10 @@ export default function ProfilePage() {
 
   const accessAreas = accessAreasByRole[profile.role] || ["Dashboard"];
 
-  const profileSummary = [
-    { label: "User ID", value: profile.id || "-" },
-    { label: "Role Code", value: profile.roleCode || "-" },
-    { label: "Session Status", value: hasSession ? "Active" : "Missing" },
-  ];
-
-  const recentActions = [
-    `Logged in ${formatDate(profile.loginAt)}`,
-    `Access role: ${profile.role || "-"}`,
-    `Department: ${profile.department || "-"}`,
+  const securityItems = [
+    { label: "Role Based Access", value: "Enabled" },
+    { label: "Activity Tracking", value: "Enabled" },
+    { label: "Password Policy", value: "Active" },
   ];
 
   return (
@@ -116,16 +110,16 @@ export default function ProfilePage() {
         </div>
       )}
 
-      <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-        <div className="flex flex-col gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:justify-between">
+      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+        <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500">
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
               {profile.department || "IT Department"}
             </p>
-            <h2 className="mt-1 text-2xl font-bold text-gray-900">
+            <h2 className="mt-1 text-2xl font-bold text-slate-950 dark:text-slate-100">
               {profile.fullName}
             </h2>
-            <p className="mt-1 text-sm text-gray-600">{profile.email}</p>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{profile.email}</p>
           </div>
 
           <span className="inline-flex w-fit rounded-full border border-green-200 bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
@@ -141,81 +135,42 @@ export default function ProfilePage() {
           <DetailItem label="Department" value={profile.department} />
           <DetailItem label="Account Status" value={profile.status} />
           <DetailItem label="Last Login" value={formatDate(profile.loginAt)} />
+          <DetailItem label="User ID" value={profile.id || "-"} />
+          <DetailItem label="Role Code" value={profile.roleCode || "-"} />
           <DetailItem label="Authentication" value="JWT session" />
+          <DetailItem label="Session Status" value={hasSession ? "Active" : "Missing"} />
         </div>
       </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-3">
-          <h2 className="text-lg font-bold text-gray-900">
-            My Work Summary
-          </h2>
-          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {profileSummary.map((item) => (
-              <div
-                key={item.label}
-                className="rounded-xl border border-gray-100 bg-gray-50 p-4"
-              >
-                <p className="text-sm text-gray-500">{item.label}</p>
-                <p className="mt-2 text-2xl font-bold text-gray-900">
-                  {item.value}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
-            {recentActions.map((action) => (
-              <p
-                key={action}
-                className="rounded-xl border border-gray-100 bg-white p-3 text-sm font-semibold text-gray-700"
-              >
-                {action}
-              </p>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
-          <h2 className="text-lg font-bold text-gray-900">Access Areas</h2>
+      <section className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950 lg:col-span-2">
+          <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">Access Areas</h2>
 
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {accessAreas.map((area) => (
               <div
                 key={area}
-                className="rounded-xl border border-gray-100 bg-gray-50 p-3"
+                className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900"
               >
-                <p className="text-sm font-semibold text-gray-800">{area}</p>
-                <p className="mt-1 text-xs text-gray-500">Allowed by role</p>
+                <p className="text-sm font-semibold text-slate-950 dark:text-slate-100">{area}</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Allowed by role</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900">Security Summary</h2>
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+          <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">Security Summary</h2>
 
           <div className="mt-4 space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Role Based Access</span>
-              <span className="font-semibold text-green-700">Enabled</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Activity Tracking</span>
-              <span className="font-semibold text-green-700">Enabled</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Password Policy</span>
-              <span className="font-semibold text-green-700">Active</span>
-            </div>
+            {securityItems.map((item) => (
+              <div key={item.label} className="flex justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-800 dark:bg-slate-900">
+                <span className="text-slate-600 dark:text-slate-400">{item.label}</span>
+                <span className="font-semibold text-green-700">{item.value}</span>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
-
-      <section className="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">
-        Profile data is loaded from the authenticated backend login session.
-        Profile editing and password reset remain controlled security actions
-        and will be handled during final account-management hardening.
       </section>
     </LayoutWrapper>
   );

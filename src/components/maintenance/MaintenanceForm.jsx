@@ -144,30 +144,36 @@ export default function MaintenanceForm({
 
         <Field label="Service Date">
           <input
-            type="date"
+            type="text"
             name="serviceDate"
             value={formData.serviceDate}
             onChange={onChange}
+            placeholder="YYYY-MM-DD"
+            pattern="\d{4}-\d{2}-\d{2}"
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
         </Field>
 
         <Field label="Expected Completion Date">
           <input
-            type="date"
+            type="text"
             name="expectedCompletionDate"
             value={formData.expectedCompletionDate}
             onChange={onChange}
+            placeholder="YYYY-MM-DD"
+            pattern="\d{4}-\d{2}-\d{2}"
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
         </Field>
 
         <Field label="Completion Date">
           <input
-            type="date"
+            type="text"
             name="completionDate"
             value={formData.completionDate}
             onChange={onChange}
+            placeholder="YYYY-MM-DD"
+            pattern="\d{4}-\d{2}-\d{2}"
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
           />
         </Field>

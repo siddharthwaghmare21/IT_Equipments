@@ -74,11 +74,16 @@ public sealed class ApprovalRepository(MySqlConnectionFactory connectionFactory)
         CancellationToken cancellationToken)
     {
         const string loadSql = """
-            SELECT approval_request_id, requested_by
-            FROM approval_requests
-            WHERE approval_request_id = @ApprovalRequestId
-              AND request_type = 'User Access'
-              AND approval_status = 'Pending'
+            SELECT ar.approval_request_id, ar.requested_by,
+                   requested_role.role_code AS requested_role_code,
+                   approver_role.role_code AS approver_role_code
+            FROM approval_requests ar
+            LEFT JOIN roles requested_role ON requested_role.role_id = ar.requested_role_id
+            LEFT JOIN users approver ON approver.user_id = @ApprovedBy
+            LEFT JOIN roles approver_role ON approver_role.role_id = approver.role_id
+            WHERE ar.approval_request_id = @ApprovalRequestId
+              AND ar.request_type = 'User Access'
+              AND ar.approval_status = 'Pending'
             LIMIT 1;
             """;
 
@@ -115,9 +120,12 @@ public sealed class ApprovalRepository(MySqlConnectionFactory connectionFactory)
         await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
 
         long? userId;
+        string? requestedRoleCode;
+        string? approverRoleCode;
         await using (var loadCommand = new MySqlCommand(loadSql, connection, transaction))
         {
             loadCommand.Parameters.AddWithValue("@ApprovalRequestId", approvalRequestId);
+            loadCommand.Parameters.AddWithValue("@ApprovedBy", request.ApprovedByUserId);
             await using var reader = await loadCommand.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
@@ -126,12 +134,22 @@ public sealed class ApprovalRepository(MySqlConnectionFactory connectionFactory)
             }
 
             userId = GetNullableInt64(reader, "requested_by");
+            requestedRoleCode = GetNullableString(reader, "requested_role_code");
+            approverRoleCode = GetNullableString(reader, "approver_role_code");
         }
 
         if (!userId.HasValue)
         {
             await transaction.RollbackAsync(cancellationToken);
             return null;
+        }
+
+        if (approvalStatus.Equals("Approved", StringComparison.OrdinalIgnoreCase) &&
+            requestedRoleCode?.Equals("SUPER_ADMIN", StringComparison.OrdinalIgnoreCase) == true &&
+            !string.Equals(approverRoleCode, "SUPER_ADMIN", StringComparison.OrdinalIgnoreCase))
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw new UnauthorizedAccessException("Only Super Admin can approve Super Admin access requests.");
         }
 
         await using (var updateApprovalCommand = new MySqlCommand(updateApprovalSql, connection, transaction))

@@ -164,7 +164,6 @@ export default function PurchasesPage() {
         exportFileName="work-orders"
         printTitle="Work Orders"
         printDescription="Official work order register generated from the current filtered procurement records."
-        importModule="Purchases"
       />
 
       {isLoading ? (

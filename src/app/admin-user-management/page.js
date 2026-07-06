@@ -23,14 +23,14 @@ function RoleBadge({ role }) {
   const styles = {
     "Super Admin": "bg-purple-100 text-purple-700 border-purple-200",
     Admin: "bg-blue-100 text-blue-700 border-blue-200",
-    Employee: "bg-gray-100 text-gray-700 border-gray-200",
+    Employee: "bg-slate-100 text-slate-700 border-slate-200",
     Viewer: "bg-orange-100 text-orange-700 border-orange-200",
   };
 
   return (
     <span
       className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
-        styles[role] || "border-gray-200 bg-gray-100 text-gray-700"
+        styles[role] || "border-slate-200 bg-slate-100 text-slate-700"
       }`}
     >
       {role}
@@ -44,13 +44,13 @@ function StatusBadge({ status }) {
     Suspended: "bg-red-100 text-red-700 border-red-200",
     Inactive: "bg-yellow-100 text-yellow-700 border-yellow-200",
     Pending: "bg-blue-100 text-blue-700 border-blue-200",
-    Rejected: "bg-gray-100 text-gray-700 border-gray-200",
+    Rejected: "bg-slate-100 text-slate-700 border-slate-200",
   };
 
   return (
     <span
       className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
-        styles[status] || "border-gray-200 bg-gray-100 text-gray-700"
+        styles[status] || "border-slate-200 bg-slate-100 text-slate-700"
       }`}
     >
       {status}
@@ -148,11 +148,6 @@ export default function AdminUsersManagementPage() {
       return matchesSearch && matchesRole && matchesStatus;
     });
   }, [users, searchTerm, roleFilter, statusFilter]);
-
-  const totalUsers = users.length;
-  const activeUsers = users.filter((user) => user.status === "Active").length;
-  const suspendedUsers = users.filter((user) => user.status === "Suspended").length;
-  const superAdmins = users.filter((user) => user.roleCode === "SUPER_ADMIN").length;
 
   function replaceUser(updatedUser) {
     const normalized = normalizeUser(updatedUser);
@@ -254,54 +249,32 @@ export default function AdminUsersManagementPage() {
       />
 
       {!isSuperAdmin && (
-        <section className="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm sm:p-5">
+        <section className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">
           You are not logged in as Super Admin. User management actions are
           disabled by backend authorization.
         </section>
       )}
 
       {errorMessage && (
-        <section className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-700 shadow-sm sm:p-5">
+        <section className="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-700 shadow-sm">
           {errorMessage}
         </section>
       )}
 
-      <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Users</p>
-          <h2 className="mt-2 text-2xl font-bold text-gray-900">{totalUsers}</h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Active Users</p>
-          <h2 className="mt-2 text-2xl font-bold text-green-700">{activeUsers}</h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Suspended Users</p>
-          <h2 className="mt-2 text-2xl font-bold text-red-700">{suspendedUsers}</h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Super Admins</p>
-          <h2 className="mt-2 text-2xl font-bold text-purple-700">{superAdmins}</h2>
-        </div>
-      </section>
-
-      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+      <section className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <input
             type="text"
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Search by name, email or phone..."
-            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
           />
 
           <select
             value={roleFilter}
             onChange={(event) => setRoleFilter(event.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
           >
             <option value="All">All Roles</option>
             {roles.map((role) => (
@@ -314,7 +287,7 @@ export default function AdminUsersManagementPage() {
           <select
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
           >
             <option value="All">All Status</option>
             {statuses.map((status) => (
@@ -333,20 +306,20 @@ export default function AdminUsersManagementPage() {
         />
       ) : (
         <TableWrapper>
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+            <thead className="bg-slate-50 dark:bg-slate-900">
               <tr>
-                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">User</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Contact</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Role</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Status</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Created At</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Manage Role</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">Action</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">User</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">Contact</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">Role</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">Status</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">Created At</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">Manage Role</th>
+                <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">Action</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-950">
               {filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="px-4 py-8">
@@ -358,15 +331,15 @@ export default function AdminUsersManagementPage() {
                 </tr>
               ) : (
                 filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
+                  <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-slate-900">
                     <td className="whitespace-nowrap px-4 py-4">
-                      <p className="font-semibold text-gray-900">{user.fullName}</p>
-                      <p className="mt-1 text-xs text-gray-500">{user.department}</p>
+                      <p className="font-semibold text-slate-950 dark:text-slate-100">{user.fullName}</p>
+                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{user.department}</p>
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                    <td className="whitespace-nowrap px-4 py-4 text-slate-700 dark:text-slate-300">
                       <p>{user.email}</p>
-                      <p className="mt-1 text-xs text-gray-500">{user.phone || "-"}</p>
+                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{user.phone || "-"}</p>
                     </td>
 
                     <td className="whitespace-nowrap px-4 py-4">
@@ -377,7 +350,7 @@ export default function AdminUsersManagementPage() {
                       <StatusBadge status={user.status} />
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-4 text-gray-700">
+                    <td className="whitespace-nowrap px-4 py-4 text-slate-700 dark:text-slate-300">
                       {formatDate(user.createdAt)}
                     </td>
 
@@ -388,7 +361,7 @@ export default function AdminUsersManagementPage() {
                           handleRoleChange(user.id, event.target.value)
                         }
                         disabled={!isSuperAdmin}
-                        className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold outline-none focus:border-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+                        className="h-9 rounded-lg border border-slate-300 px-3 text-xs font-semibold text-slate-900 outline-none focus:border-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                       >
                         {roles.map((role) => (
                           <option key={role.code} value={role.code}>
@@ -403,7 +376,7 @@ export default function AdminUsersManagementPage() {
                         type="button"
                         onClick={() => toggleUserStatus(user.id)}
                         disabled={!isSuperAdmin || user.id === currentUser?.id}
-                        className={`rounded-lg px-3 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 ${
+                        className={`rounded-lg px-3 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 ${
                           user.status === "Active"
                             ? "border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
                             : "bg-green-700 text-white hover:bg-green-800"
@@ -419,11 +392,6 @@ export default function AdminUsersManagementPage() {
           </table>
         </TableWrapper>
       )}
-
-      <p className="mt-6 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm leading-6 text-green-800">
-        User records, role changes and account status updates are now connected
-        to backend APIs with Super Admin authorization.
-      </p>
 
       <ConfirmDialog
         isOpen={Boolean(pendingAction)}

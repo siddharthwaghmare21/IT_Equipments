@@ -106,10 +106,12 @@ export default function DeliveryForm({
 
         <Field label="Delivery Date">
           <input
-            type="date"
+            type="text"
             name="deliveryDate"
             value={formData.deliveryDate}
             onChange={onChange}
+            placeholder="YYYY-MM-DD"
+            pattern="\d{4}-\d{2}-\d{2}"
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             required
           />

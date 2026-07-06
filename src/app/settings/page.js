@@ -348,17 +348,17 @@ export default function SettingsPage() {
         description="Manage company details, admin information, notifications, report export options and system security settings."
       />
 
-      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+      <section className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-950">
         <div className="flex gap-2 overflow-x-auto pb-1">
           {settingsTabs.map((tab) => (
             <button
               key={tab.label}
               type="button"
               onClick={() => openSettingsSection(tab)}
-              className={`whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-semibold ${
+              className={`h-10 whitespace-nowrap rounded-lg border px-4 text-sm font-semibold ${
                 activeSettingsTab === tab.label
-                  ? "border-gray-900 bg-gray-900 text-white"
-                  : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
+                  ? "border-indigo-600 bg-indigo-600 text-white"
+                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-900"
               }`}
             >
               {tab.label}
@@ -367,16 +367,16 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <section
           id="settings-general"
-          className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+          className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
         >
           <div className="mb-5">
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">
               Company Information
             </h2>
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
               Basic organization details used in reports and system records.
             </p>
           </div>
@@ -391,7 +391,7 @@ export default function SettingsPage() {
                 name="companyName"
                 value={settings.companyName}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 required
               />
             </div>
@@ -405,7 +405,7 @@ export default function SettingsPage() {
                 name="companyEmail"
                 value={settings.companyEmail}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -418,7 +418,7 @@ export default function SettingsPage() {
                 name="companyPhone"
                 value={settings.companyPhone}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -431,19 +431,19 @@ export default function SettingsPage() {
                 name="companyAddress"
                 value={settings.companyAddress}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-gray-100 bg-gray-50 p-4">
+          <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900">
             <div className="mb-4">
-              <h3 className="text-base font-bold text-gray-900">
+              <h3 className="text-base font-bold text-slate-950 dark:text-slate-100">
                 Report Branding
               </h3>
-              <p className="mt-1 text-sm text-gray-600">
-                These values are stored in backend settings and used in report
-                headers.
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                These values are stored in backend settings for organization
+                records and future document templates.
               </p>
             </div>
 
@@ -458,7 +458,7 @@ export default function SettingsPage() {
                   value={settings.reportLogoText}
                   onChange={handleChange}
                   maxLength="4"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                  className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 />
               </div>
 
@@ -471,7 +471,7 @@ export default function SettingsPage() {
                   name="reportPreparedBy"
                   value={settings.reportPreparedBy}
                   onChange={handleChange}
-                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                  className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 />
               </div>
 
@@ -483,7 +483,7 @@ export default function SettingsPage() {
                   name="reportClassification"
                   value={settings.reportClassification}
                   onChange={handleChange}
-                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                  className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 >
                   <option value="Internal">Internal</option>
                   <option value="Confidential">Confidential</option>
@@ -496,12 +496,12 @@ export default function SettingsPage() {
 
         <section
           id="settings-backup"
-          className="scroll-mt-24 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm sm:p-6"
+          className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
         >
-          <h2 className="text-lg font-bold text-emerald-950">
+          <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">
             Database Backup
           </h2>
-          <p className="mt-1 text-sm leading-6 text-emerald-900">
+          <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
             Backup job tracking and JSON snapshot download are connected to the
             backend and MySQL. Restore execution stays locked until an approved
             maintenance process is defined.
@@ -510,28 +510,27 @@ export default function SettingsPage() {
             {connectedBackupItems.map((item) => (
               <p
                 key={item}
-                className="rounded-xl border border-emerald-200 bg-white/80 p-3 text-sm font-semibold text-emerald-900"
+                className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
               >
                 {item}
               </p>
             ))}
           </div>
 
-          <div className="mt-5 rounded-2xl border border-emerald-200 bg-white/85 p-4">
+          <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="text-base font-bold text-emerald-950">
+                <h3 className="text-base font-bold text-slate-950 dark:text-slate-100">
                   Connected Backup Controls
                 </h3>
-                <p className="mt-1 text-sm leading-6 text-emerald-900">
+                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
                   Records backup requests in MySQL and downloads a controlled
                   JSON backup snapshot. Restore execution remains locked for a
                   separately approved maintenance step.
                 </p>
                 {!canUseBackup && (
                   <p className="mt-2 text-xs font-semibold text-yellow-800">
-                    Backup controls are available only for roles with backup
-                    export permission.
+                    Backup controls are available only for roles with backup export permission.
                   </p>
                 )}
               </div>
@@ -540,7 +539,7 @@ export default function SettingsPage() {
                   type="button"
                   onClick={handleCreateBackupJob}
                   disabled={!canUseBackup}
-                  className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
+                  className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
                 >
                   Create Backup Job
                 </button>
@@ -548,7 +547,7 @@ export default function SettingsPage() {
                   type="button"
                   onClick={handleDownloadBackupSnapshot}
                   disabled={!canUseBackup}
-                  className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300"
+                  className="inline-flex h-10 items-center justify-center rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 dark:bg-indigo-600 dark:hover:bg-indigo-500"
                 >
                   Download Backup
                 </button>
@@ -565,14 +564,14 @@ export default function SettingsPage() {
                   value={settings.backupScope}
                   onChange={handleChange}
                   disabled={!canUseBackup}
-                  className="w-full rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-emerald-700 disabled:bg-gray-100"
+                  className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 disabled:bg-slate-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 >
                   <option value="Full Database">Full Database</option>
                   <option value="Schema Only">Schema Only</option>
                   <option value="Data Only">Data Only</option>
                 </select>
               </div>
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-emerald-900">
+              <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
                 Backup files are generated as JSON snapshots from approved
                 tables only. Restore/import from backup is intentionally not
                 enabled yet.
@@ -592,24 +591,24 @@ export default function SettingsPage() {
                   onRetry={loadBackupJobs}
                 />
               ) : backupJobs.length === 0 ? (
-                <p className="rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-sm text-emerald-900">
+                <p className="rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
                   No backup tracking jobs are available yet.
                 </p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">
-                    <thead className="bg-emerald-50 text-left">
+                    <thead className="bg-slate-50 text-left dark:bg-slate-900">
                       <tr>
-                        <th className="px-4 py-3 font-semibold text-emerald-900">
+                        <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                           Type
                         </th>
-                        <th className="px-4 py-3 font-semibold text-emerald-900">
+                        <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                           Scope
                         </th>
-                        <th className="px-4 py-3 font-semibold text-emerald-900">
+                        <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                           Status
                         </th>
-                        <th className="px-4 py-3 font-semibold text-emerald-900">
+                        <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                           Created
                         </th>
                       </tr>
@@ -618,18 +617,18 @@ export default function SettingsPage() {
                       {backupJobs.map((job) => (
                         <tr
                           key={job.backupJobId}
-                          className="border-b border-emerald-100"
+                          className="border-b border-slate-100 dark:border-slate-800"
                         >
-                          <td className="px-4 py-3 font-semibold text-gray-900">
+                          <td className="px-4 py-3 font-semibold text-slate-950 dark:text-slate-100">
                             {job.backupType}
                           </td>
-                          <td className="px-4 py-3 text-gray-700">
+                          <td className="px-4 py-3 text-slate-700 dark:text-slate-300">
                             {job.backupScope}
                           </td>
-                          <td className="px-4 py-3 text-gray-700">
+                          <td className="px-4 py-3 text-slate-700 dark:text-slate-300">
                             {job.backupStatus}
                           </td>
-                          <td className="px-4 py-3 text-gray-700">
+                          <td className="px-4 py-3 text-slate-700 dark:text-slate-300">
                             {job.createdAt
                               ? new Date(job.createdAt).toLocaleString("en-IN")
                               : "-"}
@@ -662,13 +661,13 @@ export default function SettingsPage() {
 
         <section
           id="settings-roles"
-          className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+          className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
         >
           <div className="mb-5">
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">
               System Admin Details
             </h2>
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
               Main IT department contact details for asset management.
             </p>
           </div>
@@ -683,7 +682,7 @@ export default function SettingsPage() {
                 name="adminName"
                 value={settings.adminName}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 required
               />
             </div>
@@ -697,7 +696,7 @@ export default function SettingsPage() {
                 name="adminEmail"
                 value={settings.adminEmail}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -710,7 +709,7 @@ export default function SettingsPage() {
                 name="adminPhone"
                 value={settings.adminPhone}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -722,7 +721,7 @@ export default function SettingsPage() {
                 name="defaultRole"
                 value={settings.defaultRole}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value="Viewer">Viewer</option>
                 <option value="Employee">Employee</option>
@@ -740,7 +739,7 @@ export default function SettingsPage() {
                 value={settings.sessionTimeout}
                 onChange={handleChange}
                 min="5"
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -754,7 +753,7 @@ export default function SettingsPage() {
                 value={settings.passwordExpiryDays}
                 onChange={handleChange}
                 min="30"
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
           </div>
@@ -763,13 +762,13 @@ export default function SettingsPage() {
         <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div
             id="settings-notifications"
-            className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+            className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
           >
             <div className="mb-5">
-              <h2 className="text-lg font-bold text-gray-900">
+              <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">
                 Notification Settings
               </h2>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                 Enable alerts for important asset activities.
               </p>
             </div>
@@ -855,13 +854,13 @@ export default function SettingsPage() {
 
           <div
             id="settings-export"
-            className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+            className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
           >
             <div className="mb-5">
-              <h2 className="text-lg font-bold text-gray-900">
+              <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">
                 Report Export Settings
               </h2>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                 Manage report download and print options.
               </p>
             </div>
@@ -904,13 +903,13 @@ export default function SettingsPage() {
 
         <section
           id="settings-security"
-          className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+          className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
         >
           <div className="mb-5">
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">
               Security Settings
             </h2>
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
               Control basic system safety and audit preferences.
             </p>
           </div>
@@ -979,7 +978,7 @@ export default function SettingsPage() {
                 name="backupFrequency"
                 value={settings.backupFrequency}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value="Daily">Daily</option>
                 <option value="Weekly">Weekly</option>
@@ -997,18 +996,18 @@ export default function SettingsPage() {
                 value={settings.auditRetention}
                 onChange={handleChange}
                 min="90"
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
           </div>
         </section>
 
-        <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
           <div className="mb-5">
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">
               Frontend Preferences
             </h2>
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
               Configure previews used across forms, labels and reports.
             </p>
           </div>
@@ -1023,9 +1022,9 @@ export default function SettingsPage() {
                 name="assetTagPrefix"
                 value={settings.assetTagPrefix}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm uppercase outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm uppercase text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                 Preview: {settings.assetTagPrefix || "IT"}-LAP-001
               </p>
             </div>
@@ -1038,7 +1037,7 @@ export default function SettingsPage() {
                 name="fiscalYearStart"
                 value={settings.fiscalYearStart}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value="January">January</option>
                 <option value="April">April</option>
@@ -1056,7 +1055,7 @@ export default function SettingsPage() {
                 value={settings.warrantyLeadDays}
                 onChange={handleChange}
                 min="1"
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -1068,7 +1067,7 @@ export default function SettingsPage() {
                 name="assetLabelSize"
                 value={settings.assetLabelSize}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value="Compact">Compact</option>
                 <option value="Standard">Standard</option>
@@ -1084,7 +1083,7 @@ export default function SettingsPage() {
                 name="dateFormat"
                 value={settings.dateFormat}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value="DD-MM-YYYY">DD-MM-YYYY</option>
                 <option value="YYYY-MM-DD">YYYY-MM-DD</option>
@@ -1100,7 +1099,7 @@ export default function SettingsPage() {
                 name="defaultReportView"
                 value={settings.defaultReportView}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value="Summary">Summary</option>
                 <option value="Detailed">Detailed</option>
@@ -1114,14 +1113,14 @@ export default function SettingsPage() {
           <button
             type="button"
             onClick={handleReset}
-            className="inline-flex justify-center rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+            className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
           >
             Reset
           </button>
 
           <button
             type="submit"
-            className="inline-flex justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-5 text-sm font-semibold text-white hover:from-indigo-700 hover:to-violet-700"
           >
             Save Settings
           </button>
@@ -1141,15 +1140,15 @@ function SettingToggle({
 }) {
   return (
     <label
-      className={`flex items-start justify-between gap-4 rounded-xl border p-4 ${
+      className={`flex items-start justify-between gap-4 rounded-lg border p-4 ${
         disabled
-          ? "border-gray-200 bg-gray-50 opacity-70"
-          : "border-gray-200 bg-white hover:bg-gray-50"
+          ? "border-slate-200 bg-slate-50 opacity-70 dark:border-slate-800 dark:bg-slate-900"
+          : "border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900"
       }`}
     >
       <div>
-        <p className="text-sm font-semibold text-gray-900">{title}</p>
-        <p className="mt-1 text-sm leading-5 text-gray-600">{description}</p>
+        <p className="text-sm font-semibold text-slate-950 dark:text-slate-100">{title}</p>
+        <p className="mt-1 text-sm leading-5 text-slate-600 dark:text-slate-400">{description}</p>
       </div>
 
       <input
@@ -1158,7 +1157,7 @@ function SettingToggle({
         checked={checked}
         onChange={onChange}
         disabled={disabled}
-        className="mt-1 h-5 w-5 rounded border-gray-300 accent-gray-900"
+        className="mt-1 h-5 w-5 rounded border-slate-300 accent-indigo-600"
       />
     </label>
   );

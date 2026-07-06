@@ -2,7 +2,6 @@ import Link from "next/link";
 
 export default function PageHeader({
   title,
-  description,
   buttonText,
   buttonHref,
 }) {
@@ -16,11 +15,6 @@ export default function PageHeader({
           </h1>
         </div>
 
-        {description && (
-          <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
-            {description}
-          </p>
-        )}
       </div>
 
       {buttonText && buttonHref && (

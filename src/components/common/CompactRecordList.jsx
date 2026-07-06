@@ -37,7 +37,7 @@ export default function CompactRecordList({
   }
 
   return (
-    <div className="mb-6 divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm md:hidden">
+    <div className="mb-6 divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:divide-slate-800 dark:border-slate-800 dark:bg-slate-950 md:hidden">
       {records.map((record) => {
         const metaItems = getMeta
           ? getMeta(record).map((value, index) => ({
@@ -57,17 +57,17 @@ export default function CompactRecordList({
         <article key={record.id} className="p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-bold text-slate-950">
+              <p className="text-sm font-bold text-slate-950 dark:text-slate-100">
                 {getTitle ? getTitle(record) : record[titleKey]}
               </p>
-              <p className="mt-1 text-sm text-slate-600">
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                 {getSubtitle ? getSubtitle(record) : record[subtitleKey]}
               </p>
             </div>
             {statusRender
               ? statusRender(record)
               : getStatus && (
-                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-700">
+                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
                     {getStatus(record)}
                   </span>
                 )}
@@ -76,8 +76,10 @@ export default function CompactRecordList({
           <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
             {metaItems.map((item) => (
               <div key={item.label}>
-                <p className="text-slate-500">{item.label}</p>
-                <p className="mt-1 font-semibold text-slate-950">
+                <p className="text-slate-500 dark:text-slate-400">
+                  {item.label}
+                </p>
+                <p className="mt-1 font-semibold text-slate-950 dark:text-slate-100">
                   {item.value || "-"}
                 </p>
               </div>
@@ -88,7 +90,7 @@ export default function CompactRecordList({
             {resolvedViewHref && (
               <Link
                 href={resolvedViewHref}
-                className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
               >
                 View
               </Link>
@@ -96,7 +98,7 @@ export default function CompactRecordList({
             {resolvedEditHref && canWrite && (
               <Link
                 href={resolvedEditHref}
-                className="rounded-lg bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
+                className="rounded-lg bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500"
               >
                 Edit
               </Link>

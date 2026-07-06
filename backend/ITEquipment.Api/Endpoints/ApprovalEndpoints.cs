@@ -54,6 +54,10 @@ public static class ApprovalEndpoints
             {
                 return Results.BadRequest(new { message = "Approver user does not exist." });
             }
+            catch (UnauthorizedAccessException exception)
+            {
+                return Results.Json(new { message = exception.Message }, statusCode: StatusCodes.Status403Forbidden);
+            }
             catch (InvalidOperationException exception)
             {
                 return Results.Problem(exception.Message, statusCode: StatusCodes.Status503ServiceUnavailable);

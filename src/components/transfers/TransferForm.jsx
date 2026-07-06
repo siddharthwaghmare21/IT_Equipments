@@ -219,10 +219,12 @@ export default function TransferForm({
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <Field label="Collection Date">
             <input
-              type="date"
+              type="text"
               name="collectionDate"
               value={formData.collectionDate}
               onChange={onChange}
+              placeholder="YYYY-MM-DD"
+              pattern="\d{4}-\d{2}-\d{2}"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </Field>
@@ -269,10 +271,12 @@ export default function TransferForm({
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <Field label="Issue Date">
             <input
-              type="date"
+              type="text"
               name="issueDate"
               value={formData.issueDate}
               onChange={onChange}
+              placeholder="YYYY-MM-DD"
+              pattern="\d{4}-\d{2}-\d{2}"
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
             />
           </Field>

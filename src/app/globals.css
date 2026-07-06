@@ -40,6 +40,41 @@ a:active {
   transform: translateY(1px) scale(0.99);
 }
 
+main .rounded-2xl,
+main .rounded-3xl,
+.no-print.rounded-2xl,
+.print-area.rounded-2xl {
+  border-radius: 0.5rem;
+}
+
+main .shadow-sm,
+header.shadow-sm {
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
+}
+
+main input,
+main select,
+main textarea {
+  min-height: 2.5rem;
+}
+
+main label {
+  color: #334155;
+}
+
+main .bg-gray-50,
+main .bg-slate-50 {
+  background-color: #f8fafc;
+}
+
+main .border-gray-300 {
+  border-color: #cbd5e1;
+}
+
+main .focus\:border-gray-900:focus {
+  border-color: #4f46e5 !important;
+}
+
 .dark {
   color-scheme: dark;
   --app-bg: #0b1120;
@@ -133,6 +168,19 @@ a:active {
   border-color: #4b5563;
 }
 
+.dark main label {
+  color: #cbd5e1;
+}
+
+.dark main .shadow-sm {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
+}
+
+.dark main .bg-gray-50,
+.dark main .bg-slate-50 {
+  background-color: #0f172a;
+}
+
 .dark button:focus-visible,
 .dark a:focus-visible {
   box-shadow: 0 0 0 4px rgb(100 116 139 / 0.25);
@@ -203,13 +251,54 @@ a:active {
   background-color: rgb(146 64 14 / 0.35);
 }
 
+.dark .bg-green-100 {
+  background-color: rgb(22 101 52 / 0.35);
+}
+
+.dark .bg-red-100,
+.dark .bg-red-50 {
+  background-color: rgb(127 29 29 / 0.35);
+}
+
+.dark .bg-yellow-100,
+.dark .bg-yellow-50 {
+  background-color: rgb(113 63 18 / 0.35);
+}
+
+.dark .bg-blue-100 {
+  background-color: rgb(30 64 175 / 0.35);
+}
+
+.dark .bg-purple-100 {
+  background-color: rgb(88 28 135 / 0.35);
+}
+
+.dark .bg-orange-100 {
+  background-color: rgb(154 52 18 / 0.35);
+}
+
 .dark .text-indigo-700,
 .dark .text-violet-700,
 .dark .text-cyan-700,
 .dark .text-emerald-700,
 .dark .text-rose-700,
-.dark .text-amber-700 {
+.dark .text-amber-700,
+.dark .text-green-700,
+.dark .text-red-700,
+.dark .text-yellow-700,
+.dark .text-blue-700,
+.dark .text-purple-700,
+.dark .text-orange-700 {
   color: #f8fafc;
+}
+
+.dark .border-green-200,
+.dark .border-red-200,
+.dark .border-yellow-200,
+.dark .border-blue-200,
+.dark .border-purple-200,
+.dark .border-orange-200 {
+  border-color: rgb(148 163 184 / 0.5);
 }
 
 input:user-invalid,
@@ -217,6 +306,50 @@ select:user-invalid,
 textarea:user-invalid {
   border-color: #dc2626;
   box-shadow: 0 0 0 3px rgb(220 38 38 / 0.1);
+}
+
+html:not(.dark) .table-grid-shell,
+html:not(.dark) .table-grid-scroll,
+html:not(.dark) .table-grid-shell table,
+html:not(.dark) .table-grid-shell tbody,
+html:not(.dark) .table-grid-shell tbody tr,
+html:not(.dark) .table-grid-shell tbody td {
+  background-color: #ffffff !important;
+  color-scheme: light;
+}
+
+html:not(.dark) .table-grid-scroll-hint,
+html:not(.dark) .table-grid-shell thead,
+html:not(.dark) .table-grid-shell thead tr,
+html:not(.dark) .table-grid-shell thead th {
+  background-color: #f8fafc !important;
+  color-scheme: light;
+}
+
+html:not(.dark) .table-grid-shell tbody tr:hover,
+html:not(.dark) .table-grid-shell tbody tr:hover td {
+  background-color: #f8fafc !important;
+}
+
+.dark .table-grid-shell,
+.dark .table-grid-scroll,
+.dark .table-grid-shell table,
+.dark .table-grid-shell tbody,
+.dark .table-grid-shell tbody tr,
+.dark .table-grid-shell tbody td {
+  background-color: #111827 !important;
+}
+
+.dark .table-grid-scroll-hint,
+.dark .table-grid-shell thead,
+.dark .table-grid-shell thead tr,
+.dark .table-grid-shell thead th {
+  background-color: #0f172a !important;
+}
+
+.dark .table-grid-shell tbody tr:hover,
+.dark .table-grid-shell tbody tr:hover td {
+  background-color: #1f2937 !important;
 }
 
 .report-compact table {

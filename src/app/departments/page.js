@@ -21,14 +21,14 @@ const filters = ["All", "Active", "Inactive"];
 
 function DepartmentStatusBadge({ status }) {
   const statusStyles = {
-    Active: "bg-green-100 text-green-700 border-green-200",
-    Inactive: "bg-yellow-100 text-yellow-700 border-yellow-200",
+    Active: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    Inactive: "bg-amber-100 text-amber-700 border-amber-200",
   };
 
   return (
     <span
       className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
-        statusStyles[status] || "bg-gray-100 text-gray-700 border-gray-200"
+        statusStyles[status] || "bg-slate-100 text-slate-700 border-slate-200"
       }`}
     >
       {status}
@@ -106,9 +106,6 @@ export default function DepartmentsPage() {
     }
   }
 
-  const activeCount = departments.filter((department) => department.isActive).length;
-  const inactiveCount = departments.length - activeCount;
-
   return (
     <LayoutWrapper>
       <PageHeader
@@ -123,47 +120,16 @@ export default function DepartmentsPage() {
         exportFileName="departments"
         printTitle="Departments"
         printDescription="Official department register generated from the current filtered department records."
-        importModule="Departments"
       />
 
-      <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Departments</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {departments.length}
-          </h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Active Departments</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {activeCount}
-          </h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Inactive Departments</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {inactiveCount}
-          </h2>
-        </div>
-
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Visible Records</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">
-            {filteredDepartments.length}
-          </h2>
-        </div>
-      </section>
-
-      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <section className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <input
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by department, head, email, phone or location..."
-            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900 lg:max-w-md"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white lg:max-w-md"
           />
 
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -172,10 +138,10 @@ export default function DepartmentsPage() {
                 key={filter}
                 type="button"
                 onClick={() => setActiveFilter(filter)}
-                className={`whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-medium ${
+                className={`whitespace-nowrap rounded-lg border px-4 py-2 text-sm font-semibold ${
                   activeFilter === filter
-                    ? "border-gray-900 bg-gray-900 text-white"
-                    : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
+                    ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
+                    : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-white"
                 }`}
               >
                 {filter}
@@ -203,30 +169,30 @@ export default function DepartmentsPage() {
       {!isLoading && !error && (
         <TableWrapper>
           <table className="min-w-[1050px] w-full text-sm">
-            <thead className="bg-gray-50 text-left">
-              <tr className="border-b border-gray-200">
-                <th className="px-4 py-3 font-semibold text-gray-700">
+            <thead className="bg-slate-50 text-left">
+              <tr className="border-b border-slate-200">
+                <th className="px-4 py-3 font-semibold text-slate-700">
                   Department Code
                 </th>
-                <th className="px-4 py-3 font-semibold text-gray-700">
+                <th className="px-4 py-3 font-semibold text-slate-700">
                   Department Name
                 </th>
-                <th className="px-4 py-3 font-semibold text-gray-700">
+                <th className="px-4 py-3 font-semibold text-slate-700">
                   Department Head
                 </th>
-                <th className="px-4 py-3 font-semibold text-gray-700">
+                <th className="px-4 py-3 font-semibold text-slate-700">
                   Email
                 </th>
-                <th className="px-4 py-3 font-semibold text-gray-700">
+                <th className="px-4 py-3 font-semibold text-slate-700">
                   Phone
                 </th>
-                <th className="px-4 py-3 font-semibold text-gray-700">
+                <th className="px-4 py-3 font-semibold text-slate-700">
                   Location
                 </th>
-                <th className="px-4 py-3 font-semibold text-gray-700">
+                <th className="px-4 py-3 font-semibold text-slate-700">
                   Status
                 </th>
-                <th className="px-4 py-3 font-semibold text-gray-700">
+                <th className="px-4 py-3 font-semibold text-slate-700">
                   Actions
                 </th>
               </tr>
@@ -236,29 +202,29 @@ export default function DepartmentsPage() {
               {filteredDepartments.map((department) => (
                 <tr
                   key={department.id}
-                  className="border-b border-gray-100 hover:bg-gray-50"
+                  className="border-b border-slate-100 hover:bg-slate-50"
                 >
-                  <td className="px-4 py-4 font-semibold text-gray-900">
+                  <td className="px-4 py-4 font-semibold text-slate-950">
                     {department.departmentCode}
                   </td>
 
-                  <td className="px-4 py-4 text-gray-700">
+                  <td className="px-4 py-4 text-slate-700">
                     {department.departmentName}
                   </td>
 
-                  <td className="px-4 py-4 text-gray-700">
+                  <td className="px-4 py-4 text-slate-700">
                     {department.headOfDepartment || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-gray-700">
+                  <td className="px-4 py-4 text-slate-700">
                     {department.email || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-gray-700">
+                  <td className="px-4 py-4 text-slate-700">
                     {department.phone || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-gray-700">
+                  <td className="px-4 py-4 text-slate-700">
                     {department.location || "-"}
                   </td>
 

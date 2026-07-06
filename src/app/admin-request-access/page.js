@@ -16,23 +16,7 @@ function isStrongPassword(password) {
   return hasMinimumLength && hasCapitalLetter && hasSymbol;
 }
 
-const rolePermissions = {
-  Admin: [
-    "Most module access",
-    "Employee/Admin request approval",
-    "Asset workflow control",
-  ],
-  Employee: [
-    "Add and update asset workflow records",
-    "Delivery, return and maintenance approvals",
-    "Reports access",
-  ],
-  Viewer: [
-    "Read-only reports access",
-    "No backup, approval or update actions",
-    "Dashboard visibility",
-  ],
-};
+const allowedRoles = ["Super Admin", "Admin", "Employee", "Viewer"];
 
 export default function AdminRequestAccessPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -135,8 +119,9 @@ export default function AdminRequestAccessPage() {
         email: formData.email.trim(),
         phone: formData.phone.trim() || null,
         departmentId: null,
-        requestedRoleCode: formData.requestedRole.toUpperCase(),
+        requestedRoleCode: getRequestedRoleCode(formData.requestedRole),
         password: formData.password,
+        remarks: formData.reason.trim() || null,
       });
 
       setIsSubmitted(true);
@@ -154,6 +139,10 @@ export default function AdminRequestAccessPage() {
   }
 
   function getRequestedRoleCode(role) {
+    if (role === "Super Admin") {
+      return "SUPER_ADMIN";
+    }
+
     if (role === "Admin") {
       return "ADMIN";
     }
@@ -168,7 +157,7 @@ export default function AdminRequestAccessPage() {
   function handleRoleChange(event) {
     const nextRole = event.target.value;
 
-    if (!rolePermissions[nextRole]) {
+    if (!allowedRoles.includes(nextRole)) {
       return;
     }
 
@@ -360,6 +349,7 @@ export default function AdminRequestAccessPage() {
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
                 required
               >
+                <option value="Super Admin">Super Admin</option>
                 <option value="Admin">Admin</option>
                 <option value="Employee">Employee</option>
                 <option value="Viewer">Viewer</option>
@@ -369,21 +359,6 @@ export default function AdminRequestAccessPage() {
                 Selected request code: {getRequestedRoleCode(formData.requestedRole)}
               </p>
 
-              <div className="mt-3 rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                <p className="text-sm font-bold text-gray-900">
-                  {formData.requestedRole} Permission Preview
-                </p>
-                <div className="mt-3 grid grid-cols-1 gap-2">
-                  {rolePermissions[formData.requestedRole].map((permission) => (
-                    <p
-                      key={permission}
-                      className="rounded-xl bg-white p-3 text-sm font-semibold text-gray-700"
-                    >
-                      {permission}
-                    </p>
-                  ))}
-                </div>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -452,16 +427,15 @@ export default function AdminRequestAccessPage() {
 
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">
-                Reason / Note
+                Reason / Note <span className="text-gray-400">(Optional)</span>
               </label>
               <textarea
                 name="reason"
                 value={formData.reason}
                 onChange={handleChange}
-                placeholder="Why do you need access?"
+                placeholder="Why do you need access? Optional note for approver."
                 rows="4"
                 className="w-full resize-none rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
-                required
               />
             </div>
 

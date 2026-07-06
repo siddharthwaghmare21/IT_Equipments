@@ -6,4 +6,5 @@ public sealed record SignupRequest(
     string Password,
     string? Phone,
     long? DepartmentId,
-    string RequestedRoleCode);
+    string RequestedRoleCode,
+    string? Remarks);

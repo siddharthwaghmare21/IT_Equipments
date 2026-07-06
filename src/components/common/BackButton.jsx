@@ -4,9 +4,9 @@ export default function BackButton({ href, label }) {
   return (
     <Link
       href={href}
-      className="inline-flex w-full justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 sm:w-auto"
+      className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-700 hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 sm:w-auto"
     >
-      ← Back to {label}
+      Back to {label}
     </Link>
   );
 }

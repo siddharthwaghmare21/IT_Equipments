@@ -39,7 +39,6 @@ const routeRules = [
   { prefix: "/admin-user-management", permission: permissions.userManagement },
   { prefix: "/admin-request-management", permission: permissions.userApproval },
   { prefix: "/settings", permission: permissions.backupExportControl },
-  { prefix: "/import-data", permission: permissions.backupExportControl },
   { prefix: "/activity-logs", permission: permissions.reportsRead },
   { prefix: "/reports", permission: permissions.reportsRead },
   { prefix: "/profile", permission: permissions.recordsRead },

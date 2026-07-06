@@ -1,8 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import LayoutWrapper from "@/components/common/LayoutWrapper";
-import PageHeader from "@/components/common/PageHeader";
+import { useCallback, useEffect, useState } from "react";
 import ReportPageShell from "@/components/common/ReportPageShell";
 import StatusBadge from "@/components/common/StatusBadge";
 import TableWrapper from "@/components/common/TableWrapper";
@@ -34,73 +32,12 @@ function formatValue(value, column = {}) {
   return String(value);
 }
 
-function defaultMetrics(records, metrics) {
-  if (metrics?.length) {
-    return metrics.map((metric) => ({
-      label: metric.label,
-      value: metric.resolve(records),
-      tone: metric.tone || "text-gray-900",
-    }));
-  }
-
-  return [
-    { label: "Total Records", value: records.length, tone: "text-gray-900" },
-  ];
-}
-
-function ReportHighlights({ items }) {
-  return (
-    <section className="report-print-hidden mb-6 border border-gray-300 bg-white">
-      <div className="border-b border-gray-300 bg-gray-50 px-4 py-3">
-        <h3 className="text-xs font-bold uppercase tracking-wide text-gray-700">
-          Report Highlights
-        </h3>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
-        {items.map((metric) => (
-          <div
-            key={metric.label}
-            className="border-b border-r border-gray-200 px-4 py-3 last:border-r-0 xl:border-b-0"
-          >
-            <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
-              {metric.label}
-            </p>
-            <p className={`mt-2 text-2xl font-bold ${metric.tone}`}>
-              {metric.value}
-            </p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ReportOperationalNote({ title }) {
-  return (
-    <section className="report-print-hidden mb-6 border border-gray-300 bg-white">
-      <div className="grid grid-cols-1 text-sm md:grid-cols-[220px_1fr]">
-        <div className="border-b border-gray-200 bg-gray-50 px-4 py-3 font-bold uppercase tracking-wide text-gray-500 md:border-b-0 md:border-r">
-          {title}
-        </div>
-        <div className="px-4 py-3 leading-6 text-gray-700">
-          Live MySQL report data is connected through Phase 6 APIs. CSV,
-          Excel-style spreadsheet download and print/PDF tracking are available
-          in Phase 7. Scheduled email delivery is enabled only after company
-          SMTP credentials are configured.
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export default function BackendReportPage({
   title,
   description,
   reportType,
   fileName,
   columns,
-  metrics,
-  summaryTitle = "Report Summary",
 }) {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -137,11 +74,6 @@ export default function BackendReportPage({
     return () => clearTimeout(timer);
   }, [loadReport]);
 
-  const metricCards = useMemo(
-    () => defaultMetrics(records, metrics),
-    [records, metrics]
-  );
-
   return (
     <ReportPageShell
       title={title}
@@ -169,16 +101,14 @@ export default function BackendReportPage({
         />
       ) : (
         <>
-          <ReportHighlights items={metricCards} />
-          <ReportOperationalNote title={summaryTitle} />
           <TableWrapper>
             <table className="min-w-[1400px] w-full text-sm">
-              <thead className="bg-gray-50 text-left">
-                <tr className="border-b border-gray-200">
+              <thead className="bg-slate-50 text-left dark:bg-slate-900">
+                <tr className="border-b border-slate-200 dark:border-slate-800">
                   {columns.map((column) => (
                     <th
                       key={column.key}
-                      className="whitespace-nowrap border-r border-gray-200 px-4 py-3 font-semibold text-gray-700 last:border-r-0"
+                      className="whitespace-nowrap border-r border-slate-200 px-4 py-3 font-semibold text-slate-700 last:border-r-0 dark:border-slate-800 dark:text-slate-200"
                     >
                       {column.label}
                     </th>
@@ -190,12 +120,12 @@ export default function BackendReportPage({
                 {records.map((record, index) => (
                   <tr
                     key={record.id || `${reportType}-${index}`}
-                    className="border-b border-gray-100 hover:bg-gray-50"
+                    className="border-b border-slate-100 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
                   >
                     {columns.map((column) => (
                       <td
                         key={column.key}
-                        className="whitespace-nowrap border-r border-gray-100 px-4 py-4 text-gray-700 last:border-r-0"
+                        className="whitespace-nowrap border-r border-slate-100 px-4 py-4 text-slate-700 last:border-r-0 dark:border-slate-800 dark:text-slate-300"
                       >
                         {column.status ? (
                           <StatusBadge

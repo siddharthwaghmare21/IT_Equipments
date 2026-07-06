@@ -20,8 +20,8 @@ export default function HomePage() {
   }, [router]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-      <p className="text-sm font-semibold text-gray-700">Redirecting...</p>
+    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 dark:bg-slate-950">
+      <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Redirecting...</p>
     </main>
   );
 }
