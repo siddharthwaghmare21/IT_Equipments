@@ -101,14 +101,24 @@ export default function BackendReportPage({
         />
       ) : (
         <>
-          <TableWrapper>
-            <table className="min-w-[1400px] w-full text-sm">
-              <thead className="bg-slate-50 text-left dark:bg-slate-900">
-                <tr className="border-b border-slate-200 dark:border-slate-800">
+          <TableWrapper variant="report">
+            <table
+              className="min-w-[1400px] w-full text-sm"
+              style={{ backgroundColor: "#ffffff", color: "#0f172a" }}
+            >
+              <thead
+                className="bg-slate-50 text-left"
+                style={{ backgroundColor: "#f8fafc", color: "#0f172a" }}
+              >
+                <tr
+                  className="border-b border-slate-200"
+                  style={{ backgroundColor: "#f8fafc", color: "#0f172a" }}
+                >
                   {columns.map((column) => (
                     <th
                       key={column.key}
-                      className="whitespace-nowrap border-r border-slate-200 px-4 py-3 font-semibold text-slate-700 last:border-r-0 dark:border-slate-800 dark:text-slate-200"
+                      className="whitespace-nowrap border-r border-slate-200 px-4 py-3 font-semibold text-slate-700 last:border-r-0"
+                      style={{ backgroundColor: "#f8fafc", color: "#0f172a" }}
                     >
                       {column.label}
                     </th>
@@ -116,16 +126,18 @@ export default function BackendReportPage({
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody style={{ backgroundColor: "#ffffff", color: "#0f172a" }}>
                 {records.map((record, index) => (
                   <tr
                     key={record.id || `${reportType}-${index}`}
-                    className="border-b border-slate-100 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
+                    className="border-b border-slate-100 bg-white hover:bg-slate-50"
+                    style={{ backgroundColor: "#ffffff", color: "#0f172a" }}
                   >
                     {columns.map((column) => (
                       <td
                         key={column.key}
-                        className="whitespace-nowrap border-r border-slate-100 px-4 py-4 text-slate-700 last:border-r-0 dark:border-slate-800 dark:text-slate-300"
+                        className="whitespace-nowrap border-r border-slate-100 px-4 py-4 text-slate-700 last:border-r-0"
+                        style={{ backgroundColor: "#ffffff", color: "#0f172a" }}
                       >
                         {column.status ? (
                           <StatusBadge
