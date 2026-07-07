@@ -297,13 +297,13 @@ export default function AssetsPage() {
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Archive View
+                Deleted Assets
               </p>
               <h2 className="mt-1 text-base font-semibold text-slate-950">
                 Read-only asset records for audit trail
               </h2>
               <p className="mt-1 max-w-3xl text-sm text-slate-600">
-                Archived assets stay available for audit, reports and lifecycle
+                Deleted assets stay available for audit, reports and lifecycle
                 history.
               </p>
             </div>

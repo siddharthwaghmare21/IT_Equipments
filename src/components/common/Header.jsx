@@ -122,14 +122,14 @@ export default function Header({
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur sm:px-6">
+    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 sm:px-6">
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={onMenuClick}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-white"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 lg:hidden"
           aria-label="Open menu"
         >
           <span className="flex w-5 flex-col gap-1" aria-hidden="true">
@@ -140,11 +140,11 @@ export default function Header({
         </button>
 
         <div>
-          <h1 className="text-base font-bold text-slate-950 sm:text-lg">
+          <h1 className="text-base font-bold text-slate-950 dark:text-slate-100 sm:text-lg">
             IT Equipment Management
           </h1>
 
-          <p className="hidden text-xs text-slate-500 sm:block">
+          <p className="hidden text-xs text-slate-500 dark:text-slate-400 sm:block">
             Assets, purchases, deliveries and reports
           </p>
         </div>
@@ -154,7 +154,7 @@ export default function Header({
           <button
             type="button"
             onClick={() => setShowNotifications((value) => !value)}
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 hover:bg-white"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
             aria-label="Open notifications"
           >
             <BellIcon />
@@ -162,7 +162,7 @@ export default function Header({
           <button
             type="button"
             onClick={toggleDarkMode}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 hover:bg-white"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
             aria-label="Toggle dark mode"
           >
             <ThemeIcon isDarkMode={isDarkMode} />
@@ -177,7 +177,7 @@ export default function Header({
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Search asset, WO, vendor, transfer..."
-            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-950"
           />
         </form>
 
@@ -185,7 +185,7 @@ export default function Header({
           <button
             type="button"
             onClick={() => setShowNotifications((value) => !value)}
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 hover:bg-white"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
             aria-label="Open notifications"
           >
             <BellIcon />
@@ -195,7 +195,7 @@ export default function Header({
         <button
           type="button"
           onClick={toggleDarkMode}
-          className="hidden h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 hover:bg-white xl:inline-flex"
+          className="hidden h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 xl:inline-flex"
           aria-label="Toggle dark mode"
         >
           <ThemeIcon isDarkMode={isDarkMode} />
@@ -204,18 +204,18 @@ export default function Header({
       <div className="flex items-center justify-between gap-3 xl:justify-end">
         <div className="hidden text-right sm:block">
           <div className="flex items-center justify-end gap-2">
-            <p className="text-sm font-semibold text-slate-950">
+            <p className="text-sm font-semibold text-slate-950 dark:text-slate-100">
               {currentUser?.fullName || "IT Department"}
             </p>
 
             {isSuperAdmin && (
-              <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-violet-700">
+              <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-violet-700 dark:border-violet-700 dark:bg-violet-950 dark:text-violet-200">
                 Super Admin
               </span>
             )}
           </div>
 
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             {currentUser?.role || "Admin Panel"}
           </p>
         </div>
@@ -228,7 +228,7 @@ export default function Header({
           <button
             type="button"
             onClick={onLogout}
-            className="hidden rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-white md:inline-flex"
+            className="hidden rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 md:inline-flex"
           >
             Logout
           </button>
@@ -237,13 +237,13 @@ export default function Header({
       </div>
 
       {showNotifications && (
-        <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 shadow-lg xl:absolute xl:right-28 xl:top-16 xl:mt-0 xl:w-96">
+        <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-slate-950 xl:absolute xl:right-28 xl:top-16 xl:mt-0 xl:w-96">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-950">Notifications</h2>
+            <h2 className="text-sm font-bold text-slate-950 dark:text-slate-100">Notifications</h2>
             <button
               type="button"
               onClick={() => setShowNotifications(false)}
-              className="text-xs font-semibold text-slate-500 hover:text-slate-950"
+              className="text-xs font-semibold text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-slate-100"
             >
               Close
             </button>
@@ -251,7 +251,7 @@ export default function Header({
 
           <div className="mt-3 space-y-2">
             {visibleNotifications.length === 0 ? (
-              <p className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm text-slate-500">
+              <p className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
                 No quick notifications are available for your current role.
               </p>
             ) : (
@@ -263,12 +263,12 @@ export default function Header({
                   setShowNotifications(false);
                   router.push(item.href);
                 }}
-                className="w-full rounded-lg border border-slate-100 bg-slate-50 p-3 text-left hover:bg-white"
+                className="w-full rounded-lg border border-slate-100 bg-slate-50 p-3 text-left hover:bg-white dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
               >
-                <p className="text-sm font-semibold text-slate-950">
+                <p className="text-sm font-semibold text-slate-950 dark:text-slate-100">
                   {item.title}
                 </p>
-                <p className="mt-1 text-xs text-slate-500">{item.detail}</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{item.detail}</p>
               </button>
               ))
             )}

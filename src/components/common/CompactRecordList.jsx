@@ -107,7 +107,7 @@ export default function CompactRecordList({
               <button
                 type="button"
                 onClick={() => (onDelete || onArchive)(record)}
-                className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100"
+                className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100 dark:border-red-900 dark:bg-red-950 dark:text-red-200 dark:hover:bg-red-900"
               >
                 {archiveLabel}
               </button>

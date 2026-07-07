@@ -42,9 +42,9 @@ export default function LayoutWrapper({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950">
       {isSidebarOpen && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
             aria-label="Close sidebar overlay"
@@ -59,33 +59,46 @@ export default function LayoutWrapper({ children }) {
               canManageAccessRequests={canManageAccessRequests}
               onLogout={handleLogout}
               onClose={() => setIsSidebarOpen(false)}
+              isPersistent={false}
             />
           </div>
         </div>
       )}
 
-      <div>
-        <Header
-          currentUser={currentUser}
-          isSuperAdmin={isSuperAdmin}
-          onLogout={handleLogout}
-          onMenuClick={() => setIsSidebarOpen(true)}
-        />
+      <div className="flex min-h-screen">
+        <div className="sticky top-0 hidden h-screen shrink-0 lg:block">
+          <Sidebar
+            currentUser={currentUser}
+            isSuperAdmin={isSuperAdmin}
+            canManageAccessRequests={canManageAccessRequests}
+            onLogout={handleLogout}
+            isPersistent
+          />
+        </div>
 
-        <main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
-          <Breadcrumbs />
-          {canAccessCurrentPage ? (
-            children
-          ) : (
-            <section className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-800 shadow-sm">
-              <h2 className="text-lg font-bold">Access restricted</h2>
-              <p className="mt-2 text-sm leading-6">
-                Your current role does not have permission to open this page.
-                Please contact Super Admin if access is required.
-              </p>
-            </section>
-          )}
-        </main>
+        <div className="min-w-0 flex-1">
+          <Header
+            currentUser={currentUser}
+            isSuperAdmin={isSuperAdmin}
+            onLogout={handleLogout}
+            onMenuClick={() => setIsSidebarOpen(true)}
+          />
+
+          <main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+            <Breadcrumbs />
+            {canAccessCurrentPage ? (
+              children
+            ) : (
+              <section className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-800 shadow-sm">
+                <h2 className="text-lg font-bold">Access restricted</h2>
+                <p className="mt-2 text-sm leading-6">
+                  Your current role does not have permission to open this page.
+                  Please contact Super Admin if access is required.
+                </p>
+              </section>
+            )}
+          </main>
+        </div>
       </div>
 
       <ConfirmDialog

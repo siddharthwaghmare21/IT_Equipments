@@ -81,9 +81,7 @@ export default function ReportPageShell({
         <footer className="report-footer border-t border-gray-300 bg-gray-50 px-5 py-3 text-xs text-gray-600">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="font-semibold">Report ID: {reportId}</p>
-            <p className="font-semibold">
-              Page <span className="page-number" />
-            </p>
+            <p className="font-semibold">Page 1</p>
           </div>
         </footer>
       </section>

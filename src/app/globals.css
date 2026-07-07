@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   color-scheme: light;
   --app-bg: #f4f7fb;
@@ -399,6 +401,35 @@ html:not(.dark) .table-grid-shell tbody tr:hover td {
   vertical-align: top;
 }
 
+.print-area,
+.print-area table,
+.print-area th,
+.print-area td,
+.print-area p,
+.print-area span {
+  color-scheme: light;
+}
+
+.print-area .text-slate-950,
+.print-area .text-slate-900,
+.print-area .text-slate-800,
+.print-area .text-slate-700,
+.print-area .text-gray-950,
+.print-area .text-gray-900,
+.print-area .text-gray-800,
+.print-area .text-gray-700 {
+  color: #111827 !important;
+}
+
+.print-area .text-slate-600,
+.print-area .text-slate-500,
+.print-area .text-slate-400,
+.print-area .text-slate-300,
+.print-area .text-gray-600,
+.print-area .text-gray-500 {
+  color: #475569 !important;
+}
+
 .print-area tbody tr:has(span[class*="yellow"]) {
   background-color: #fffbeb;
 }
@@ -417,25 +448,42 @@ html:not(.dark) .table-grid-shell tbody tr:hover td {
 .dark .print-area table,
 .dark .print-area thead,
 .dark .print-area tbody,
-.dark .print-area tr {
-  background-color: #ffffff;
-  border-color: #e5e7eb;
+.dark .print-area tr,
+.dark .print-area th,
+.dark .print-area td {
+  background-color: #ffffff !important;
+  border-color: #e5e7eb !important;
+  color: #111827 !important;
+}
+
+.dark .print-area thead,
+.dark .print-area thead tr,
+.dark .print-area thead th {
+  background-color: #f9fafb !important;
 }
 
 .dark .print-area .bg-gray-50,
 .dark .print-area .bg-gray-100 {
-  background-color: #f9fafb;
+  background-color: #f9fafb !important;
 }
 
 .dark .print-area .text-gray-900,
 .dark .print-area .text-gray-800,
-.dark .print-area .text-gray-700 {
-  color: #111827;
+.dark .print-area .text-gray-700,
+.dark .print-area .text-slate-950,
+.dark .print-area .text-slate-900,
+.dark .print-area .text-slate-800,
+.dark .print-area .text-slate-700 {
+  color: #111827 !important;
 }
 
 .dark .print-area .text-gray-600,
-.dark .print-area .text-gray-500 {
-  color: #4b5563;
+.dark .print-area .text-gray-500,
+.dark .print-area .text-slate-600,
+.dark .print-area .text-slate-500,
+.dark .print-area .text-slate-400,
+.dark .print-area .text-slate-300 {
+  color: #4b5563 !important;
 }
 
 .dark .print-area input,
@@ -515,7 +563,7 @@ html:not(.dark) .table-grid-shell tbody tr:hover td {
 
   .print-area.report-document {
     margin: 0 !important;
-    padding: 0 0 72px !important;
+    padding: 0 !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
@@ -682,17 +730,12 @@ html:not(.dark) .table-grid-shell tbody tr:hover td {
   }
 
   .report-footer {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
     background: #ffffff !important;
     border-top: 1px solid #d1d5db !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 
-  .page-number::after {
-    content: counter(page);
-  }
 }
 
 @media screen {
