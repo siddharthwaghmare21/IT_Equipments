@@ -415,6 +415,60 @@ html:not(.dark) .table-grid-shell tbody tr:hover td {
   color: #0f172a !important;
 }
 
+@media screen {
+  .dark .report-document {
+    background-color: #111827 !important;
+    border-color: #334155 !important;
+    color: #e5e7eb !important;
+  }
+
+  .dark .report-document .report-letterhead,
+  .dark .report-document .report-body,
+  .dark .report-document .report-section,
+  .dark .report-document .report-footer {
+    background-color: #111827 !important;
+    border-color: #334155 !important;
+    color: #e5e7eb !important;
+  }
+
+  .dark .report-document h1,
+  .dark .report-document p,
+  .dark .report-document label,
+  .dark .report-document span {
+    color: #f8fafc !important;
+  }
+
+  .dark .report-document .table-grid-shell,
+  .dark .report-document .table-grid-scroll,
+  .dark .report-document .table-grid-shell table,
+  .dark .report-document .table-grid-shell tbody,
+  .dark .report-document .table-grid-shell tbody tr,
+  .dark .report-document .table-grid-shell tbody td {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+  }
+
+  .dark .report-document .table-grid-shell tbody tr:hover,
+  .dark .report-document .table-grid-shell tbody tr:hover td {
+    background-color: #1e293b !important;
+  }
+
+  .dark .report-document .table-grid-scroll-hint,
+  .dark .report-document .table-grid-shell thead,
+  .dark .report-document .table-grid-shell thead tr,
+  .dark .report-document .table-grid-shell thead th {
+    background-color: #111827 !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+
+  .dark .report-document select {
+    background-color: #0f172a !important;
+    border-color: #475569 !important;
+    color: #ffffff !important;
+  }
+}
+
 .print-area,
 .print-area table,
 .print-area th,
@@ -806,5 +860,69 @@ html:not(.dark) .table-grid-shell tbody tr:hover td {
   .report-watermark {
     opacity: 0.45;
     transform: rotate(-24deg);
+  }
+
+  .dark .report-document.print-area {
+    background-color: #111827 !important;
+    border-color: #334155 !important;
+    color: #e5e7eb !important;
+  }
+
+  .dark .report-document.print-area .report-letterhead,
+  .dark .report-document.print-area .report-body,
+  .dark .report-document.print-area .report-section,
+  .dark .report-document.print-area .report-footer {
+    background-color: #111827 !important;
+    border-color: #334155 !important;
+    color: #e5e7eb !important;
+  }
+
+  .dark .report-document.print-area h1,
+  .dark .report-document.print-area p,
+  .dark .report-document.print-area label,
+  .dark .report-document.print-area span {
+    color: #f8fafc !important;
+  }
+
+  .dark .report-document.print-area .table-grid-shell,
+  .dark .report-document.print-area .table-grid-scroll,
+  .dark .report-document.print-area .table-grid-shell table,
+  .dark .report-document.print-area .table-grid-shell tbody,
+  .dark .report-document.print-area .table-grid-shell tbody tr,
+  .dark .report-document.print-area .table-grid-shell tbody td {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+  }
+
+  .dark .report-document.print-area .table-grid-shell tbody tr:hover,
+  .dark .report-document.print-area .table-grid-shell tbody tr:hover td {
+    background-color: #1e293b !important;
+  }
+
+  .dark .report-document.print-area .table-grid-scroll-hint,
+  .dark .report-document.print-area .table-grid-shell thead,
+  .dark .report-document.print-area .table-grid-shell thead tr,
+  .dark .report-document.print-area .table-grid-shell thead th {
+    background-color: #111827 !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+
+  .dark .report-document.print-area select {
+    background-color: #0f172a !important;
+    border-color: #475569 !important;
+    color: #ffffff !important;
+  }
+
+  .dark .report-document.print-area .back-button {
+    background-color: #0f172a !important;
+    border-color: #475569 !important;
+    color: #ffffff !important;
+  }
+
+  .dark .report-document.print-area .status-badge {
+    background-color: #1e293b !important;
+    border-color: #64748b !important;
+    color: #ffffff !important;
   }
 }
