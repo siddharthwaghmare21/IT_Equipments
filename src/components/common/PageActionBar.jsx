@@ -76,7 +76,7 @@ export default function PageActionBar({
 
   return (
     <>
-    <section className="no-print mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+    <section className="no-print mb-3 rounded-lg border border-slate-200 bg-white p-2.5 shadow-sm">
       <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex flex-wrap items-end gap-2">
         {addHref && canAddRecords && (

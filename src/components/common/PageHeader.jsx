@@ -6,8 +6,8 @@ export default function PageHeader({
   buttonHref,
 }) {
   return (
-    <div className="mb-4 rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mb-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm">
+      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-xl font-bold text-slate-950 sm:text-2xl">

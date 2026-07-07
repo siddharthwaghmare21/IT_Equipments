@@ -84,7 +84,7 @@ export default function LayoutWrapper({ children }) {
             onMenuClick={() => setIsSidebarOpen(true)}
           />
 
-          <main className="app-main mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+          <main className="app-main mx-auto w-full max-w-[1600px] p-3 sm:p-4 lg:p-6">
             <Breadcrumbs />
             {canAccessCurrentPage ? (
               children

@@ -122,7 +122,7 @@ export default function Header({
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 sm:px-6">
+    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-3 py-2.5 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 sm:px-4">
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">

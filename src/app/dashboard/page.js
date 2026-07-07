@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import { ErrorState, LoadingState } from "@/components/common/StateBlock";
+import pkg from "../../../package.json";
 import {
   getActivityLogs,
   getAssets,
@@ -100,6 +101,8 @@ function formatActivityDate(dateValue) {
     timeStyle: "short",
   });
 }
+
+const websiteVersion = pkg.version || "1.0.0";
 
 function buildMonthlyTrend(records, dateKeys) {
   const monthFormatter = new Intl.DateTimeFormat("en-IN", {
@@ -1227,37 +1230,13 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-950">System Readiness</h2>
+        <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+          <h2 className="text-base font-bold text-slate-950">Website Version</h2>
 
-          <div className="mt-4 space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-slate-600">Frontend Build</span>
-              <span className="font-semibold text-green-700">Ready</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">Next.js</span>
-              <span className="font-semibold text-slate-950">16.2.9</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">React</span>
-              <span className="font-semibold text-slate-950">19.2.4</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">Backend</span>
-              <span className="font-semibold text-green-700">API Connected</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">ASP.NET Core</span>
-              <span className="font-semibold text-slate-950">.NET 10.0</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">Database</span>
-              <span className="font-semibold text-green-700">MySQL Connected</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">DB Driver</span>
-              <span className="font-semibold text-slate-950">MySqlConnector 2.6.1</span>
+          <div className="mt-3 grid gap-2 text-sm">
+            <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+              <span className="text-slate-600">Version</span>
+              <span className="font-semibold text-slate-950">{websiteVersion}</span>
             </div>
           </div>
         </div>

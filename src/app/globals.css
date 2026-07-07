@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 :root {
   color-scheme: light;
   --app-bg: #f4f7fb;
@@ -466,6 +464,22 @@ html:not(.dark) .table-grid-shell tbody tr:hover td {
     background-color: #0f172a !important;
     border-color: #475569 !important;
     color: #ffffff !important;
+  }
+
+  .dark .report-document .back-button {
+    background-color: #0f172a !important;
+    border-color: #475569 !important;
+    color: #f8fafc !important;
+  }
+
+  .dark .report-document .back-button:hover {
+    background-color: #1e293b !important;
+  }
+
+  .dark .report-document .status-badge {
+    background-color: #1e293b !important;
+    border-color: #64748b !important;
+    color: #f8fafc !important;
   }
 }
 
