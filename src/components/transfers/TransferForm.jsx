@@ -12,11 +12,11 @@ import {
 function Field({ label, children, hint }) {
   return (
     <div>
-      <label className="mb-1 block text-sm font-medium text-gray-700">
+      <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
         {label}
       </label>
       {children}
-      {hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>}
+      {hint && <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">{hint}</p>}
     </div>
   );
 }
@@ -56,16 +56,16 @@ export default function TransferForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+      className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 dark:border-slate-700 dark:bg-slate-900"
     >
       {error && (
-        <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
           {error}
         </div>
       )}
 
       <section className="mb-6 border-b border-gray-100 pb-6">
-        <h2 className="text-lg font-bold text-gray-900">Transfer Request</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100">Transfer Request</h2>
         <p className="mt-1 text-sm text-gray-600">
           Select the asset and capture movement reason, receiver and condition
           details.
@@ -110,7 +110,7 @@ export default function TransferForm({
           </Field>
 
           <Field label="Current Asset Info">
-            <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700">
+            <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
               {selectedAsset
                 ? `${selectedAsset.currentDepartmentName || "-"} | ${
                     selectedAsset.currentReceiverName || "-"
@@ -210,7 +210,7 @@ export default function TransferForm({
       </section>
 
       <section className="mb-6 border-b border-gray-100 pb-6">
-        <h2 className="text-lg font-bold text-gray-900">IT Collection</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100">IT Collection</h2>
         <p className="mt-1 text-sm text-gray-600">
           Use this section when IT collects an asset before repair, inspection
           or reassignment.
@@ -262,7 +262,7 @@ export default function TransferForm({
       </section>
 
       <section>
-        <h2 className="text-lg font-bold text-gray-900">Reassignment</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100">Reassignment</h2>
         <p className="mt-1 text-sm text-gray-600">
           Capture issue date and acknowledgement after assigning the asset to
           the new department or receiver.

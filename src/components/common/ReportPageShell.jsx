@@ -46,7 +46,7 @@ export default function ReportPageShell({
       </div>
 
       <section
-        className={`print-area report-document report-format-${printFormat} overflow-hidden border border-gray-200 bg-white shadow-sm dark:!border-slate-700 dark:!bg-slate-900 dark:!text-slate-100`}
+        className={`screen-report print-area report-document report-format-${printFormat} overflow-hidden border border-gray-200 bg-white shadow-sm dark:!border-slate-700 dark:!bg-slate-900 dark:!text-slate-100`}
       >
         <header className="report-letterhead border-b-2 border-gray-900 bg-white px-5 py-4 dark:!border-slate-700 dark:!bg-slate-900">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">

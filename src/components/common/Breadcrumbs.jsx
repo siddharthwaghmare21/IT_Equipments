@@ -46,15 +46,15 @@ export default function Breadcrumbs() {
 
   return (
     <nav aria-label="Breadcrumb" className="mb-4 text-sm">
-      <ol className="flex flex-wrap items-center gap-2 text-gray-500">
+      <ol className="flex flex-wrap items-center gap-2 text-gray-500 dark:text-slate-400">
         {crumbs.map((crumb, index) => {
           const isLast = index === crumbs.length - 1;
 
           return (
             <li key={`${crumb.href}-${index}`} className="flex items-center gap-2">
-              {index > 0 && <span className="text-gray-300">/</span>}
+              {index > 0 && <span className="text-gray-300 dark:text-slate-600">/</span>}
               {isLast ? (
-                <span className="font-semibold text-gray-900">
+                <span className="font-semibold text-gray-900 dark:text-slate-100">
                   {crumb.label}
                 </span>
               ) : (

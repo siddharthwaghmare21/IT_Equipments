@@ -524,56 +524,67 @@ html:not(.dark) .table-grid-shell tbody tr:hover td {
   background-color: #f9fafb;
 }
 
-.dark .print-area,
-.dark .print-area section,
-.dark .print-area div,
-.dark .print-area table,
-.dark .print-area thead,
-.dark .print-area tbody,
-.dark .print-area tr,
-.dark .print-area th,
-.dark .print-area td {
-  background-color: #ffffff !important;
-  border-color: #e5e7eb !important;
-  color: #111827 !important;
+html.dark .screen-report,
+html.dark .screen-report .report-letterhead,
+html.dark .screen-report .report-body,
+html.dark .screen-report .report-section,
+html.dark .screen-report .report-footer {
+  background-color: #111827 !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
 }
 
-.dark .print-area thead,
-.dark .print-area thead tr,
-.dark .print-area thead th {
-  background-color: #f9fafb !important;
+html.dark .screen-report h1,
+html.dark .screen-report p,
+html.dark .screen-report label,
+html.dark .screen-report th,
+html.dark .screen-report td,
+html.dark .screen-report a,
+html.dark .screen-report span:not(.status-badge) {
+  color: #f8fafc !important;
 }
 
-.dark .print-area .bg-gray-50,
-.dark .print-area .bg-gray-100 {
-  background-color: #f9fafb !important;
+html.dark .screen-report .table-grid-shell,
+html.dark .screen-report .table-grid-scroll,
+html.dark .screen-report .table-grid-shell table,
+html.dark .screen-report .table-grid-shell tbody,
+html.dark .screen-report .table-grid-shell tbody tr,
+html.dark .screen-report .table-grid-shell tbody td {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
 }
 
-.dark .print-area .text-gray-900,
-.dark .print-area .text-gray-800,
-.dark .print-area .text-gray-700,
-.dark .print-area .text-slate-950,
-.dark .print-area .text-slate-900,
-.dark .print-area .text-slate-800,
-.dark .print-area .text-slate-700 {
-  color: #111827 !important;
+html.dark .screen-report .table-grid-scroll-hint,
+html.dark .screen-report .table-grid-shell thead,
+html.dark .screen-report .table-grid-shell thead tr,
+html.dark .screen-report .table-grid-shell thead th {
+  background-color: #111827 !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
 }
 
-.dark .print-area .text-gray-600,
-.dark .print-area .text-gray-500,
-.dark .print-area .text-slate-600,
-.dark .print-area .text-slate-500,
-.dark .print-area .text-slate-400,
-.dark .print-area .text-slate-300 {
-  color: #4b5563 !important;
+html.dark .screen-report .table-grid-shell tbody tr:hover,
+html.dark .screen-report .table-grid-shell tbody tr:hover td {
+  background-color: #1e293b !important;
 }
 
-.dark .print-area input,
-.dark .print-area select,
-.dark .print-area textarea {
-  background-color: #ffffff;
-  color: #111827;
-  border-color: #d1d5db;
+html.dark .screen-report .back-button,
+html.dark .screen-report button,
+html.dark .screen-report select {
+  background-color: #0f172a !important;
+  border-color: #475569 !important;
+  color: #ffffff !important;
+}
+
+html.dark .screen-report button:hover {
+  background-color: #1e293b !important;
+}
+
+html.dark .screen-report .status-badge {
+  background-color: #1e293b !important;
+  border-color: #64748b !important;
+  color: #ffffff !important;
 }
 
 .print-only {
@@ -624,6 +635,98 @@ html:not(.dark) .table-grid-shell tbody tr:hover td {
     min-height: 0 !important;
     height: auto !important;
     overflow: visible !important;
+  }
+
+  .dark .print-area,
+  .dark .print-area section,
+  .dark .print-area div,
+  .dark .print-area table,
+  .dark .print-area thead,
+  .dark .print-area tbody,
+  .dark .print-area tr,
+  .dark .print-area th,
+  .dark .print-area td {
+    background-color: #ffffff !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+  }
+
+  .dark .print-area thead,
+  .dark .print-area thead tr,
+  .dark .print-area thead th {
+    background-color: #f9fafb !important;
+  }
+
+  .dark .print-area .bg-gray-50,
+  .dark .print-area .bg-gray-100 {
+    background-color: #f9fafb !important;
+  }
+
+  .dark .print-area .text-gray-900,
+  .dark .print-area .text-gray-800,
+  .dark .print-area .text-gray-700,
+  .dark .print-area .text-slate-950,
+  .dark .print-area .text-slate-900,
+  .dark .print-area .text-slate-800,
+  .dark .print-area .text-slate-700 {
+    color: #111827 !important;
+  }
+
+  .dark .print-area .text-gray-600,
+  .dark .print-area .text-gray-500,
+  .dark .print-area .text-slate-600,
+  .dark .print-area .text-slate-500,
+  .dark .print-area .text-slate-400,
+  .dark .print-area .text-slate-300 {
+    color: #4b5563 !important;
+  }
+
+  .dark .print-area input,
+  .dark .print-area select,
+  .dark .print-area textarea {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+  }
+
+  html.dark .screen-report,
+  html.dark .screen-report .report-letterhead,
+  html.dark .screen-report .report-body,
+  html.dark .screen-report .report-section,
+  html.dark .screen-report .report-footer,
+  html.dark .screen-report .table-grid-shell,
+  html.dark .screen-report .table-grid-scroll,
+  html.dark .screen-report .table-grid-shell table,
+  html.dark .screen-report .table-grid-shell tbody,
+  html.dark .screen-report .table-grid-shell tbody tr,
+  html.dark .screen-report .table-grid-shell tbody td {
+    background-color: #ffffff !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+  }
+
+  html.dark .screen-report .table-grid-scroll-hint,
+  html.dark .screen-report .table-grid-shell thead,
+  html.dark .screen-report .table-grid-shell thead tr,
+  html.dark .screen-report .table-grid-shell thead th {
+    background-color: #f9fafb !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+  }
+
+  html.dark .screen-report h1,
+  html.dark .screen-report p,
+  html.dark .screen-report label,
+  html.dark .screen-report th,
+  html.dark .screen-report td,
+  html.dark .screen-report span {
+    color: #111827 !important;
+  }
+
+  html.dark .screen-report .status-badge {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: #111827 !important;
   }
 
   html {
@@ -939,4 +1042,5 @@ html:not(.dark) .table-grid-shell tbody tr:hover td {
     border-color: #64748b !important;
     color: #ffffff !important;
   }
+
 }

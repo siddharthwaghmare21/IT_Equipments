@@ -9,11 +9,11 @@ import {
 function Field({ label, children, hint }) {
   return (
     <div>
-      <label className="mb-1 block text-sm font-medium text-gray-700">
+      <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">
         {label}
       </label>
       {children}
-      {hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>}
+      {hint && <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">{hint}</p>}
     </div>
   );
 }
@@ -31,10 +31,10 @@ export default function DeliveryForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+      className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 dark:border-slate-700 dark:bg-slate-900"
     >
       {error && (
-        <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
           {error}
         </div>
       )}
