@@ -2,7 +2,7 @@
 
 :root {
   color-scheme: light;
-  --app-bg: #f4f7fb;
+  --app-bg: #f3f6fb;
   --app-surface: #ffffff;
   --app-surface-soft: #f8fafc;
   --app-border: #e2e8f0;
@@ -10,6 +10,11 @@
   --app-muted: #64748b;
   --app-accent: #4f46e5;
   --app-accent-strong: #7c3aed;
+}
+
+body {
+  background: var(--app-bg);
+  color: var(--app-text);
 }
 
 :focus-visible {
@@ -77,12 +82,12 @@ main .focus\:border-gray-900:focus {
 
 .dark {
   color-scheme: dark;
-  --app-bg: #0b1120;
-  --app-surface: #111827;
-  --app-surface-soft: #0f172a;
+  --app-bg: #0f172a;
+  --app-surface: #182235;
+  --app-surface-soft: #111c2f;
   --app-border: #334155;
   --app-text: #f8fafc;
-  --app-muted: #cbd5e1;
+  --app-muted: #b6c2d4;
   --app-accent: #818cf8;
   --app-accent-strong: #a78bfa;
 }
@@ -122,11 +127,11 @@ main .focus\:border-gray-900:focus {
 .dark .bg-gray-950,
 .dark .bg-slate-950,
 .dark .bg-slate-900 {
-  background-color: #030712;
+  background-color: var(--app-surface-soft);
 }
 
 .dark .bg-slate-800 {
-  background-color: #1e293b;
+  background-color: #253247;
 }
 
 .dark .bg-slate-200,
@@ -163,7 +168,7 @@ main .focus\:border-gray-900:focus {
 .dark input,
 .dark select,
 .dark textarea {
-  background-color: #111827;
+  background-color: #111c2f;
   color: #f9fafb;
   border-color: #4b5563;
 }
@@ -178,7 +183,7 @@ main .focus\:border-gray-900:focus {
 
 .dark main .bg-gray-50,
 .dark main .bg-slate-50 {
-  background-color: #0f172a;
+  background-color: var(--app-surface-soft);
 }
 
 .dark button:focus-visible,
@@ -191,7 +196,7 @@ main .focus\:border-gray-900:focus {
 .dark .hover\:bg-gray-100:hover,
 .dark .hover\:bg-slate-50:hover,
 .dark .hover\:bg-slate-100:hover {
-  background-color: #374151 !important;
+  background-color: #253247 !important;
 }
 
 .dark .hover\:border-gray-300:hover,
@@ -203,20 +208,6 @@ main .focus\:border-gray-900:focus {
 .dark .hover\:text-gray-900:hover,
 .dark .hover\:text-black:hover {
   color: #ffffff !important;
-}
-
-.dark button:active,
-.dark a:active {
-  background-color: #475569;
-  box-shadow: inset 0 0 0 9999px rgb(15 23 42 / 0.12);
-}
-
-.dark .bg-white:active,
-.dark .bg-gray-50:active,
-.dark .bg-gray-100:active,
-.dark .bg-slate-50:active,
-.dark .bg-slate-100:active {
-  background-color: #374151;
 }
 
 .dark .bg-indigo-50 {

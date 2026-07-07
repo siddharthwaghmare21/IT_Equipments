@@ -236,8 +236,8 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="flex h-full w-72 flex-col border-r border-slate-200 bg-white text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:shadow-2xl">
-      <div className="flex h-16 items-center justify-between border-b border-slate-200 px-5 dark:border-slate-800">
+    <aside className="flex h-full w-72 flex-col border-r border-slate-200 bg-white text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:shadow-2xl">
+      <div className="flex h-16 items-center justify-between border-b border-slate-200 px-5 dark:border-slate-700">
         <div>
           <h2 className="text-lg font-bold">IT Assets</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -279,7 +279,7 @@ export default function Sidebar({
                   onClick={isPersistent ? undefined : onClose}
                   className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
                     isActive
-                      ? "bg-indigo-50 font-semibold text-indigo-700 shadow-sm dark:bg-white dark:text-slate-950"
+                      ? "bg-indigo-50 font-semibold text-indigo-700 shadow-sm dark:bg-indigo-600 dark:text-white"
                       : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white"
                   }`}
                 >
