@@ -37,7 +37,7 @@ export default function CompactRecordList({
   }
 
   return (
-    <div className="mb-6 divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:divide-slate-800 dark:border-slate-800 dark:bg-slate-950 md:hidden">
+    <div className="mb-6 divide-y divide-[#2c3f63] overflow-hidden rounded-[24px] border border-[#2c3f63] bg-[#18253d] shadow-[0_18px_38px_rgba(6,12,24,0.14)] md:hidden">
       {records.map((record) => {
         const metaItems = getMeta
           ? getMeta(record).map((value, index) => ({
@@ -57,17 +57,17 @@ export default function CompactRecordList({
         <article key={record.id} className="p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-bold text-slate-950 dark:text-slate-100">
+              <p className="text-sm font-bold text-white">
                 {getTitle ? getTitle(record) : record[titleKey]}
               </p>
-              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mt-1 text-sm text-[#8fa4c7]">
                 {getSubtitle ? getSubtitle(record) : record[subtitleKey]}
               </p>
             </div>
             {statusRender
               ? statusRender(record)
               : getStatus && (
-                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                  <span className="rounded-full border border-[#314666] bg-[#101a2b] px-2.5 py-1 text-xs font-semibold text-[#c8d4ec]">
                     {getStatus(record)}
                   </span>
                 )}
@@ -76,10 +76,10 @@ export default function CompactRecordList({
           <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
             {metaItems.map((item) => (
               <div key={item.label}>
-                <p className="text-slate-500 dark:text-slate-400">
+                <p className="text-[#8fa4c7]">
                   {item.label}
                 </p>
-                <p className="mt-1 font-semibold text-slate-950 dark:text-slate-100">
+                <p className="mt-1 font-semibold text-white">
                   {item.value || "-"}
                 </p>
               </div>
@@ -90,7 +90,7 @@ export default function CompactRecordList({
             {resolvedViewHref && (
               <Link
                 href={resolvedViewHref}
-                className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                className="rounded-xl border border-[#314666] bg-[#101a2b] px-3 py-1.5 text-xs font-semibold text-[#c8d4ec] hover:bg-[#16233a]"
               >
                 View
               </Link>
@@ -98,7 +98,7 @@ export default function CompactRecordList({
             {resolvedEditHref && canWrite && (
               <Link
                 href={resolvedEditHref}
-                className="rounded-lg bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500"
+                className="rounded-xl bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] px-3 py-1.5 text-xs font-semibold text-white hover:from-[#5f35df] hover:to-[#7c4cf3]"
               >
                 Edit
               </Link>
@@ -107,7 +107,7 @@ export default function CompactRecordList({
               <button
                 type="button"
                 onClick={() => (onDelete || onArchive)(record)}
-                className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100 dark:border-red-900 dark:bg-red-950 dark:text-red-200 dark:hover:bg-red-900"
+                className="rounded-xl border border-rose-500/30 bg-rose-500/12 px-3 py-1.5 text-xs font-semibold text-rose-100 hover:bg-rose-500/18"
               >
                 {archiveLabel}
               </button>

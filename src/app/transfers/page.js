@@ -54,7 +54,6 @@ function TransferStatusBadge({ status }) {
 
 export default function TransfersPage() {
   const [transferRecords, setTransferRecords] = useState([]);
-  const [search, setSearch] = useState("");
   const [activeWorkflow, setActiveWorkflow] = useState("All");
   const [activeStatus, setActiveStatus] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
@@ -92,21 +91,6 @@ export default function TransfersPage() {
 
   const filteredTransfers = useMemo(() => {
     return transferRecords.filter((transfer) => {
-      const searchText = `
-        ${transfer.transferCode}
-        ${transfer.transferType}
-        ${transfer.assetTag}
-        ${transfer.assetName}
-        ${transfer.fromDepartmentName}
-        ${transfer.toDepartmentName}
-        ${transfer.currentReceiverName}
-        ${transfer.newReceiverName}
-        ${transfer.transferReason}
-        ${transfer.conditionAtTransfer}
-        ${transfer.transferStatus}
-      `.toLowerCase();
-
-      const matchesSearch = searchText.includes(search.toLowerCase());
       const matchesStatus =
         activeStatus === "All" || transfer.transferStatus === activeStatus;
       const matchesWorkflow =
@@ -118,9 +102,9 @@ export default function TransfersPage() {
         (activeWorkflow === "Reassign" &&
           transfer.transferType === "Reassignment");
 
-      return matchesSearch && matchesStatus && matchesWorkflow;
+      return matchesStatus && matchesWorkflow;
     });
-  }, [transferRecords, search, activeWorkflow, activeStatus]);
+  }, [transferRecords, activeWorkflow, activeStatus]);
 
   const pagedTransfers = useMemo(() => {
     const startIndex = (currentPage - 1) * 10;
@@ -196,18 +180,7 @@ export default function TransfersPage() {
                 ))}
               </div>
 
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(event) => {
-                    setSearch(event.target.value);
-                    setCurrentPage(1);
-                  }}
-                  placeholder="Search transfer code, asset, department, receiver, reason or status..."
-                  className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-lg"
-                />
-
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-end">
                 <select
                   value={activeStatus}
                   onChange={(event) => {
@@ -244,7 +217,7 @@ export default function TransfersPage() {
             onArchive={setCancelTarget}
             archiveLabel="Cancel"
             emptyTitle="No transfer records found"
-            emptyDescription="Try changing workflow, status or search filters."
+            emptyDescription="Try changing workflow or status filters."
           />
 
           <div className="hidden md:block">

@@ -2,11 +2,11 @@
 
 export function LoadingState({ title = "Loading", description }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-950">
-      <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600 dark:border-slate-800 dark:border-t-indigo-400" />
-      <h2 className="mt-4 text-base font-bold text-slate-950 dark:text-slate-100">{title}</h2>
+    <div className="rounded-[24px] border border-[#2c3f63] bg-[#18253d] p-6 text-center shadow-sm">
+      <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[#314666] border-t-[#8b5cf6]" />
+      <h2 className="mt-4 text-base font-bold text-white">{title}</h2>
       {description && (
-        <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{description}</p>
+        <p className="mt-2 text-sm leading-6 text-[#8fa4c7]">{description}</p>
       )}
     </div>
   );
@@ -19,11 +19,11 @@ export function EmptyState({
   onAction,
 }) {
   return (
-    <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm dark:border-slate-700 dark:bg-slate-950">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
+    <div className="rounded-[24px] border border-dashed border-[#314666] bg-[#18253d] p-8 text-center shadow-sm">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-[#314666] bg-[#101a2b]">
         <svg
           aria-hidden="true"
-          className="h-6 w-6 text-slate-500 dark:text-slate-400"
+          className="h-6 w-6 text-[#8fa4c7]"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -36,15 +36,15 @@ export function EmptyState({
           />
         </svg>
       </div>
-      <h2 className="mt-4 text-base font-bold text-slate-950 dark:text-slate-100">{title}</h2>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-400">
+      <h2 className="mt-4 text-base font-bold text-white">{title}</h2>
+      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#8fa4c7]">
         {description}
       </p>
       {actionLabel && onAction && (
         <button
           type="button"
           onClick={onAction}
-          className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+          className="mt-4 rounded-xl bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] px-4 py-2 text-sm font-semibold text-white"
         >
           {actionLabel}
         </button>
@@ -64,8 +64,8 @@ export function ErrorState({
   const resolvedLabel = actionLabel || "Retry";
 
   return (
-    <div className="rounded-lg border border-red-200 bg-red-50 p-8 text-center shadow-sm dark:border-red-900 dark:bg-red-950">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-lg border border-red-200 bg-white text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+    <div className="rounded-[24px] border border-rose-500/30 bg-rose-500/10 p-8 text-center shadow-sm">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-rose-500/30 bg-rose-500/12 text-rose-100">
         <svg
           aria-hidden="true"
           className="h-6 w-6"
@@ -81,13 +81,13 @@ export function ErrorState({
           />
         </svg>
       </div>
-      <h2 className="mt-4 text-base font-bold text-red-800">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-red-700">{description}</p>
+      <h2 className="mt-4 text-base font-bold text-rose-100">{title}</h2>
+      <p className="mt-2 text-sm leading-6 text-rose-200">{description}</p>
       {resolvedOnRetry && (
         <button
           type="button"
           onClick={resolvedOnRetry}
-          className="mt-4 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+          className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/15 px-4 py-2 text-sm font-semibold text-rose-100 hover:bg-rose-500/20"
         >
           {resolvedLabel}
         </button>

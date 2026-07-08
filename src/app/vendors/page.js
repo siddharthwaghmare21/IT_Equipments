@@ -68,7 +68,6 @@ function ComplianceBadge({ status }) {
 
 export default function VendorsPage() {
   const [vendors, setVendors] = useState([]);
-  const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [complianceFilter, setComplianceFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,30 +100,15 @@ export default function VendorsPage() {
 
   const filteredVendors = useMemo(() => {
     return vendors.filter((vendor) => {
-      const searchText = `
-        ${vendor.vendorCode}
-        ${vendor.vendorName}
-        ${vendor.contactPerson}
-        ${vendor.phone}
-        ${vendor.email}
-        ${vendor.gstNumber}
-        ${vendor.address}
-        ${vendor.paymentTerms}
-        ${vendor.serviceCategory}
-        ${vendor.complianceStatus}
-        ${vendor.status}
-      `.toLowerCase();
-
-      const matchesSearch = searchText.includes(search.toLowerCase());
       const matchesStatus =
         activeFilter === "All" || vendor.status === activeFilter;
       const matchesCompliance =
         complianceFilter === "All" ||
         vendor.complianceStatus === complianceFilter;
 
-      return matchesSearch && matchesStatus && matchesCompliance;
+      return matchesStatus && matchesCompliance;
     });
-  }, [vendors, search, activeFilter, complianceFilter]);
+  }, [vendors, activeFilter, complianceFilter]);
 
   const pagedVendors = useMemo(() => {
     const startIndex = (currentPage - 1) * 10;
@@ -165,18 +149,7 @@ export default function VendorsPage() {
       />
 
       <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-          <input
-            type="text"
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              setCurrentPage(1);
-            }}
-            placeholder="Search by vendor, GST, payment terms, category, compliance or status..."
-            className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] xl:max-w-md"
-          />
-
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-end">
           <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
             <div className="flex gap-2 overflow-x-auto pb-1">
               {filters.map((filter) => (

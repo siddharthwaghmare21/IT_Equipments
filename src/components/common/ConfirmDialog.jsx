@@ -17,8 +17,8 @@ export default function ConfirmDialog({
 
   const confirmClass =
     tone === "danger"
-      ? "bg-red-600 text-white hover:bg-red-700"
-      : "bg-gray-900 text-white hover:bg-gray-800";
+      ? "border border-rose-500/30 bg-rose-500/15 text-rose-100 hover:bg-rose-500/20"
+      : "bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white hover:from-[#5f35df] hover:to-[#7c4cf3]";
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 px-4">
@@ -26,19 +26,19 @@ export default function ConfirmDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
-        className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-5 shadow-xl dark:border-slate-800 dark:bg-slate-950"
+        className="w-full max-w-md rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-5 shadow-xl"
       >
-        <h2 id="confirm-dialog-title" className="text-lg font-bold text-gray-900 dark:text-slate-100">
+        <h2 id="confirm-dialog-title" className="text-lg font-bold text-white">
           {title}
         </h2>
 
-        <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-slate-400">{description}</p>
+        <p className="mt-2 text-sm leading-6 text-[#b8c7e6]">{description}</p>
 
         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
+            className="rounded-xl border border-[#314666] bg-[#101a2b] px-4 py-2 text-sm font-semibold text-[#c8d4ec] hover:bg-[#16233a]"
           >
             {cancelLabel}
           </button>

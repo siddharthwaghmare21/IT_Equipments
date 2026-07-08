@@ -59,7 +59,6 @@ function MaintenanceStatusBadge({ status }) {
 
 export default function MaintenancePage() {
   const [maintenanceRecords, setMaintenanceRecords] = useState([]);
-  const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [cancelTarget, setCancelTarget] = useState(null);
@@ -96,26 +95,12 @@ export default function MaintenancePage() {
 
   const filteredMaintenanceRecords = useMemo(() => {
     return maintenanceRecords.filter((record) => {
-      const searchText = `
-        ${record.maintenanceCode}
-        ${record.assetTag}
-        ${record.assetName}
-        ${record.issueType}
-        ${record.reportedByName}
-        ${record.vendorName}
-        ${record.serviceType}
-        ${record.priority}
-        ${record.approvalStatus}
-        ${record.maintenanceStatus}
-      `.toLowerCase();
-
-      const matchesSearch = searchText.includes(search.toLowerCase());
       const matchesFilter =
         activeFilter === "All" || record.maintenanceStatus === activeFilter;
 
-      return matchesSearch && matchesFilter;
+      return matchesFilter;
     });
-  }, [maintenanceRecords, search, activeFilter]);
+  }, [maintenanceRecords, activeFilter]);
 
   const pagedMaintenanceRecords = useMemo(() => {
     const startIndex = (currentPage - 1) * 10;
@@ -170,18 +155,7 @@ export default function MaintenancePage() {
       ) : (
         <>
           <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <input
-                type="text"
-                value={search}
-                onChange={(event) => {
-                  setSearch(event.target.value);
-                  setCurrentPage(1);
-                }}
-                placeholder="Search by code, asset, issue, vendor, priority or status..."
-                className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-md"
-              />
-
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-end">
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {filters.map((filter) => (
                   <button

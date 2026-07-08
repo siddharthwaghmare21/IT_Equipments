@@ -57,7 +57,7 @@ export default function ActionButtons({
     <div className="flex flex-wrap gap-2">
       <Link
         href={viewHref}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        className="inline-flex items-center gap-1.5 rounded-xl border border-[#314666] bg-[#101a2b] px-3 py-1.5 text-xs font-semibold text-[#c8d4ec] hover:bg-[#16233a]"
       >
         <ActionIcon type="view" />
         View
@@ -66,7 +66,7 @@ export default function ActionButtons({
       {canWrite && (
         <Link
           href={editHref || updateHref}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] px-3 py-1.5 text-xs font-semibold text-white hover:from-[#5f35df] hover:to-[#7c4cf3]"
         >
           <ActionIcon type="edit" />
           Edit
@@ -77,7 +77,7 @@ export default function ActionButtons({
         <button
           type="button"
           onClick={onDelete}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100 dark:border-red-900 dark:bg-red-950 dark:text-red-200"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/12 px-3 py-1.5 text-xs font-semibold text-rose-100 hover:bg-rose-500/18"
         >
           <ActionIcon type="delete" />
           {deleteLabel}

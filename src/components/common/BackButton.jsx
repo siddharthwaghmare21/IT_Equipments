@@ -4,7 +4,7 @@ export default function BackButton({ href, label }) {
   return (
     <Link
       href={href}
-      className="back-button inline-flex h-10 w-full items-center justify-center rounded-lg border border-slate-300 bg-slate-50 px-4 text-sm font-semibold text-slate-800 hover:bg-white dark:border-slate-500 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 sm:w-auto"
+      className="back-button inline-flex h-11 w-full items-center justify-center rounded-2xl border border-[#314666] bg-[#101a2b] px-4 text-sm font-semibold text-[#c8d4ec] hover:bg-[#16233a] sm:w-auto"
     >
       Back to {label}
     </Link>

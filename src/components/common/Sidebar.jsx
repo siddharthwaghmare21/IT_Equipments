@@ -205,7 +205,7 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="flex h-full w-[260px] flex-col border-r border-slate-200/80 bg-white/85 text-slate-900 backdrop-blur dark:border-slate-700 dark:bg-[#16233c] dark:text-white">
+    <aside className="flex h-full w-[260px] flex-col overflow-hidden border-r border-slate-200/80 bg-white/85 text-slate-900 backdrop-blur dark:border-slate-700 dark:bg-[#16233c] dark:text-white">
       <div className="flex items-start justify-between px-5 py-6">
         <AppLogoMark />
 
@@ -224,7 +224,7 @@ export default function Sidebar({
       <nav
         ref={navRef}
         onScroll={handleSidebarScroll}
-        className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4"
+        className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-4 py-4"
       >
         {groupedLinks.map((group) => (
           <div key={group.title}>

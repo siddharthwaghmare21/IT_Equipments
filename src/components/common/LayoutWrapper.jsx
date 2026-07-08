@@ -42,7 +42,7 @@ export default function LayoutWrapper({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#edf1fb] dark:bg-[linear-gradient(180deg,#091223_0%,#111c31_100%)]">
+    <div className="h-screen overflow-hidden bg-[#edf1fb] dark:bg-[linear-gradient(180deg,#091223_0%,#111c31_100%)]">
       {isSidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
@@ -65,8 +65,8 @@ export default function LayoutWrapper({ children }) {
         </div>
       )}
 
-      <div className="mx-auto flex min-h-screen w-full overflow-hidden bg-transparent dark:bg-[#0f1a2f]">
-        <div className="hidden shrink-0 lg:block">
+      <div className="mx-auto flex h-screen w-full overflow-hidden bg-transparent dark:bg-[#0f1a2f]">
+        <div className="hidden h-screen shrink-0 lg:block">
           <Sidebar
             currentUser={currentUser}
             isSuperAdmin={isSuperAdmin}
@@ -76,7 +76,7 @@ export default function LayoutWrapper({ children }) {
           />
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col bg-[#f5f7fc] dark:bg-[#111c31]">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-[#f5f7fc] dark:bg-[#111c31]">
           <Header
             currentUser={currentUser}
             isSuperAdmin={isSuperAdmin}
@@ -84,7 +84,7 @@ export default function LayoutWrapper({ children }) {
             onMenuClick={() => setIsSidebarOpen(true)}
           />
 
-          <main className="app-main flex-1 p-4 sm:p-5 lg:p-8">
+          <main className="app-main min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 lg:p-8">
             <div className="mx-auto w-full max-w-[1520px]">
               <Breadcrumbs />
               {canAccessCurrentPage ? (

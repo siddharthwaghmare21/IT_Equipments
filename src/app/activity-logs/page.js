@@ -75,7 +75,6 @@ function mapActivityLogFromApi(log) {
 
 export default function ActivityLogsPage() {
   const [activityLogs, setActivityLogs] = useState([]);
-  const [search, setSearch] = useState("");
   const [activeModule, setActiveModule] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [userFilter, setUserFilter] = useState("All");
@@ -114,19 +113,6 @@ export default function ActivityLogsPage() {
 
   const filteredLogs = useMemo(() => {
     return activityLogs.filter((log) => {
-      const searchText = `
-        ${log.date}
-        ${log.time}
-        ${log.module}
-        ${log.action}
-        ${log.description}
-        ${log.performedBy}
-        ${log.role}
-        ${log.status}
-      `.toLowerCase();
-
-      const matchesSearch = searchText.includes(search.toLowerCase());
-
       const matchesModule =
         activeModule === "All" || log.module === activeModule;
 
@@ -138,9 +124,9 @@ export default function ActivityLogsPage() {
 
       const matchesDate = !dateFilter || log.date === dateFilter;
 
-      return matchesSearch && matchesModule && matchesStatus && matchesUser && matchesDate;
+      return matchesModule && matchesStatus && matchesUser && matchesDate;
     });
-  }, [activityLogs, search, activeModule, statusFilter, userFilter, dateFilter]);
+  }, [activityLogs, activeModule, statusFilter, userFilter, dateFilter]);
 
   const pagedLogs = useMemo(() => {
     const startIndex = (currentPage - 1) * 10;
@@ -190,17 +176,6 @@ export default function ActivityLogsPage() {
 
       <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
         <div className="flex flex-col gap-4">
-          <input
-            type="text"
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              setCurrentPage(1);
-            }}
-            placeholder="Search by module, action, user, role, status or description..."
-            className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3]"
-          />
-
           <div className="flex gap-2 overflow-x-auto pb-1">
             {moduleFilters.map((filter) => (
               <button

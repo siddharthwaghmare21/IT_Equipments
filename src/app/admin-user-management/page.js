@@ -88,7 +88,6 @@ function normalizeUser(user) {
 export default function AdminUsersManagementPage() {
   const [users, setUsers] = useState([]);
   const [currentUser] = useState(() => readSession());
-  const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
@@ -137,19 +136,13 @@ export default function AdminUsersManagementPage() {
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
-      const search = searchTerm.toLowerCase();
-      const matchesSearch =
-        user.fullName?.toLowerCase().includes(search) ||
-        user.email?.toLowerCase().includes(search) ||
-        user.phone?.toLowerCase().includes(search);
-
       const matchesRole = roleFilter === "All" || user.roleCode === roleFilter;
       const matchesStatus =
         statusFilter === "All" || user.status === statusFilter;
 
-      return matchesSearch && matchesRole && matchesStatus;
+      return matchesRole && matchesStatus;
     });
-  }, [users, searchTerm, roleFilter, statusFilter]);
+  }, [users, roleFilter, statusFilter]);
 
   const pagedUsers = useMemo(() => {
     const startIndex = (currentPage - 1) * 10;
@@ -269,18 +262,7 @@ export default function AdminUsersManagementPage() {
       )}
 
       <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-5 shadow-sm">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(event) => {
-              setSearchTerm(event.target.value);
-              setCurrentPage(1);
-            }}
-            placeholder="Search by name, email or phone..."
-            className="h-11 w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 text-sm text-white outline-none focus:border-[#7c3aed]"
-          />
-
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <select
             value={roleFilter}
             onChange={(event) => {

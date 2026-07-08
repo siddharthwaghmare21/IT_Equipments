@@ -156,7 +156,6 @@ const inputClassName =
   "h-11 rounded-2xl border border-[#314666] bg-[#101a2b] px-4 text-sm text-white outline-none focus:border-[#7c3aed]";
 
 export default function ReportsPage() {
-  const [search, setSearch] = useState("");
   const [activeGroup, setActiveGroup] = useState("All");
   const [reportView, setReportView] = useState("Summary");
   const [reportTemplate, setReportTemplate] = useState("Executive");
@@ -191,14 +190,11 @@ export default function ReportsPage() {
 
   const filteredReports = useMemo(() => {
     return reportCards.filter((report) => {
-      const matchesSearch = `${report.title} ${report.description} ${report.tag}`
-        .toLowerCase()
-        .includes(search.toLowerCase());
       const matchesGroup = activeGroup === "All" || report.group === activeGroup;
 
-      return matchesSearch && matchesGroup;
+      return matchesGroup;
     });
-  }, [search, activeGroup]);
+  }, [activeGroup]);
 
   return (
     <LayoutWrapper>
@@ -225,14 +221,7 @@ export default function ReportsPage() {
             </p>
           </div>
 
-          <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 xl:max-w-2xl xl:grid-cols-3">
-            <input
-              type="text"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search reports..."
-              className={inputClassName}
-            />
+          <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 xl:max-w-lg">
             <select
               value={activeGroup}
               onChange={(event) => setActiveGroup(event.target.value)}

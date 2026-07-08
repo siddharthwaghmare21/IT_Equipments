@@ -38,7 +38,6 @@ const printColumns = [
 
 export default function AssetsPage() {
   const [assets, setAssets] = useState([]);
-  const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [departmentFilter, setDepartmentFilter] = useState("All");
@@ -88,26 +87,6 @@ export default function AssetsPage() {
 
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
-      const searchText = `
-        ${asset.assetTag}
-        ${asset.assetName}
-        ${asset.category}
-        ${asset.brand}
-        ${asset.model}
-        ${asset.serialNumber}
-        ${asset.currentDepartmentName}
-        ${asset.custodianDepartmentName}
-        ${asset.currentReceiverName}
-        ${asset.location}
-        ${asset.lifecycleStatus}
-        ${asset.workOrderRef}
-        ${asset.invoiceNumber}
-        ${asset.warrantyExpiry}
-        ${asset.assetCondition}
-        ${asset.attachmentStatus}
-      `.toLowerCase();
-
-      const matchesSearch = searchText.includes(search.toLowerCase());
       const matchesFilter =
         activeFilter === "All" || asset.assetStatus === activeFilter;
       const matchesCategory =
@@ -120,14 +99,13 @@ export default function AssetsPage() {
         conditionFilter === "All" || asset.assetCondition === conditionFilter;
 
       return (
-        matchesSearch &&
         matchesFilter &&
         matchesCategory &&
         matchesDepartment &&
         matchesCondition
       );
     });
-  }, [assets, search, activeFilter, categoryFilter, departmentFilter, conditionFilter]);
+  }, [assets, activeFilter, categoryFilter, departmentFilter, conditionFilter]);
 
   const pagedAssets = useMemo(() => {
     const startIndex = (currentPage - 1) * 10;
@@ -173,17 +151,6 @@ export default function AssetsPage() {
 
       <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
         <div className="flex flex-col gap-3">
-          <input
-            type="text"
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              setCurrentPage(1);
-            }}
-            placeholder="Search by asset tag, name, serial number, department, work order ref or location..."
-            className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3]"
-          />
-
           <div className="flex gap-2 overflow-x-auto pb-1">
             {filters.map((filter) => (
               <button

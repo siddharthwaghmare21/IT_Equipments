@@ -56,7 +56,6 @@ function WorkOrderStatusBadge({ status }) {
 
 export default function PurchasesPage() {
   const [workOrders, setWorkOrders] = useState([]);
-  const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [cancelTarget, setCancelTarget] = useState(null);
@@ -93,28 +92,12 @@ export default function PurchasesPage() {
 
   const filteredWorkOrders = useMemo(() => {
     return workOrders.filter((workOrder) => {
-      const searchText = `
-        ${workOrder.workOrderNumber}
-        ${workOrder.vendorName}
-        ${workOrder.invoiceNumber}
-        ${workOrder.workOrderDate}
-        ${workOrder.expectedDeliveryDate}
-        ${workOrder.receivedDate}
-        ${formatCurrency(workOrder.totalAmount)}
-        ${workOrder.approvalStatus}
-        ${workOrder.paymentStatus}
-        ${workOrder.receivedStatus}
-        ${workOrder.invoiceStatus}
-        ${workOrder.workOrderStatus}
-      `.toLowerCase();
-
-      const matchesSearch = searchText.includes(search.toLowerCase());
       const matchesFilter =
         activeFilter === "All" || workOrder.workOrderStatus === activeFilter;
 
-      return matchesSearch && matchesFilter;
+      return matchesFilter;
     });
-  }, [workOrders, search, activeFilter]);
+  }, [workOrders, activeFilter]);
 
   const pagedWorkOrders = useMemo(() => {
     const startIndex = (currentPage - 1) * 10;
@@ -169,18 +152,7 @@ export default function PurchasesPage() {
       ) : (
         <>
           <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <input
-                type="text"
-                value={search}
-                onChange={(event) => {
-                  setSearch(event.target.value);
-                  setCurrentPage(1);
-                }}
-                placeholder="Search by WO, vendor, invoice, approval, payment or status..."
-                className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-md"
-              />
-
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-end">
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {filters.map((filter) => (
                   <button
@@ -219,7 +191,7 @@ export default function PurchasesPage() {
             getEditHref={(workOrder) => `/purchases/edit/${workOrder.id}`}
             onDelete={setCancelTarget}
             emptyTitle="No work orders found"
-            emptyDescription="Try changing the search or filter."
+            emptyDescription="Try changing the status filter."
           />
 
           <div className="hidden lg:block">
