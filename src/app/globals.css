@@ -328,10 +328,9 @@ main .hover\:border-indigo-200:hover {
     visibility: hidden !important;
   }
 
-  header,
+  header:not(.report-letterhead),
   aside,
-  nav,
-  .app-main > *:not(.print-root) {
+  nav {
     display: none !important;
   }
 
