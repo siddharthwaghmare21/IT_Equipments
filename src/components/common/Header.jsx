@@ -1,20 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { canAccessPath } from "@/lib/rbac";
-
-function getInitials(name) {
-  if (!name) return "IT";
-
-  const words = name.trim().split(" ");
-
-  if (words.length === 1) {
-    return words[0].slice(0, 2).toUpperCase();
-  }
-
-  return `${words[0][0]}${words[1][0]}`.toUpperCase();
-}
 
 function BellIcon() {
   return (
@@ -34,33 +22,45 @@ function BellIcon() {
   );
 }
 
-function ThemeIcon({ isDarkMode }) {
+function MenuIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-5 w-5"
-    >
-      {isDarkMode ? (
-        <>
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2" />
-          <path d="M12 20v2" />
-          <path d="M2 12h2" />
-          <path d="M20 12h2" />
-          <path d="m4.93 4.93 1.41 1.41" />
-          <path d="m17.66 17.66 1.41 1.41" />
-        </>
-      ) : (
-        <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.5 6.5 0 0 0 21 12.8z" />
-      )}
-    </svg>
+    <span className="flex w-5 flex-col gap-1" aria-hidden="true">
+      <span className="h-0.5 rounded-full bg-current" />
+      <span className="h-0.5 rounded-full bg-current" />
+      <span className="h-0.5 rounded-full bg-current" />
+    </span>
   );
+}
+
+function getInitials(name, email = "") {
+  const cleanedName = String(name || "").trim();
+  if (!cleanedName) return "IT";
+
+  const words = cleanedName.split(/\s+/).filter(Boolean);
+  if (words.length >= 2) {
+    return `${words[0][0]}${words[1][0]}`.toUpperCase();
+  }
+
+  const firstWord = words[0];
+  const localPart = String(email || "")
+    .split("@")[0]
+    .toLowerCase()
+    .replace(/[^a-z]/g, "");
+  const normalizedFirstWord = firstWord.toLowerCase().replace(/[^a-z]/g, "");
+
+  if (
+    normalizedFirstWord &&
+    localPart.startsWith(normalizedFirstWord) &&
+    localPart.length > normalizedFirstWord.length
+  ) {
+    const remaining = localPart.slice(normalizedFirstWord.length);
+    const nextLetter = remaining[0];
+    if (nextLetter) {
+      return `${firstWord[0]}${nextLetter}`.toUpperCase();
+    }
+  }
+
+  return firstWord.slice(0, 2).toUpperCase();
 }
 
 export default function Header({
@@ -72,16 +72,6 @@ export default function Header({
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
-
-    return (
-      localStorage.getItem("itAssetTheme") === "dark" ||
-      document.documentElement.classList.contains("dark")
-    );
-  });
 
   const notifications = [
     {
@@ -104,151 +94,121 @@ export default function Header({
     canAccessPath(currentUser, item.href)
   );
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDarkMode);
-  }, [isDarkMode]);
-
   function handleSearchSubmit(event) {
     event.preventDefault();
-
     const query = searchTerm.trim().toLowerCase();
-
     if (!query) return;
-
     router.push(`/search?q=${encodeURIComponent(query)}`);
   }
 
-  function toggleDarkMode() {
-    const nextValue = !isDarkMode;
-
-    document.documentElement.classList.toggle("dark", nextValue);
-    localStorage.setItem("itAssetTheme", nextValue ? "dark" : "light");
-    setIsDarkMode(nextValue);
-  }
-
   return (
-    <header className="z-20 border-b border-[#7ba3ef] bg-[#6f93ea] px-4 py-3 text-white sm:px-5">
+    <header className="relative z-20 border-b border-slate-200/80 bg-white/88 px-4 py-4 text-slate-900 backdrop-blur dark:border-slate-700 dark:bg-[#16233c]/90 dark:text-white sm:px-6">
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={onMenuClick}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/30 bg-white/15 text-white hover:bg-white/25 lg:hidden"
-          aria-label="Open menu"
-        >
-          <span className="flex w-5 flex-col gap-1" aria-hidden="true">
-            <span className="h-0.5 rounded-full bg-current" />
-            <span className="h-0.5 rounded-full bg-current" />
-            <span className="h-0.5 rounded-full bg-current" />
-          </span>
-        </button>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onMenuClick}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-white dark:border-slate-600 dark:bg-slate-800 dark:text-white lg:hidden"
+              aria-label="Open menu"
+            >
+              <MenuIcon />
+            </button>
 
-        <div>
-          <h1 className="text-base font-bold text-white sm:text-lg">
-            IT Equipment Management
-          </h1>
-
-          <p className="hidden text-xs text-blue-100/90 sm:block">
-            Assets, purchases, deliveries and reports
-          </p>
-        </div>
-      </div>
-
-        <div className="flex items-center gap-2 xl:hidden">
-          <button
-            type="button"
-            onClick={() => setShowNotifications((value) => !value)}
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/30 bg-white/15 text-sm font-bold text-white hover:bg-white/25"
-            aria-label="Open notifications"
-          >
-            <BellIcon />
-          </button>
-          <button
-            type="button"
-            onClick={toggleDarkMode}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/30 bg-white/15 text-sm font-bold text-white hover:bg-white/25"
-            aria-label="Toggle dark mode"
-          >
-            <ThemeIcon isDarkMode={isDarkMode} />
-          </button>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
-        <form onSubmit={handleSearchSubmit} className="w-full xl:w-[360px]">
-          <input
-            type="search"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search asset, WO, vendor, transfer..."
-            className="w-full rounded-full border border-white/55 bg-white px-4 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-white focus:bg-white"
-          />
-        </form>
-
-        <div className="relative hidden xl:block">
-          <button
-            type="button"
-            onClick={() => setShowNotifications((value) => !value)}
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/30 bg-white/15 text-sm font-bold text-white hover:bg-white/25"
-            aria-label="Open notifications"
-          >
-            <BellIcon />
-          </button>
-        </div>
-
-        <button
-          type="button"
-          onClick={toggleDarkMode}
-          className="hidden h-10 w-10 items-center justify-center rounded-2xl border border-white/30 bg-white/15 text-sm font-bold text-white hover:bg-white/25 xl:inline-flex"
-          aria-label="Toggle dark mode"
-        >
-          <ThemeIcon isDarkMode={isDarkMode} />
-        </button>
-
-      <div className="flex items-center justify-between gap-3 xl:justify-end">
-        <div className="hidden text-right sm:block">
-          <div className="flex items-center justify-end gap-2">
-            <p className="text-sm font-semibold text-white">
-              {currentUser?.fullName || "IT Department"}
-            </p>
-
-            {isSuperAdmin && (
-              <span className="rounded-full border border-white/35 bg-white/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-                Super Admin
-              </span>
-            )}
+            <div className="hidden sm:block" />
           </div>
 
-          <p className="text-xs text-blue-100/90">
-            {currentUser?.role || "Admin Panel"}
-          </p>
+          <div className="flex items-center gap-2 xl:hidden">
+            <button
+              type="button"
+              onClick={() => setShowNotifications((value) => !value)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-500 hover:bg-white dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+              aria-label="Open notifications"
+            >
+              <BellIcon />
+            </button>
+          </div>
         </div>
 
-        <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-white text-sm font-bold text-[#5b70c9] shadow-sm">
-          {getInitials(currentUser?.fullName)}
-        </div>
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+          <form onSubmit={handleSearchSubmit} className="w-full xl:w-[360px]">
+            <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-[#fbfcff] px-4 py-2.5 text-slate-700 shadow-[0_10px_30px_rgba(59,87,148,0.08)] dark:border-slate-600 dark:bg-[#10203f] dark:text-slate-100">
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4 text-slate-400 dark:text-slate-300"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+              <input
+                type="search"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search asset, WO, vendor, transfer..."
+                className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400 dark:placeholder:text-slate-400"
+              />
+            </div>
+          </form>
 
-        {onLogout && (
-          <button
-            type="button"
-            onClick={onLogout}
-            className="hidden rounded-2xl border border-white/30 bg-white/15 px-3 py-2 text-xs font-semibold text-white hover:bg-white/25 md:inline-flex"
-          >
-            Logout
-          </button>
-        )}
-      </div>
+          <div className="hidden items-center gap-2 xl:flex">
+            <button
+              type="button"
+              onClick={() => setShowNotifications((value) => !value)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-500 hover:bg-white dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+              aria-label="Open notifications"
+            >
+              <BellIcon />
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between gap-3 xl:justify-end">
+            <div className="hidden text-right sm:block">
+              <div className="flex items-center justify-end gap-2">
+                <p className="text-sm font-semibold text-slate-700 dark:text-white">
+                  {currentUser?.fullName || "IT Department"}
+                </p>
+                {isSuperAdmin && (
+                  <span className="rounded-full bg-[#f3ecff] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#6a35ef] dark:bg-white/10 dark:text-white">
+                    Super Admin
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-400 dark:text-slate-300">
+                {currentUser?.role || "Admin Panel"}
+              </p>
+            </div>
+
+            <div className="grid h-12 w-12 place-items-center rounded-full bg-[linear-gradient(135deg,#7c3aed_0%,#5b34f2_100%)] text-base font-bold text-white shadow-[0_12px_30px_rgba(54,78,138,0.16)] dark:bg-[#edf3ff] dark:text-[#5b73d9]">
+              {getInitials(currentUser?.fullName, currentUser?.email)}
+            </div>
+
+            {onLogout && (
+              <button
+                type="button"
+                onClick={onLogout}
+                className="hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-white dark:border-slate-600 dark:bg-slate-800 dark:text-white md:inline-flex"
+              >
+                Logout
+              </button>
+            )}
+          </div>
+        </div>
       </div>
 
       {showNotifications && (
-        <div className="mt-3 rounded-[24px] border border-[#d7e3fb] bg-white p-3 text-slate-900 shadow-[0_24px_60px_rgba(92,117,174,0.2)] xl:absolute xl:right-28 xl:top-16 xl:mt-0 xl:w-96">
+        <div className="mt-3 rounded-[24px] border border-[#d8e3fb] bg-white p-3 text-slate-900 shadow-[0_22px_54px_rgba(87,111,168,0.16)] dark:border-[#38517e] dark:bg-[#162440] dark:text-white xl:absolute xl:right-6 xl:top-[84px] xl:mt-0 xl:w-96">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-950">Notifications</h2>
+            <h2 className="text-sm font-bold">Notifications</h2>
             <button
               type="button"
               onClick={() => setShowNotifications(false)}
-              className="text-xs font-semibold text-slate-500 hover:text-slate-950"
+              className="text-xs font-semibold text-slate-500 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
             >
               Close
             </button>
@@ -256,31 +216,30 @@ export default function Header({
 
           <div className="mt-3 space-y-2">
             {visibleNotifications.length === 0 ? (
-              <p className="rounded-2xl border border-slate-100 bg-slate-50 p-3 text-sm text-slate-500">
+              <p className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-500 dark:bg-[#10203b] dark:text-slate-300">
                 No quick notifications are available for your current role.
               </p>
             ) : (
               visibleNotifications.map((item) => (
-              <button
-                key={item.title}
-                type="button"
-                onClick={() => {
-                  setShowNotifications(false);
-                  router.push(item.href);
-                }}
-                className="w-full rounded-2xl border border-slate-100 bg-slate-50 p-3 text-left hover:bg-white"
-              >
-                <p className="text-sm font-semibold text-slate-950">
-                  {item.title}
-                </p>
-                <p className="mt-1 text-xs text-slate-500">{item.detail}</p>
-              </button>
+                <button
+                  key={item.title}
+                  type="button"
+                  onClick={() => {
+                    setShowNotifications(false);
+                    router.push(item.href);
+                  }}
+                  className="w-full rounded-2xl border border-[#e7eefc] bg-[#f8fbff] p-3 text-left hover:bg-white dark:border-[#304568] dark:bg-[#10203b] dark:hover:bg-[#152847]"
+                >
+                  <p className="text-sm font-semibold">{item.title}</p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-300">
+                    {item.detail}
+                  </p>
+                </button>
               ))
             )}
           </div>
         </div>
       )}
-      </div>
     </header>
   );
 }

@@ -27,11 +27,11 @@ function formatDate(dateValue) {
 
 function DetailItem({ label, value }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:shadow-none">
-      <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+    <div className="rounded-2xl border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
+      <p className="text-[11px] font-bold uppercase tracking-wide text-[#8fa4c7]">
         {label}
       </p>
-      <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
+      <p className="mt-2 text-sm font-semibold text-white">
         {value || "-"}
       </p>
     </div>
@@ -98,7 +98,6 @@ export default function ProfilePage() {
     <LayoutWrapper>
       <PageHeader
         title="Profile"
-        description="View your account details, role, department and access summary."
       />
 
       {!hasSession && (
@@ -110,16 +109,16 @@ export default function ProfilePage() {
         </div>
       )}
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
-        <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
+      <section className="rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-5 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
+        <div className="flex flex-col gap-4 border-b border-[#2c3f63] pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            <p className="text-sm font-medium text-[#8fa4c7]">
               {profile.department || "IT Department"}
             </p>
-            <h2 className="mt-1 text-2xl font-bold text-slate-950 dark:text-slate-100">
+            <h2 className="mt-1 text-2xl font-bold text-white">
               {profile.fullName}
             </h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{profile.email}</p>
+            <p className="mt-1 text-sm text-[#b8c7e6]">{profile.email}</p>
           </div>
 
           <span className="inline-flex w-fit rounded-full border border-green-200 bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
@@ -143,29 +142,29 @@ export default function ProfilePage() {
       </section>
 
       <section className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950 lg:col-span-2">
-          <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">Access Areas</h2>
+        <div className="rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)] lg:col-span-2">
+          <h2 className="text-lg font-bold text-white">Access Areas</h2>
 
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {accessAreas.map((area) => (
               <div
                 key={area}
-                className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900"
+                className="rounded-2xl border border-[#314666] bg-[#101a2b] p-3"
               >
-                <p className="text-sm font-semibold text-slate-950 dark:text-slate-100">{area}</p>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Allowed by role</p>
+                <p className="text-sm font-semibold text-white">{area}</p>
+                <p className="mt-1 text-xs text-[#8fa4c7]">Allowed by role</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
-          <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">Security Summary</h2>
+        <div className="rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
+          <h2 className="text-lg font-bold text-white">Security Summary</h2>
 
           <div className="mt-4 space-y-3 text-sm">
             {securityItems.map((item) => (
-              <div key={item.label} className="flex justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-800 dark:bg-slate-900">
-                <span className="text-slate-600 dark:text-slate-400">{item.label}</span>
+              <div key={item.label} className="flex justify-between rounded-2xl border border-[#314666] bg-[#101a2b] px-3 py-2">
+                <span className="text-[#b8c7e6]">{item.label}</span>
                 <span className="font-semibold text-green-700">{item.value}</span>
               </div>
             ))}

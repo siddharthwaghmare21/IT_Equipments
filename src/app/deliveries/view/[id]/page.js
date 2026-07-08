@@ -122,7 +122,7 @@ export default function ViewDeliveryPage() {
         description="View department-wise equipment delivery information, receiver details and acknowledgement status."
       />
 
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="no-print mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <BackButton href="/deliveries" label="Deliveries" />
 
         {delivery && (

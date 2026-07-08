@@ -24,26 +24,25 @@ export default function PageHeader({
   buttonHref,
 }) {
   return (
-    <div className="mb-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-xl font-bold text-slate-950 dark:text-slate-100 sm:text-2xl">
+    <div className="no-print mb-4 rounded-[28px] border border-[#2c3f63] bg-[#18253d] px-5 py-4 shadow-[0_22px_48px_rgba(6,12,24,0.22)]">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-[1.85rem] font-bold text-white">
             {title}
-          </h1>
+            </h1>
+          </div>
         </div>
 
-      </div>
-
-      {buttonText && buttonHref && (
-        <Link
-          href={buttonHref}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-indigo-700 hover:to-violet-700 sm:w-auto"
-        >
-          <HeaderActionIcon />
-          {buttonText}
-        </Link>
-      )}
+        {buttonText && buttonHref && (
+          <Link
+            href={buttonHref}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(83,104,183,0.2)] hover:from-[#5c33dd] hover:to-[#7c4cf4] sm:w-auto"
+          >
+            <HeaderActionIcon />
+            {buttonText}
+          </Link>
+        )}
       </div>
     </div>
   );

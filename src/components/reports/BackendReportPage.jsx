@@ -77,11 +77,8 @@ export default function BackendReportPage({
   return (
     <ReportPageShell
       title={title}
-      description={description}
       data={records}
       fileName={fileName}
-      sourceLabel="MySQL live report API"
-      backendStatus="Connected"
     >
       {isLoading ? (
         <LoadingState

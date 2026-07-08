@@ -126,7 +126,6 @@ export default function MaintenancePage() {
     <LayoutWrapper>
       <PageHeader
         title="Maintenance"
-        description="Manage asset repair, servicing, issue tracking, vendor support and maintenance status."
       />
 
       <PageActionBar
@@ -152,14 +151,14 @@ export default function MaintenancePage() {
         />
       ) : (
         <>
-          <section className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+          <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <input
                 type="text"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search by code, asset, issue, vendor, priority or status..."
-                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 lg:max-w-md"
+                className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-md"
               />
 
               <div className="flex gap-2 overflow-x-auto pb-1">
@@ -168,10 +167,10 @@ export default function MaintenancePage() {
                     key={filter}
                     type="button"
                     onClick={() => setActiveFilter(filter)}
-                    className={`h-10 whitespace-nowrap rounded-lg border px-4 text-sm font-medium ${
+                    className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                       activeFilter === filter
-                        ? "border-indigo-600 bg-indigo-600 text-white"
-                        : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-900"
+                        ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
+                        : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
                     }`}
                   >
                     {filter}
@@ -205,73 +204,73 @@ export default function MaintenancePage() {
           <div className="hidden md:block">
             <TableWrapper>
               <table className="min-w-[1450px] w-full text-sm">
-                <thead className="bg-slate-50 text-left dark:bg-slate-900">
-                  <tr className="border-b border-slate-200 dark:border-slate-800">
-                    <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+                <thead className="bg-[#101a2b] text-left">
+                  <tr className="border-b border-[#263754]">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Maintenance Code
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Asset
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Issue Type
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Vendor
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Priority
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Service Date
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Cost
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Approval
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-right font-semibold text-slate-700 dark:text-slate-200">
+                    <th className="px-4 py-3 text-right font-semibold text-[#8fa4c7]">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-[#263754] bg-[#18253d]">
                   {filteredMaintenanceRecords.map((record) => (
                     <tr
                       key={record.id}
-                      className="border-b border-slate-100 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
+                      className="hover:bg-[#1f2f4a]"
                     >
-                      <td className="px-4 py-4 font-semibold text-slate-900 dark:text-slate-100">
+                      <td className="px-4 py-4 font-semibold text-white">
                         {record.maintenanceCode}
                       </td>
-                      <td className="px-4 py-4 text-slate-700 dark:text-slate-300">
-                        <p className="font-medium text-slate-900 dark:text-slate-100">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
+                        <p className="font-medium text-white">
                           {record.assetTag}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                        <p className="text-xs text-[#8fa4c7]">
                           {record.assetName || "-"}
                         </p>
                       </td>
-                      <td className="px-4 py-4 text-slate-700 dark:text-slate-300">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {record.issueType}
                       </td>
-                      <td className="px-4 py-4 text-slate-700 dark:text-slate-300">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {record.vendorName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700 dark:text-slate-300">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {record.priority}
                       </td>
-                      <td className="px-4 py-4 text-slate-700 dark:text-slate-300">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {record.serviceDate || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700 dark:text-slate-300">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {formatMaintenanceCurrency(record.maintenanceCost)}
                       </td>
-                      <td className="px-4 py-4 text-slate-700 dark:text-slate-300">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {record.approvalStatus}
                       </td>
                       <td className="px-4 py-4">
@@ -303,7 +302,7 @@ export default function MaintenancePage() {
       )}
 
       <ConfirmDialog
-        open={Boolean(cancelTarget)}
+        isOpen={Boolean(cancelTarget)}
         title="Cancel maintenance record?"
         description={`This will mark ${
           cancelTarget?.maintenanceCode || "this maintenance record"

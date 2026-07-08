@@ -2,6 +2,7 @@
 
 export default function ConfirmDialog({
   isOpen,
+  open,
   title,
   description,
   confirmLabel = "Confirm",
@@ -10,7 +11,9 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
 }) {
-  if (!isOpen) return null;
+  const resolvedOpen = isOpen ?? open ?? false;
+
+  if (!resolvedOpen) return null;
 
   const confirmClass =
     tone === "danger"

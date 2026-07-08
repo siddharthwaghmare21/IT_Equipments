@@ -198,17 +198,16 @@ export default function SearchPage() {
     <LayoutWrapper>
       <PageHeader
         title="Search"
-        description="Search across assets, work orders, vendors, deliveries, transfers, maintenance and reports."
       />
 
-      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+      <section className="mb-6 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
         <div className="flex flex-col gap-4">
           <input
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search asset tag, WO, vendor, receiver, transfer, maintenance or report..."
-            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
+            className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3]"
           />
 
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -217,10 +216,10 @@ export default function SearchPage() {
                 key={filter}
                 type="button"
                 onClick={() => setTypeFilter(filter)}
-                className={`whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-semibold ${
+                className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                   typeFilter === filter
-                    ? "border-gray-900 bg-gray-900 text-white"
-                    : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
+                    ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
+                    : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
                 }`}
               >
                 {filter}
@@ -253,15 +252,15 @@ export default function SearchPage() {
               key={`${result.type}-${result.title}`}
               type="button"
               onClick={() => router.push(result.href)}
-              className="rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm hover:border-gray-300 hover:bg-gray-50"
+              className="rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-5 text-left shadow-[0_18px_38px_rgba(6,12,24,0.14)] hover:bg-[#1f2f4a]"
             >
-              <span className="inline-flex rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-bold text-gray-700">
+              <span className="inline-flex rounded-full border border-[#314666] bg-[#101a2b] px-3 py-1 text-xs font-bold text-[#b8c7e6]">
                 {result.type}
               </span>
-              <h2 className="mt-3 text-lg font-bold text-gray-900">
+              <h2 className="mt-3 text-lg font-bold text-white">
                 {result.title}
               </h2>
-              <p className="mt-2 text-sm leading-6 text-gray-600">
+              <p className="mt-2 text-sm leading-6 text-[#b8c7e6]">
                 {result.detail}
               </p>
             </button>

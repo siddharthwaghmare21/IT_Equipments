@@ -56,8 +56,13 @@ export function EmptyState({
 export function ErrorState({
   title = "Something went wrong",
   description = "Please try again.",
+  actionLabel,
+  onAction,
   onRetry,
 }) {
+  const resolvedOnRetry = onRetry || onAction;
+  const resolvedLabel = actionLabel || "Retry";
+
   return (
     <div className="rounded-lg border border-red-200 bg-red-50 p-8 text-center shadow-sm dark:border-red-900 dark:bg-red-950">
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-lg border border-red-200 bg-white text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
@@ -78,13 +83,13 @@ export function ErrorState({
       </div>
       <h2 className="mt-4 text-base font-bold text-red-800">{title}</h2>
       <p className="mt-2 text-sm leading-6 text-red-700">{description}</p>
-      {onRetry && (
+      {resolvedOnRetry && (
         <button
           type="button"
-          onClick={onRetry}
+          onClick={resolvedOnRetry}
           className="mt-4 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
         >
-          Retry
+          {resolvedLabel}
         </button>
       )}
     </div>

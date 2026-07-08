@@ -164,7 +164,7 @@ export default function ViewAssetPage() {
         description="View complete information about this IT asset, specifications, delivery and warranty status."
       />
 
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="no-print mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <BackButton href="/assets" label="Assets" />
 
         <Link

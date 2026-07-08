@@ -118,7 +118,6 @@ export default function DeliveriesPage() {
     <LayoutWrapper>
       <PageHeader
         title="Deliveries"
-        description="Track department-wise IT equipment delivery records, receiver details and acknowledgement status."
       />
 
       <PageActionBar
@@ -144,14 +143,14 @@ export default function DeliveriesPage() {
         />
       ) : (
         <>
-          <section className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+          <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <input
                 type="text"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search by delivery code, asset tag, asset name, receiver or department..."
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white lg:max-w-md"
+                className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-md"
               />
 
               <div className="flex gap-2 overflow-x-auto pb-1">
@@ -160,10 +159,10 @@ export default function DeliveriesPage() {
                     key={filter}
                     type="button"
                     onClick={() => setActiveFilter(filter)}
-                    className={`whitespace-nowrap rounded-lg border px-4 py-2 text-sm font-semibold ${
+                    className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                       activeFilter === filter
-                        ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
-                        : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-white"
+                        ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
+                        : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
                     }`}
                   >
                     {filter}
@@ -197,68 +196,68 @@ export default function DeliveriesPage() {
           <div className="hidden md:block">
             <TableWrapper>
               <table className="min-w-[1280px] w-full text-sm">
-                <thead className="bg-slate-50 text-left">
-                  <tr className="border-b border-slate-200">
-                    <th className="px-4 py-3 font-semibold text-slate-700">
+                <thead className="bg-[#101a2b] text-left">
+                  <tr className="border-b border-[#263754]">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Delivery Code
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Asset
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Receiver
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Department
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Delivered By
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Delivery Date
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Acknowledgement
                     </th>
-                    <th className="px-4 py-3 font-semibold text-slate-700">
+                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-right font-semibold text-slate-700">
+                    <th className="px-4 py-3 text-right font-semibold text-[#8fa4c7]">
                       Actions
                     </th>
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody className="divide-y divide-[#263754] bg-[#18253d]">
                   {filteredDeliveries.map((delivery) => (
                     <tr
                       key={delivery.id}
-                      className="border-b border-slate-100 hover:bg-slate-50"
+                      className="hover:bg-[#1f2f4a]"
                     >
-                      <td className="px-4 py-4 font-semibold text-slate-950">
+                      <td className="px-4 py-4 font-semibold text-white">
                         {delivery.deliveryCode}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
-                        <p className="font-medium text-slate-950">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
+                        <p className="font-medium text-white">
                           {delivery.assetTag || "-"}
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-[#8fa4c7]">
                           {delivery.assetName || "-"}
                         </p>
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {delivery.receiverName}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {delivery.departmentName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {delivery.deliveredByName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {delivery.deliveryDate}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {delivery.acknowledgementStatus}
                       </td>
                       <td className="px-4 py-4">
@@ -288,7 +287,7 @@ export default function DeliveriesPage() {
       )}
 
       <ConfirmDialog
-        open={Boolean(cancelTarget)}
+        isOpen={Boolean(cancelTarget)}
         title="Cancel delivery?"
         description={`This will mark ${
           cancelTarget?.deliveryCode || "this delivery"

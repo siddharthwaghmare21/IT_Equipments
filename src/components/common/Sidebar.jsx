@@ -5,23 +5,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sidebarLinks } from "@/data/sidebarLinks";
 import { canAccessSidebarPath } from "@/lib/rbac";
+import AppLogoMark from "./AppLogoMark";
 
 const SIDEBAR_SCROLL_KEY = "itAssetSidebarScroll";
 
 const accessManagementLinks = [
-  {
-    label: "Admin Request Management",
-    path: "/admin-request-management",
-    short: "AR",
-  },
+  { label: "Admin Request Management", path: "/admin-request-management" },
 ];
 
 const superAdminOnlyLinks = [
-  {
-    label: "Admin Users Management",
-    path: "/admin-user-management",
-    short: "AU",
-  },
+  { label: "Admin Users Management", path: "/admin-user-management" },
 ];
 
 function SidebarIcon({ path }) {
@@ -46,8 +39,6 @@ function SidebarIcon({ path }) {
       <>
         <path d="M4 20V8l8-4 8 4v12" />
         <path d="M9 20v-6h6v6" />
-        <path d="M8 10h.01" />
-        <path d="M16 10h.01" />
       </>
     ),
     "/assets": (
@@ -61,17 +52,12 @@ function SidebarIcon({ path }) {
       <>
         <path d="M4 21V5h7v16" />
         <path d="M11 9h9v12" />
-        <path d="M7 9h1" />
-        <path d="M7 13h1" />
-        <path d="M15 13h1" />
       </>
     ),
     "/deliveries": (
       <>
         <path d="M3 7h11v10H3z" />
         <path d="M14 11h4l3 3v3h-7" />
-        <circle cx="7" cy="18" r="2" />
-        <circle cx="18" cy="18" r="2" />
       </>
     ),
     "/transfers": (
@@ -92,7 +78,6 @@ function SidebarIcon({ path }) {
       <>
         <path d="m14.7 6.3 3 3" />
         <path d="M4 20l6.5-6.5" />
-        <path d="M13 7a4 4 0 0 1 5.5-3.7l-3 3 2.2 2.2 3-3A4 4 0 0 1 17 11" />
       </>
     ),
     "/reports": (
@@ -120,8 +105,6 @@ function SidebarIcon({ path }) {
       <>
         <path d="M16 21v-2a4 4 0 0 0-8 0v2" />
         <circle cx="12" cy="7" r="4" />
-        <path d="M19 8v4" />
-        <path d="M21 10h-4" />
       </>
     ),
     "/settings": (
@@ -140,7 +123,6 @@ function SidebarIcon({ path }) {
       <>
         <circle cx="12" cy="12" r="9" />
         <path d="M9.5 9a2.5 2.5 0 1 1 4.1 1.9c-.9.6-1.6 1.1-1.6 2.1" />
-        <path d="M12 17h.01" />
       </>
     ),
   };
@@ -188,14 +170,7 @@ export default function Sidebar({
     {
       title: "Asset Lifecycle",
       links: visibleSidebarLinks.filter((link) =>
-        [
-          "/assets",
-          "/departments",
-          "/deliveries",
-          "/transfers",
-          "/returns",
-          "/maintenance",
-        ].includes(link.path)
+        ["/assets", "/departments", "/deliveries", "/transfers", "/returns", "/maintenance"].includes(link.path)
       ),
     },
     {
@@ -222,34 +197,23 @@ export default function Sidebar({
   useEffect(() => {
     const navElement = navRef.current;
     const savedScroll = Number(sessionStorage.getItem(SIDEBAR_SCROLL_KEY) || 0);
-
-    if (navElement) {
-      navElement.scrollTop = savedScroll;
-    }
+    if (navElement) navElement.scrollTop = savedScroll;
   }, [pathname]);
 
   function handleSidebarScroll(event) {
-    sessionStorage.setItem(
-      SIDEBAR_SCROLL_KEY,
-      String(event.currentTarget.scrollTop)
-    );
+    sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(event.currentTarget.scrollTop));
   }
 
   return (
-    <aside className="flex h-full w-[252px] flex-col bg-[linear-gradient(180deg,#3024f0_0%,#4f34f1_55%,#5d41f5_100%)] text-white">
-      <div className="flex h-[66px] items-center justify-between border-b border-white/12 px-5">
-        <div>
-          <h2 className="text-lg font-bold">IT Assets</h2>
-          <p className="text-xs text-white/70">
-            Management System
-          </p>
-        </div>
+    <aside className="flex h-full w-[260px] flex-col border-r border-slate-200/80 bg-white/85 text-slate-900 backdrop-blur dark:border-slate-700 dark:bg-[#16233c] dark:text-white">
+      <div className="flex items-start justify-between px-5 py-6">
+        <AppLogoMark />
 
         {!isPersistent && (
           <button
             type="button"
             onClick={onClose}
-            className="h-9 w-9 rounded-2xl border border-white/20 text-white hover:bg-white/10"
+            className="mt-1 inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-white dark:border-slate-600 dark:bg-slate-800 dark:text-white"
             aria-label="Close menu"
           >
             x
@@ -260,47 +224,49 @@ export default function Sidebar({
       <nav
         ref={navRef}
         onScroll={handleSidebarScroll}
-        className="flex-1 space-y-1 overflow-y-auto px-4 py-5"
+        className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4"
       >
         {groupedLinks.map((group) => (
-          <div key={group.title} className="space-y-1.5">
-            <p className="px-3 pt-3 text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">
+          <div key={group.title}>
+            <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-400">
               {group.title}
             </p>
 
-            {group.links.map((link) => {
-              const isActive =
-                pathname === link.path || pathname.startsWith(`${link.path}/`);
+            <div className="mt-2 space-y-1.5">
+              {group.links.map((link) => {
+                const isActive =
+                  pathname === link.path || pathname.startsWith(`${link.path}/`);
 
-              return (
-                <Link
-                  key={link.path}
-                  href={link.path}
-                  onClick={isPersistent ? undefined : onClose}
-                  className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm transition ${
-                    isActive
-                      ? "bg-white/18 font-semibold text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]"
-                      : "text-white/80 hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  <span
-                    className={`flex h-9 w-9 items-center justify-center rounded-2xl ${
+                return (
+                  <Link
+                    key={link.path}
+                    href={link.path}
+                    onClick={isPersistent ? undefined : onClose}
+                    className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm transition ${
                       isActive
-                        ? "bg-white text-[#4f41ef]"
-                        : "bg-white/10 text-white/90"
+                        ? "bg-gradient-to-r from-[#7c3aed] to-[#5b34f2] text-white shadow-[0_14px_30px_rgba(101,74,204,0.25)]"
+                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                     }`}
                   >
-                    <SidebarIcon path={link.path} />
-                  </span>
-
-                  <span>{link.label}</span>
-                </Link>
-              );
-            })}
+                    <span
+                      className={`flex h-10 w-10 items-center justify-center rounded-2xl ${
+                        isActive
+                          ? "bg-white/20 text-white"
+                          : "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-300"
+                      }`}
+                    >
+                      <SidebarIcon path={link.path} />
+                    </span>
+                    <span className={isActive ? "font-semibold" : "font-medium"}>
+                      {link.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         ))}
       </nav>
-
     </aside>
   );
 }

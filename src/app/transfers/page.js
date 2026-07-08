@@ -131,7 +131,6 @@ export default function TransfersPage() {
     <LayoutWrapper>
       <PageHeader
         title="Transfers"
-        description="Manage department transfers, IT collection and reassignment of issued IT assets."
       />
 
       <PageActionBar
@@ -157,7 +156,7 @@ export default function TransfersPage() {
         />
       ) : (
         <>
-          <section className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+          <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
             <div className="flex flex-col gap-3">
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {workflowTabs.map((tab) => (
@@ -165,10 +164,10 @@ export default function TransfersPage() {
                     key={tab}
                     type="button"
                     onClick={() => setActiveWorkflow(tab)}
-                    className={`whitespace-nowrap rounded-lg border px-4 py-2 text-sm font-semibold ${
+                    className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                       activeWorkflow === tab
-                        ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
-                        : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-white"
+                        ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
+                        : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
                     }`}
                   >
                     {tab}
@@ -182,13 +181,13 @@ export default function TransfersPage() {
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   placeholder="Search transfer code, asset, department, receiver, reason or status..."
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white lg:max-w-lg"
+                  className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-lg"
                 />
 
                 <select
                   value={activeStatus}
                   onChange={(event) => setActiveStatus(event.target.value)}
-                  className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
+                  className="rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
                 >
                   {statusFilters.map((status) => (
                     <option key={status} value={status}>
@@ -224,8 +223,8 @@ export default function TransfersPage() {
           <div className="hidden md:block">
             <TableWrapper>
               <table className="min-w-[1600px] w-full text-sm">
-                <thead className="bg-slate-50 text-left">
-                  <tr className="border-b border-slate-200">
+                <thead className="bg-[#101a2b] text-left">
+                  <tr className="border-b border-[#263754]">
                     {[
                       "Transfer Code",
                       "Type",
@@ -244,7 +243,7 @@ export default function TransfersPage() {
                     ].map((heading) => (
                       <th
                         key={heading}
-                        className="px-4 py-3 font-semibold text-slate-700"
+                        className="px-4 py-3 font-semibold text-[#8fa4c7]"
                       >
                         {heading}
                       </th>
@@ -252,51 +251,51 @@ export default function TransfersPage() {
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody className="divide-y divide-[#263754] bg-[#18253d]">
                   {filteredTransfers.map((transfer) => (
                     <tr
                       key={transfer.id}
-                      className="border-b border-slate-100 hover:bg-slate-50"
+                      className="hover:bg-[#1f2f4a]"
                     >
-                      <td className="px-4 py-4 font-semibold text-slate-950">
+                      <td className="px-4 py-4 font-semibold text-white">
                         {transfer.transferCode}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {transfer.transferType}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
-                        <p className="font-medium text-slate-950">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
+                        <p className="font-medium text-white">
                           {transfer.assetTag}
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-[#8fa4c7]">
                           {transfer.assetName || "-"}
                         </p>
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {transfer.fromDepartmentName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {transfer.toDepartmentName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {transfer.currentReceiverName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {transfer.newReceiverName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {transfer.transferReason || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {transfer.conditionAtTransfer}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {transfer.collectedByName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {transfer.issueDate || "-"}
                       </td>
-                      <td className="px-4 py-4 text-slate-700">
+                      <td className="px-4 py-4 text-[#c8d4ec]">
                         {transfer.newAcknowledgement}
                       </td>
                       <td className="px-4 py-4">

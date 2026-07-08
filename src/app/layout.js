@@ -17,11 +17,10 @@ export default function RootLayout({ children }) {
             __html: `
               (function () {
                 try {
-                  var savedTheme = localStorage.getItem("itAssetTheme");
-                  var shouldUseDark = savedTheme === "dark";
-                  document.documentElement.classList.toggle("dark", shouldUseDark);
+                  document.documentElement.classList.add("dark");
+                  localStorage.setItem("itAssetTheme", "dark");
                 } catch (error) {
-                  document.documentElement.classList.remove("dark");
+                  document.documentElement.classList.add("dark");
                 }
               })();
             `,

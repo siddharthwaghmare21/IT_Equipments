@@ -135,7 +135,6 @@ export default function VendorsPage() {
     <LayoutWrapper>
       <PageHeader
         title="Vendors"
-        description="Manage IT equipment suppliers, contact details, compliance status and purchase sources."
       />
 
       <PageActionBar
@@ -147,14 +146,14 @@ export default function VendorsPage() {
         printDescription="Official vendor register generated from the current filtered vendor records."
       />
 
-      <section className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+      <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <input
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by vendor, GST, payment terms, category, compliance or status..."
-            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white xl:max-w-md"
+            className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] xl:max-w-md"
           />
 
           <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
@@ -164,10 +163,10 @@ export default function VendorsPage() {
                   key={filter}
                   type="button"
                   onClick={() => setActiveFilter(filter)}
-                  className={`whitespace-nowrap rounded-lg border px-4 py-2 text-sm font-semibold ${
+                  className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                     activeFilter === filter
-                      ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
-                      : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-white"
+                      ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
+                      : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
                   }`}
                 >
                   {filter}
@@ -181,10 +180,10 @@ export default function VendorsPage() {
                   key={filter}
                   type="button"
                   onClick={() => setComplianceFilter(filter)}
-                  className={`whitespace-nowrap rounded-lg border px-4 py-2 text-sm font-semibold ${
+                  className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                     complianceFilter === filter
-                      ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
-                      : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-white"
+                      ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
+                      : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
                   }`}
                 >
                   {filter}
@@ -213,79 +212,79 @@ export default function VendorsPage() {
       {!isLoading && !error && (
         <TableWrapper>
           <table className="min-w-[1280px] w-full text-sm">
-            <thead className="bg-slate-50 text-left">
-              <tr className="border-b border-slate-200">
-                <th className="px-4 py-3 font-semibold text-slate-700">
+            <thead className="bg-[#101a2b] text-left">
+              <tr className="border-b border-[#263754]">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   Vendor Code
                 </th>
-                <th className="px-4 py-3 font-semibold text-slate-700">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   Vendor Name
                 </th>
-                <th className="px-4 py-3 font-semibold text-slate-700">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   Contact Person
                 </th>
-                <th className="px-4 py-3 font-semibold text-slate-700">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   Phone
                 </th>
-                <th className="px-4 py-3 font-semibold text-slate-700">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   Email
                 </th>
-                <th className="px-4 py-3 font-semibold text-slate-700">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   Service Category
                 </th>
-                <th className="px-4 py-3 font-semibold text-slate-700">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   GST
                 </th>
-                <th className="px-4 py-3 font-semibold text-slate-700">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   Payment Terms
                 </th>
-                <th className="px-4 py-3 font-semibold text-slate-700">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   Compliance
                 </th>
-                <th className="px-4 py-3 font-semibold text-slate-700">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   Status
                 </th>
-                <th className="px-4 py-3 font-semibold text-slate-700">
+                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
                   Actions
                 </th>
               </tr>
             </thead>
 
-            <tbody>
+            <tbody className="divide-y divide-[#263754] bg-[#18253d]">
               {filteredVendors.map((vendor) => (
                 <tr
                   key={vendor.id}
-                  className="border-b border-slate-100 hover:bg-slate-50"
+                  className="hover:bg-[#1f2f4a]"
                 >
-                  <td className="px-4 py-4 font-semibold text-slate-950">
+                  <td className="px-4 py-4 font-semibold text-white">
                     {vendor.vendorCode}
                   </td>
 
-                  <td className="px-4 py-4 text-slate-700">
+                  <td className="px-4 py-4 text-[#c8d4ec]">
                     {vendor.vendorName}
                   </td>
 
-                  <td className="px-4 py-4 text-slate-700">
+                  <td className="px-4 py-4 text-[#c8d4ec]">
                     {vendor.contactPerson || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-slate-700">
+                  <td className="px-4 py-4 text-[#c8d4ec]">
                     {vendor.phone || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-slate-700">
+                  <td className="px-4 py-4 text-[#c8d4ec]">
                     {vendor.email || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-slate-700">
+                  <td className="px-4 py-4 text-[#c8d4ec]">
                     {vendor.serviceCategory || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-slate-700">
+                  <td className="px-4 py-4 text-[#c8d4ec]">
                     {vendor.gstNumber || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-slate-700">
+                  <td className="px-4 py-4 text-[#c8d4ec]">
                     {vendor.paymentTerms || "-"}
                   </td>
 

@@ -25,10 +25,7 @@ export default function ProfessionalPrintDocument({
   labelCard = null,
   detailSections = null,
   fileName = "records",
-  printFormat = "a4-portrait",
 }) {
-  const reportId = `${fileName.toUpperCase()}-2026`;
-
   const columns = useMemo(() => {
     const firstRecord = data[0] || {};
     return Object.keys(firstRecord)
@@ -37,9 +34,9 @@ export default function ProfessionalPrintDocument({
   }, [data]);
   return (
     <section
-      className={`print-only print-area report-document report-format-${printFormat} overflow-hidden border border-gray-200 bg-white shadow-sm`}
+      className="print-only print-root print-area report-document overflow-hidden border border-gray-200 bg-white shadow-sm"
     >
-      <header className="report-letterhead border-b-2 border-gray-900 bg-white px-5 py-4">
+      <header className="report-letterhead border-b border-gray-300 bg-white px-5 py-4">
         <h1 className="text-2xl font-bold text-gray-950">{title}</h1>
       </header>
 
@@ -168,11 +165,8 @@ export default function ProfessionalPrintDocument({
         </section>
       </div>
 
-      <footer className="report-footer border-t border-gray-300 bg-gray-50 px-5 py-3 text-xs text-gray-600">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-semibold">Report ID: {reportId}</p>
-          <p className="font-semibold">Page 1</p>
-        </div>
+      <footer className="report-footer border-t border-gray-300 bg-gray-50 px-5 py-3 text-right text-xs text-gray-600">
+        <p className="font-semibold">Page 1</p>
       </footer>
     </section>
   );

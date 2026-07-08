@@ -104,35 +104,6 @@ export default function PurchasesPage() {
     });
   }, [workOrders, search, activeFilter]);
 
-  const receivingSteps = [
-    {
-      title: "WO Created",
-      detail: "Work order and vendor reference captured",
-      count: workOrders.length,
-    },
-    {
-      title: "Approved",
-      detail: "Approval completed before receiving",
-      count: workOrders.filter(
-        (workOrder) => workOrder.approvalStatus === "Approved"
-      ).length,
-    },
-    {
-      title: "Received",
-      detail: "Items physically received by IT/stores team",
-      count: workOrders.filter(
-        (workOrder) => workOrder.workOrderStatus === "Received"
-      ).length,
-    },
-    {
-      title: "Asset Registration",
-      detail: "Received items can be registered as assets next",
-      count: workOrders.filter(
-        (workOrder) => workOrder.receivedStatus === "Fully Received"
-      ).length,
-    },
-  ];
-
   async function confirmCancel() {
     const token = getSessionToken();
 
@@ -154,7 +125,6 @@ export default function PurchasesPage() {
     <LayoutWrapper>
       <PageHeader
         title="Work Orders"
-        description="Track work orders, vendor invoices, received items and pending procurement."
       />
 
       <PageActionBar
@@ -180,14 +150,14 @@ export default function PurchasesPage() {
         />
       ) : (
         <>
-          <section className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+          <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <input
                 type="text"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search by WO, vendor, invoice, approval, payment or status..."
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white lg:max-w-md"
+                className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-md"
               />
 
               <div className="flex gap-2 overflow-x-auto pb-1">
@@ -196,56 +166,16 @@ export default function PurchasesPage() {
                     key={filter}
                     type="button"
                     onClick={() => setActiveFilter(filter)}
-                    className={`whitespace-nowrap rounded-lg border px-4 py-2 text-sm font-semibold ${
+                    className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                       activeFilter === filter
-                        ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
-                        : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-white"
+                        ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
+                        : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
                     }`}
                   >
                     {filter}
                   </button>
                 ))}
               </div>
-            </div>
-          </section>
-
-          <section className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="text-base font-bold text-slate-950">
-                  Procurement Lifecycle
-                </h2>
-                <p className="text-sm text-slate-500">
-                  Work order movement from creation to asset registration.
-                </p>
-              </div>
-              <span className="w-fit rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">
-                {filteredWorkOrders.length} visible
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-4">
-            {receivingSteps.map((step, index) => (
-              <div
-                key={step.title}
-                className="rounded-lg border border-slate-100 bg-slate-50 p-3"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="grid h-8 w-8 place-items-center rounded-lg bg-slate-950 text-xs font-bold text-white">
-                    {index + 1}
-                  </span>
-                  <p className="text-sm font-semibold text-slate-950">
-                    {step.title}
-                  </p>
-                </div>
-                <p className="mt-2 text-xs leading-5 text-slate-500">
-                  {step.detail}
-                </p>
-                <p className="mt-3 text-xl font-bold text-slate-950">
-                  {step.count}
-                </p>
-              </div>
-            ))}
             </div>
           </section>
 
@@ -271,56 +201,56 @@ export default function PurchasesPage() {
           <div className="hidden lg:block">
             <TableWrapper>
               <table className="min-w-[1180px] w-full text-sm">
-                <thead className="bg-slate-50">
+                <thead className="bg-[#101a2b]">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       WO Details
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       Vendor / Invoice
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       Dates
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       Workflow
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       Amount
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       Actions
                     </th>
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-slate-100 bg-white">
+                <tbody className="divide-y divide-[#263754] bg-[#18253d]">
                   {filteredWorkOrders.map((workOrder) => (
-                    <tr key={workOrder.id} className="hover:bg-slate-50">
+                    <tr key={workOrder.id} className="hover:bg-[#1f2f4a]">
                       <td className="px-4 py-4">
-                        <p className="text-sm font-semibold text-slate-950">
+                        <p className="text-sm font-semibold text-white">
                           {workOrder.workOrderNumber}
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-[#8fa4c7]">
                           {workOrder.itemCount} item lines
                         </p>
                       </td>
 
-                      <td className="px-4 py-4 text-sm text-slate-700">
-                        <p className="font-medium text-slate-950">
+                      <td className="px-4 py-4 text-sm text-[#c8d4ec]">
+                        <p className="font-medium text-white">
                           {workOrder.vendorName}
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-[#8fa4c7]">
                           {workOrder.invoiceNumber || "No invoice"}
                         </p>
                       </td>
 
-                      <td className="px-4 py-4 text-sm text-slate-700">
+                      <td className="px-4 py-4 text-sm text-[#c8d4ec]">
                         <p>WO: {workOrder.workOrderDate || "-"}</p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-[#8fa4c7]">
                           Expected: {workOrder.expectedDeliveryDate || "-"}
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-[#8fa4c7]">
                           Received: {workOrder.receivedDate || "-"}
                         </p>
                       </td>
@@ -329,15 +259,15 @@ export default function PurchasesPage() {
                         <WorkOrderStatusBadge
                           status={workOrder.workOrderStatus}
                         />
-                        <p className="mt-2 text-xs text-slate-500">
+                        <p className="mt-2 text-xs text-[#8fa4c7]">
                           Approval: {workOrder.approvalStatus}
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-[#8fa4c7]">
                           Payment: {workOrder.paymentStatus}
                         </p>
                       </td>
 
-                      <td className="px-4 py-4 text-sm font-semibold text-slate-950">
+                      <td className="px-4 py-4 text-sm font-semibold text-white">
                         {formatCurrency(workOrder.totalAmount)}
                       </td>
 
@@ -365,7 +295,7 @@ export default function PurchasesPage() {
       )}
 
       <ConfirmDialog
-        open={Boolean(cancelTarget)}
+        isOpen={Boolean(cancelTarget)}
         title="Cancel work order?"
         description={`This will mark ${
           cancelTarget?.workOrderNumber || "this work order"

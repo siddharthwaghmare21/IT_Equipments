@@ -42,14 +42,14 @@ export default function LayoutWrapper({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#b9cff6_0%,#d8e5fb_100%)] px-3 py-3 sm:px-4 sm:py-4 lg:px-6 lg:py-6 dark:bg-[linear-gradient(180deg,#0f172a_0%,#16233a_100%)]">
+    <div className="min-h-screen bg-[#edf1fb] dark:bg-[linear-gradient(180deg,#091223_0%,#111c31_100%)]">
       {isSidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
             aria-label="Close sidebar overlay"
             onClick={() => setIsSidebarOpen(false)}
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-slate-950/50 backdrop-blur-[1px]"
           />
 
           <div className="relative h-full max-w-[320px]">
@@ -65,7 +65,7 @@ export default function LayoutWrapper({ children }) {
         </div>
       )}
 
-      <div className="mx-auto flex min-h-[calc(100vh-24px)] w-full max-w-[1480px] overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-[0_28px_80px_rgba(73,98,147,0.18)] dark:border-slate-700/80 dark:bg-[#0f1729] lg:min-h-[calc(100vh-48px)]">
+      <div className="mx-auto flex min-h-screen w-full overflow-hidden bg-transparent dark:bg-[#0f1a2f]">
         <div className="hidden shrink-0 lg:block">
           <Sidebar
             currentUser={currentUser}
@@ -76,7 +76,7 @@ export default function LayoutWrapper({ children }) {
           />
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col bg-[#f7f9fe] dark:bg-[#111a2c]">
+        <div className="flex min-w-0 flex-1 flex-col bg-[#f5f7fc] dark:bg-[#111c31]">
           <Header
             currentUser={currentUser}
             isSuperAdmin={isSuperAdmin}
@@ -84,19 +84,21 @@ export default function LayoutWrapper({ children }) {
             onMenuClick={() => setIsSidebarOpen(true)}
           />
 
-          <main className="app-main flex-1 p-3 sm:p-4 lg:p-6">
-            <Breadcrumbs />
-            {canAccessCurrentPage ? (
-              children
-            ) : (
-              <section className="rounded-[24px] border border-red-200 bg-red-50 p-6 text-red-800 shadow-sm">
-                <h2 className="text-lg font-bold">Access restricted</h2>
-                <p className="mt-2 text-sm leading-6">
-                  Your current role does not have permission to open this page.
-                  Please contact Super Admin if access is required.
-                </p>
-              </section>
-            )}
+          <main className="app-main flex-1 p-4 sm:p-5 lg:p-8">
+            <div className="mx-auto w-full max-w-[1520px]">
+              <Breadcrumbs />
+              {canAccessCurrentPage ? (
+                children
+              ) : (
+                <section className="rounded-[28px] border border-red-200 bg-red-50 p-6 text-red-800 shadow-sm">
+                  <h2 className="text-lg font-bold">Access restricted</h2>
+                  <p className="mt-2 text-sm leading-6">
+                    Your current role does not have permission to open this page.
+                    Please contact Super Admin if access is required.
+                  </p>
+                </section>
+              )}
+            </div>
           </main>
         </div>
       </div>

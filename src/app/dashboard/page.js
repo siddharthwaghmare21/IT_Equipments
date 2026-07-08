@@ -148,7 +148,7 @@ function DashboardIcon({ children, tone = "violet" }) {
 
   return (
     <span
-      className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${tones[tone]}`}
+      className={`inline-flex h-12 w-12 items-center justify-center rounded-full ${tones[tone]}`}
     >
       {children}
     </span>
@@ -204,7 +204,7 @@ function DonutChart({ title, value, total, color = "#7c3aed", items = [] }) {
   const percent = Math.round((value / safeTotal) * 100);
 
   return (
-    <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+    <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-bold text-slate-950">{title}</p>
@@ -215,10 +215,10 @@ function DonutChart({ title, value, total, color = "#7c3aed", items = [] }) {
         <div
           className="grid h-20 w-20 shrink-0 place-items-center rounded-full"
           style={{
-            background: `conic-gradient(${color} ${percent}%, #e2e8f0 ${percent}% 100%)`,
+            background: `conic-gradient(${color} ${percent}%, #eceef5 ${percent}% 100%)`,
           }}
         >
-          <div className="grid h-14 w-14 place-items-center rounded-full bg-white">
+          <div className="grid h-14 w-14 place-items-center rounded-full bg-[#fafbff] dark:bg-slate-900">
             <span className="text-base font-bold text-slate-950">{percent}%</span>
           </div>
         </div>
@@ -235,7 +235,7 @@ function DonutChart({ title, value, total, color = "#7c3aed", items = [] }) {
                 />
                 {item.label}
               </span>
-              <span className="font-bold text-slate-900">{item.value}</span>
+              <span className="font-bold text-slate-900 dark:text-slate-100">{item.value}</span>
             </div>
           ))}
         </div>
@@ -258,7 +258,7 @@ function PieChartCard({ title, description, items }) {
   const background = total ? `conic-gradient(${gradientStops})` : "#e2e8f0";
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-bold text-slate-950">{title}</h2>
@@ -268,7 +268,7 @@ function PieChartCard({ title, description, items }) {
           className="grid h-28 w-28 shrink-0 place-items-center rounded-full"
           style={{ background }}
         >
-          <div className="grid h-16 w-16 place-items-center rounded-full bg-white text-center shadow-sm">
+          <div className="grid h-16 w-16 place-items-center rounded-full bg-[#fafbff] text-center shadow-sm dark:bg-slate-900">
             <span className="text-xl font-bold text-slate-950">{total}</span>
           </div>
         </div>
@@ -287,7 +287,7 @@ function PieChartCard({ title, description, items }) {
               </span>
               <span className="font-bold text-slate-950">{item.value}</span>
             </div>
-            <div className="h-2 rounded-full bg-slate-100">
+            <div className="h-2 rounded-full bg-[#eceef5] dark:bg-slate-800">
               <div
                 className="h-2 rounded-full"
                 style={{
@@ -313,7 +313,7 @@ function LineChartCard({ title, description, points }) {
   const polyline = chartPoints.map((point) => `${point.x},${point.y}`).join(" ");
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="text-lg font-bold text-slate-950">{title}</h2>
@@ -324,7 +324,7 @@ function LineChartCard({ title, description, points }) {
         </span>
       </div>
 
-      <div className="mt-4 rounded-lg bg-slate-50 p-3">
+      <div className="mt-4 rounded-[20px] bg-[#f8f9fe] p-4 dark:bg-slate-800">
         <svg
           aria-label={title}
           viewBox="0 0 100 100"
@@ -338,7 +338,7 @@ function LineChartCard({ title, description, points }) {
               x2="100"
               y1={line}
               y2={line}
-              stroke="#e2e8f0"
+              stroke="#e5e9f4"
               strokeWidth="0.8"
             />
           ))}
@@ -364,10 +364,10 @@ function LineChartCard({ title, description, points }) {
             />
           ))}
         </svg>
-        <div className="mt-3 grid grid-cols-6 gap-2 text-center text-xs text-slate-500">
+        <div className="mt-3 grid grid-cols-6 gap-2 text-center text-xs text-slate-500 dark:text-slate-300">
           {chartPoints.map((point) => (
             <div key={point.label}>
-              <p className="font-bold text-slate-900">{point.value}</p>
+              <p className="font-bold text-slate-900 dark:text-slate-100">{point.value}</p>
               <p className="mt-1 truncate">{point.label}</p>
             </div>
           ))}
@@ -802,45 +802,10 @@ export default function DashboardPage() {
 
   return (
     <LayoutWrapper>
-      <div className="mb-4">
-        <div className="px-1 pb-3">
-          <h1 className="text-[2rem] font-bold tracking-tight text-slate-950 dark:text-white">
-            Overview
-          </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-300">
-            Central workspace for asset operations, approvals, maintenance and reports.
-          </p>
-        </div>
-
-        <div className="overflow-hidden rounded-[26px] border border-[#d7e3f5] bg-white shadow-[0_22px_50px_rgba(96,124,180,0.16)] dark:border-[#31415d] dark:bg-[#18243a]">
-        <div className="bg-gradient-to-r from-[#4936f4] via-[#7a39f2] to-[#42a5f5] px-5 py-5 text-white sm:px-6">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/80">
-                IT Equipment Control Center
-              </p>
-              <h1 className="mt-1 text-3xl font-bold">
-                Dashboard Overview
-              </h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/90">
-                Live summary of assets, delivery workflows, maintenance alerts,
-                approvals and report readiness.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 text-sm sm:min-w-72">
-              <div className="rounded-2xl bg-white/18 p-3 backdrop-blur">
-                <p className="text-xs text-white/75">System Health</p>
-                <p className="mt-1 font-bold">{dashboardHealth}</p>
-              </div>
-              <div className="rounded-2xl bg-white/18 p-3 backdrop-blur">
-                <p className="text-xs text-white/75">Asset Utilization</p>
-                <p className="mt-1 font-bold">{utilizationPercent}%</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div className="mb-5">
+        <h1 className="text-[2rem] font-bold text-slate-900 dark:text-white">
+          Overview
+        </h1>
       </div>
 
       {isLoading ? (
@@ -856,11 +821,11 @@ export default function DashboardPage() {
         />
       ) : (
         <>
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {stats.map((item) => (
           <div
             key={item.title}
-            className="rounded-[24px] border border-[#d7e3f5] bg-white p-5 shadow-[0_16px_35px_rgba(107,137,188,0.12)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(107,137,188,0.18)] dark:border-[#31415d] dark:bg-[#18243a]"
+            className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(163,176,204,0.18)] dark:border-slate-700 dark:bg-slate-900"
           >
             <div className="flex items-center justify-between gap-4">
               <DashboardIcon tone={item.tone}>
@@ -884,11 +849,11 @@ export default function DashboardPage() {
         ))}
       </section>
 
-      <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
-        <div className="rounded-[24px] border border-[#d7e3f5] bg-white shadow-[0_16px_35px_rgba(107,137,188,0.12)] dark:border-[#31415d] dark:bg-[#18243a]">
-          <div className="flex flex-col gap-2 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-[#31415d]">
+      <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,2fr)_320px]">
+        <div className="rounded-[24px] border border-[#edf0f8] bg-white shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
+          <div className="flex flex-col gap-2 border-b border-[#edf0f8] px-5 py-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700">
             <div>
-              <h2 className="text-base font-bold text-slate-950">
+              <h2 className="text-[1.1rem] font-bold text-slate-950">
                 Asset Operations Trend
               </h2>
               <p className="mt-1 text-sm text-slate-500">
@@ -900,11 +865,11 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          <div className="grid gap-4 p-5 lg:grid-cols-[minmax(0,1fr)_220px]">
-            <div className="flex h-64 items-end gap-3 rounded-[22px] bg-slate-50 px-4 py-5 dark:bg-[#121d31]">
+          <div className="grid gap-4 p-5 lg:grid-cols-[minmax(0,1fr)_230px]">
+            <div className="flex h-64 items-end gap-3 rounded-[20px] bg-[#f8f9fe] px-4 py-5 dark:bg-slate-800">
               {activityTrendBars.map((item) => (
                 <div key={item.label} className="flex min-w-0 flex-1 flex-col items-center gap-3">
-                  <div className="flex h-40 w-full items-end rounded-[18px] border border-dashed border-slate-200 bg-white px-2 pb-2 dark:border-[#31415d] dark:bg-[#18243a]">
+                  <div className="flex h-40 w-full items-end rounded-[18px] border border-dashed border-slate-200 bg-white px-2 pb-2 dark:border-slate-700 dark:bg-slate-900">
                     <div
                       className="w-full rounded-t-lg bg-gradient-to-t from-indigo-600 to-emerald-400"
                       style={{ height: item.height }}
@@ -918,32 +883,32 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            <div className="flex flex-col justify-between rounded-[22px] bg-[#14203a] p-5 text-white">
+            <div className="flex flex-col justify-between rounded-[20px] bg-[linear-gradient(180deg,#f8f4ff_0%,#ffffff_100%)] p-5 text-slate-900 dark:bg-slate-800 dark:text-white">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-400">
                   Utilization
                 </p>
                 <div
                   className="mx-auto mt-4 grid h-28 w-28 place-items-center rounded-full"
                   style={{
-                    background: `conic-gradient(#7c3aed ${utilizationPercent}%, #1e293b ${utilizationPercent}% 100%)`,
+                    background: `conic-gradient(#7c3aed ${utilizationPercent}%, #e7e8f3 ${utilizationPercent}% 100%)`,
                   }}
                 >
-                  <div className="grid h-20 w-20 place-items-center rounded-full bg-slate-950">
+                  <div className="grid h-20 w-20 place-items-center rounded-full bg-white dark:bg-slate-900">
                     <span className="text-xl font-bold">{utilizationPercent}%</span>
                   </div>
                 </div>
               </div>
-              <p className="mt-4 text-xs leading-5 text-slate-300">
+              <p className="mt-4 text-xs leading-5 text-slate-500 dark:text-slate-300">
                 Delivered assets compared with total registered equipment.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-[#d7e3f5] bg-white shadow-[0_16px_35px_rgba(107,137,188,0.12)] dark:border-[#31415d] dark:bg-[#18243a]">
-          <div className="border-b border-slate-100 px-5 py-4 dark:border-[#31415d]">
-            <h2 className="text-base font-bold text-slate-950">Workflow Queue</h2>
+        <div className="rounded-[24px] border border-[#edf0f8] bg-white shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
+          <div className="border-b border-[#edf0f8] px-5 py-5 dark:border-slate-700">
+            <h2 className="text-[1.1rem] font-bold text-slate-950">Workflow Queue</h2>
             <p className="mt-1 text-sm text-slate-500">
               Open operational counts by module
             </p>
@@ -954,7 +919,7 @@ export default function DashboardPage() {
             key={item.title}
             type="button"
             onClick={() => router.push(item.href)}
-                className="rounded-[20px] border border-slate-100 bg-slate-50 p-4 text-left transition hover:border-indigo-200 hover:bg-white dark:border-[#31415d] dark:bg-[#121d31]"
+                className="rounded-[20px] border border-[#edf0f8] bg-[#f8f9fe] p-4 text-left transition hover:border-indigo-200 hover:bg-white dark:border-slate-700 dark:bg-slate-800"
           >
                 <p className="text-sm font-semibold text-slate-600">{item.title}</p>
                 <h2 className="mt-2 text-2xl font-bold text-slate-950">
@@ -969,7 +934,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
+      <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]">
         <PieChartCard
           title="Asset Status Mix"
           description="Pie-style status split calculated from asset records"
@@ -1008,7 +973,7 @@ export default function DashboardPage() {
       </section>
 
       <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm xl:col-span-2">
+        <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900 xl:col-span-2">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 className="text-lg font-bold text-slate-950">
@@ -1029,7 +994,7 @@ export default function DashboardPage() {
                 key={action.label}
                 type="button"
                 onClick={() => router.push(action.href)}
-                className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-left text-sm font-semibold text-slate-800 hover:bg-white"
+                className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-4 text-left text-sm font-semibold text-slate-800 hover:bg-white dark:border-slate-700 dark:bg-slate-800"
               >
                 {action.label}
               </button>
@@ -1040,7 +1005,7 @@ export default function DashboardPage() {
             {(rolePermissionPreview[currentRole] || rolePermissionPreview.Employee).map((permission) => (
               <div
                 key={permission}
-                className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700"
+                className="rounded-[16px] border border-[#edf0f8] bg-[#f8f9fe] px-3 py-2 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
               >
                 {permission}
               </div>
@@ -1048,13 +1013,13 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
           <h2 className="text-lg font-bold text-slate-950">Due Dates</h2>
           <div className="mt-4 space-y-3">
             {dueDates.map((item) => (
               <div
                 key={`${item.date}-${item.title}`}
-                className="rounded-lg border border-slate-100 bg-slate-50 p-3"
+                className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-3 dark:border-slate-700 dark:bg-slate-800"
               >
                 <p className="text-xs font-bold text-slate-500">{item.date}</p>
                 <p className="mt-1 text-sm font-semibold text-slate-950">
@@ -1067,7 +1032,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="mt-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="mt-4 rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-lg font-bold text-slate-950">
           Data Quality Dashboard
         </h2>
@@ -1079,7 +1044,7 @@ export default function DashboardPage() {
           {dataQualityItems.map((item) => (
             <div
               key={item.label}
-              className="rounded-lg border border-slate-100 bg-slate-50 p-4"
+              className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-4 dark:border-slate-700 dark:bg-slate-800"
             >
               <p className="text-sm text-slate-500">{item.label}</p>
               <p className="mt-2 text-2xl font-bold text-slate-950">
@@ -1093,7 +1058,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="mt-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="mt-4 rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-lg font-bold text-slate-950">
@@ -1106,7 +1071,7 @@ export default function DashboardPage() {
           <button
             type="button"
             onClick={() => router.push("/reports")}
-            className="w-full rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 sm:w-auto"
+            className="w-full rounded-2xl bg-[linear-gradient(90deg,#7c3aed_0%,#5b34f2_100%)] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(101,74,204,0.24)] hover:opacity-95 sm:w-auto"
           >
             All Reports
           </button>
@@ -1118,7 +1083,7 @@ export default function DashboardPage() {
               type="button"
               aria-label={`Open ${report.title}`}
               onClick={() => router.push(report.href)}
-              className="rounded-lg border border-slate-100 bg-slate-50 p-4 text-left hover:bg-white"
+              className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-4 text-left hover:bg-white dark:border-slate-700 dark:bg-slate-800"
             >
               <p className="text-sm font-bold text-slate-950">
                 {report.title}
@@ -1132,7 +1097,7 @@ export default function DashboardPage() {
       </section>
 
       <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm xl:col-span-2">
+        <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900 xl:col-span-2">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-lg font-bold text-slate-950">
@@ -1155,7 +1120,7 @@ export default function DashboardPage() {
           <div className="mt-4 overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-left">
+                <tr className="border-b border-slate-200 bg-[#f8f9fe] text-left dark:bg-slate-800">
                   <th className="px-4 py-3 font-semibold text-slate-700">
                     Category
                   </th>
@@ -1197,14 +1162,14 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
           <h2 className="text-lg font-bold text-slate-950">Recent Activity</h2>
 
           <div className="mt-4 space-y-3">
             {recentActivities.map((activity, index) => (
               <div
                 key={`${activity.title}-${activity.meta}-${index}`}
-                className="rounded-lg border border-slate-100 bg-slate-50 p-3"
+                className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-3 dark:border-slate-700 dark:bg-slate-800"
               >
                 <p className="text-sm font-semibold text-slate-800">
                   {activity.title}
@@ -1217,7 +1182,7 @@ export default function DashboardPage() {
       </section>
 
       <section className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+        <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900 lg:col-span-2">
           <h2 className="text-lg font-bold text-slate-950">
             Operational Alerts
           </h2>
@@ -1228,7 +1193,7 @@ export default function DashboardPage() {
                 key={alert.title}
                 type="button"
                 onClick={() => router.push(alert.href)}
-                className="rounded-lg border border-slate-100 bg-slate-50 p-4 text-left hover:border-gray-300 hover:bg-white"
+                className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-4 text-left hover:border-gray-300 hover:bg-white dark:border-slate-700 dark:bg-slate-800"
               >
                 <p className="text-sm font-semibold text-slate-950">
                   {alert.title}
@@ -1241,13 +1206,13 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
-          <h2 className="text-base font-bold text-slate-950">Website Version</h2>
+        <div className="rounded-[24px] border border-[#edf0f8] bg-[linear-gradient(180deg,#7c3aed_0%,#5b34f2_100%)] p-5 text-white shadow-[0_18px_42px_rgba(101,74,204,0.24)] dark:border-slate-700">
+          <h2 className="text-base font-bold text-white">Website Version</h2>
 
           <div className="mt-3 grid gap-2 text-sm">
-            <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
-              <span className="text-slate-600">Version</span>
-              <span className="font-semibold text-slate-950">{websiteVersion}</span>
+            <div className="flex items-center justify-between rounded-[18px] bg-white/12 px-4 py-3">
+              <span className="text-white/80">Version</span>
+              <span className="font-semibold text-white">{websiteVersion}</span>
             </div>
           </div>
         </div>

@@ -3,13 +3,17 @@ export default function TableWrapper({ children, variant = "default" }) {
 
   return (
     <div
-      className={`table-grid-shell overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm ${
-        isReport ? "" : "dark:border-slate-800 dark:bg-slate-950"
+      className={`table-grid-shell overflow-hidden rounded-[26px] border shadow-[0_18px_38px_rgba(6,12,24,0.14)] ${
+        isReport
+          ? "border-slate-200 bg-white"
+          : "border-[#2c3f63] bg-[#18253d]"
       }`}
     >
       <div
-        className={`table-grid-scroll-hint no-print border-b border-slate-100 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-500 ${
-          isReport ? "" : "dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
+        className={`table-grid-scroll-hint no-print border-b px-4 py-2.5 text-xs font-semibold ${
+          isReport
+            ? "border-slate-100 bg-slate-50 text-slate-500"
+            : "border-[#2c3f63] bg-[#142033] text-[#92a7cb]"
         }`}
       >
         Scroll horizontally to view all columns

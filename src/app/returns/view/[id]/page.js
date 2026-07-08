@@ -134,7 +134,7 @@ export default function ViewReturnPage() {
         description="View returned asset information, condition, received-by details and inspection status."
       />
 
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="no-print mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <BackButton href="/returns" label="Returns" />
 
         {returnRecord && (

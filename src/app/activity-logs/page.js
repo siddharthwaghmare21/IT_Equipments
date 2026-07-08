@@ -147,7 +147,6 @@ export default function ActivityLogsPage() {
     <LayoutWrapper>
       <PageHeader
         title="Activity Logs"
-        description="Track system activities, user actions, login events and audit history."
       />
 
       {isLoading ? (
@@ -171,14 +170,14 @@ export default function ActivityLogsPage() {
         printDescription="Official activity log report generated from the current filtered audit records."
       />
 
-      <section className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+      <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
         <div className="flex flex-col gap-4">
           <input
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by module, action, user, role, status or description..."
-            className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3]"
           />
 
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -187,10 +186,10 @@ export default function ActivityLogsPage() {
                 key={filter}
                 type="button"
                 onClick={() => setActiveModule(filter)}
-                className={`h-10 whitespace-nowrap rounded-lg border px-4 text-sm font-medium ${
+                className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                   activeModule === filter
-                    ? "border-indigo-600 bg-indigo-600 text-white"
-                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-900"
+                    ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
+                    : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
                 }`}
               >
                 {filter}
@@ -202,7 +201,7 @@ export default function ActivityLogsPage() {
             <select
               value={statusFilter}
               onChange={(event) => setStatusFilter(event.target.value)}
-              className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             >
               {statusFilters.map((status) => (
                 <option key={status} value={status}>
@@ -214,7 +213,7 @@ export default function ActivityLogsPage() {
             <select
               value={userFilter}
               onChange={(event) => setUserFilter(event.target.value)}
-              className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             >
               {userFilters.map((user) => (
                 <option key={user} value={user}>
@@ -227,16 +226,16 @@ export default function ActivityLogsPage() {
               type="date"
               value={dateFilter}
               onChange={(event) => setDateFilter(event.target.value)}
-              className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             />
           </div>
         </div>
       </section>
 
       <div className="no-print mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-slate-600 dark:text-slate-400">
+        <p className="text-sm text-[#b8c7e6]">
           Showing{" "}
-          <span className="font-semibold text-slate-950 dark:text-slate-100">
+          <span className="font-semibold text-white">
             {filteredLogs.length}
           </span>{" "}
           activity log records
@@ -245,10 +244,10 @@ export default function ActivityLogsPage() {
 
       <TableWrapper>
         <table className="min-w-[1300px] w-full text-sm">
-          <thead className="bg-slate-50 text-left dark:bg-slate-900">
-            <tr className="border-b border-slate-200 dark:border-slate-800">
-              <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">Date</th>
-              <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">Time</th>
+          <thead className="bg-[#101a2b] text-left">
+            <tr className="border-b border-[#263754]">
+              <th className="px-4 py-3 font-semibold text-[#8fa4c7]">Date</th>
+              <th className="px-4 py-3 font-semibold text-[#8fa4c7]">Time</th>
               <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                 Module
               </th>
@@ -261,40 +260,40 @@ export default function ActivityLogsPage() {
               <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                 Performed By
               </th>
-              <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">Role</th>
+              <th className="px-4 py-3 font-semibold text-[#8fa4c7]">Role</th>
               <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                 Status
               </th>
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="divide-y divide-[#263754] bg-[#18253d]">
             {filteredLogs.map((log) => (
               <tr
                 key={log.id}
-                className="border-b border-slate-100 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
+                className="hover:bg-[#1f2f4a]"
               >
-                <td className="px-4 py-4 font-semibold text-slate-950 dark:text-slate-100">
+                <td className="px-4 py-4 font-semibold text-white">
                   {log.date}
                 </td>
 
-                <td className="px-4 py-4 text-slate-700 dark:text-slate-300">{log.time}</td>
+                <td className="px-4 py-4 text-[#c8d4ec]">{log.time}</td>
 
-                <td className="px-4 py-4 text-slate-700 dark:text-slate-300">{log.module}</td>
+                <td className="px-4 py-4 text-[#c8d4ec]">{log.module}</td>
 
-                <td className="px-4 py-4 font-semibold text-slate-950 dark:text-slate-100">
+                <td className="px-4 py-4 font-semibold text-white">
                   {log.action}
                 </td>
 
-                <td className="px-4 py-4 text-slate-700 dark:text-slate-300">
+                <td className="px-4 py-4 text-[#c8d4ec]">
                   {log.description}
                 </td>
 
-                <td className="px-4 py-4 text-slate-700 dark:text-slate-300">
+                <td className="px-4 py-4 text-[#c8d4ec]">
                   {log.performedBy}
                 </td>
 
-                <td className="px-4 py-4 text-slate-700 dark:text-slate-300">{log.role}</td>
+                <td className="px-4 py-4 text-[#c8d4ec]">{log.role}</td>
 
                 <td className="px-4 py-4">
                   <ActivityStatusBadge status={log.status} />
