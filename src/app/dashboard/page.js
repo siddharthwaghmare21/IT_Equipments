@@ -821,39 +821,39 @@ export default function DashboardPage() {
         />
       ) : (
         <>
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {stats.map((item) => (
-          <div
-            key={item.title}
-            className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(163,176,204,0.18)] dark:border-slate-700 dark:bg-slate-900"
-          >
-            <div className="flex items-center justify-between gap-4">
+      <section className="overflow-hidden rounded-[30px] border border-[#2c3f63] bg-[#16233c]">
+        <div className="grid gap-0 md:grid-cols-2 xl:grid-cols-4">
+          {stats.map((item) => (
+            <button
+              key={item.title}
+              type="button"
+              onClick={() => router.push(item.icon === "assets" ? "/assets" : "/dashboard")}
+              className="group flex min-h-[132px] items-center gap-4 border-b border-[#2c3f63] px-5 py-4 text-left transition hover:bg-[#1b2a46] xl:border-b-0 xl:border-r xl:last:border-r-0"
+            >
               <DashboardIcon tone={item.tone}>
                 <MiniIcon type={item.icon} />
               </DashboardIcon>
-              <span className="text-xl text-slate-300">...</span>
-            </div>
-            <h2 className="mt-3 text-2xl font-bold text-slate-950">
-              {item.value}
-            </h2>
-            <p className="mt-1 text-sm font-semibold text-slate-700">
-              {item.title}
-            </p>
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              {item.description}
-            </p>
-            <p className="mt-3 w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
-              {item.trend}
-            </p>
-          </div>
-        ))}
+              <span className="min-w-0 flex-1">
+                <span className="block text-3xl font-black text-white">
+                  {item.value}
+                </span>
+                <span className="mt-1 block text-sm font-semibold text-[#dce7ff]">
+                  {item.title}
+                </span>
+                <span className="mt-1 block text-xs leading-5 text-[#8fa4c7]">
+                  {item.trend}
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
       </section>
 
       <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,2fr)_320px]">
-        <div className="rounded-[24px] border border-[#edf0f8] bg-white shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
+        <div className="overflow-hidden rounded-[28px] border border-[#2c3f63] bg-[#16233c]">
           <div className="flex flex-col gap-2 border-b border-[#edf0f8] px-5 py-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700">
             <div>
-              <h2 className="text-[1.1rem] font-bold text-slate-950">
+              <h2 className="text-[1.1rem] font-bold text-white">
                 Asset Operations Trend
               </h2>
               <p className="mt-1 text-sm text-slate-500">
@@ -866,24 +866,24 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid gap-4 p-5 lg:grid-cols-[minmax(0,1fr)_230px]">
-            <div className="flex h-64 items-end gap-3 rounded-[20px] bg-[#f8f9fe] px-4 py-5 dark:bg-slate-800">
+            <div className="flex h-64 items-end gap-3 rounded-[24px] border border-[#2c3f63] bg-[#101a2b] px-4 py-5">
               {activityTrendBars.map((item) => (
                 <div key={item.label} className="flex min-w-0 flex-1 flex-col items-center gap-3">
-                  <div className="flex h-40 w-full items-end rounded-[18px] border border-dashed border-slate-200 bg-white px-2 pb-2 dark:border-slate-700 dark:bg-slate-900">
+                  <div className="flex h-40 w-full items-end rounded-[18px] border border-dashed border-[#314666] bg-[#16233c] px-2 pb-2">
                     <div
                       className="w-full rounded-t-lg bg-gradient-to-t from-indigo-600 to-emerald-400"
                       style={{ height: item.height }}
                     />
                   </div>
                   <div className="text-center">
-                    <p className="text-xs font-bold text-slate-900">{item.value}</p>
-                    <p className="mt-1 truncate text-xs text-slate-500">{item.label}</p>
+                    <p className="text-xs font-bold text-white">{item.value}</p>
+                    <p className="mt-1 truncate text-xs text-[#8fa4c7]">{item.label}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="flex flex-col justify-between rounded-[20px] bg-[linear-gradient(180deg,#f8f4ff_0%,#ffffff_100%)] p-5 text-slate-900 dark:bg-slate-800 dark:text-white">
+            <div className="flex flex-col justify-between rounded-[24px] bg-[linear-gradient(180deg,#6a3df0_0%,#0ea5e9_100%)] p-5 text-white">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-400">
                   Utilization
@@ -891,43 +891,48 @@ export default function DashboardPage() {
                 <div
                   className="mx-auto mt-4 grid h-28 w-28 place-items-center rounded-full"
                   style={{
-                    background: `conic-gradient(#7c3aed ${utilizationPercent}%, #e7e8f3 ${utilizationPercent}% 100%)`,
+                    background: `conic-gradient(#ffffff ${utilizationPercent}%, rgba(255,255,255,.22) ${utilizationPercent}% 100%)`,
                   }}
                 >
-                  <div className="grid h-20 w-20 place-items-center rounded-full bg-white dark:bg-slate-900">
+                  <div className="grid h-20 w-20 place-items-center rounded-full bg-[#16233c]">
                     <span className="text-xl font-bold">{utilizationPercent}%</span>
                   </div>
                 </div>
               </div>
-              <p className="mt-4 text-xs leading-5 text-slate-500 dark:text-slate-300">
+              <p className="mt-4 text-xs leading-5 text-white/80">
                 Delivered assets compared with total registered equipment.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-[#edf0f8] bg-white shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
-          <div className="border-b border-[#edf0f8] px-5 py-5 dark:border-slate-700">
-            <h2 className="text-[1.1rem] font-bold text-slate-950">Workflow Queue</h2>
+        <div className="rounded-[28px] border border-[#2c3f63] bg-[#101a2b] px-5 py-5">
+          <div>
+            <h2 className="text-[1.1rem] font-bold text-white">Workflow Queue</h2>
             <p className="mt-1 text-sm text-slate-500">
               Open operational counts by module
             </p>
           </div>
-          <div className="grid gap-3 p-5">
+          <div className="relative mt-5 grid gap-4 before:absolute before:left-5 before:top-2 before:h-[calc(100%-16px)] before:w-px before:bg-[#314666]">
         {workflowSummary.map((item) => (
           <button
             key={item.title}
             type="button"
             onClick={() => router.push(item.href)}
-                className="rounded-[20px] border border-[#edf0f8] bg-[#f8f9fe] p-4 text-left transition hover:border-indigo-200 hover:bg-white dark:border-slate-700 dark:bg-slate-800"
+                className="relative grid grid-cols-[42px_1fr_auto] items-center gap-3 rounded-[22px] border border-transparent bg-transparent p-2 text-left transition hover:border-[#314666] hover:bg-[#16233c]"
           >
-                <p className="text-sm font-semibold text-slate-600">{item.title}</p>
-                <h2 className="mt-2 text-2xl font-bold text-slate-950">
+                <span className="z-10 grid h-10 w-10 place-items-center rounded-full border border-[#314666] bg-[#18253d] text-xs font-bold text-white">
+                  {item.value}
+                </span>
+                <span>
+                  <span className="block text-sm font-semibold text-white">{item.title}</span>
+                  <span className="mt-1 block text-xs leading-5 text-[#8fa4c7]">
+                    {item.description}
+                  </span>
+                </span>
+                <span className="text-lg font-black text-[#7c4cf3]">
               {item.value}
-            </h2>
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  {item.description}
-                </p>
+            </span>
           </button>
         ))}
           </div>
@@ -973,84 +978,87 @@ export default function DashboardPage() {
       </section>
 
       <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900 xl:col-span-2">
+        <div className="rounded-[28px] border border-[#2c3f63] bg-[#16233c] p-5 xl:col-span-2">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 className="text-lg font-bold text-slate-950">
+              <h2 className="text-lg font-bold text-white">
                 Role Based Actions
               </h2>
-              <p className="mt-1 text-sm text-slate-600">
+              <p className="mt-1 text-sm text-[#8fa4c7]">
                 Quick actions available for your current backend role.
               </p>
             </div>
-            <span className="w-fit rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700">
+            <span className="w-fit rounded-full border border-[#314666] bg-[#101a2b] px-3 py-1 text-xs font-bold text-[#dce7ff]">
               {currentRole}
             </span>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="mt-4 flex flex-wrap gap-3">
             {visibleRoleActions.map((action) => (
               <button
                 key={action.label}
                 type="button"
                 onClick={() => router.push(action.href)}
-                className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-4 text-left text-sm font-semibold text-slate-800 hover:bg-white dark:border-slate-700 dark:bg-slate-800"
+                className="rounded-full border border-[#314666] bg-[#101a2b] px-5 py-3 text-left text-sm font-semibold text-white hover:border-[#7c4cf3]"
               >
                 {action.label}
               </button>
             ))}
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-5 flex flex-wrap gap-2 border-t border-[#2c3f63] pt-4">
             {(rolePermissionPreview[currentRole] || rolePermissionPreview.Employee).map((permission) => (
-              <div
+              <span
                 key={permission}
-                className="rounded-[16px] border border-[#edf0f8] bg-[#f8f9fe] px-3 py-2 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                className="rounded-full bg-[#223451] px-3 py-2 text-xs font-semibold text-[#c8d4ec]"
               >
                 {permission}
-              </div>
+              </span>
             ))}
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="text-lg font-bold text-slate-950">Due Dates</h2>
-          <div className="mt-4 space-y-3">
+        <div className="rounded-[28px] border border-[#2c3f63] bg-[#101a2b] p-5">
+          <h2 className="text-lg font-bold text-white">Due Dates</h2>
+          <div className="relative mt-4 space-y-0 before:absolute before:left-2 before:top-2 before:h-[calc(100%-16px)] before:w-px before:bg-[#314666]">
             {dueDates.map((item) => (
               <div
                 key={`${item.date}-${item.title}`}
-                className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-3 dark:border-slate-700 dark:bg-slate-800"
+                className="relative ml-6 border-b border-[#2c3f63] py-3 last:border-b-0"
               >
-                <p className="text-xs font-bold text-slate-500">{item.date}</p>
-                <p className="mt-1 text-sm font-semibold text-slate-950">
+                <span className="absolute -left-[31px] top-4 h-4 w-4 rounded-full border border-[#7c4cf3] bg-[#101a2b]" />
+                <p className="text-xs font-bold text-[#8fa4c7]">{item.date}</p>
+                <p className="mt-1 text-sm font-semibold text-white">
                   {item.title}
                 </p>
-                <p className="mt-1 text-xs text-slate-500">{item.meta}</p>
+                <p className="mt-1 text-xs text-[#8fa4c7]">{item.meta}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mt-4 rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-lg font-bold text-slate-950">
+      <section className="mt-4 overflow-hidden rounded-[28px] border border-[#2c3f63] bg-[#16233c]">
+        <div className="border-b border-[#2c3f63] px-5 py-4">
+        <h2 className="text-lg font-bold text-white">
           Data Quality Dashboard
         </h2>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-[#8fa4c7]">
           Live record checks calculated from backend-connected module data.
         </p>
+        </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-1 divide-y divide-[#2c3f63] md:grid-cols-4 md:divide-x md:divide-y-0">
           {dataQualityItems.map((item) => (
             <div
               key={item.label}
-              className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-4 dark:border-slate-700 dark:bg-slate-800"
+              className="p-5"
             >
-              <p className="text-sm text-slate-500">{item.label}</p>
-              <p className="mt-2 text-2xl font-bold text-slate-950">
+              <p className="text-sm text-[#8fa4c7]">{item.label}</p>
+              <p className="mt-2 text-3xl font-black text-white">
                 {item.value}
               </p>
-              <p className="mt-1 text-xs font-semibold text-slate-600">
+              <p className="mt-1 text-xs font-semibold text-[#c8d4ec]">
                 {item.status}
               </p>
             </div>
@@ -1058,13 +1066,13 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="mt-4 rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
+      <section className="mt-4 rounded-[28px] border border-[#2c3f63] bg-[#101a2b] p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-bold text-slate-950">
+            <h2 className="text-lg font-bold text-white">
               Report Shortcuts
             </h2>
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="mt-1 text-sm text-[#8fa4c7]">
               Open management reports directly from dashboard review.
             </p>
           </div>
@@ -1076,19 +1084,19 @@ export default function DashboardPage() {
             All Reports
           </button>
         </div>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
+        <div className="mt-4 grid grid-cols-1 overflow-hidden rounded-[24px] border border-[#2c3f63] md:grid-cols-5">
           {reportShortcuts.map((report) => (
             <button
               key={report.href}
               type="button"
               aria-label={`Open ${report.title}`}
               onClick={() => router.push(report.href)}
-              className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-4 text-left hover:bg-white dark:border-slate-700 dark:bg-slate-800"
+              className="border-b border-[#2c3f63] bg-[#16233c] p-4 text-left hover:bg-[#1b2a46] md:border-b-0 md:border-r md:last:border-r-0"
             >
-              <p className="text-sm font-bold text-slate-950">
+              <p className="text-sm font-bold text-white">
                 {report.title}
               </p>
-              <p className="mt-1 text-xs leading-5 text-slate-500">
+              <p className="mt-1 text-xs leading-5 text-[#8fa4c7]">
                 {report.description}
               </p>
             </button>
@@ -1097,13 +1105,13 @@ export default function DashboardPage() {
       </section>
 
       <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900 xl:col-span-2">
+        <div className="overflow-hidden rounded-[28px] border border-[#2c3f63] bg-[#16233c] xl:col-span-2">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-slate-950">
+            <div className="px-5 pt-5">
+              <h2 className="text-lg font-bold text-white">
                 Asset Summary
               </h2>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-[#8fa4c7]">
                 Current equipment distribution
               </p>
             </div>
@@ -1111,7 +1119,7 @@ export default function DashboardPage() {
             <button
               type="button"
               onClick={() => router.push("/assets")}
-              className="inline-flex w-full justify-center rounded-lg bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 sm:w-auto"
+              className="mx-5 mt-5 inline-flex w-auto justify-center rounded-full border border-[#314666] bg-[#101a2b] px-4 py-2 text-sm font-medium text-white hover:border-[#7c4cf3] sm:mt-5"
             >
               View Assets
             </button>
@@ -1120,20 +1128,20 @@ export default function DashboardPage() {
           <div className="mt-4 overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-[#f8f9fe] text-left dark:bg-slate-800">
-                  <th className="px-4 py-3 font-semibold text-slate-700">
+                <tr className="border-y border-[#2c3f63] bg-[#101a2b] text-left">
+                  <th className="px-5 py-3 font-semibold text-[#8fa4c7]">
                     Category
                   </th>
-                  <th className="px-4 py-3 font-semibold text-slate-700">
+                  <th className="px-5 py-3 font-semibold text-[#8fa4c7]">
                     Total
                   </th>
-                  <th className="px-4 py-3 font-semibold text-slate-700">
+                  <th className="px-5 py-3 font-semibold text-[#8fa4c7]">
                     Delivered
                   </th>
-                  <th className="px-4 py-3 font-semibold text-slate-700">
+                  <th className="px-5 py-3 font-semibold text-[#8fa4c7]">
                     Available
                   </th>
-                  <th className="px-4 py-3 font-semibold text-slate-700">
+                  <th className="px-5 py-3 font-semibold text-[#8fa4c7]">
                     Maintenance
                   </th>
                 </tr>
@@ -1141,18 +1149,18 @@ export default function DashboardPage() {
 
               <tbody>
                 {assetSummary.map((row) => (
-                  <tr key={row.category} className="border-b border-slate-100">
-                    <td className="px-4 py-3 font-medium text-slate-950">
+                  <tr key={row.category} className="border-b border-[#2c3f63] last:border-b-0">
+                    <td className="px-5 py-3 font-medium text-white">
                       {row.category}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{row.total}</td>
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className="px-5 py-3 text-[#c8d4ec]">{row.total}</td>
+                    <td className="px-5 py-3 text-[#c8d4ec]">
                       {row.delivered}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className="px-5 py-3 text-[#c8d4ec]">
                       {row.available}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className="px-5 py-3 text-[#c8d4ec]">
                       {row.maintenance}
                     </td>
                   </tr>
@@ -1162,19 +1170,24 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="text-lg font-bold text-slate-950">Recent Activity</h2>
+        <div className="rounded-[28px] border border-[#2c3f63] bg-[#101a2b] p-5">
+          <h2 className="text-lg font-bold text-white">Recent Activity</h2>
 
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 divide-y divide-[#2c3f63]">
             {recentActivities.map((activity, index) => (
               <div
                 key={`${activity.title}-${activity.meta}-${index}`}
-                className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-3 dark:border-slate-700 dark:bg-slate-800"
+                className="grid grid-cols-[34px_1fr] gap-3 py-3 first:pt-0 last:pb-0"
               >
-                <p className="text-sm font-semibold text-slate-800">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-[#223451] text-xs font-bold text-[#c8d4ec]">
+                  {index + 1}
+                </span>
+                <span>
+                <p className="text-sm font-semibold text-white">
                   {activity.title}
                 </p>
-                <p className="mt-1 text-xs text-slate-500">{activity.meta}</p>
+                <p className="mt-1 text-xs text-[#8fa4c7]">{activity.meta}</p>
+                </span>
               </div>
             ))}
           </div>
@@ -1182,23 +1195,23 @@ export default function DashboardPage() {
       </section>
 
       <section className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="rounded-[24px] border border-[#edf0f8] bg-white p-5 shadow-[0_16px_40px_rgba(163,176,204,0.14)] dark:border-slate-700 dark:bg-slate-900 lg:col-span-2">
-          <h2 className="text-lg font-bold text-slate-950">
+        <div className="rounded-[28px] border border-[#2c3f63] bg-[#16233c] p-5 lg:col-span-2">
+          <h2 className="text-lg font-bold text-white">
             Operational Alerts
           </h2>
 
-          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="mt-4 grid grid-cols-1 gap-0 overflow-hidden rounded-[24px] border border-[#2c3f63] md:grid-cols-3">
             {alerts.map((alert) => (
               <button
                 key={alert.title}
                 type="button"
                 onClick={() => router.push(alert.href)}
-                className="rounded-[18px] border border-[#edf0f8] bg-[#f8f9fe] p-4 text-left hover:border-gray-300 hover:bg-white dark:border-slate-700 dark:bg-slate-800"
+                className="border-b border-[#2c3f63] bg-[#101a2b] p-4 text-left hover:bg-[#1b2a46] md:border-b-0 md:border-r md:last:border-r-0"
               >
-                <p className="text-sm font-semibold text-slate-950">
+                <p className="text-sm font-semibold text-white">
                   {alert.title}
                 </p>
-                <p className="mt-2 text-xs leading-5 text-slate-500">
+                <p className="mt-2 text-xs leading-5 text-[#8fa4c7]">
                   {alert.detail}
                 </p>
               </button>
@@ -1206,7 +1219,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-[#edf0f8] bg-[linear-gradient(180deg,#7c3aed_0%,#5b34f2_100%)] p-5 text-white shadow-[0_18px_42px_rgba(101,74,204,0.24)] dark:border-slate-700">
+        <div className="rounded-[28px] border border-[#2c3f63] bg-[linear-gradient(180deg,#7c3aed_0%,#0ea5e9_100%)] p-5 text-white">
           <h2 className="text-base font-bold text-white">Website Version</h2>
 
           <div className="mt-3 grid gap-2 text-sm">
