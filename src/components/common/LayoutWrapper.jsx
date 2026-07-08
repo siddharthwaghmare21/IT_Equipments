@@ -42,7 +42,7 @@ export default function LayoutWrapper({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950">
+    <div className="min-h-screen bg-[linear-gradient(180deg,#b9cff6_0%,#d8e5fb_100%)] px-3 py-3 sm:px-4 sm:py-4 lg:px-6 lg:py-6 dark:bg-[linear-gradient(180deg,#0f172a_0%,#16233a_100%)]">
       {isSidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
@@ -52,7 +52,7 @@ export default function LayoutWrapper({ children }) {
             className="absolute inset-0 bg-black/50"
           />
 
-          <div className="relative h-full">
+          <div className="relative h-full max-w-[320px]">
             <Sidebar
               currentUser={currentUser}
               isSuperAdmin={isSuperAdmin}
@@ -65,8 +65,8 @@ export default function LayoutWrapper({ children }) {
         </div>
       )}
 
-      <div className="flex min-h-screen">
-        <div className="sticky top-0 hidden h-screen shrink-0 lg:block">
+      <div className="mx-auto flex min-h-[calc(100vh-24px)] w-full max-w-[1480px] overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-[0_28px_80px_rgba(73,98,147,0.18)] dark:border-slate-700/80 dark:bg-[#0f1729] lg:min-h-[calc(100vh-48px)]">
+        <div className="hidden shrink-0 lg:block">
           <Sidebar
             currentUser={currentUser}
             isSuperAdmin={isSuperAdmin}
@@ -76,7 +76,7 @@ export default function LayoutWrapper({ children }) {
           />
         </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 flex-1 flex-col bg-[#f7f9fe] dark:bg-[#111a2c]">
           <Header
             currentUser={currentUser}
             isSuperAdmin={isSuperAdmin}
@@ -84,12 +84,12 @@ export default function LayoutWrapper({ children }) {
             onMenuClick={() => setIsSidebarOpen(true)}
           />
 
-          <main className="app-main mx-auto w-full max-w-[1600px] p-3 sm:p-4 lg:p-6">
+          <main className="app-main flex-1 p-3 sm:p-4 lg:p-6">
             <Breadcrumbs />
             {canAccessCurrentPage ? (
               children
             ) : (
-              <section className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-800 shadow-sm">
+              <section className="rounded-[24px] border border-red-200 bg-red-50 p-6 text-red-800 shadow-sm">
                 <h2 className="text-lg font-bold">Access restricted</h2>
                 <p className="mt-2 text-sm leading-6">
                   Your current role does not have permission to open this page.

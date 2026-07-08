@@ -802,34 +802,45 @@ export default function DashboardPage() {
 
   return (
     <LayoutWrapper>
-      <div className="mb-4 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-        <div className="bg-gradient-to-r from-indigo-600 via-violet-600 to-sky-500 px-4 py-4 text-white sm:px-5">
+      <div className="mb-4">
+        <div className="px-1 pb-3">
+          <h1 className="text-[2rem] font-bold tracking-tight text-slate-950 dark:text-white">
+            Overview
+          </h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-300">
+            Central workspace for asset operations, approvals, maintenance and reports.
+          </p>
+        </div>
+
+        <div className="overflow-hidden rounded-[26px] border border-[#d7e3f5] bg-white shadow-[0_22px_50px_rgba(96,124,180,0.16)] dark:border-[#31415d] dark:bg-[#18243a]">
+        <div className="bg-gradient-to-r from-[#4936f4] via-[#7a39f2] to-[#42a5f5] px-5 py-5 text-white sm:px-6">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-indigo-100">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/80">
                 IT Equipment Control Center
               </p>
-              <h1 className="mt-1 text-2xl font-bold">
+              <h1 className="mt-1 text-3xl font-bold">
                 Dashboard Overview
               </h1>
-              <p className="mt-1 max-w-2xl text-sm leading-6 text-indigo-50">
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/90">
                 Live summary of assets, delivery workflows, maintenance alerts,
                 approvals and report readiness.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-sm sm:min-w-72">
-              <div className="rounded-lg bg-white/15 p-2.5 backdrop-blur">
-                <p className="text-xs text-indigo-100">System Health</p>
+              <div className="rounded-2xl bg-white/18 p-3 backdrop-blur">
+                <p className="text-xs text-white/75">System Health</p>
                 <p className="mt-1 font-bold">{dashboardHealth}</p>
               </div>
-              <div className="rounded-lg bg-white/15 p-2.5 backdrop-blur">
-                <p className="text-xs text-indigo-100">Asset Utilization</p>
+              <div className="rounded-2xl bg-white/18 p-3 backdrop-blur">
+                <p className="text-xs text-white/75">Asset Utilization</p>
                 <p className="mt-1 font-bold">{utilizationPercent}%</p>
               </div>
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {isLoading ? (
@@ -845,11 +856,11 @@ export default function DashboardPage() {
         />
       ) : (
         <>
-      <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((item) => (
           <div
             key={item.title}
-            className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="rounded-[24px] border border-[#d7e3f5] bg-white p-5 shadow-[0_16px_35px_rgba(107,137,188,0.12)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(107,137,188,0.18)] dark:border-[#31415d] dark:bg-[#18243a]"
           >
             <div className="flex items-center justify-between gap-4">
               <DashboardIcon tone={item.tone}>
@@ -873,9 +884,9 @@ export default function DashboardPage() {
         ))}
       </section>
 
-      <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
-        <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div className="flex flex-col gap-2 border-b border-slate-100 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <section className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
+        <div className="rounded-[24px] border border-[#d7e3f5] bg-white shadow-[0_16px_35px_rgba(107,137,188,0.12)] dark:border-[#31415d] dark:bg-[#18243a]">
+          <div className="flex flex-col gap-2 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-[#31415d]">
             <div>
               <h2 className="text-base font-bold text-slate-950">
                 Asset Operations Trend
@@ -889,11 +900,11 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          <div className="grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_210px]">
-            <div className="flex h-60 items-end gap-3 rounded-lg bg-slate-50 px-3 py-4">
+          <div className="grid gap-4 p-5 lg:grid-cols-[minmax(0,1fr)_220px]">
+            <div className="flex h-64 items-end gap-3 rounded-[22px] bg-slate-50 px-4 py-5 dark:bg-[#121d31]">
               {activityTrendBars.map((item) => (
                 <div key={item.label} className="flex min-w-0 flex-1 flex-col items-center gap-3">
-                  <div className="flex h-40 w-full items-end rounded-lg border border-dashed border-slate-200 bg-white px-2 pb-2">
+                  <div className="flex h-40 w-full items-end rounded-[18px] border border-dashed border-slate-200 bg-white px-2 pb-2 dark:border-[#31415d] dark:bg-[#18243a]">
                     <div
                       className="w-full rounded-t-lg bg-gradient-to-t from-indigo-600 to-emerald-400"
                       style={{ height: item.height }}
@@ -907,7 +918,7 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            <div className="flex flex-col justify-between rounded-lg bg-slate-950 p-4 text-white">
+            <div className="flex flex-col justify-between rounded-[22px] bg-[#14203a] p-5 text-white">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
                   Utilization
@@ -930,20 +941,20 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-100 px-4 py-3">
+        <div className="rounded-[24px] border border-[#d7e3f5] bg-white shadow-[0_16px_35px_rgba(107,137,188,0.12)] dark:border-[#31415d] dark:bg-[#18243a]">
+          <div className="border-b border-slate-100 px-5 py-4 dark:border-[#31415d]">
             <h2 className="text-base font-bold text-slate-950">Workflow Queue</h2>
             <p className="mt-1 text-sm text-slate-500">
               Open operational counts by module
             </p>
           </div>
-          <div className="grid gap-2 p-4">
+          <div className="grid gap-3 p-5">
         {workflowSummary.map((item) => (
           <button
             key={item.title}
             type="button"
             onClick={() => router.push(item.href)}
-                className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-left transition hover:border-indigo-200 hover:bg-white"
+                className="rounded-[20px] border border-slate-100 bg-slate-50 p-4 text-left transition hover:border-indigo-200 hover:bg-white dark:border-[#31415d] dark:bg-[#121d31]"
           >
                 <p className="text-sm font-semibold text-slate-600">{item.title}</p>
                 <h2 className="mt-2 text-2xl font-bold text-slate-950">
