@@ -45,13 +45,13 @@ export default function PageActionBar({
 
   return (
     <>
-      <section className="no-print mb-3 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <section className="no-print mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-2.5 shadow-[0_14px_30px_rgba(6,12,24,0.12)]">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-end gap-2">
             {addHref && canAddRecords && (
               <Link
                 href={addHref}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] px-5 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(106,61,240,0.24)] hover:from-[#5f35df] hover:to-[#7c4cf3]"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] px-4 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(106,61,240,0.2)] hover:from-[#5f35df] hover:to-[#7c4cf3]"
               >
                 <ToolbarIcon type="add" />
                 {addLabel}

@@ -8,7 +8,6 @@ import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
-import CompactRecordList from "@/components/common/CompactRecordList";
 import {
   EmptyState,
   ErrorState,
@@ -148,8 +147,8 @@ export default function ReturnsPage() {
         />
       ) : (
         <>
-          <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-end">
+          <section className="mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
+            <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-end">
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {filters.map((filter) => (
                   <button
@@ -159,7 +158,7 @@ export default function ReturnsPage() {
                       setActiveFilter(filter);
                       setCurrentPage(1);
                     }}
-                    className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
+                    className={`whitespace-nowrap rounded-2xl border px-3.5 py-2 text-sm font-semibold transition ${
                       activeFilter === filter
                         ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
                         : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
@@ -172,63 +171,43 @@ export default function ReturnsPage() {
             </div>
           </section>
 
-          <CompactRecordList
-            records={filteredReturnRecords}
-            titleKey="returnCode"
-            subtitleKey="assetName"
-            meta={[
-              { label: "Returned By", key: "returnedByName" },
-              { label: "Return Date", key: "returnDate" },
-              { label: "Condition", key: "returnCondition" },
-              { label: "Inspection", key: "inspectionStatus" },
-            ]}
-            statusRender={(returnItem) => (
-              <ReturnStatusBadge status={returnItem.returnStatus} />
-            )}
-            viewHref={(returnItem) => `/returns/view/${returnItem.id}`}
-            editHref={(returnItem) => `/returns/edit/${returnItem.id}`}
-            onArchive={setRejectTarget}
-            archiveLabel="Reject"
-            emptyTitle="No return records found"
-            emptyDescription="Try changing receiver, asset, inspection or status filters."
-          />
 
-          <div className="hidden md:block">
+          <div>
             <TableWrapper>
               <table className="min-w-[1500px] w-full text-sm">
-                <thead className="bg-[#101a2b] text-left">
+                <thead className="bg-[#101a2b] text-center">
                   <tr className="border-b border-[#263754]">
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Return Code
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Delivery
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Asset
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Returned By
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Department
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Return Date
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Condition
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Inspection
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Damage Decision
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-right font-semibold text-[#8fa4c7]">
+                    <th className="px-4 py-3 text-center font-semibold text-[#8fa4c7]">
                       Actions
                     </th>
                   </tr>
@@ -240,13 +219,13 @@ export default function ReturnsPage() {
                       key={returnItem.id}
                       className="hover:bg-[#1f2f4a]"
                     >
-                      <td className="px-4 py-4 font-semibold text-white">
+                      <td className="text-center px-4 py-4 font-semibold text-white">
                         {returnItem.returnCode}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {returnItem.deliveryCode || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         <p className="font-medium text-white">
                           {returnItem.assetTag}
                         </p>
@@ -254,28 +233,28 @@ export default function ReturnsPage() {
                           {returnItem.assetName || "-"}
                         </p>
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {returnItem.returnedByName}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {returnItem.departmentName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {returnItem.returnDate}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {returnItem.returnCondition}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {returnItem.inspectionStatus}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {returnItem.damageDecision}
                       </td>
-                      <td className="px-4 py-4">
+                      <td className="text-center px-4 py-4">
                         <ReturnStatusBadge status={returnItem.returnStatus} />
                       </td>
-                      <td className="px-4 py-4 text-right">
+                      <td className="px-4 py-4 text-center">
                         <ActionButtons
                           viewHref={`/returns/view/${returnItem.id}`}
                           editHref={`/returns/edit/${returnItem.id}`}

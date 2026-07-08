@@ -355,7 +355,7 @@ export default function SettingsPage() {
         description="Manage company profile, backup controls, exports and system preferences."
       />
 
-      <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-sm">
+      <section className="mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-sm">
         <div className="flex gap-2 overflow-x-auto pb-1">
           {settingsTabs.map((tab) => (
             <button

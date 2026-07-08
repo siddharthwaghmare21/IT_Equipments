@@ -285,7 +285,7 @@ export default function AdminRequestManagementPage() {
         />
       ) : (
         <>
-      <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-5 shadow-sm">
+      <section className="mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-lg font-bold text-white">

@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
-import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
 import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
@@ -111,9 +110,9 @@ export default function DepartmentsPage() {
 
   return (
     <LayoutWrapper>
-      <PageHeader
-        title="Departments"
-      />
+      <div className="no-print mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] px-4 py-3">
+        <h1 className="text-2xl font-bold text-white">Departments</h1>
+      </div>
 
       <PageActionBar
         addHref="/departments/add"
@@ -125,8 +124,8 @@ export default function DepartmentsPage() {
         printDescription="Official department register generated from the current filtered department records."
       />
 
-      <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-end">
+      <section className="mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] px-3 py-2.5">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-end">
           <div className="flex gap-2 overflow-x-auto pb-1">
             {filters.map((filter) => (
               <button
@@ -136,7 +135,7 @@ export default function DepartmentsPage() {
                   setActiveFilter(filter);
                   setCurrentPage(1);
                 }}
-                className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
+                className={`whitespace-nowrap rounded-2xl border px-3.5 py-2 text-sm font-semibold transition ${
                   activeFilter === filter
                     ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
                     : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
@@ -167,30 +166,30 @@ export default function DepartmentsPage() {
       {!isLoading && !error && (
         <TableWrapper>
           <table className="min-w-[1050px] w-full text-sm">
-            <thead className="bg-[#101a2b] text-left">
+            <thead className="bg-[#101a2b] text-center">
               <tr className="border-b border-[#263754]">
-                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                <th className="text-center px-3 py-2.5 font-semibold text-[#8fa4c7]">
                   Department Code
                 </th>
-                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                <th className="text-center px-3 py-2.5 font-semibold text-[#8fa4c7]">
                   Department Name
                 </th>
-                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                <th className="text-center px-3 py-2.5 font-semibold text-[#8fa4c7]">
                   Department Head
                 </th>
-                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                <th className="text-center px-3 py-2.5 font-semibold text-[#8fa4c7]">
                   Email
                 </th>
-                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                <th className="text-center px-3 py-2.5 font-semibold text-[#8fa4c7]">
                   Phone
                 </th>
-                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                <th className="text-center px-3 py-2.5 font-semibold text-[#8fa4c7]">
                   Location
                 </th>
-                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                <th className="text-center px-3 py-2.5 font-semibold text-[#8fa4c7]">
                   Status
                 </th>
-                <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                <th className="text-center px-3 py-2.5 font-semibold text-[#8fa4c7]">
                   Actions
                 </th>
               </tr>
@@ -202,35 +201,35 @@ export default function DepartmentsPage() {
                   key={department.id}
                   className="hover:bg-[#1f2f4a]"
                 >
-                  <td className="px-4 py-4 font-semibold text-white">
+                  <td className="text-center px-3 py-3 font-semibold text-white">
                     {department.departmentCode}
                   </td>
 
-                  <td className="px-4 py-4 text-[#c8d4ec]">
+                  <td className="text-center px-3 py-3 text-[#c8d4ec]">
                     {department.departmentName}
                   </td>
 
-                  <td className="px-4 py-4 text-[#c8d4ec]">
+                  <td className="text-center px-3 py-3 text-[#c8d4ec]">
                     {department.headOfDepartment || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-[#c8d4ec]">
+                  <td className="text-center px-3 py-3 text-[#c8d4ec]">
                     {department.email || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-[#c8d4ec]">
+                  <td className="text-center px-3 py-3 text-[#c8d4ec]">
                     {department.phone || "-"}
                   </td>
 
-                  <td className="px-4 py-4 text-[#c8d4ec]">
+                  <td className="text-center px-3 py-3 text-[#c8d4ec]">
                     {department.location || "-"}
                   </td>
 
-                  <td className="px-4 py-4">
+                  <td className="text-center px-3 py-3">
                     <DepartmentStatusBadge status={department.status} />
                   </td>
 
-                  <td className="px-4 py-4">
+                  <td className="text-center px-3 py-3">
                     <ActionButtons
                       viewHref={`/departments/view/${department.id}`}
                       updateHref={`/departments/edit/${department.id}`}

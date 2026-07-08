@@ -8,7 +8,6 @@ import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
-import CompactRecordList from "@/components/common/CompactRecordList";
 import {
   EmptyState,
   ErrorState,
@@ -158,7 +157,7 @@ export default function TransfersPage() {
         />
       ) : (
         <>
-          <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
+          <section className="mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
             <div className="flex flex-col gap-3">
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {workflowTabs.map((tab) => (
@@ -169,7 +168,7 @@ export default function TransfersPage() {
                       setActiveWorkflow(tab);
                       setCurrentPage(1);
                     }}
-                    className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
+                    className={`whitespace-nowrap rounded-2xl border px-3.5 py-2 text-sm font-semibold transition ${
                       activeWorkflow === tab
                         ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
                         : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
@@ -180,14 +179,14 @@ export default function TransfersPage() {
                 ))}
               </div>
 
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-end">
+              <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-end">
                 <select
                   value={activeStatus}
                   onChange={(event) => {
                     setActiveStatus(event.target.value);
                     setCurrentPage(1);
                   }}
-                  className="rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
+                  className="rounded-2xl border border-[#314666] bg-[#101a2b] px-3.5 py-2.5 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
                 >
                   {statusFilters.map((status) => (
                     <option key={status} value={status}>
@@ -199,31 +198,11 @@ export default function TransfersPage() {
             </div>
           </section>
 
-          <CompactRecordList
-            records={filteredTransfers}
-            titleKey="transferCode"
-            subtitleKey="assetName"
-            meta={[
-              { label: "Type", key: "transferType" },
-              { label: "From", key: "fromDepartmentName" },
-              { label: "To", key: "toDepartmentName" },
-              { label: "Receiver", key: "newReceiverName" },
-            ]}
-            statusRender={(transfer) => (
-              <TransferStatusBadge status={transfer.transferStatus} />
-            )}
-            viewHref={(transfer) => `/transfers/view/${transfer.id}`}
-            editHref={(transfer) => `/transfers/edit/${transfer.id}`}
-            onArchive={setCancelTarget}
-            archiveLabel="Cancel"
-            emptyTitle="No transfer records found"
-            emptyDescription="Try changing workflow or status filters."
-          />
 
-          <div className="hidden md:block">
+          <div>
             <TableWrapper>
               <table className="min-w-[1600px] w-full text-sm">
-                <thead className="bg-[#101a2b] text-left">
+                <thead className="bg-[#101a2b] text-center">
                   <tr className="border-b border-[#263754]">
                     {[
                       "Transfer Code",
@@ -257,13 +236,13 @@ export default function TransfersPage() {
                       key={transfer.id}
                       className="hover:bg-[#1f2f4a]"
                     >
-                      <td className="px-4 py-4 font-semibold text-white">
+                      <td className="text-center px-4 py-4 font-semibold text-white">
                         {transfer.transferCode}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {transfer.transferType}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         <p className="font-medium text-white">
                           {transfer.assetTag}
                         </p>
@@ -271,37 +250,37 @@ export default function TransfersPage() {
                           {transfer.assetName || "-"}
                         </p>
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {transfer.fromDepartmentName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {transfer.toDepartmentName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {transfer.currentReceiverName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {transfer.newReceiverName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {transfer.transferReason || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {transfer.conditionAtTransfer}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {transfer.collectedByName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {transfer.issueDate || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {transfer.newAcknowledgement}
                       </td>
-                      <td className="px-4 py-4">
+                      <td className="text-center px-4 py-4">
                         <TransferStatusBadge status={transfer.transferStatus} />
                       </td>
-                      <td className="px-4 py-4">
+                      <td className="text-center px-4 py-4">
                         <ActionButtons
                           viewHref={`/transfers/view/${transfer.id}`}
                           updateHref={`/transfers/edit/${transfer.id}`}

@@ -8,7 +8,6 @@ import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
-import CompactRecordList from "@/components/common/CompactRecordList";
 import {
   EmptyState,
   ErrorState,
@@ -154,8 +153,8 @@ export default function MaintenancePage() {
         />
       ) : (
         <>
-          <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-end">
+          <section className="mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
+            <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-end">
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {filters.map((filter) => (
                   <button
@@ -165,7 +164,7 @@ export default function MaintenancePage() {
                       setActiveFilter(filter);
                       setCurrentPage(1);
                     }}
-                    className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
+                    className={`whitespace-nowrap rounded-2xl border px-3.5 py-2 text-sm font-semibold transition ${
                       activeFilter === filter
                         ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
                         : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
@@ -178,60 +177,40 @@ export default function MaintenancePage() {
             </div>
           </section>
 
-          <CompactRecordList
-            records={filteredMaintenanceRecords}
-            titleKey="maintenanceCode"
-            subtitleKey="assetName"
-            meta={[
-              { label: "Issue", key: "issueType" },
-              { label: "Priority", key: "priority" },
-              { label: "Vendor", key: "vendorName" },
-              { label: "Cost", key: "maintenanceCost" },
-            ]}
-            statusRender={(record) => (
-              <MaintenanceStatusBadge status={record.maintenanceStatus} />
-            )}
-            viewHref={(record) => `/maintenance/view/${record.id}`}
-            editHref={(record) => `/maintenance/edit/${record.id}`}
-            onArchive={setCancelTarget}
-            archiveLabel="Cancel"
-            emptyTitle="No maintenance records found"
-            emptyDescription="Try changing asset, issue, priority or status filters."
-          />
 
-          <div className="hidden md:block">
+          <div>
             <TableWrapper>
               <table className="min-w-[1450px] w-full text-sm">
-                <thead className="bg-[#101a2b] text-left">
+                <thead className="bg-[#101a2b] text-center">
                   <tr className="border-b border-[#263754]">
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Maintenance Code
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Asset
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Issue Type
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Vendor
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Priority
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Service Date
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Cost
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Approval
                     </th>
-                    <th className="px-4 py-3 font-semibold text-[#8fa4c7]">
+                    <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-right font-semibold text-[#8fa4c7]">
+                    <th className="px-4 py-3 text-center font-semibold text-[#8fa4c7]">
                       Actions
                     </th>
                   </tr>
@@ -242,10 +221,10 @@ export default function MaintenancePage() {
                       key={record.id}
                       className="hover:bg-[#1f2f4a]"
                     >
-                      <td className="px-4 py-4 font-semibold text-white">
+                      <td className="text-center px-4 py-4 font-semibold text-white">
                         {record.maintenanceCode}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         <p className="font-medium text-white">
                           {record.assetTag}
                         </p>
@@ -253,30 +232,30 @@ export default function MaintenancePage() {
                           {record.assetName || "-"}
                         </p>
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {record.issueType}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {record.vendorName || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {record.priority}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {record.serviceDate || "-"}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {formatMaintenanceCurrency(record.maintenanceCost)}
                       </td>
-                      <td className="px-4 py-4 text-[#c8d4ec]">
+                      <td className="text-center px-4 py-4 text-[#c8d4ec]">
                         {record.approvalStatus}
                       </td>
-                      <td className="px-4 py-4">
+                      <td className="text-center px-4 py-4">
                         <MaintenanceStatusBadge
                           status={record.maintenanceStatus}
                         />
                       </td>
-                      <td className="px-4 py-4 text-right">
+                      <td className="px-4 py-4 text-center">
                         <ActionButtons
                           viewHref={`/maintenance/view/${record.id}`}
                           editHref={`/maintenance/edit/${record.id}`}

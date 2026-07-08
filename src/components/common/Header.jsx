@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { canAccessPath } from "@/lib/rbac";
 
 function BellIcon() {
@@ -70,6 +70,7 @@ export default function Header({
   onLogout,
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [searchTerm, setSearchTerm] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -98,7 +99,10 @@ export default function Header({
     event.preventDefault();
     const query = searchTerm.trim().toLowerCase();
     if (!query) return;
-    router.push(`/search?q=${encodeURIComponent(query)}`);
+    const fromPath = pathname && pathname !== "/search" ? pathname : "/dashboard";
+    router.push(
+      `/search?q=${encodeURIComponent(query)}&from=${encodeURIComponent(fromPath)}`
+    );
   }
 
   return (

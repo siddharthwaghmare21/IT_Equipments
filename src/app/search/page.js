@@ -118,8 +118,16 @@ export default function SearchPage() {
   const params = useSearchParams();
   const router = useRouter();
   const initialQuery = params.get("q") || "";
+  const initialTypeFilter = typeFilters.includes(params.get("type"))
+    ? params.get("type")
+    : "All";
+  const requestedPreviousPage = params.get("from") || "/dashboard";
+  const previousPage =
+    requestedPreviousPage.startsWith("/") && !requestedPreviousPage.startsWith("//")
+      ? requestedPreviousPage
+      : "/dashboard";
   const [query, setQuery] = useState(initialQuery);
-  const [typeFilter, setTypeFilter] = useState("All");
+  const [typeFilter, setTypeFilter] = useState(initialTypeFilter);
   const [searchItems, setSearchItems] = useState(reportSearchItems);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -194,20 +202,59 @@ export default function SearchPage() {
     });
   }, [query, searchItems, typeFilter]);
 
+  const searchReturnHref = `/search?q=${encodeURIComponent(
+    query
+  )}&from=${encodeURIComponent(previousPage)}&type=${encodeURIComponent(
+    typeFilter
+  )}`;
+
+  function handleBackToPreviousPage() {
+    router.push(previousPage);
+  }
+
+  function openSearchResult(resultHref) {
+    router.push(
+      `${resultHref}?fromSearch=${encodeURIComponent(searchReturnHref)}`
+    );
+  }
+
   return (
     <LayoutWrapper>
       <PageHeader
         title="Search"
       />
 
-      <section className="mb-6 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
-        <div className="flex flex-col gap-4">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <button
+          type="button"
+          onClick={handleBackToPreviousPage}
+          className="inline-flex w-fit items-center gap-2 rounded-2xl border border-[#314666] bg-[#101a2b] px-3.5 py-2 text-sm font-semibold text-[#dce7ff] hover:border-[#7c4cf3] hover:bg-[#16233c]"
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4"
+          >
+            <path d="M19 12H5" />
+            <path d="m12 19-7-7 7-7" />
+          </svg>
+          Back to previous page
+        </button>
+      </div>
+
+      <section className="mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
+        <div className="flex flex-col gap-3">
           <input
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search asset tag, WO, vendor, receiver, transfer, maintenance or report..."
-            className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3]"
+            className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-3.5 py-2.5 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3]"
           />
 
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -216,7 +263,7 @@ export default function SearchPage() {
                 key={filter}
                 type="button"
                 onClick={() => setTypeFilter(filter)}
-                className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
+                className={`whitespace-nowrap rounded-2xl border px-3.5 py-2 text-sm font-semibold transition ${
                   typeFilter === filter
                     ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
                     : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
@@ -251,7 +298,7 @@ export default function SearchPage() {
             <button
               key={`${result.type}-${result.title}`}
               type="button"
-              onClick={() => router.push(result.href)}
+              onClick={() => openSearchResult(result.href)}
               className="rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-5 text-left shadow-[0_18px_38px_rgba(6,12,24,0.14)] hover:bg-[#1f2f4a]"
             >
               <span className="inline-flex rounded-full border border-[#314666] bg-[#101a2b] px-3 py-1 text-xs font-bold text-[#b8c7e6]">

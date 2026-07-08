@@ -60,7 +60,7 @@ export default function HelpPage() {
         {sopSteps.map((step, index) => (
           <div
             key={step.title}
-            className="rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]"
+            className="rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]"
           >
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
               {index + 1}
@@ -75,7 +75,7 @@ export default function HelpPage() {
         ))}
       </section>
 
-      <section className="mt-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
+      <section className="mt-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
         <h2 className="text-lg font-bold text-white">Support Rules</h2>
         <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
           <p className="rounded-2xl border border-[#314666] bg-[#101a2b] p-3 text-sm text-[#b8c7e6]">
@@ -88,7 +88,7 @@ export default function HelpPage() {
       </section>
 
       <section className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
+        <div className="rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
           <h2 className="text-lg font-bold text-white">
             Keyboard Shortcuts
           </h2>
@@ -109,7 +109,7 @@ export default function HelpPage() {
           </div>
         </div>
 
-        <div className="rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
+        <div className="rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
           <h2 className="text-lg font-bold text-white">
             Naming Convention
           </h2>

@@ -261,7 +261,7 @@ export default function AdminUsersManagementPage() {
         </section>
       )}
 
-      <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-5 shadow-sm">
+      <section className="mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-sm">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <select
             value={roleFilter}

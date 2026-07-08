@@ -174,8 +174,8 @@ export default function ActivityLogsPage() {
         printDescription="Official activity log report generated from the current filtered audit records."
       />
 
-      <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
-        <div className="flex flex-col gap-4">
+      <section className="mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
+        <div className="flex flex-col gap-3">
           <div className="flex gap-2 overflow-x-auto pb-1">
             {moduleFilters.map((filter) => (
               <button
@@ -185,7 +185,7 @@ export default function ActivityLogsPage() {
                   setActiveModule(filter);
                   setCurrentPage(1);
                 }}
-                className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
+                className={`whitespace-nowrap rounded-2xl border px-3.5 py-2 text-sm font-semibold transition ${
                   activeModule === filter
                     ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
                     : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
@@ -203,7 +203,7 @@ export default function ActivityLogsPage() {
                 setStatusFilter(event.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
+              className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-3.5 py-2.5 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             >
               {statusFilters.map((status) => (
                 <option key={status} value={status}>
@@ -218,7 +218,7 @@ export default function ActivityLogsPage() {
                 setUserFilter(event.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
+              className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-3.5 py-2.5 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             >
               {userFilters.map((user) => (
                 <option key={user} value={user}>
@@ -234,7 +234,7 @@ export default function ActivityLogsPage() {
                 setDateFilter(event.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
+              className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-3.5 py-2.5 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             />
           </div>
         </div>

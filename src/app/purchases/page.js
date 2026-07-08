@@ -8,7 +8,6 @@ import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
-import CompactRecordList from "@/components/common/CompactRecordList";
 import {
   EmptyState,
   ErrorState,
@@ -151,8 +150,8 @@ export default function PurchasesPage() {
         />
       ) : (
         <>
-          <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-4 shadow-[0_18px_38px_rgba(6,12,24,0.14)]">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-end">
+          <section className="mb-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
+            <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-end">
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {filters.map((filter) => (
                   <button
@@ -162,7 +161,7 @@ export default function PurchasesPage() {
                       setActiveFilter(filter);
                       setCurrentPage(1);
                     }}
-                    className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
+                    className={`whitespace-nowrap rounded-2xl border px-3.5 py-2 text-sm font-semibold transition ${
                       activeFilter === filter
                         ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
                         : "border-[#314666] bg-[#101a2b] text-[#b8c7e6] hover:bg-[#16233a]"
@@ -175,46 +174,27 @@ export default function PurchasesPage() {
             </div>
           </section>
 
-          <CompactRecordList
-            records={filteredWorkOrders}
-            getTitle={(workOrder) => workOrder.workOrderNumber}
-            getSubtitle={(workOrder) =>
-              `${workOrder.vendorName} | ${workOrder.invoiceNumber || "No invoice"}`
-            }
-            getMeta={(workOrder) => [
-              workOrder.workOrderDate,
-              `${workOrder.itemCount} items`,
-              formatCurrency(workOrder.totalAmount),
-            ]}
-            getStatus={(workOrder) => workOrder.workOrderStatus}
-            getHref={(workOrder) => `/purchases/view/${workOrder.id}`}
-            getEditHref={(workOrder) => `/purchases/edit/${workOrder.id}`}
-            onDelete={setCancelTarget}
-            emptyTitle="No work orders found"
-            emptyDescription="Try changing the status filter."
-          />
-
-          <div className="hidden lg:block">
+          <div>
             <TableWrapper>
               <table className="min-w-[1180px] w-full text-sm">
                 <thead className="bg-[#101a2b]">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
+                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       WO Details
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
+                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       Vendor / Invoice
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
+                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       Dates
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
+                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       Workflow
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
+                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       Amount
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
+                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-[#8fa4c7]">
                       Actions
                     </th>
                   </tr>
@@ -223,7 +203,7 @@ export default function PurchasesPage() {
                 <tbody className="divide-y divide-[#263754] bg-[#18253d]">
                   {pagedWorkOrders.map((workOrder) => (
                     <tr key={workOrder.id} className="hover:bg-[#1f2f4a]">
-                      <td className="px-4 py-4">
+                      <td className="px-4 py-4 text-center">
                         <p className="text-sm font-semibold text-white">
                           {workOrder.workOrderNumber}
                         </p>
@@ -232,7 +212,7 @@ export default function PurchasesPage() {
                         </p>
                       </td>
 
-                      <td className="px-4 py-4 text-sm text-[#c8d4ec]">
+                      <td className="px-4 py-4 text-center text-sm text-[#c8d4ec]">
                         <p className="font-medium text-white">
                           {workOrder.vendorName}
                         </p>
@@ -241,7 +221,7 @@ export default function PurchasesPage() {
                         </p>
                       </td>
 
-                      <td className="px-4 py-4 text-sm text-[#c8d4ec]">
+                      <td className="px-4 py-4 text-center text-sm text-[#c8d4ec]">
                         <p>WO: {workOrder.workOrderDate || "-"}</p>
                         <p className="text-xs text-[#8fa4c7]">
                           Expected: {workOrder.expectedDeliveryDate || "-"}
@@ -251,7 +231,7 @@ export default function PurchasesPage() {
                         </p>
                       </td>
 
-                      <td className="px-4 py-4">
+                      <td className="px-4 py-4 text-center">
                         <WorkOrderStatusBadge
                           status={workOrder.workOrderStatus}
                         />
@@ -263,16 +243,18 @@ export default function PurchasesPage() {
                         </p>
                       </td>
 
-                      <td className="px-4 py-4 text-sm font-semibold text-white">
+                      <td className="px-4 py-4 text-center text-sm font-semibold text-white">
                         {formatCurrency(workOrder.totalAmount)}
                       </td>
 
-                      <td className="px-4 py-4 text-right">
-                        <ActionButtons
-                          viewHref={`/purchases/view/${workOrder.id}`}
-                          editHref={`/purchases/edit/${workOrder.id}`}
-                          onDelete={() => setCancelTarget(workOrder)}
-                        />
+                      <td className="px-4 py-4">
+                        <div className="flex justify-center">
+                          <ActionButtons
+                            viewHref={`/purchases/view/${workOrder.id}`}
+                            editHref={`/purchases/edit/${workOrder.id}`}
+                            onDelete={() => setCancelTarget(workOrder)}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -294,7 +276,7 @@ export default function PurchasesPage() {
           {filteredWorkOrders.length === 0 && (
             <EmptyState
               title="No work orders found"
-              description="Try changing search/filter or add a new work order."
+              description="Try changing the filter or add a new work order."
             />
           )}
         </>
