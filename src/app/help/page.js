@@ -56,73 +56,85 @@ export default function HelpPage() {
         title="Help / SOP"
       />
 
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {sopSteps.map((step, index) => (
-          <div
-            key={step.title}
-            className="rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]"
-          >
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
-              {index + 1}
-            </span>
-            <h2 className="mt-3 text-base font-bold text-white">
-              {step.title}
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-[#b8c7e6]">
-              {step.details}
+      <section className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.4fr)_380px]">
+        <div className="overflow-hidden rounded-[24px] border border-[#2c3f63] bg-[#18253d]">
+          <div className="border-b border-[#2c3f63] px-4 py-3">
+            <h2 className="text-lg font-bold text-white">Standard Workflow</h2>
+            <p className="mt-1 text-sm text-[#8fa4c7]">
+              Follow this order while maintaining equipment records.
             </p>
           </div>
-        ))}
-      </section>
 
-      <section className="mt-3 rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
-        <h2 className="text-lg font-bold text-white">Support Rules</h2>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
-          <p className="rounded-2xl border border-[#314666] bg-[#101a2b] p-3 text-sm text-[#b8c7e6]">
-            Use controlled delete actions so audit history remains available.
-          </p>
-          <p className="rounded-2xl border border-[#314666] bg-[#101a2b] p-3 text-sm text-[#b8c7e6]">
-            Upload invoices, service reports and acknowledgement proofs wherever available.
-          </p>
-        </div>
-      </section>
-
-      <section className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
-          <h2 className="text-lg font-bold text-white">
-            Keyboard Shortcuts
-          </h2>
-          <div className="mt-4 space-y-3">
-            {shortcuts.map((shortcut) => (
+          <div className="relative px-4 py-2 before:absolute before:left-9 before:top-6 before:h-[calc(100%-48px)] before:w-px before:bg-[#314666]">
+            {sopSteps.map((step, index) => (
               <div
-                key={shortcut.keys}
-                className="flex items-center justify-between gap-3 rounded-2xl border border-[#314666] bg-[#101a2b] p-3"
+                key={step.title}
+                className="relative grid grid-cols-[44px_1fr] gap-3 border-b border-[#2c3f63] py-3 last:border-b-0"
               >
-                <span className="rounded-lg bg-slate-950 px-3 py-1.5 text-xs font-bold text-white dark:bg-indigo-600">
-                  {shortcut.keys}
+                <span className="z-10 grid h-9 w-9 place-items-center rounded-full border border-[#7c4cf3] bg-[#101a2b] text-sm font-bold text-white">
+                  {index + 1}
                 </span>
-                <p className="text-sm font-semibold text-[#b8c7e6]">
-                  {shortcut.action}
-                </p>
+                <div>
+                  <h3 className="text-sm font-bold text-white">{step.title}</h3>
+                  <p className="mt-1 text-sm leading-6 text-[#b8c7e6]">
+                    {step.details}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-[22px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-[0_12px_28px_rgba(6,12,24,0.12)]">
-          <h2 className="text-lg font-bold text-white">
-            Naming Convention
-          </h2>
-          <div className="mt-4 space-y-3">
-            {namingStandards.map((item) => (
-              <p
-                key={item}
-                className="rounded-2xl border border-[#314666] bg-[#101a2b] p-3 text-sm font-semibold text-[#b8c7e6]"
+        <aside className="overflow-hidden rounded-[24px] border border-[#2c3f63] bg-[#101a2b]">
+          <div className="border-b border-[#2c3f63] px-4 py-3">
+            <h2 className="text-lg font-bold text-white">Quick Reference</h2>
+          </div>
+
+          <div className="divide-y divide-[#2c3f63]">
+            {shortcuts.map((shortcut) => (
+              <div
+                key={shortcut.keys}
+                className="grid grid-cols-[100px_1fr] gap-3 px-4 py-3"
               >
-                {item}
-              </p>
+                <span className="rounded-lg bg-[#7c4cf3] px-3 py-1.5 text-center text-xs font-bold text-white">
+                  {shortcut.keys}
+                </span>
+                <p className="text-sm font-semibold text-[#c8d4ec]">
+                  {shortcut.action}
+                </p>
+              </div>
             ))}
           </div>
+        </aside>
+      </section>
+
+      <section className="mt-4 overflow-hidden rounded-[24px] border border-[#2c3f63] bg-[#18253d]">
+        <div className="grid grid-cols-1 divide-y divide-[#2c3f63] lg:grid-cols-[260px_1fr] lg:divide-x lg:divide-y-0">
+          <div className="px-4 py-3">
+            <h2 className="text-lg font-bold text-white">Support Rules</h2>
+            <p className="mt-1 text-sm text-[#8fa4c7]">Operational guidance</p>
+          </div>
+          <div className="grid grid-cols-1 divide-y divide-[#2c3f63] md:grid-cols-2 md:divide-x md:divide-y-0">
+            <p className="p-4 text-sm leading-6 text-[#b8c7e6]">
+              Use controlled delete actions so audit history remains available.
+            </p>
+            <p className="p-4 text-sm leading-6 text-[#b8c7e6]">
+              Upload invoices, service reports and acknowledgement proofs wherever available.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-4 overflow-hidden rounded-[24px] border border-[#2c3f63] bg-[#101a2b]">
+        <div className="border-b border-[#2c3f63] px-4 py-3">
+          <h2 className="text-lg font-bold text-white">Naming Convention</h2>
+        </div>
+        <div className="divide-y divide-[#2c3f63]">
+          {namingStandards.map((item) => (
+            <p key={item} className="px-4 py-3 text-sm font-semibold text-[#c8d4ec]">
+              {item}
+            </p>
+          ))}
         </div>
       </section>
     </LayoutWrapper>

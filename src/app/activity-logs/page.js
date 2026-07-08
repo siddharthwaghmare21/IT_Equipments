@@ -252,24 +252,24 @@ export default function ActivityLogsPage() {
 
       <TableWrapper>
         <table className="min-w-[1300px] w-full text-sm">
-          <thead className="bg-[#101a2b] text-left">
+          <thead className="bg-[#101a2b] text-center">
             <tr className="border-b border-[#263754]">
-              <th className="px-4 py-3 font-semibold text-[#8fa4c7]">Date</th>
-              <th className="px-4 py-3 font-semibold text-[#8fa4c7]">Time</th>
-              <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+              <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">Date</th>
+              <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">Time</th>
+              <th className="text-center px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                 Module
               </th>
-              <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+              <th className="text-center px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                 Action
               </th>
-              <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+              <th className="text-center px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                 Description
               </th>
-              <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+              <th className="text-center px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                 Performed By
               </th>
-              <th className="px-4 py-3 font-semibold text-[#8fa4c7]">Role</th>
-              <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
+              <th className="text-center px-4 py-3 font-semibold text-[#8fa4c7]">Role</th>
+              <th className="text-center px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">
                 Status
               </th>
             </tr>
@@ -281,29 +281,29 @@ export default function ActivityLogsPage() {
                 key={log.id}
                 className="hover:bg-[#1f2f4a]"
               >
-                <td className="px-4 py-4 font-semibold text-white">
+                <td className="text-center px-4 py-4 font-semibold text-white">
                   {log.date}
                 </td>
 
-                <td className="px-4 py-4 text-[#c8d4ec]">{log.time}</td>
+                <td className="text-center px-4 py-4 text-[#c8d4ec]">{log.time}</td>
 
-                <td className="px-4 py-4 text-[#c8d4ec]">{log.module}</td>
+                <td className="text-center px-4 py-4 text-[#c8d4ec]">{log.module}</td>
 
-                <td className="px-4 py-4 font-semibold text-white">
+                <td className="text-center px-4 py-4 font-semibold text-white">
                   {log.action}
                 </td>
 
-                <td className="px-4 py-4 text-[#c8d4ec]">
+                <td className="text-center px-4 py-4 text-[#c8d4ec]">
                   {log.description}
                 </td>
 
-                <td className="px-4 py-4 text-[#c8d4ec]">
+                <td className="text-center px-4 py-4 text-[#c8d4ec]">
                   {log.performedBy}
                 </td>
 
-                <td className="px-4 py-4 text-[#c8d4ec]">{log.role}</td>
+                <td className="text-center px-4 py-4 text-[#c8d4ec]">{log.role}</td>
 
-                <td className="px-4 py-4">
+                <td className="text-center px-4 py-4">
                   <ActivityStatusBadge status={log.status} />
                 </td>
               </tr>

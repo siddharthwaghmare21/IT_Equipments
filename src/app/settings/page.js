@@ -541,12 +541,12 @@ export default function SettingsPage() {
                   </p>
                 )}
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
+              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-end">
                 <button
                   type="button"
                   onClick={handleCreateBackupJob}
                   disabled={!canUseBackup}
-                  className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
+                  className="inline-flex min-h-10 w-full min-w-[170px] items-center justify-center whitespace-normal rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-sm font-semibold leading-5 text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 sm:w-auto"
                 >
                   Create Backup Job
                 </button>
@@ -554,7 +554,7 @@ export default function SettingsPage() {
                   type="button"
                   onClick={handleDownloadBackupSnapshot}
                   disabled={!canUseBackup}
-                  className="inline-flex h-10 items-center justify-center rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 dark:bg-indigo-600 dark:hover:bg-indigo-500"
+                  className="inline-flex min-h-10 w-full min-w-[160px] items-center justify-center whitespace-normal rounded-lg bg-slate-950 px-4 py-2 text-center text-sm font-semibold leading-5 text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 dark:bg-indigo-600 dark:hover:bg-indigo-500 sm:w-auto"
                 >
                   Download Backup
                 </button>

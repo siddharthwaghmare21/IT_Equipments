@@ -308,13 +308,13 @@ export default function AdminUsersManagementPage() {
           <table className="min-w-full text-sm">
             <thead className="bg-[#101a2b]">
               <tr>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">User</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Contact</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Role</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Status</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Created At</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Manage Role</th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Action</th>
+                <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">User</th>
+                <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Contact</th>
+                <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Role</th>
+                <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Status</th>
+                <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Created At</th>
+                <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Manage Role</th>
+                <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">Action</th>
               </tr>
             </thead>
 
@@ -331,29 +331,29 @@ export default function AdminUsersManagementPage() {
               ) : (
                 pagedUsers.map((user) => (
                   <tr key={user.id} className="transition hover:bg-[#1f2f4a]">
-                    <td className="whitespace-nowrap px-4 py-4">
+                    <td className="text-center whitespace-nowrap px-4 py-4">
                       <p className="font-semibold text-white">{user.fullName}</p>
                       <p className="mt-1 text-xs text-[#8fa4c7]">{user.department}</p>
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-4 text-[#c8d4ec]">
+                    <td className="text-center whitespace-nowrap px-4 py-4 text-[#c8d4ec]">
                       <p>{user.email}</p>
                       <p className="mt-1 text-xs text-[#8fa4c7]">{user.phone || "-"}</p>
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-4">
+                    <td className="text-center whitespace-nowrap px-4 py-4">
                       <RoleBadge role={user.role} />
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-4">
+                    <td className="text-center whitespace-nowrap px-4 py-4">
                       <StatusBadge status={user.status} />
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-4 text-[#c8d4ec]">
+                    <td className="text-center whitespace-nowrap px-4 py-4 text-[#c8d4ec]">
                       {formatDate(user.createdAt)}
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-4">
+                    <td className="text-center whitespace-nowrap px-4 py-4">
                       <select
                         value={user.roleCode}
                         onChange={(event) =>
@@ -370,7 +370,7 @@ export default function AdminUsersManagementPage() {
                       </select>
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-4">
+                    <td className="text-center whitespace-nowrap px-4 py-4">
                       <button
                         type="button"
                         onClick={() => toggleUserStatus(user.id)}

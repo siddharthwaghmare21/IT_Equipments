@@ -316,25 +316,25 @@ export default function AdminRequestManagementPage() {
         <table className="min-w-full text-sm">
           <thead className="bg-[#101a2b]">
             <tr>
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
+              <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 User
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
+              <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Contact
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
+              <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Requested Role
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
+              <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Status
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
+              <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Requested At
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
+              <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Reason
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
+              <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Actions
               </th>
             </tr>
@@ -353,7 +353,7 @@ export default function AdminRequestManagementPage() {
             ) : (
               pagedRequests.map((request) => (
                 <tr key={request.id} className="transition hover:bg-[#1f2f4a]">
-                  <td className="whitespace-nowrap px-4 py-4">
+                  <td className="text-center whitespace-nowrap px-4 py-4">
                     <p className="font-semibold text-white">
                       {request.fullName}
                     </p>
@@ -362,32 +362,32 @@ export default function AdminRequestManagementPage() {
                     </p>
                   </td>
 
-                  <td className="whitespace-nowrap px-4 py-4 text-[#c8d4ec]">
+                  <td className="text-center whitespace-nowrap px-4 py-4 text-[#c8d4ec]">
                     <p>{request.email}</p>
                     <p className="mt-1 text-xs text-[#8fa4c7]">
                       {request.phone}
                     </p>
                   </td>
 
-                  <td className="whitespace-nowrap px-4 py-4">
+                  <td className="text-center whitespace-nowrap px-4 py-4">
                     <RoleBadge role={request.requestedRole} />
                   </td>
 
-                  <td className="whitespace-nowrap px-4 py-4">
+                  <td className="text-center whitespace-nowrap px-4 py-4">
                     <StatusBadge status={request.status} />
                   </td>
 
-                  <td className="whitespace-nowrap px-4 py-4 text-[#c8d4ec]">
+                  <td className="text-center whitespace-nowrap px-4 py-4 text-[#c8d4ec]">
                     {formatDate(request.requestedAt)}
                   </td>
 
-                  <td className="min-w-64 px-4 py-4 text-[#c8d4ec]">
-                    <p className="line-clamp-2">{request.reason}</p>
+                  <td className="text-center min-w-64 px-4 py-4 text-[#c8d4ec]">
+                    <p className="line-clamp-2 text-center">{request.reason}</p>
                   </td>
 
-                  <td className="whitespace-nowrap px-4 py-4">
+                  <td className="text-center whitespace-nowrap px-4 py-4">
                     {request.status === "Pending" ? (
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap justify-center gap-2">
                         <button
                           type="button"
                           onClick={() => approveRequest(request.id)}
