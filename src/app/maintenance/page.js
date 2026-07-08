@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
@@ -26,6 +27,16 @@ import {
 } from "@/lib/maintenanceMapper";
 
 const filters = ["All", ...maintenanceStatuses];
+const printColumns = [
+  { key: "maintenanceCode", label: "Maintenance Code" },
+  { key: "assetTag", label: "Asset Tag" },
+  { key: "assetName", label: "Asset Name" },
+  { key: "issueType", label: "Issue Type" },
+  { key: "vendorName", label: "Vendor" },
+  { key: "priority", label: "Priority" },
+  { key: "serviceDate", label: "Service Date" },
+  { key: "maintenanceStatus", label: "Status" },
+];
 
 function MaintenanceStatusBadge({ status }) {
   const statusStyles = {
@@ -50,6 +61,7 @@ export default function MaintenancePage() {
   const [maintenanceRecords, setMaintenanceRecords] = useState([]);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [cancelTarget, setCancelTarget] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -105,6 +117,11 @@ export default function MaintenancePage() {
     });
   }, [maintenanceRecords, search, activeFilter]);
 
+  const pagedMaintenanceRecords = useMemo(() => {
+    const startIndex = (currentPage - 1) * 10;
+    return filteredMaintenanceRecords.slice(startIndex, startIndex + 10);
+  }, [currentPage, filteredMaintenanceRecords]);
+
   async function confirmCancel() {
     const token = getSessionToken();
 
@@ -134,6 +151,7 @@ export default function MaintenancePage() {
         exportData={filteredMaintenanceRecords}
         exportFileName="maintenance"
         printTitle="Maintenance"
+        printColumns={printColumns}
         printDescription="Official maintenance register generated from the current filtered maintenance records."
       />
 
@@ -156,7 +174,10 @@ export default function MaintenancePage() {
               <input
                 type="text"
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setCurrentPage(1);
+                }}
                 placeholder="Search by code, asset, issue, vendor, priority or status..."
                 className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-md"
               />
@@ -166,7 +187,10 @@ export default function MaintenancePage() {
                   <button
                     key={filter}
                     type="button"
-                    onClick={() => setActiveFilter(filter)}
+                    onClick={() => {
+                      setActiveFilter(filter);
+                      setCurrentPage(1);
+                    }}
                     className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                       activeFilter === filter
                         ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
@@ -239,7 +263,7 @@ export default function MaintenancePage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#263754] bg-[#18253d]">
-                  {filteredMaintenanceRecords.map((record) => (
+                  {pagedMaintenanceRecords.map((record) => (
                     <tr
                       key={record.id}
                       className="hover:bg-[#1f2f4a]"
@@ -291,6 +315,16 @@ export default function MaintenancePage() {
               </table>
             </TableWrapper>
           </div>
+
+          {filteredMaintenanceRecords.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={filteredMaintenanceRecords.length}
+              pageSize={10}
+              onPageChange={setCurrentPage}
+              itemLabel="maintenance records"
+            />
+          )}
 
           {filteredMaintenanceRecords.length === 0 && (
             <EmptyState

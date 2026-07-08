@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+
 const hiddenColumns = new Set([
   "id",
   "assetId",
@@ -22,16 +23,26 @@ function formatColumnName(column) {
 export default function ProfessionalPrintDocument({
   title,
   data = [],
+  columns: providedColumns = [],
   labelCard = null,
   detailSections = null,
   fileName = "records",
 }) {
   const columns = useMemo(() => {
+    if (providedColumns.length > 0) {
+      return providedColumns.slice(0, 8);
+    }
+
     const firstRecord = data[0] || {};
     return Object.keys(firstRecord)
       .filter((column) => !hiddenColumns.has(column))
-      .slice(0, 12);
-  }, [data]);
+      .slice(0, 8)
+      .map((column) => ({
+        key: column,
+        label: formatColumnName(column),
+      }));
+  }, [data, providedColumns]);
+
   return (
     <section
       className="print-only print-root print-area report-document overflow-hidden border border-gray-200 bg-white shadow-sm"
@@ -124,10 +135,10 @@ export default function ProfessionalPrintDocument({
                   <tr>
                     {columns.map((column) => (
                       <th
-                        key={column}
+                        key={column.key}
                         className="border-b border-r border-gray-200 px-3 py-2 text-left font-bold uppercase tracking-wide text-gray-500 last:border-r-0"
                       >
-                        {formatColumnName(column)}
+                        {column.label}
                       </th>
                     ))}
                   </tr>
@@ -140,10 +151,10 @@ export default function ProfessionalPrintDocument({
                     >
                       {columns.map((column) => (
                         <td
-                          key={column}
+                          key={column.key}
                           className="border-r border-gray-100 px-3 py-2 font-medium text-gray-800 last:border-r-0"
                         >
-                          {String(record[column] ?? "-")}
+                          {String(record[column.key] ?? "-")}
                         </td>
                       ))}
                     </tr>

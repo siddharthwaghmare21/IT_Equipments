@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
@@ -19,6 +20,16 @@ import { getSessionToken } from "@/lib/authSession";
 import { deliveryStatuses, mapDeliveryFromApi } from "@/lib/deliveryMapper";
 
 const filters = ["All", ...deliveryStatuses];
+const printColumns = [
+  { key: "deliveryCode", label: "Delivery Code" },
+  { key: "assetTag", label: "Asset Tag" },
+  { key: "assetName", label: "Asset Name" },
+  { key: "receiverName", label: "Receiver" },
+  { key: "departmentName", label: "Department" },
+  { key: "deliveryDate", label: "Delivery Date" },
+  { key: "acknowledgementStatus", label: "Acknowledgement" },
+  { key: "deliveryStatus", label: "Status" },
+];
 
 function DeliveryStatusBadge({ status }) {
   const statusStyles = {
@@ -42,6 +53,7 @@ export default function DeliveriesPage() {
   const [deliveries, setDeliveries] = useState([]);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [cancelTarget, setCancelTarget] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -97,6 +109,11 @@ export default function DeliveriesPage() {
     });
   }, [deliveries, search, activeFilter]);
 
+  const pagedDeliveries = useMemo(() => {
+    const startIndex = (currentPage - 1) * 10;
+    return filteredDeliveries.slice(startIndex, startIndex + 10);
+  }, [currentPage, filteredDeliveries]);
+
   async function confirmCancel() {
     const token = getSessionToken();
 
@@ -126,6 +143,7 @@ export default function DeliveriesPage() {
         exportData={filteredDeliveries}
         exportFileName="deliveries"
         printTitle="Deliveries"
+        printColumns={printColumns}
         printDescription="Official delivery register generated from the current filtered delivery records."
       />
 
@@ -148,7 +166,10 @@ export default function DeliveriesPage() {
               <input
                 type="text"
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setCurrentPage(1);
+                }}
                 placeholder="Search by delivery code, asset tag, asset name, receiver or department..."
                 className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-md"
               />
@@ -158,7 +179,10 @@ export default function DeliveriesPage() {
                   <button
                     key={filter}
                     type="button"
-                    onClick={() => setActiveFilter(filter)}
+                    onClick={() => {
+                      setActiveFilter(filter);
+                      setCurrentPage(1);
+                    }}
                     className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                       activeFilter === filter
                         ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
@@ -229,7 +253,7 @@ export default function DeliveriesPage() {
                 </thead>
 
                 <tbody className="divide-y divide-[#263754] bg-[#18253d]">
-                  {filteredDeliveries.map((delivery) => (
+                  {pagedDeliveries.map((delivery) => (
                     <tr
                       key={delivery.id}
                       className="hover:bg-[#1f2f4a]"
@@ -276,6 +300,16 @@ export default function DeliveriesPage() {
               </table>
             </TableWrapper>
           </div>
+
+          {filteredDeliveries.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={filteredDeliveries.length}
+              pageSize={10}
+              onPageChange={setCurrentPage}
+              itemLabel="deliveries"
+            />
+          )}
 
           {filteredDeliveries.length === 0 && (
             <EmptyState

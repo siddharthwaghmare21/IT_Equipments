@@ -8,6 +8,7 @@ export default function ReportPageShell({
   title,
   data = [],
   fileName = "report",
+  printColumns,
   children,
 }) {
   return (
@@ -22,6 +23,7 @@ export default function ReportPageShell({
               data={data}
               fileName={fileName}
               showDataExports={Boolean(data?.length)}
+              columns={printColumns}
             />
           </div>
           <h1 className="text-2xl font-bold text-gray-950 dark:!text-white">{title}</h1>

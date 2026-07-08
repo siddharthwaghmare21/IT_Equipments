@@ -5,6 +5,7 @@ import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import StatusBadge from "@/components/common/StatusBadge";
 import TableWrapper from "@/components/common/TableWrapper";
+import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
@@ -24,6 +25,16 @@ import {
 } from "@/lib/assetMapper";
 
 const filters = ["All", ...assetStatuses];
+const printColumns = [
+  { key: "assetTag", label: "Asset Tag" },
+  { key: "assetName", label: "Asset Name" },
+  { key: "category", label: "Category" },
+  { key: "serialNumber", label: "Serial No." },
+  { key: "currentDepartmentName", label: "Department" },
+  { key: "currentReceiverName", label: "Receiver" },
+  { key: "lifecycleStatus", label: "Lifecycle" },
+  { key: "assetStatus", label: "Status" },
+];
 
 export default function AssetsPage() {
   const [assets, setAssets] = useState([]);
@@ -32,6 +43,7 @@ export default function AssetsPage() {
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [departmentFilter, setDepartmentFilter] = useState("All");
   const [conditionFilter, setConditionFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [archiveTarget, setArchiveTarget] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isArchiving, setIsArchiving] = useState(false);
@@ -117,6 +129,11 @@ export default function AssetsPage() {
     });
   }, [assets, search, activeFilter, categoryFilter, departmentFilter, conditionFilter]);
 
+  const pagedAssets = useMemo(() => {
+    const startIndex = (currentPage - 1) * 10;
+    return filteredAssets.slice(startIndex, startIndex + 10);
+  }, [currentPage, filteredAssets]);
+
   async function confirmArchive() {
     if (!archiveTarget) return;
 
@@ -150,6 +167,7 @@ export default function AssetsPage() {
         exportData={filteredAssets}
         exportFileName="assets"
         printTitle="Assets"
+        printColumns={printColumns}
         printDescription="Official asset register generated from the current filtered asset records."
       />
 
@@ -158,7 +176,10 @@ export default function AssetsPage() {
           <input
             type="text"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setCurrentPage(1);
+            }}
             placeholder="Search by asset tag, name, serial number, department, work order ref or location..."
             className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3]"
           />
@@ -168,7 +189,10 @@ export default function AssetsPage() {
               <button
                 key={filter}
                 type="button"
-                onClick={() => setActiveFilter(filter)}
+                onClick={() => {
+                  setActiveFilter(filter);
+                  setCurrentPage(1);
+                }}
                 className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                   activeFilter === filter
                     ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
@@ -183,7 +207,10 @@ export default function AssetsPage() {
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <select
               value={categoryFilter}
-              onChange={(event) => setCategoryFilter(event.target.value)}
+              onChange={(event) => {
+                setCategoryFilter(event.target.value);
+                setCurrentPage(1);
+              }}
               className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             >
               {categoryOptions.map((category) => (
@@ -195,7 +222,10 @@ export default function AssetsPage() {
 
             <select
               value={departmentFilter}
-              onChange={(event) => setDepartmentFilter(event.target.value)}
+              onChange={(event) => {
+                setDepartmentFilter(event.target.value);
+                setCurrentPage(1);
+              }}
               className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             >
               {departmentOptions.map((department) => (
@@ -207,7 +237,10 @@ export default function AssetsPage() {
 
             <select
               value={conditionFilter}
-              onChange={(event) => setConditionFilter(event.target.value)}
+              onChange={(event) => {
+                setConditionFilter(event.target.value);
+                setCurrentPage(1);
+              }}
               className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             >
               <option value="All">All Conditions</option>
@@ -298,7 +331,7 @@ export default function AssetsPage() {
                 </thead>
 
                 <tbody className="divide-y divide-[#263754] bg-[#18253d]">
-                  {filteredAssets.map((asset) => (
+                  {pagedAssets.map((asset) => (
                     <tr
                       key={asset.id}
                       className="hover:bg-[#1f2f4a]"
@@ -364,6 +397,15 @@ export default function AssetsPage() {
                     description="Try changing search, status, category, department or condition filters."
                   />
                 </div>
+              )}
+              {filteredAssets.length > 0 && (
+                <TablePagination
+                  currentPage={currentPage}
+                  totalItems={filteredAssets.length}
+                  pageSize={10}
+                  onPageChange={setCurrentPage}
+                  itemLabel="assets"
+                />
               )}
             </TableWrapper>
           </div>

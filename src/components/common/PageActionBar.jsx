@@ -37,6 +37,7 @@ export default function PageActionBar({
   exportData,
   exportFileName,
   printTitle,
+  printColumns,
   children,
 }) {
   const currentUser = readSession();
@@ -64,6 +65,7 @@ export default function PageActionBar({
               data={exportData || []}
               fileName={exportFileName || "records"}
               showDataExports={Boolean(exportData)}
+              columns={printColumns}
             />
           </div>
         </div>
@@ -72,6 +74,7 @@ export default function PageActionBar({
         <ProfessionalPrintDocument
           title={printTitle || "Records"}
           data={exportData}
+          columns={printColumns}
           fileName={exportFileName || "records"}
         />
       )}

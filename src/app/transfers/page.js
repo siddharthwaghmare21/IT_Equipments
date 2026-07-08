@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
@@ -20,6 +21,16 @@ import { mapTransferFromApi, transferStatuses } from "@/lib/transferMapper";
 
 const workflowTabs = ["All", "Transfer", "IT Collection", "Reassign"];
 const statusFilters = ["All", ...transferStatuses];
+const printColumns = [
+  { key: "transferCode", label: "Transfer Code" },
+  { key: "transferType", label: "Type" },
+  { key: "assetTag", label: "Asset Tag" },
+  { key: "assetName", label: "Asset Name" },
+  { key: "fromDepartmentName", label: "From Department" },
+  { key: "toDepartmentName", label: "To Department" },
+  { key: "newReceiverName", label: "New Receiver" },
+  { key: "transferStatus", label: "Status" },
+];
 
 function TransferStatusBadge({ status }) {
   const styles = {
@@ -46,6 +57,7 @@ export default function TransfersPage() {
   const [search, setSearch] = useState("");
   const [activeWorkflow, setActiveWorkflow] = useState("All");
   const [activeStatus, setActiveStatus] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [cancelTarget, setCancelTarget] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -110,6 +122,11 @@ export default function TransfersPage() {
     });
   }, [transferRecords, search, activeWorkflow, activeStatus]);
 
+  const pagedTransfers = useMemo(() => {
+    const startIndex = (currentPage - 1) * 10;
+    return filteredTransfers.slice(startIndex, startIndex + 10);
+  }, [currentPage, filteredTransfers]);
+
   async function confirmCancel() {
     const token = getSessionToken();
 
@@ -139,6 +156,7 @@ export default function TransfersPage() {
         exportData={filteredTransfers}
         exportFileName="transfers"
         printTitle="Transfers"
+        printColumns={printColumns}
         printDescription="Official transfer register generated from the current filtered transfer records."
       />
 
@@ -163,7 +181,10 @@ export default function TransfersPage() {
                   <button
                     key={tab}
                     type="button"
-                    onClick={() => setActiveWorkflow(tab)}
+                    onClick={() => {
+                      setActiveWorkflow(tab);
+                      setCurrentPage(1);
+                    }}
                     className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                       activeWorkflow === tab
                         ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
@@ -179,14 +200,20 @@ export default function TransfersPage() {
                 <input
                   type="text"
                   value={search}
-                  onChange={(event) => setSearch(event.target.value)}
+                  onChange={(event) => {
+                    setSearch(event.target.value);
+                    setCurrentPage(1);
+                  }}
                   placeholder="Search transfer code, asset, department, receiver, reason or status..."
                   className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-lg"
                 />
 
                 <select
                   value={activeStatus}
-                  onChange={(event) => setActiveStatus(event.target.value)}
+                  onChange={(event) => {
+                    setActiveStatus(event.target.value);
+                    setCurrentPage(1);
+                  }}
                   className="rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
                 >
                   {statusFilters.map((status) => (
@@ -252,7 +279,7 @@ export default function TransfersPage() {
                 </thead>
 
                 <tbody className="divide-y divide-[#263754] bg-[#18253d]">
-                  {filteredTransfers.map((transfer) => (
+                  {pagedTransfers.map((transfer) => (
                     <tr
                       key={transfer.id}
                       className="hover:bg-[#1f2f4a]"
@@ -321,6 +348,15 @@ export default function TransfersPage() {
                     description="Try changing workflow, status or search filters."
                   />
                 </div>
+              )}
+              {filteredTransfers.length > 0 && (
+                <TablePagination
+                  currentPage={currentPage}
+                  totalItems={filteredTransfers.length}
+                  pageSize={10}
+                  onPageChange={setCurrentPage}
+                  itemLabel="transfers"
+                />
               )}
             </TableWrapper>
           </div>

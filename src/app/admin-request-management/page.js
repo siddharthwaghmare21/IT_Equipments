@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import TablePagination from "@/components/common/TablePagination";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import {
   EmptyState,
@@ -20,15 +21,15 @@ import { getSessionToken, readSession } from "@/lib/authSession";
 
 function StatusBadge({ status }) {
   const styles = {
-    Pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
-    Approved: "bg-green-100 text-green-700 border-green-200",
-    Rejected: "bg-red-100 text-red-700 border-red-200",
+    Pending: "border-amber-500/30 bg-amber-500/12 text-amber-200",
+    Approved: "border-emerald-500/30 bg-emerald-500/12 text-emerald-200",
+    Rejected: "border-rose-500/30 bg-rose-500/12 text-rose-200",
   };
 
   return (
     <span
       className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
-        styles[status] || "border-slate-200 bg-slate-100 text-slate-700"
+        styles[status] || "border-[#314666] bg-[#101a2b] text-[#c8d4ec]"
       }`}
     >
       {status}
@@ -38,16 +39,16 @@ function StatusBadge({ status }) {
 
 function RoleBadge({ role }) {
   const styles = {
-    "Super Admin": "bg-purple-100 text-purple-700 border-purple-200",
-    Admin: "bg-blue-100 text-blue-700 border-blue-200",
-    Employee: "bg-slate-100 text-slate-700 border-slate-200",
-    Viewer: "bg-orange-100 text-orange-700 border-orange-200",
+    "Super Admin": "border-violet-500/30 bg-violet-500/12 text-violet-200",
+    Admin: "border-sky-500/30 bg-sky-500/12 text-sky-200",
+    Employee: "border-[#314666] bg-[#101a2b] text-[#c8d4ec]",
+    Viewer: "border-orange-500/30 bg-orange-500/12 text-orange-200",
   };
 
   return (
     <span
       className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
-        styles[role] || "border-slate-200 bg-slate-100 text-slate-700"
+        styles[role] || "border-[#314666] bg-[#101a2b] text-[#c8d4ec]"
       }`}
     >
       {role}
@@ -93,6 +94,7 @@ export default function AdminRequestManagementPage() {
   const [requests, setRequests] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [statusFilter, setStatusFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [pendingDecision, setPendingDecision] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -137,6 +139,11 @@ export default function AdminRequestManagementPage() {
 
     return requests.filter((request) => request.status === statusFilter);
   }, [requests, statusFilter]);
+
+  const pagedRequests = useMemo(() => {
+    const startIndex = (currentPage - 1) * 10;
+    return filteredRequests.slice(startIndex, startIndex + 10);
+  }, [currentPage, filteredRequests]);
 
   function approveRequest(requestId) {
     if (!canApproveAccess) {
@@ -255,11 +262,11 @@ export default function AdminRequestManagementPage() {
     <LayoutWrapper>
       <PageHeader
         title="Admin Request Management"
-        description="Review, approve or reject IT staff access requests. Super Admin can approve all roles; Admin can approve Admin, Employee and Viewer requests."
+        description="Review pending access requests and complete approval decisions."
       />
 
       {!canApproveAccess && (
-        <section className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm leading-6 text-yellow-800 shadow-sm">
+        <section className="mb-4 rounded-[24px] border border-amber-500/30 bg-amber-500/10 p-4 text-sm leading-6 text-amber-200 shadow-sm">
           You are not logged in as Super Admin or Admin. Approval and rejection
           actions are disabled.
         </section>
@@ -278,21 +285,24 @@ export default function AdminRequestManagementPage() {
         />
       ) : (
         <>
-      <section className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+      <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-5 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">
+            <h2 className="text-lg font-bold text-white">
               Access Requests
             </h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-[#8fa4c7]">
               Showing {filteredRequests.length} filtered requests.
             </p>
           </div>
 
           <select
             value={statusFilter}
-            onChange={(event) => setStatusFilter(event.target.value)}
-            className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 sm:w-52"
+            onChange={(event) => {
+              setStatusFilter(event.target.value);
+              setCurrentPage(1);
+            }}
+            className="h-11 w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 text-sm text-white outline-none focus:border-[#7c3aed] sm:w-52"
           >
             <option value="All">All Requests</option>
             <option value="Pending">Pending</option>
@@ -303,34 +313,34 @@ export default function AdminRequestManagementPage() {
       </section>
 
       <TableWrapper>
-        <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-          <thead className="bg-slate-50 dark:bg-slate-900">
+        <table className="min-w-full text-sm">
+          <thead className="bg-[#101a2b]">
             <tr>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">
+              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 User
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">
+              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Contact
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">
+              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Requested Role
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">
+              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Status
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">
+              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Requested At
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">
+              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Reason
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200">
+              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]">
                 Actions
               </th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-950">
+          <tbody className="divide-y divide-[#2c3f63] bg-[#18253d]">
             {filteredRequests.length === 0 ? (
               <tr>
                 <td colSpan="7" className="px-4 py-8">
@@ -341,20 +351,20 @@ export default function AdminRequestManagementPage() {
                 </td>
               </tr>
             ) : (
-              filteredRequests.map((request) => (
-                <tr key={request.id} className="hover:bg-slate-50 dark:hover:bg-slate-900">
+              pagedRequests.map((request) => (
+                <tr key={request.id} className="transition hover:bg-[#1f2f4a]">
                   <td className="whitespace-nowrap px-4 py-4">
-                    <p className="font-semibold text-slate-950 dark:text-slate-100">
+                    <p className="font-semibold text-white">
                       {request.fullName}
                     </p>
-                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    <p className="mt-1 text-xs text-[#8fa4c7]">
                       {request.department || "IT Department"}
                     </p>
                   </td>
 
-                  <td className="whitespace-nowrap px-4 py-4 text-slate-700 dark:text-slate-300">
+                  <td className="whitespace-nowrap px-4 py-4 text-[#c8d4ec]">
                     <p>{request.email}</p>
-                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    <p className="mt-1 text-xs text-[#8fa4c7]">
                       {request.phone}
                     </p>
                   </td>
@@ -367,11 +377,11 @@ export default function AdminRequestManagementPage() {
                     <StatusBadge status={request.status} />
                   </td>
 
-                  <td className="whitespace-nowrap px-4 py-4 text-slate-700 dark:text-slate-300">
+                  <td className="whitespace-nowrap px-4 py-4 text-[#c8d4ec]">
                     {formatDate(request.requestedAt)}
                   </td>
 
-                  <td className="min-w-64 px-4 py-4 text-slate-700 dark:text-slate-300">
+                  <td className="min-w-64 px-4 py-4 text-[#c8d4ec]">
                     <p className="line-clamp-2">{request.reason}</p>
                   </td>
 
@@ -382,7 +392,7 @@ export default function AdminRequestManagementPage() {
                           type="button"
                           onClick={() => approveRequest(request.id)}
                           disabled={!canApproveAccess}
-                          className="rounded-lg bg-green-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+                          className="rounded-xl border border-emerald-500/30 bg-emerald-500/15 px-3 py-1.5 text-xs font-semibold text-emerald-100 hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:border-[#314666] disabled:bg-[#101a2b] disabled:text-[#6d7f9b]"
                         >
                           Approve
                         </button>
@@ -391,13 +401,13 @@ export default function AdminRequestManagementPage() {
                           type="button"
                           onClick={() => rejectRequest(request.id)}
                           disabled={!canApproveAccess}
-                          className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400"
+                          className="rounded-xl border border-rose-500/30 bg-rose-500/12 px-3 py-1.5 text-xs font-semibold text-rose-100 hover:bg-rose-500/18 disabled:cursor-not-allowed disabled:border-[#314666] disabled:bg-[#101a2b] disabled:text-[#6d7f9b]"
                         >
                           Reject
                         </button>
                       </div>
                     ) : (
-                      <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      <span className="text-xs font-semibold text-[#8fa4c7]">
                         Action completed
                       </span>
                     )}
@@ -408,6 +418,15 @@ export default function AdminRequestManagementPage() {
           </tbody>
         </table>
       </TableWrapper>
+      {filteredRequests.length > 0 && (
+        <TablePagination
+          currentPage={currentPage}
+          totalItems={filteredRequests.length}
+          pageSize={10}
+          onPageChange={setCurrentPage}
+          itemLabel="requests"
+        />
+      )}
         </>
       )}
 

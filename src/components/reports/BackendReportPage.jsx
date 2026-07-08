@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ReportPageShell from "@/components/common/ReportPageShell";
 import StatusBadge from "@/components/common/StatusBadge";
 import TableWrapper from "@/components/common/TableWrapper";
+import TablePagination from "@/components/common/TablePagination";
 import {
   EmptyState,
   ErrorState,
@@ -40,8 +41,15 @@ export default function BackendReportPage({
   columns,
 }) {
   const [records, setRecords] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const pageSize = 10;
+  const visibleColumns = useMemo(() => columns.slice(0, 8), [columns]);
+  const pagedRecords = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return records.slice(startIndex, startIndex + pageSize);
+  }, [currentPage, records]);
 
   const loadReport = useCallback(async () => {
     const session = readSession();
@@ -79,6 +87,7 @@ export default function BackendReportPage({
       title={title}
       data={records}
       fileName={fileName}
+      printColumns={visibleColumns}
     >
       {isLoading ? (
         <LoadingState
@@ -102,7 +111,7 @@ export default function BackendReportPage({
             <table className="min-w-[1400px] w-full text-sm">
               <thead className="bg-slate-50 text-left dark:bg-slate-900">
                 <tr className="border-b border-slate-200 dark:border-slate-800">
-                  {columns.map((column) => (
+                  {visibleColumns.map((column) => (
                     <th
                       key={column.key}
                       className="whitespace-nowrap border-r border-slate-200 px-4 py-3 font-semibold text-slate-700 last:border-r-0 dark:border-slate-800 dark:text-slate-100"
@@ -114,12 +123,12 @@ export default function BackendReportPage({
               </thead>
 
               <tbody>
-                {records.map((record, index) => (
+                {pagedRecords.map((record, index) => (
                   <tr
                     key={record.id || `${reportType}-${index}`}
                     className="border-b border-slate-100 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
                   >
-                    {columns.map((column) => (
+                    {visibleColumns.map((column) => (
                       <td
                         key={column.key}
                         className="whitespace-nowrap border-r border-slate-100 px-4 py-4 text-slate-700 last:border-r-0 dark:border-slate-800 dark:text-slate-100"
@@ -137,6 +146,13 @@ export default function BackendReportPage({
                 ))}
               </tbody>
             </table>
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={records.length}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              itemLabel="report rows"
+            />
           </TableWrapper>
         </>
       )}

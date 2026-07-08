@@ -49,7 +49,17 @@ export default function ReportExportButtons({
   data = [],
   fileName = "report",
   showDataExports = true,
+  columns = [],
 }) {
+  const activeColumns =
+    columns.length > 0
+      ? columns.map((column) =>
+          typeof column === "string"
+            ? { key: column, label: column }
+            : { key: column.key, label: column.label || column.key }
+        )
+      : [];
+
   async function createTrackingJob(exportType) {
     const token = getSessionToken();
 
@@ -79,7 +89,10 @@ export default function ReportExportButtons({
       return;
     }
 
-    const headers = Object.keys(data[0]);
+    const headers =
+      activeColumns.length > 0
+        ? activeColumns.map((column) => column.key)
+        : Object.keys(data[0]);
 
     const csvRows = [
       headers.join(","),
@@ -117,7 +130,11 @@ export default function ReportExportButtons({
       return;
     }
 
-    const headers = Object.keys(data[0]);
+    const headers =
+      activeColumns.length > 0
+        ? activeColumns.map((column) => column.key)
+        : Object.keys(data[0]);
+
     const rows = data
       .map(
         (row) =>
@@ -126,18 +143,25 @@ export default function ReportExportButtons({
             .join("")}</tr>`
       )
       .join("");
+
     const table = `
       <html>
         <head><meta charset="utf-8" /></head>
         <body>
           <table border="1">
             <thead><tr>${headers
-              .map((header) => `<th>${escapeHtml(header)}</th>`)
+              .map((header) => {
+                const matchedColumn = activeColumns.find(
+                  (column) => column.key === header
+                );
+                return `<th>${escapeHtml(matchedColumn?.label || header)}</th>`;
+              })
               .join("")}</tr></thead>
             <tbody>${rows}</tbody>
           </table>
         </body>
       </html>`;
+
     const blob = new Blob([table], {
       type: "application/vnd.ms-excel;charset=utf-8;",
     });

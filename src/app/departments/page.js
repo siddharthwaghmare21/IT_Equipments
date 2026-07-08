@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
@@ -18,6 +19,15 @@ import { getSessionToken } from "@/lib/authSession";
 import { mapDepartmentFromApi } from "@/lib/departmentMapper";
 
 const filters = ["All", "Active", "Inactive"];
+const printColumns = [
+  { key: "departmentCode", label: "Department Code" },
+  { key: "departmentName", label: "Department Name" },
+  { key: "headOfDepartment", label: "Department Head" },
+  { key: "email", label: "Email" },
+  { key: "phone", label: "Phone" },
+  { key: "location", label: "Location" },
+  { key: "status", label: "Status" },
+];
 
 function DepartmentStatusBadge({ status }) {
   const statusStyles = {
@@ -41,6 +51,7 @@ export default function DepartmentsPage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [archiveTarget, setArchiveTarget] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isArchiving, setIsArchiving] = useState(false);
   const [error, setError] = useState("");
@@ -89,6 +100,11 @@ export default function DepartmentsPage() {
     });
   }, [departments, search, activeFilter]);
 
+  const pagedDepartments = useMemo(() => {
+    const startIndex = (currentPage - 1) * 10;
+    return filteredDepartments.slice(startIndex, startIndex + 10);
+  }, [currentPage, filteredDepartments]);
+
   async function confirmArchive() {
     if (!archiveTarget) return;
 
@@ -118,6 +134,7 @@ export default function DepartmentsPage() {
         exportData={filteredDepartments}
         exportFileName="departments"
         printTitle="Departments"
+        printColumns={printColumns}
         printDescription="Official department register generated from the current filtered department records."
       />
 
@@ -126,7 +143,10 @@ export default function DepartmentsPage() {
           <input
             type="text"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setCurrentPage(1);
+            }}
             placeholder="Search by department, head, email, phone or location..."
             className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-md"
           />
@@ -136,7 +156,10 @@ export default function DepartmentsPage() {
               <button
                 key={filter}
                 type="button"
-                onClick={() => setActiveFilter(filter)}
+                onClick={() => {
+                  setActiveFilter(filter);
+                  setCurrentPage(1);
+                }}
                 className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                   activeFilter === filter
                     ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
@@ -198,7 +221,7 @@ export default function DepartmentsPage() {
             </thead>
 
             <tbody className="divide-y divide-[#263754] bg-[#18253d]">
-              {filteredDepartments.map((department) => (
+              {pagedDepartments.map((department) => (
                 <tr
                   key={department.id}
                   className="hover:bg-[#1f2f4a]"
@@ -250,6 +273,15 @@ export default function DepartmentsPage() {
                 description="Try changing department search or status filters."
               />
             </div>
+          )}
+          {filteredDepartments.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={filteredDepartments.length}
+              pageSize={10}
+              onPageChange={setCurrentPage}
+              itemLabel="departments"
+            />
           )}
         </TableWrapper>
       )}

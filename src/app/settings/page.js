@@ -102,6 +102,13 @@ const settingsTabs = [
   { label: "Security", target: "settings-security" },
 ];
 
+const sectionClassName =
+  "scroll-mt-24 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-5 shadow-sm";
+const inputClassName =
+  "h-11 w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 text-sm text-white outline-none focus:border-[#7c3aed]";
+const labelClassName =
+  "mb-1.5 block text-xs font-semibold uppercase tracking-[0.18em] text-[#8fa4c7]";
+
 export default function SettingsPage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeSettingsTab, setActiveSettingsTab] = useState("General");
@@ -345,10 +352,10 @@ export default function SettingsPage() {
     <LayoutWrapper>
       <PageHeader
         title="Settings"
-        description="Manage company details, admin information, notifications, report export options and system security settings."
+        description="Manage company profile, backup controls, exports and system preferences."
       />
 
-      <section className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+      <section className="mb-4 rounded-[26px] border border-[#2c3f63] bg-[#18253d] p-3 shadow-sm">
         <div className="flex gap-2 overflow-x-auto pb-1">
           {settingsTabs.map((tab) => (
             <button
@@ -357,8 +364,8 @@ export default function SettingsPage() {
               onClick={() => openSettingsSection(tab)}
               className={`h-10 whitespace-nowrap rounded-lg border px-4 text-sm font-semibold ${
                 activeSettingsTab === tab.label
-                  ? "border-indigo-600 bg-indigo-600 text-white"
-                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-900"
+                  ? "border-[#7c3aed] bg-gradient-to-r from-[#7c3aed] to-[#4f46e5] text-white"
+                  : "border-[#314666] bg-[#101a2b] text-[#c8d4ec] hover:bg-[#122038]"
               }`}
             >
               {tab.label}
@@ -370,20 +377,20 @@ export default function SettingsPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <section
           id="settings-general"
-          className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
+          className={sectionClassName}
         >
           <div className="mb-5">
-            <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">
+            <h2 className="text-lg font-bold text-white">
               Company Information
             </h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-[#8fa4c7]">
               Basic organization details used in reports and system records.
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className={labelClassName}>
                 Company Name
               </label>
               <input
@@ -391,13 +398,13 @@ export default function SettingsPage() {
                 name="companyName"
                 value={settings.companyName}
                 onChange={handleChange}
-                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className={inputClassName}
                 required
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className={labelClassName}>
                 Company Email
               </label>
               <input
@@ -405,12 +412,12 @@ export default function SettingsPage() {
                 name="companyEmail"
                 value={settings.companyEmail}
                 onChange={handleChange}
-                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className={inputClassName}
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className={labelClassName}>
                 Company Phone
               </label>
               <input
@@ -418,12 +425,12 @@ export default function SettingsPage() {
                 name="companyPhone"
                 value={settings.companyPhone}
                 onChange={handleChange}
-                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className={inputClassName}
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className={labelClassName}>
                 Company Address
               </label>
               <input
@@ -431,17 +438,17 @@ export default function SettingsPage() {
                 name="companyAddress"
                 value={settings.companyAddress}
                 onChange={handleChange}
-                className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className={inputClassName}
               />
             </div>
           </div>
 
-          <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900">
+          <div className="mt-6 rounded-[24px] border border-[#314666] bg-[#101a2b] p-4">
             <div className="mb-4">
-              <h3 className="text-base font-bold text-slate-950 dark:text-slate-100">
+              <h3 className="text-base font-bold text-white">
                 Report Branding
               </h3>
-              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mt-1 text-sm text-[#8fa4c7]">
                 These values are stored in backend settings for organization
                 records and future document templates.
               </p>
@@ -449,7 +456,7 @@ export default function SettingsPage() {
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className={labelClassName}>
                   Logo Text
                 </label>
                 <input
@@ -458,12 +465,12 @@ export default function SettingsPage() {
                   value={settings.reportLogoText}
                   onChange={handleChange}
                   maxLength="4"
-                  className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className={inputClassName}
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className={labelClassName}>
                   Prepared By
                 </label>
                 <input
@@ -471,19 +478,19 @@ export default function SettingsPage() {
                   name="reportPreparedBy"
                   value={settings.reportPreparedBy}
                   onChange={handleChange}
-                  className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className={inputClassName}
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className={labelClassName}>
                   Classification
                 </label>
                 <select
                   name="reportClassification"
                   value={settings.reportClassification}
                   onChange={handleChange}
-                  className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className={inputClassName}
                 >
                   <option value="Internal">Internal</option>
                   <option value="Confidential">Confidential</option>
@@ -496,12 +503,12 @@ export default function SettingsPage() {
 
         <section
           id="settings-backup"
-          className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
+          className={sectionClassName}
         >
-          <h2 className="text-lg font-bold text-slate-950 dark:text-slate-100">
+          <h2 className="text-lg font-bold text-white">
             Database Backup
           </h2>
-          <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
+          <p className="mt-1 text-sm leading-6 text-[#8fa4c7]">
             Backup job tracking and JSON snapshot download are connected to the
             backend and MySQL. Restore execution stays locked until an approved
             maintenance process is defined.
@@ -510,7 +517,7 @@ export default function SettingsPage() {
             {connectedBackupItems.map((item) => (
               <p
                 key={item}
-                className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
+                className="rounded-2xl border border-[#314666] bg-[#101a2b] p-3 text-sm font-semibold text-[#c8d4ec]"
               >
                 {item}
               </p>
@@ -1140,15 +1147,15 @@ function SettingToggle({
 }) {
   return (
     <label
-      className={`flex items-start justify-between gap-4 rounded-lg border p-4 ${
+      className={`flex items-start justify-between gap-4 rounded-[24px] border p-4 ${
         disabled
-          ? "border-slate-200 bg-slate-50 opacity-70 dark:border-slate-800 dark:bg-slate-900"
-          : "border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900"
+          ? "border-[#314666] bg-[#101a2b] opacity-70"
+          : "border-[#314666] bg-[#101a2b] hover:bg-[#122038]"
       }`}
     >
       <div>
-        <p className="text-sm font-semibold text-slate-950 dark:text-slate-100">{title}</p>
-        <p className="mt-1 text-sm leading-5 text-slate-600 dark:text-slate-400">{description}</p>
+        <p className="text-sm font-semibold text-white">{title}</p>
+        <p className="mt-1 text-sm leading-5 text-[#8fa4c7]">{description}</p>
       </div>
 
       <input

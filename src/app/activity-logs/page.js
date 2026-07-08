@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import TablePagination from "@/components/common/TablePagination";
 import PageActionBar from "@/components/common/PageActionBar";
 import {
   EmptyState,
@@ -12,6 +13,16 @@ import {
 } from "@/components/common/StateBlock";
 import { getActivityLogs } from "@/lib/apiClient";
 import { getSessionToken } from "@/lib/authSession";
+
+const printColumns = [
+  { key: "date", label: "Date" },
+  { key: "time", label: "Time" },
+  { key: "module", label: "Module" },
+  { key: "action", label: "Action" },
+  { key: "performedBy", label: "Performed By" },
+  { key: "role", label: "Role" },
+  { key: "status", label: "Status" },
+];
 
 function ActivityStatusBadge({ status }) {
   const statusStyles = {
@@ -69,6 +80,7 @@ export default function ActivityLogsPage() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [userFilter, setUserFilter] = useState("All");
   const [dateFilter, setDateFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -130,6 +142,11 @@ export default function ActivityLogsPage() {
     });
   }, [activityLogs, search, activeModule, statusFilter, userFilter, dateFilter]);
 
+  const pagedLogs = useMemo(() => {
+    const startIndex = (currentPage - 1) * 10;
+    return filteredLogs.slice(startIndex, startIndex + 10);
+  }, [currentPage, filteredLogs]);
+
   const moduleFilters = [
     "All",
     ...new Set(activityLogs.map((log) => log.module).filter(Boolean)),
@@ -167,6 +184,7 @@ export default function ActivityLogsPage() {
         exportData={filteredLogs}
         exportFileName="activity-logs"
         printTitle="Activity Logs"
+        printColumns={printColumns}
         printDescription="Official activity log report generated from the current filtered audit records."
       />
 
@@ -175,7 +193,10 @@ export default function ActivityLogsPage() {
           <input
             type="text"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setCurrentPage(1);
+            }}
             placeholder="Search by module, action, user, role, status or description..."
             className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3]"
           />
@@ -185,7 +206,10 @@ export default function ActivityLogsPage() {
               <button
                 key={filter}
                 type="button"
-                onClick={() => setActiveModule(filter)}
+                onClick={() => {
+                  setActiveModule(filter);
+                  setCurrentPage(1);
+                }}
                 className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                   activeModule === filter
                     ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
@@ -200,7 +224,10 @@ export default function ActivityLogsPage() {
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <select
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
+              onChange={(event) => {
+                setStatusFilter(event.target.value);
+                setCurrentPage(1);
+              }}
               className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             >
               {statusFilters.map((status) => (
@@ -212,7 +239,10 @@ export default function ActivityLogsPage() {
 
             <select
               value={userFilter}
-              onChange={(event) => setUserFilter(event.target.value)}
+              onChange={(event) => {
+                setUserFilter(event.target.value);
+                setCurrentPage(1);
+              }}
               className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             >
               {userFilters.map((user) => (
@@ -225,7 +255,10 @@ export default function ActivityLogsPage() {
             <input
               type="date"
               value={dateFilter}
-              onChange={(event) => setDateFilter(event.target.value)}
+              onChange={(event) => {
+                setDateFilter(event.target.value);
+                setCurrentPage(1);
+              }}
               className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none focus:border-[#7c4cf3]"
             />
           </div>
@@ -268,7 +301,7 @@ export default function ActivityLogsPage() {
           </thead>
 
           <tbody className="divide-y divide-[#263754] bg-[#18253d]">
-            {filteredLogs.map((log) => (
+            {pagedLogs.map((log) => (
               <tr
                 key={log.id}
                 className="hover:bg-[#1f2f4a]"
@@ -310,6 +343,15 @@ export default function ActivityLogsPage() {
               description="Try changing module, status, user, date or search filters."
             />
           </div>
+        )}
+        {filteredLogs.length > 0 && (
+          <TablePagination
+            currentPage={currentPage}
+            totalItems={filteredLogs.length}
+            pageSize={10}
+            onPageChange={setCurrentPage}
+            itemLabel="activity logs"
+          />
         )}
       </TableWrapper>
         </>

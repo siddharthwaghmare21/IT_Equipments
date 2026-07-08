@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
@@ -23,6 +24,16 @@ import {
 } from "@/lib/workOrderMapper";
 
 const filters = ["All", ...workOrderStatuses];
+const printColumns = [
+  { key: "workOrderNumber", label: "WO Number" },
+  { key: "vendorName", label: "Vendor" },
+  { key: "invoiceNumber", label: "Invoice No." },
+  { key: "workOrderDate", label: "WO Date" },
+  { key: "expectedDeliveryDate", label: "Expected Delivery" },
+  { key: "approvalStatus", label: "Approval" },
+  { key: "paymentStatus", label: "Payment" },
+  { key: "workOrderStatus", label: "Status" },
+];
 
 function WorkOrderStatusBadge({ status }) {
   const statusStyles = {
@@ -47,6 +58,7 @@ export default function PurchasesPage() {
   const [workOrders, setWorkOrders] = useState([]);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [cancelTarget, setCancelTarget] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -104,6 +116,11 @@ export default function PurchasesPage() {
     });
   }, [workOrders, search, activeFilter]);
 
+  const pagedWorkOrders = useMemo(() => {
+    const startIndex = (currentPage - 1) * 10;
+    return filteredWorkOrders.slice(startIndex, startIndex + 10);
+  }, [currentPage, filteredWorkOrders]);
+
   async function confirmCancel() {
     const token = getSessionToken();
 
@@ -133,6 +150,7 @@ export default function PurchasesPage() {
         exportData={filteredWorkOrders}
         exportFileName="work-orders"
         printTitle="Work Orders"
+        printColumns={printColumns}
         printDescription="Official work order register generated from the current filtered procurement records."
       />
 
@@ -155,7 +173,10 @@ export default function PurchasesPage() {
               <input
                 type="text"
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setCurrentPage(1);
+                }}
                 placeholder="Search by WO, vendor, invoice, approval, payment or status..."
                 className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] lg:max-w-md"
               />
@@ -165,7 +186,10 @@ export default function PurchasesPage() {
                   <button
                     key={filter}
                     type="button"
-                    onClick={() => setActiveFilter(filter)}
+                    onClick={() => {
+                      setActiveFilter(filter);
+                      setCurrentPage(1);
+                    }}
                     className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                       activeFilter === filter
                         ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
@@ -225,7 +249,7 @@ export default function PurchasesPage() {
                 </thead>
 
                 <tbody className="divide-y divide-[#263754] bg-[#18253d]">
-                  {filteredWorkOrders.map((workOrder) => (
+                  {pagedWorkOrders.map((workOrder) => (
                     <tr key={workOrder.id} className="hover:bg-[#1f2f4a]">
                       <td className="px-4 py-4">
                         <p className="text-sm font-semibold text-white">
@@ -284,6 +308,16 @@ export default function PurchasesPage() {
               </table>
             </TableWrapper>
           </div>
+
+          {filteredWorkOrders.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={filteredWorkOrders.length}
+              pageSize={10}
+              onPageChange={setCurrentPage}
+              itemLabel="work orders"
+            />
+          )}
 
           {filteredWorkOrders.length === 0 && (
             <EmptyState

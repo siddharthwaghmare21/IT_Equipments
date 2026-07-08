@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import LayoutWrapper from "@/components/common/LayoutWrapper";
 import PageHeader from "@/components/common/PageHeader";
 import TableWrapper from "@/components/common/TableWrapper";
+import TablePagination from "@/components/common/TablePagination";
 import ActionButtons from "@/components/common/ActionButtons";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import PageActionBar from "@/components/common/PageActionBar";
@@ -19,6 +20,16 @@ import { mapVendorFromApi } from "@/lib/vendorMapper";
 
 const filters = ["All", "Active", "Inactive"];
 const complianceFilters = ["All", "Compliant", "Review Required", "Blocked"];
+const printColumns = [
+  { key: "vendorCode", label: "Vendor Code" },
+  { key: "vendorName", label: "Vendor Name" },
+  { key: "contactPerson", label: "Contact Person" },
+  { key: "phone", label: "Phone" },
+  { key: "email", label: "Email" },
+  { key: "serviceCategory", label: "Category" },
+  { key: "complianceStatus", label: "Compliance" },
+  { key: "status", label: "Status" },
+];
 
 function VendorStatusBadge({ status }) {
   const statusStyles = {
@@ -60,6 +71,7 @@ export default function VendorsPage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [complianceFilter, setComplianceFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [archiveTarget, setArchiveTarget] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isArchiving, setIsArchiving] = useState(false);
@@ -114,6 +126,11 @@ export default function VendorsPage() {
     });
   }, [vendors, search, activeFilter, complianceFilter]);
 
+  const pagedVendors = useMemo(() => {
+    const startIndex = (currentPage - 1) * 10;
+    return filteredVendors.slice(startIndex, startIndex + 10);
+  }, [currentPage, filteredVendors]);
+
   async function confirmArchive() {
     if (!archiveTarget) return;
 
@@ -143,6 +160,7 @@ export default function VendorsPage() {
         exportData={filteredVendors}
         exportFileName="vendors"
         printTitle="Vendors"
+        printColumns={printColumns}
         printDescription="Official vendor register generated from the current filtered vendor records."
       />
 
@@ -151,7 +169,10 @@ export default function VendorsPage() {
           <input
             type="text"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setCurrentPage(1);
+            }}
             placeholder="Search by vendor, GST, payment terms, category, compliance or status..."
             className="w-full rounded-2xl border border-[#314666] bg-[#101a2b] px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-[#7d90b2] focus:border-[#7c4cf3] xl:max-w-md"
           />
@@ -162,7 +183,10 @@ export default function VendorsPage() {
                 <button
                   key={filter}
                   type="button"
-                  onClick={() => setActiveFilter(filter)}
+                    onClick={() => {
+                      setActiveFilter(filter);
+                      setCurrentPage(1);
+                    }}
                   className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                     activeFilter === filter
                       ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
@@ -179,7 +203,10 @@ export default function VendorsPage() {
                 <button
                   key={filter}
                   type="button"
-                  onClick={() => setComplianceFilter(filter)}
+                    onClick={() => {
+                      setComplianceFilter(filter);
+                      setCurrentPage(1);
+                    }}
                   className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-sm font-semibold transition ${
                     complianceFilter === filter
                       ? "border-[#7c4cf3] bg-gradient-to-r from-[#6a3df0] to-[#8b5cf6] text-white shadow-[0_10px_24px_rgba(106,61,240,0.2)]"
@@ -251,7 +278,7 @@ export default function VendorsPage() {
             </thead>
 
             <tbody className="divide-y divide-[#263754] bg-[#18253d]">
-              {filteredVendors.map((vendor) => (
+              {pagedVendors.map((vendor) => (
                 <tr
                   key={vendor.id}
                   className="hover:bg-[#1f2f4a]"
@@ -315,6 +342,15 @@ export default function VendorsPage() {
                 description="Try changing vendor search, compliance or status filters."
               />
             </div>
+          )}
+          {filteredVendors.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={filteredVendors.length}
+              pageSize={10}
+              onPageChange={setCurrentPage}
+              itemLabel="vendors"
+            />
           )}
         </TableWrapper>
       )}
