@@ -2,6 +2,7 @@
 
 import LayoutWrapper from "./LayoutWrapper";
 import BackButton from "./BackButton";
+import ProfessionalPrintDocument from "./ProfessionalPrintDocument";
 import ReportExportButtons from "./ReportExportButtons";
 
 export default function ReportPageShell({
@@ -25,9 +26,7 @@ export default function ReportPageShell({
         </div>
       </section>
 
-      <section
-        className="screen-report print-root print-area report-document overflow-hidden border border-gray-200 bg-white shadow-sm"
-      >
+      <section className="screen-report no-print overflow-hidden border border-gray-200 bg-white shadow-sm">
         <header className="report-letterhead border-b border-gray-300 bg-white px-5 py-4">
           <h1 className="text-2xl font-bold text-gray-950">{title}</h1>
         </header>
@@ -42,6 +41,13 @@ export default function ReportPageShell({
           <p className="font-semibold">Page 1</p>
         </footer>
       </section>
+
+      <ProfessionalPrintDocument
+        title={title}
+        data={data}
+        columns={printColumns}
+        fileName={fileName}
+      />
     </LayoutWrapper>
   );
 }

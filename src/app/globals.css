@@ -338,6 +338,10 @@ main .hover\:border-indigo-200:hover {
     display: none !important;
   }
 
+  .print-only {
+    display: block !important;
+  }
+
   .print-root,
   .print-root * {
     visibility: visible !important;
@@ -377,5 +381,19 @@ main .hover\:border-indigo-200:hover {
     padding: 0 !important;
     margin: 0 !important;
     background: #ffffff !important;
+  }
+
+  .report-document table {
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
+  .report-document tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .report-document thead {
+    display: table-header-group;
   }
 }
