@@ -5,6 +5,10 @@ import BackButton from "./BackButton";
 import ProfessionalPrintDocument from "./ProfessionalPrintDocument";
 import ReportExportButtons from "./ReportExportButtons";
 
+function buildReportId(fileName) {
+  return `${fileName.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").toUpperCase()}-2026`;
+}
+
 export default function ReportPageShell({
   title,
   data = [],
@@ -26,19 +30,20 @@ export default function ReportPageShell({
         </div>
       </section>
 
-      <section className="screen-report no-print overflow-hidden border border-gray-200 bg-white shadow-sm">
-        <header className="report-letterhead border-b border-gray-300 bg-white px-5 py-4">
-          <h1 className="text-2xl font-bold text-gray-950">{title}</h1>
+      <section className="screen-report no-print overflow-hidden rounded-[24px] border border-[#2c3f63] bg-[#18253d] shadow-sm">
+        <header className="report-letterhead border-b border-[#314666] bg-[#101a2b] px-5 py-4">
+          <h1 className="text-2xl font-bold text-white">{title}</h1>
         </header>
 
-        <div className="report-body bg-white px-5 py-5">
+        <div className="report-body bg-[#18253d] px-5 py-5">
           <section className="report-section">
             {children}
           </section>
         </div>
 
-        <footer className="report-footer border-t border-gray-300 bg-gray-50 px-5 py-3 text-right text-xs text-gray-600">
-          <p className="font-semibold">Page 1</p>
+        <footer className="report-footer flex items-center justify-between gap-3 border-t border-[#314666] bg-[#101a2b] px-5 py-3 text-xs text-[#c8d4ec]">
+          <p className="font-semibold">Report ID: {buildReportId(fileName)}</p>
+          <p className="font-semibold">{data.length} records</p>
         </footer>
       </section>
 

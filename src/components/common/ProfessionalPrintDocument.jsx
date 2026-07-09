@@ -20,6 +20,21 @@ function formatColumnName(column) {
     .trim();
 }
 
+function buildReportId(fileName) {
+  return `${fileName.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").toUpperCase()}-2026`;
+}
+
+function ReportFooter({ fileName, pageNumber, totalPages }) {
+  return (
+    <footer className="report-footer">
+      <span className="font-semibold">Report ID: {buildReportId(fileName)}</span>
+      <span className="font-semibold">
+        Page {pageNumber} / {totalPages}
+      </span>
+    </footer>
+  );
+}
+
 export default function ProfessionalPrintDocument({
   title,
   data = [],
@@ -44,7 +59,7 @@ export default function ProfessionalPrintDocument({
   }, [data, providedColumns]);
 
   const tablePages = useMemo(() => {
-    const rowsPerPage = 22;
+    const rowsPerPage = 18;
     const rows = data.length > 0 ? data : [];
     if (rows.length === 0) {
       return [[]];
@@ -64,7 +79,7 @@ export default function ProfessionalPrintDocument({
       className="print-only print-root print-area report-document bg-white"
     >
       {(detailSections || labelCard) ? (
-        <article className="print-page flex min-h-[260mm] flex-col border border-gray-200 bg-white shadow-sm">
+        <article className="print-page border border-gray-200 bg-white shadow-sm">
           <header className="report-letterhead border-b border-gray-300 bg-white px-5 py-4">
             <h1 className="text-2xl font-bold text-gray-950">{title}</h1>
           </header>
@@ -150,15 +165,13 @@ export default function ProfessionalPrintDocument({
             </section>
           </div>
 
-          <footer className="report-footer mt-auto border-t border-gray-300 bg-gray-50 px-5 py-3 text-right text-xs text-gray-600">
-            <p className="font-semibold">Page 1 / {totalPages}</p>
-          </footer>
+          <ReportFooter fileName={fileName} pageNumber={1} totalPages={totalPages} />
         </article>
       ) : (
         tablePages.map((pageRows, pageIndex) => (
           <article
             key={`${fileName}-page-${pageIndex}`}
-            className="print-page flex min-h-[260mm] flex-col border border-gray-200 bg-white shadow-sm"
+            className="print-page border border-gray-200 bg-white shadow-sm"
           >
             <header className="report-letterhead border-b border-gray-300 bg-white px-5 py-4">
               <h1 className="text-2xl font-bold text-gray-950">{title}</h1>
@@ -212,11 +225,11 @@ export default function ProfessionalPrintDocument({
               </section>
             </div>
 
-            <footer className="report-footer mt-auto border-t border-gray-300 bg-gray-50 px-5 py-3 text-right text-xs text-gray-600">
-              <p className="font-semibold">
-                Page {pageIndex + 1} / {totalPages}
-              </p>
-            </footer>
+            <ReportFooter
+              fileName={fileName}
+              pageNumber={pageIndex + 1}
+              totalPages={totalPages}
+            />
           </article>
         ))
       )}

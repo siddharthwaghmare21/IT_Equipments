@@ -314,14 +314,35 @@ main .hover\:border-indigo-200:hover {
   box-shadow: none !important;
 }
 
+.table-grid-shell table th,
+.table-grid-shell table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table-grid-shell table td {
+  color: #dce7fb;
+}
+
+.table-grid-shell table th {
+  color: #c8d4ec;
+}
+
 .print-only {
   display: none !important;
 }
 
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
   html,
   body {
     background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   body * {
@@ -349,8 +370,9 @@ main .hover\:border-indigo-200:hover {
 
   .print-root {
     display: block !important;
-    position: static !important;
-    width: 100%;
+    position: absolute !important;
+    inset: 0 auto auto 0 !important;
+    width: 190mm !important;
     min-height: auto;
     margin: 0 !important;
     padding: 0 !important;
@@ -386,6 +408,8 @@ main .hover\:border-indigo-200:hover {
   .report-document table {
     page-break-inside: auto;
     break-inside: auto;
+    width: 100% !important;
+    table-layout: fixed !important;
   }
 
   .report-document tr {
@@ -398,12 +422,39 @@ main .hover\:border-indigo-200:hover {
   }
 
   .print-page {
-    page-break-after: always;
-    break-after: page;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 190mm !important;
+    min-height: 277mm !important;
+    height: 277mm !important;
+    margin: 0 auto !important;
+    overflow: hidden !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    background: #ffffff !important;
   }
 
   .print-page:last-child {
-    page-break-after: auto;
-    break-after: auto;
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  .print-page .report-body {
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+  }
+
+  .print-page .report-footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    margin-top: auto !important;
+    border-top: 1px solid #111827 !important;
+    background: #f9fafb !important;
+    padding: 8px 12px !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    color: #111827 !important;
   }
 }

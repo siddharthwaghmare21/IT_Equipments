@@ -110,12 +110,12 @@ export default function BackendReportPage({
         <>
           <TableWrapper variant="report">
             <table className="min-w-[1400px] w-full text-xs">
-              <thead className="bg-gray-50 text-left">
+              <thead className="bg-[#101a2b]">
                 <tr>
                   {visibleColumns.map((column) => (
                     <th
                       key={column.key}
-                      className="whitespace-nowrap border-b border-r border-gray-200 px-3 py-2 font-bold uppercase tracking-wide text-gray-500 last:border-r-0"
+                      className="whitespace-nowrap border-b border-r border-[#314666] px-3 py-2 text-center font-bold uppercase tracking-wide text-[#9fb3d7] last:border-r-0"
                     >
                       {column.label}
                     </th>
@@ -127,12 +127,12 @@ export default function BackendReportPage({
                 {pagedRecords.map((record, index) => (
                   <tr
                     key={record.id || `${reportType}-${index}`}
-                    className="border-b border-gray-100 bg-white hover:bg-gray-50"
+                    className="border-b border-[#2c3f63] bg-[#18253d] hover:bg-[#1d2d49]"
                   >
                     {visibleColumns.map((column) => (
                       <td
                         key={column.key}
-                        className="whitespace-nowrap border-r border-gray-100 px-3 py-2 font-medium text-gray-800 last:border-r-0"
+                        className="whitespace-nowrap border-r border-[#2c3f63] px-3 py-2 text-center font-medium text-[#dce7fb] last:border-r-0"
                       >
                         {column.status ? (
                           <StatusBadge
