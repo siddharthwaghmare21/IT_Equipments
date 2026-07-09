@@ -46,6 +46,7 @@ export default function BackendReportPage({
   const [error, setError] = useState("");
   const pageSize = 10;
   const visibleColumns = useMemo(() => columns.slice(0, 8), [columns]);
+  const printColumns = useMemo(() => columns.slice(0, 6), [columns]);
   const pagedRecords = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
     return records.slice(startIndex, startIndex + pageSize);
@@ -87,7 +88,7 @@ export default function BackendReportPage({
       title={title}
       data={records}
       fileName={fileName}
-      printColumns={visibleColumns}
+      printColumns={printColumns}
     >
       {isLoading ? (
         <LoadingState
