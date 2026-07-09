@@ -25,6 +25,8 @@ public sealed class AssetRepository(MySqlConnectionFactory connectionFactory)
                 ON current_dept.department_id = a.current_department_id
             LEFT JOIN asset_documents doc
                 ON doc.asset_id = a.asset_id
+            WHERE a.asset_status <> 'Archived'
+              AND a.lifecycle_status <> 'Archived'
             GROUP BY a.asset_id, a.asset_tag, a.asset_name, a.category, a.brand, a.model,
                      a.serial_number, a.work_order_ref, a.invoice_number, a.purchase_date,
                      a.warranty_expiry, a.custodian_department_id, cust.department_name,

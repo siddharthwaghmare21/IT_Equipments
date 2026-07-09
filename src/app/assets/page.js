@@ -23,7 +23,10 @@ import {
   mapAssetFromApi,
 } from "@/lib/assetMapper";
 
-const filters = ["All", ...assetStatuses];
+const activeListStatuses = assetStatuses.filter(
+  (status) => status !== "Archived" && status !== "Scrapped"
+);
+const filters = ["All", ...activeListStatuses];
 const printColumns = [
   { key: "assetTag", label: "Asset Tag" },
   { key: "assetName", label: "Asset Name" },
@@ -53,7 +56,15 @@ export default function AssetsPage() {
 
     try {
       const response = await getAssets(getSessionToken());
-      setAssets(response.map(mapAssetFromApi));
+      setAssets(
+        response
+          .map(mapAssetFromApi)
+          .filter(
+            (asset) =>
+              asset.assetStatus !== "Archived" &&
+              asset.lifecycleStatus !== "Archived"
+          )
+      );
     } catch (loadError) {
       setError(loadError.message || "Assets could not be loaded.");
     } finally {

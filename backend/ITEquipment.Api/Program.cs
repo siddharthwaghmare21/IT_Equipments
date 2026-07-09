@@ -32,6 +32,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddSingleton<MySqlConnectionFactory>();
 builder.Services.AddScoped<RoleRepository>();
 builder.Services.AddScoped<DepartmentRepository>();
+builder.Services.AddScoped<DepartmentDemandRepository>();
 builder.Services.AddScoped<VendorRepository>();
 builder.Services.AddScoped<AssetRepository>();
 builder.Services.AddScoped<AssetDocumentRepository>();
@@ -195,6 +196,7 @@ app.MapGet("/api/backups/download", async (
 
 app.MapRoleEndpoints();
 app.MapDepartmentEndpoints();
+app.MapDepartmentDemandEndpoints();
 app.MapVendorEndpoints();
 app.MapAssetEndpoints();
 app.MapAssetDocumentEndpoints();

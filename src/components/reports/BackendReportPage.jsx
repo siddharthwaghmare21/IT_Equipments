@@ -108,13 +108,13 @@ export default function BackendReportPage({
       ) : (
         <>
           <TableWrapper variant="report">
-            <table className="min-w-[1400px] w-full text-sm">
-              <thead className="bg-slate-50 text-left dark:bg-slate-900">
-                <tr className="border-b border-slate-200 dark:border-slate-800">
+            <table className="min-w-[1400px] w-full text-xs">
+              <thead className="bg-gray-50 text-left">
+                <tr>
                   {visibleColumns.map((column) => (
                     <th
                       key={column.key}
-                      className="whitespace-nowrap border-r border-slate-200 px-4 py-3 font-semibold text-slate-700 last:border-r-0 dark:border-slate-800 dark:text-slate-100"
+                      className="whitespace-nowrap border-b border-r border-gray-200 px-3 py-2 font-bold uppercase tracking-wide text-gray-500 last:border-r-0"
                     >
                       {column.label}
                     </th>
@@ -126,12 +126,12 @@ export default function BackendReportPage({
                 {pagedRecords.map((record, index) => (
                   <tr
                     key={record.id || `${reportType}-${index}`}
-                    className="border-b border-slate-100 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
+                    className="border-b border-gray-100 bg-white hover:bg-gray-50"
                   >
                     {visibleColumns.map((column) => (
                       <td
                         key={column.key}
-                        className="whitespace-nowrap border-r border-slate-100 px-4 py-4 text-slate-700 last:border-r-0 dark:border-slate-800 dark:text-slate-100"
+                        className="whitespace-nowrap border-r border-gray-100 px-3 py-2 font-medium text-gray-800 last:border-r-0"
                       >
                         {column.status ? (
                           <StatusBadge

@@ -184,6 +184,29 @@ export function archiveDepartment(departmentId, token) {
   });
 }
 
+export function getDepartmentDemands(token) {
+  return apiRequest("/api/department-demands", { token });
+}
+
+export function getDepartmentDemand(departmentId, token) {
+  return apiRequest(`/api/department-demands/${departmentId}`, { token });
+}
+
+export function upsertDepartmentDemand(demand, token) {
+  return apiRequest("/api/department-demands", {
+    method: "POST",
+    token,
+    body: demand,
+  });
+}
+
+export function deleteDepartmentDemand(departmentId, token) {
+  return apiRequest(`/api/department-demands/${departmentId}`, {
+    method: "DELETE",
+    token,
+  });
+}
+
 export function getVendors(token) {
   return apiRequest("/api/vendors", { token });
 }
