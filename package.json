@@ -4,9 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:frontend": "next dev",
+    "dev:backend": "dotnet run --project backend/ITEquipment.Api/ITEquipment.Api.csproj",
     "build": "next build",
+    "build:backend": "dotnet build backend/ITEquipment.Api/ITEquipment.Api.csproj",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "check": "npm run lint && npm run build && npm run build:backend"
   },
   "dependencies": {
     "next": "16.2.9",

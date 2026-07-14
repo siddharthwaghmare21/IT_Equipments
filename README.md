@@ -11,18 +11,30 @@ Prerequisites:
 - Node.js/npm dependencies installed with `npm.cmd install`
 - .NET 10 SDK
 - MySQL Server running locally
-- Database scripts applied from `database/smkc/001_database_setup.sql` through `database/smkc/009_email_otp_schema.sql`
+- Database scripts applied in filename order from `database/smkc/001_database_setup.sql` through `database/smkc/011_super_admin_protection.sql`
+
+For a fresh Windows machine, the elevated local setup script configures the installed MySQL 8.4 server, creates the `MySQL84` service, applies all database scripts, and stores generated application credentials in .NET User Secrets:
+
+```powershell
+Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "scripts\setup-local-mysql.ps1"'
+```
 
 Frontend:
 
 ```powershell
-npm.cmd run dev
+npm run dev
 ```
 
 Backend:
 
 ```powershell
-dotnet run --project backend\ITEquipment.Api\ITEquipment.Api.csproj
+npm run dev:backend
+```
+
+Run the complete frontend lint/build and backend build verification:
+
+```powershell
+npm run check
 ```
 
 URLs:
@@ -190,7 +202,7 @@ Final deployment readiness:
 - Set `NEXT_PUBLIC_API_BASE_URL` for hosted backend.
 - Host ASP.NET Core backend separately from Vercel.
 - Move MySQL from local DB to hosted/cloud DB.
-- Apply database scripts `001` through `009` in production.
+- Apply database scripts `001` through `011` in production.
 - Configure production JWT signing key, DB connection, setup key and CORS origin.
 - Configure SMTP only when company email credentials are available.
 

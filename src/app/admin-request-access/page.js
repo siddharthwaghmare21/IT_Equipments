@@ -16,7 +16,7 @@ function isStrongPassword(password) {
   return hasMinimumLength && hasCapitalLetter && hasSymbol;
 }
 
-const allowedRoles = ["Super Admin", "Admin", "Employee", "Viewer"];
+const allowedRoles = ["Admin", "Employee", "Viewer"];
 
 export default function AdminRequestAccessPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -139,10 +139,6 @@ export default function AdminRequestAccessPage() {
   }
 
   function getRequestedRoleCode(role) {
-    if (role === "Super Admin") {
-      return "SUPER_ADMIN";
-    }
-
     if (role === "Admin") {
       return "ADMIN";
     }
@@ -230,7 +226,7 @@ export default function AdminRequestAccessPage() {
 
             <p className="mt-3 text-sm leading-6 text-gray-600">
               Your IT staff access request has been submitted successfully.
-              Existing Super Admin approval is required before login access is
+              Existing Super Admin or Admin approval is required before login access is
               activated.
             </p>
 
@@ -261,7 +257,7 @@ export default function AdminRequestAccessPage() {
           <p className="mt-3 text-sm leading-6 text-gray-600">
             This system is only for IT Department staff. New users cannot create
             accounts directly. Submit an access request and wait for existing
-            Super Admin approval.
+            Super Admin or Admin approval.
           </p>
 
           <div className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
@@ -272,8 +268,8 @@ export default function AdminRequestAccessPage() {
             <ul className="mt-3 space-y-2 text-sm text-gray-600">
               <li>- Only IT Department staff can request access</li>
               <li>- Internal access code is required</li>
-              <li>- Existing Super Admin approval is required</li>
-              <li>- Super Admin can promote users after approval</li>
+              <li>- Existing Super Admin or Admin approval is required</li>
+              <li>- Super Admin or Admin can assign operational roles</li>
               <li>- Password must contain 8 characters, 1 capital letter and 1 symbol</li>
             </ul>
           </div>
@@ -349,7 +345,6 @@ export default function AdminRequestAccessPage() {
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-gray-900"
                 required
               >
-                <option value="Super Admin">Super Admin</option>
                 <option value="Admin">Admin</option>
                 <option value="Employee">Employee</option>
                 <option value="Viewer">Viewer</option>

@@ -10,7 +10,6 @@ public static class AuthEndpoints
 {
     private static readonly HashSet<string> AllowedSignupRoleCodes = new(StringComparer.OrdinalIgnoreCase)
     {
-        "SUPER_ADMIN",
         "ADMIN",
         "EMPLOYEE",
         "VIEWER"
@@ -34,7 +33,7 @@ public static class AuthEndpoints
         {
             try
             {
-                var hasActiveSuperAdmin = await repository.HasActiveSuperAdminAsync(cancellationToken);
+                var hasActiveSuperAdmin = await repository.HasSuperAdminAsync(cancellationToken);
                 return Results.Ok(new { hasActiveSuperAdmin });
             }
             catch (InvalidOperationException exception)
@@ -82,9 +81,9 @@ public static class AuthEndpoints
 
             try
             {
-                if (await repository.HasActiveSuperAdminAsync(cancellationToken))
+                if (await repository.HasSuperAdminAsync(cancellationToken))
                 {
-                    return Results.Conflict(new { message = "Active Super Admin already exists." });
+                    return Results.Conflict(new { message = "Super Admin already exists." });
                 }
 
                 var passwordHash = passwordHashService.HashPassword(request.Password);
@@ -418,7 +417,7 @@ public static class AuthEndpoints
 
         return AllowedSignupRoleCodes.Contains(request.RequestedRoleCode)
             ? null
-            : "Requested role must be Super Admin, Admin, Employee, or Viewer.";
+            : "Requested role must be Admin, Employee, or Viewer.";
     }
 
     private static string? ValidateOtpRequest(string email, string purpose)

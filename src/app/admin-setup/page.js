@@ -61,6 +61,12 @@ export default function AdminSetupPage() {
     return () => clearTimeout(timer);
   }, [checkBootstrapStatus]);
 
+  useEffect(() => {
+    if (adminAlreadyExists) {
+      router.replace("/login");
+    }
+  }, [adminAlreadyExists, router]);
+
   function handleChange(event) {
     const { name, value } = event.target;
 
@@ -148,30 +154,11 @@ export default function AdminSetupPage() {
 
   if (adminAlreadyExists) {
     return (
-      <main className="min-h-screen bg-gray-100 px-4 py-10">
-        <div className="mx-auto flex min-h-[80vh] max-w-xl items-center justify-center">
-          <section className="w-full rounded-3xl border border-gray-200 bg-white p-6 text-center shadow-sm sm:p-8">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-900 text-xl font-bold text-white">
-              IT
-            </div>
-
-            <h1 className="mt-6 text-2xl font-bold text-gray-900">
-              Super Admin Already Created
-            </h1>
-
-            <p className="mt-3 text-sm leading-6 text-gray-600">
-              First Super Admin profile already exists. Please login to access
-              the IT Assets & Equipment Management system.
-            </p>
-
-            <Link
-              href="/login"
-              className="mt-6 inline-flex w-full justify-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
-            >
-              Go to Login
-            </Link>
-          </section>
-        </div>
+      <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+        <LoadingState
+          title="Opening login"
+          description="Super Admin setup is complete. Redirecting to login."
+        />
       </main>
     );
   }
@@ -202,7 +189,8 @@ export default function AdminSetupPage() {
             <ul className="mt-3 space-y-2 text-sm text-gray-600">
               <li>- Full access to all IT asset modules</li>
               <li>- Approve or reject new account requests</li>
-              <li>- Manage Super Admin, Admin, Employee and Viewer roles</li>
+              <li>- Manage Admin, Employee and Viewer roles</li>
+              <li>- The initial Super Admin account stays permanently protected</li>
               <li>- Control settings, reports, activity logs and backup/export</li>
             </ul>
           </div>

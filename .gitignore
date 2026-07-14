@@ -10,6 +10,7 @@
 .env.local
 .vercel
 .codex/
+.vscode/
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
@@ -30,6 +31,9 @@
 **/bin/
 **/obj/
 appsettings.Local.json
+backend/ITEquipment.Api/appsettings.Development.json
+database/mysql-local.ini
+.mysql-setup-status
 
 # misc
 .DS_Store

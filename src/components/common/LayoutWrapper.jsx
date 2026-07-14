@@ -27,6 +27,7 @@ export default function LayoutWrapper({ children }) {
   const isSuperAdmin = currentUser?.roleCode === "SUPER_ADMIN";
   const canManageAccessRequests =
     currentUser?.roleCode === "SUPER_ADMIN" || currentUser?.roleCode === "ADMIN";
+  const canManageUsers = canManageAccessRequests;
   const canAccessCurrentPage = !currentUser || canAccessPath(currentUser, pathname);
 
   function handleLogout() {
@@ -55,8 +56,8 @@ export default function LayoutWrapper({ children }) {
           <div className="relative h-full max-w-[320px]">
             <Sidebar
               currentUser={currentUser}
-              isSuperAdmin={isSuperAdmin}
               canManageAccessRequests={canManageAccessRequests}
+              canManageUsers={canManageUsers}
               onLogout={handleLogout}
               onClose={() => setIsSidebarOpen(false)}
               isPersistent={false}
@@ -69,8 +70,8 @@ export default function LayoutWrapper({ children }) {
         <div className="hidden h-screen shrink-0 lg:block">
           <Sidebar
             currentUser={currentUser}
-            isSuperAdmin={isSuperAdmin}
             canManageAccessRequests={canManageAccessRequests}
+            canManageUsers={canManageUsers}
             onLogout={handleLogout}
             isPersistent
           />

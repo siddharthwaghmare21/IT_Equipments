@@ -13,7 +13,7 @@ const accessManagementLinks = [
   { label: "Admin Request Management", path: "/admin-request-management" },
 ];
 
-const superAdminOnlyLinks = [
+const userManagementLinks = [
   { label: "Admin Users Management", path: "/admin-user-management" },
 ];
 
@@ -146,8 +146,8 @@ function SidebarIcon({ path }) {
 export default function Sidebar({
   onClose,
   currentUser,
-  isSuperAdmin = false,
   canManageAccessRequests = false,
+  canManageUsers = false,
   isPersistent = false,
 }) {
   const pathname = usePathname();
@@ -183,7 +183,7 @@ export default function Sidebar({
       title: "Administration",
       links: [
         ...(canManageAccessRequests ? accessManagementLinks : []),
-        ...(isSuperAdmin ? superAdminOnlyLinks : []),
+        ...(canManageUsers ? userManagementLinks : []),
       ],
     },
     {

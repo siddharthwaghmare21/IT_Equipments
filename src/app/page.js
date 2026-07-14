@@ -4,19 +4,42 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TEMP_AUTH_BYPASS } from "@/lib/authConfig";
 import { readSession } from "@/lib/authSession";
+import { getBootstrapStatus } from "@/lib/apiClient";
 
 export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (TEMP_AUTH_BYPASS) {
-      router.replace("/dashboard");
-      return;
+    let isMounted = true;
+
+    async function resolveLandingPage() {
+      if (TEMP_AUTH_BYPASS) {
+        router.replace("/dashboard");
+        return;
+      }
+
+      const savedSession = readSession();
+
+      if (savedSession) {
+        router.replace("/dashboard");
+        return;
+      }
+
+      try {
+        const status = await getBootstrapStatus();
+        if (isMounted) {
+          router.replace(status?.hasActiveSuperAdmin ? "/login" : "/admin-setup");
+        }
+      } catch {
+        if (isMounted) router.replace("/login");
+      }
     }
 
-    const savedSession = readSession();
+    resolveLandingPage();
 
-    router.replace(savedSession ? "/dashboard" : "/login");
+    return () => {
+      isMounted = false;
+    };
   }, [router]);
 
   return (

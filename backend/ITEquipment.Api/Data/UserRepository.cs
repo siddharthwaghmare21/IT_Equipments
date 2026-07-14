@@ -37,6 +37,17 @@ public sealed class UserRepository(MySqlConnectionFactory connectionFactory)
 
     public async Task<UserDto?> UpdateRoleAsync(long userId, string roleCode, CancellationToken cancellationToken)
     {
+        if (roleCode.Equals("SUPER_ADMIN", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new UnauthorizedAccessException("Super Admin can only be created during initial system setup.");
+        }
+
+        var existingUser = await GetByIdAsync(userId, cancellationToken);
+        if (existingUser?.RoleCode.Equals("SUPER_ADMIN", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            throw new UnauthorizedAccessException("Super Admin role is protected and cannot be changed.");
+        }
+
         await using var connection = connectionFactory.CreateConnection();
         await connection.OpenAsync(cancellationToken);
         await using var command = new MySqlCommand("""
@@ -55,6 +66,12 @@ public sealed class UserRepository(MySqlConnectionFactory connectionFactory)
 
     public async Task<UserDto?> UpdateStatusAsync(long userId, string accountStatus, CancellationToken cancellationToken)
     {
+        var existingUser = await GetByIdAsync(userId, cancellationToken);
+        if (existingUser?.RoleCode.Equals("SUPER_ADMIN", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            throw new UnauthorizedAccessException("Super Admin account is protected and cannot be disabled.");
+        }
+
         await using var connection = connectionFactory.CreateConnection();
         await connection.OpenAsync(cancellationToken);
         await using var command = new MySqlCommand("""

@@ -9,7 +9,6 @@ public static class UserEndpoints
 {
     private static readonly HashSet<string> ValidRoleCodes = new(StringComparer.OrdinalIgnoreCase)
     {
-        AppRoles.SuperAdmin,
         AppRoles.Admin,
         AppRoles.Employee,
         AppRoles.Viewer
@@ -28,7 +27,7 @@ public static class UserEndpoints
     {
         var group = routes.MapGroup("/api/users")
             .WithTags("Users")
-            .RequireAuthorization(AppAuthorizationPolicies.RequireSuperAdmin);
+            .RequireAuthorization(AppAuthorizationPolicies.RequireAdminOrSuperAdmin);
 
         group.MapGet("/", async (
             UserRepository repository,
@@ -59,7 +58,7 @@ public static class UserEndpoints
         {
             if (string.IsNullOrWhiteSpace(request.RoleCode) || !ValidRoleCodes.Contains(request.RoleCode))
             {
-                return Results.BadRequest(new { message = "Role must be SUPER_ADMIN, ADMIN, EMPLOYEE or VIEWER." });
+                return Results.BadRequest(new { message = "Role must be ADMIN, EMPLOYEE or VIEWER." });
             }
 
             try
@@ -70,6 +69,10 @@ public static class UserEndpoints
             catch (InvalidOperationException exception)
             {
                 return Results.Problem(exception.Message, statusCode: StatusCodes.Status503ServiceUnavailable);
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                return Results.Json(new { message = exception.Message }, statusCode: StatusCodes.Status403Forbidden);
             }
             catch (MySqlException exception)
             {
@@ -98,6 +101,10 @@ public static class UserEndpoints
             catch (InvalidOperationException exception)
             {
                 return Results.Problem(exception.Message, statusCode: StatusCodes.Status503ServiceUnavailable);
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                return Results.Json(new { message = exception.Message }, statusCode: StatusCodes.Status403Forbidden);
             }
             catch (MySqlException exception)
             {

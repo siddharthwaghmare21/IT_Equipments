@@ -8,7 +8,7 @@ public sealed class AuthRepository(MySqlConnectionFactory connectionFactory)
     private const int DefaultOtpExpiryMinutes = 10;
     private const int DefaultOtpMaxAttempts = 5;
 
-    public async Task<bool> HasActiveSuperAdminAsync(CancellationToken cancellationToken)
+    public async Task<bool> HasSuperAdminAsync(CancellationToken cancellationToken)
     {
         const string sql = """
             SELECT EXISTS (
@@ -16,7 +16,6 @@ public sealed class AuthRepository(MySqlConnectionFactory connectionFactory)
                 FROM users u
                 INNER JOIN roles r ON r.role_id = u.role_id
                 WHERE r.role_code = 'SUPER_ADMIN'
-                  AND u.account_status = 'Active'
                 LIMIT 1
             );
             """;

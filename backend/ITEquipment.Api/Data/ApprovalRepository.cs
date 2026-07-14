@@ -75,12 +75,9 @@ public sealed class ApprovalRepository(MySqlConnectionFactory connectionFactory)
     {
         const string loadSql = """
             SELECT ar.approval_request_id, ar.requested_by,
-                   requested_role.role_code AS requested_role_code,
-                   approver_role.role_code AS approver_role_code
+                   requested_role.role_code AS requested_role_code
             FROM approval_requests ar
             LEFT JOIN roles requested_role ON requested_role.role_id = ar.requested_role_id
-            LEFT JOIN users approver ON approver.user_id = @ApprovedBy
-            LEFT JOIN roles approver_role ON approver_role.role_id = approver.role_id
             WHERE ar.approval_request_id = @ApprovalRequestId
               AND ar.request_type = 'User Access'
               AND ar.approval_status = 'Pending'
@@ -121,7 +118,6 @@ public sealed class ApprovalRepository(MySqlConnectionFactory connectionFactory)
 
         long? userId;
         string? requestedRoleCode;
-        string? approverRoleCode;
         await using (var loadCommand = new MySqlCommand(loadSql, connection, transaction))
         {
             loadCommand.Parameters.AddWithValue("@ApprovalRequestId", approvalRequestId);
@@ -135,7 +131,6 @@ public sealed class ApprovalRepository(MySqlConnectionFactory connectionFactory)
 
             userId = GetNullableInt64(reader, "requested_by");
             requestedRoleCode = GetNullableString(reader, "requested_role_code");
-            approverRoleCode = GetNullableString(reader, "approver_role_code");
         }
 
         if (!userId.HasValue)
@@ -145,11 +140,10 @@ public sealed class ApprovalRepository(MySqlConnectionFactory connectionFactory)
         }
 
         if (approvalStatus.Equals("Approved", StringComparison.OrdinalIgnoreCase) &&
-            requestedRoleCode?.Equals("SUPER_ADMIN", StringComparison.OrdinalIgnoreCase) == true &&
-            !string.Equals(approverRoleCode, "SUPER_ADMIN", StringComparison.OrdinalIgnoreCase))
+            requestedRoleCode?.Equals("SUPER_ADMIN", StringComparison.OrdinalIgnoreCase) == true)
         {
             await transaction.RollbackAsync(cancellationToken);
-            throw new UnauthorizedAccessException("Only Super Admin can approve Super Admin access requests.");
+            throw new UnauthorizedAccessException("Super Admin access requests are not allowed after initial setup.");
         }
 
         await using (var updateApprovalCommand = new MySqlCommand(updateApprovalSql, connection, transaction))

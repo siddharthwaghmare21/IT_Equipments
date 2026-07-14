@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
 import { TEMP_AUTH_BYPASS } from "@/lib/authConfig";
-import { ApiError, loginUser } from "@/lib/apiClient";
+import { ApiError, getBootstrapStatus, loginUser } from "@/lib/apiClient";
 import { readSession, saveLoginSession } from "@/lib/authSession";
 
 const ACCESS_CODE = "DataCenterSMKC";
@@ -38,10 +38,27 @@ export default function LoginPage() {
       return;
     }
 
-    setTimeout(() => {
-      setHasSuperAdmin(true);
-      setIsLoading(false);
-    }, 0);
+    let isMounted = true;
+
+    async function checkBootstrapStatus() {
+      try {
+        const status = await getBootstrapStatus();
+        if (isMounted) setHasSuperAdmin(Boolean(status?.hasActiveSuperAdmin));
+      } catch {
+        if (isMounted) {
+          setErrors({ form: "Backend API is not reachable." });
+          setHasSuperAdmin(true);
+        }
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    checkBootstrapStatus();
+
+    return () => {
+      isMounted = false;
+    };
   }, [router]);
 
   function handleChange(event) {

@@ -12,7 +12,6 @@ import { ApiError, getUsers, updateUserRole, updateUserStatus } from "@/lib/apiC
 import { readSession } from "@/lib/authSession";
 
 const roles = [
-  { label: "Super Admin", code: "SUPER_ADMIN" },
   { label: "Admin", code: "ADMIN" },
   { label: "Employee", code: "EMPLOYEE" },
   { label: "Viewer", code: "VIEWER" },
@@ -132,7 +131,7 @@ export default function AdminUsersManagementPage() {
     };
   }, [currentUser]);
 
-  const isSuperAdmin = currentUser?.roleCode === "SUPER_ADMIN";
+  const canManageUsers = ["SUPER_ADMIN", "ADMIN"].includes(currentUser?.roleCode);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
@@ -157,8 +156,8 @@ export default function AdminUsersManagementPage() {
   }
 
   function handleRoleChange(userId, newRoleCode) {
-    if (!isSuperAdmin) {
-      showToast("Only Super Admin can change user roles.", "error");
+    if (!canManageUsers) {
+      showToast("Only Super Admin or Admin can change user roles.", "error");
       return;
     }
 
@@ -167,6 +166,11 @@ export default function AdminUsersManagementPage() {
 
     if (!selectedUser || !selectedRole) {
       showToast("User or role not found.", "error");
+      return;
+    }
+
+    if (selectedUser.roleCode === "SUPER_ADMIN") {
+      showToast("Super Admin role is protected and cannot be changed.", "warning");
       return;
     }
 
@@ -180,8 +184,8 @@ export default function AdminUsersManagementPage() {
   }
 
   function toggleUserStatus(userId) {
-    if (!isSuperAdmin) {
-      showToast("Only Super Admin can update user status.", "error");
+    if (!canManageUsers) {
+      showToast("Only Super Admin or Admin can update user status.", "error");
       return;
     }
 
@@ -189,6 +193,11 @@ export default function AdminUsersManagementPage() {
 
     if (!selectedUser) {
       showToast("User not found.", "error");
+      return;
+    }
+
+    if (selectedUser.roleCode === "SUPER_ADMIN") {
+      showToast("Super Admin account is protected and cannot be disabled.", "warning");
       return;
     }
 
@@ -248,9 +257,9 @@ export default function AdminUsersManagementPage() {
         description="Manage approved users, role mapping and account status."
       />
 
-      {!isSuperAdmin && (
+      {!canManageUsers && (
         <section className="mb-4 rounded-[24px] border border-amber-500/30 bg-amber-500/10 p-4 text-sm leading-6 text-amber-200 shadow-sm">
-          You are not logged in as Super Admin. User management actions are
+          You are not logged in as Super Admin or Admin. User management actions are
           disabled by backend authorization.
         </section>
       )}
@@ -359,7 +368,7 @@ export default function AdminUsersManagementPage() {
                         onChange={(event) =>
                           handleRoleChange(user.id, event.target.value)
                         }
-                        disabled={!isSuperAdmin}
+                        disabled={!canManageUsers || user.roleCode === "SUPER_ADMIN"}
                         className="h-10 rounded-2xl border border-[#314666] bg-[#101a2b] px-3 text-xs font-semibold text-white outline-none focus:border-[#7c3aed] disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {roles.map((role) => (
@@ -374,7 +383,7 @@ export default function AdminUsersManagementPage() {
                       <button
                         type="button"
                         onClick={() => toggleUserStatus(user.id)}
-                        disabled={!isSuperAdmin || user.id === currentUser?.id}
+                        disabled={!canManageUsers || user.roleCode === "SUPER_ADMIN" || user.id === currentUser?.id}
                         className={`rounded-lg px-3 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 ${
                           user.status === "Active"
                             ? "border border-rose-500/30 bg-rose-500/12 text-rose-100 hover:bg-rose-500/18"

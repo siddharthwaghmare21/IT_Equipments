@@ -130,7 +130,6 @@ export default function AdminRequestManagementPage() {
     return () => window.clearTimeout(timer);
   }, [loadRequests]);
 
-  const isSuperAdmin = currentUser?.role === "Super Admin";
   const canApproveAccess =
     currentUser?.role === "Super Admin" || currentUser?.role === "Admin";
 
@@ -160,14 +159,6 @@ export default function AdminRequestManagementPage() {
 
     if (selectedRequest.status !== "Pending") {
       showToast("Only pending requests can be approved.", "warning");
-      return;
-    }
-
-    if (selectedRequest.requestedRole === "Super Admin" && !isSuperAdmin) {
-      showToast(
-        "Only an existing Super Admin can approve Super Admin requests.",
-        "error"
-      );
       return;
     }
 

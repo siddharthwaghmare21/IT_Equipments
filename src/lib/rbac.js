@@ -18,6 +18,7 @@ export const permissions = {
 const permissionsByRole = {
   [roleCodes.superAdmin]: Object.values(permissions),
   [roleCodes.admin]: [
+    permissions.userManagement,
     permissions.userApproval,
     permissions.backupExportControl,
     permissions.assetWorkflowControl,
