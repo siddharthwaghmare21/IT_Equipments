@@ -9,8 +9,6 @@ import { TEMP_AUTH_BYPASS } from "@/lib/authConfig";
 import { ApiError, getBootstrapStatus, loginUser } from "@/lib/apiClient";
 import { readSession, saveLoginSession } from "@/lib/authSession";
 
-const ACCESS_CODE = "DataCenterSMKC";
-
 export default function LoginPage() {
   const router = useRouter();
 
@@ -102,17 +100,13 @@ export default function LoginPage() {
 
     if (!validateLoginForm()) return;
 
-    if (formData.accessCode !== ACCESS_CODE) {
-      setErrors({ form: "Invalid access code. Login denied." });
-      return;
-    }
-
     setIsLoading(true);
 
     try {
       const loginResponse = await loginUser({
         email: formData.email.trim(),
         password: formData.password,
+        accessCode: formData.accessCode,
       });
 
       saveLoginSession(loginResponse);

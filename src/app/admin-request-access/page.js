@@ -6,8 +6,6 @@ import { LoadingState } from "@/components/common/StateBlock";
 import { showToast } from "@/components/common/ToastHost";
 import { ApiError, createSignupRequest, getBootstrapStatus } from "@/lib/apiClient";
 
-const ACCESS_CODE = "DataCenterSMKC";
-
 function isStrongPassword(password) {
   const hasMinimumLength = password.length >= 8;
   const hasCapitalLetter = /[A-Z]/.test(password);
@@ -106,11 +104,6 @@ export default function AdminRequestAccessPage() {
       return;
     }
 
-    if (formData.accessCode !== ACCESS_CODE) {
-      showToast("Invalid access code. Access request denied.", "error");
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
@@ -122,6 +115,7 @@ export default function AdminRequestAccessPage() {
         requestedRoleCode: getRequestedRoleCode(formData.requestedRole),
         password: formData.password,
         remarks: formData.reason.trim() || null,
+        accessCode: formData.accessCode,
       });
 
       setIsSubmitted(true);

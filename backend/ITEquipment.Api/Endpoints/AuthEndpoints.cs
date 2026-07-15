@@ -3,6 +3,8 @@ using ITEquipment.Api.Models;
 using ITEquipment.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ITEquipment.Api.Endpoints;
 
@@ -118,6 +120,7 @@ public static class AuthEndpoints
             AuthRepository repository,
             PasswordHashService passwordHashService,
             JwtTokenService jwtTokenService,
+            IConfiguration configuration,
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
@@ -125,6 +128,11 @@ public static class AuthEndpoints
             if (validationError is not null)
             {
                 return Results.BadRequest(new { message = validationError });
+            }
+
+            if (!IsValidAccessCode(request.AccessCode, configuration))
+            {
+                return Results.Unauthorized();
             }
 
             try
@@ -170,6 +178,7 @@ public static class AuthEndpoints
             SignupRequest request,
             AuthRepository repository,
             PasswordHashService passwordHashService,
+            IConfiguration configuration,
             IHostEnvironment environment,
             CancellationToken cancellationToken) =>
         {
@@ -177,6 +186,11 @@ public static class AuthEndpoints
             if (validationError is not null)
             {
                 return Results.BadRequest(new { message = validationError });
+            }
+
+            if (!IsValidAccessCode(request.AccessCode, configuration))
+            {
+                return Results.Unauthorized();
             }
 
             try
@@ -380,6 +394,12 @@ public static class AuthEndpoints
             return "Password is required.";
         }
 
+
+        if (string.IsNullOrWhiteSpace(request.AccessCode))
+        {
+            return "Access code is required.";
+        }
+
         return null;
     }
 
@@ -415,6 +435,12 @@ public static class AuthEndpoints
             return "Requested role is required.";
         }
 
+
+        if (string.IsNullOrWhiteSpace(request.AccessCode))
+        {
+            return "Access code is required.";
+        }
+
         return AllowedSignupRoleCodes.Contains(request.RequestedRoleCode)
             ? null
             : "Requested role must be Admin, Employee, or Viewer.";
@@ -446,5 +472,19 @@ public static class AuthEndpoints
     {
         return validValues.First(validValue =>
             validValue.Equals(value, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsValidAccessCode(string suppliedAccessCode, IConfiguration configuration)
+    {
+        var configuredAccessCode = configuration["Security:AccessCode"];
+        if (string.IsNullOrWhiteSpace(configuredAccessCode) || string.IsNullOrWhiteSpace(suppliedAccessCode))
+        {
+            return false;
+        }
+
+        var configuredBytes = Encoding.UTF8.GetBytes(configuredAccessCode);
+        var suppliedBytes = Encoding.UTF8.GetBytes(suppliedAccessCode);
+        return configuredBytes.Length == suppliedBytes.Length &&
+            CryptographicOperations.FixedTimeEquals(configuredBytes, suppliedBytes);
     }
 }

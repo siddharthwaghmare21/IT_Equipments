@@ -65,6 +65,7 @@ Jwt__Audience=ITEquipment.Frontend
 Jwt__SigningKey=use-a-strong-random-key-with-at-least-32-characters
 Jwt__ExpiryMinutes=480
 Bootstrap__SetupKey=use-a-private-setup-key
+Security__AccessCode=use-a-private-internal-access-code
 Cors__AllowedOrigins__0=https://your-vercel-domain.vercel.app
 ```
 
@@ -109,7 +110,10 @@ Production database setup:
 - Hosting is intentionally kept as the final step. Local development and submission demo can run with local MySQL; public 24/7 usage requires hosted backend plus hosted MySQL.
 - Vercel can host the Next.js frontend only. ASP.NET Core API and MySQL must be hosted separately for full production use.
 - SMTP/OTP email delivery needs real company SMTP credentials; without SMTP, keep email OTP out of the production login flow.
-- Backup download/tracking is active; restore/import-from-backup remains a controlled maintenance operation.
+- Backup download/tracking and Super Admin-only non-destructive JSON restore are active. Restore requires the exact confirmation phrase `RESTORE BACKUP` and preserves records that are not present in the selected backup.
+- Internal Access Code validation runs only in the ASP.NET Core backend; the code is stored in .NET User Secrets locally and must never be placed in `NEXT_PUBLIC_*` variables.
+- Deferred by decision: company SMTP/OTP activation and full cloud backend/MySQL deployment will be completed later.
+- Next planned phase: load approved real organization data, then execute the final end-to-end checklist.
 
 ## Original Data Collection Template
 
@@ -194,7 +198,7 @@ Import, backup and settings:
 - Create import tracking job after validating a file.
 - Create backup tracking job.
 - Download JSON backup snapshot.
-- Verify backup restore remains disabled as a controlled maintenance operation.
+- As Super Admin, verify invalid restore confirmation is rejected and a valid JSON backup can be restored non-destructively.
 - Save report branding in Settings and verify it persists through backend settings.
 
 Final deployment readiness:

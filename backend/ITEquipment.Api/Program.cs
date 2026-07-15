@@ -194,6 +194,39 @@ app.MapGet("/api/backups/download", async (
 .WithTags("Backup")
 .WithName("DownloadBackupSnapshot");
 
+app.MapPost("/api/backups/restore", async (
+    BackupRestoreRequest request,
+    ExportImportBackupRepository repository,
+    IHostEnvironment environment,
+    CancellationToken cancellationToken) =>
+{
+    if (!string.Equals(request.Confirmation?.Trim(), "RESTORE BACKUP", StringComparison.Ordinal))
+    {
+        return Results.BadRequest(new { message = "Type RESTORE BACKUP to confirm this operation." });
+    }
+
+    try
+    {
+        var result = await repository.RestoreBackupSnapshotAsync(request.Snapshot, cancellationToken);
+        return Results.Ok(result);
+    }
+    catch (InvalidOperationException exception)
+    {
+        return Results.BadRequest(new { message = exception.Message });
+    }
+    catch (MySqlConnector.MySqlException exception)
+    {
+        var detail = environment.IsDevelopment()
+            ? $"Backup restore failed: {exception.Message}"
+            : "Backup restore failed.";
+
+        return Results.Problem(detail, statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+})
+.RequireAuthorization(AppAuthorizationPolicies.RequireSuperAdmin)
+.WithTags("Backup")
+.WithName("RestoreBackupSnapshot");
+
 app.MapRoleEndpoints();
 app.MapDepartmentEndpoints();
 app.MapDepartmentDemandEndpoints();

@@ -93,10 +93,10 @@ export async function apiFileRequest(path, options = {}) {
   };
 }
 
-export function loginUser({ email, password }) {
+export function loginUser({ email, password, accessCode }) {
   return apiRequest("/api/auth/login", {
     method: "POST",
-    body: { email, password },
+    body: { email, password, accessCode },
   });
 }
 
@@ -508,6 +508,14 @@ export function downloadBackupSnapshot(scope, token) {
     `/api/backups/download?scope=${encodeURIComponent(scope)}`,
     { token }
   );
+}
+
+export function restoreBackupSnapshot(snapshot, confirmation, token) {
+  return apiRequest("/api/backups/restore", {
+    method: "POST",
+    token,
+    body: { snapshot, confirmation },
+  });
 }
 
 export function approveUserAccess(approvalRequestId, decision, token) {

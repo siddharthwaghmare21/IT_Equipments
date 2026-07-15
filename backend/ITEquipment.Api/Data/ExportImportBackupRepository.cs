@@ -1,5 +1,6 @@
 using ITEquipment.Api.Models;
 using MySqlConnector;
+using System.Text.Json;
 
 namespace ITEquipment.Api.Data;
 
@@ -256,6 +257,115 @@ public sealed class ExportImportBackupRepository(MySqlConnectionFactory connecti
         }
 
         return snapshot;
+    }
+
+    public async Task<BackupRestoreResponse> RestoreBackupSnapshotAsync(
+        JsonElement snapshot,
+        CancellationToken cancellationToken)
+    {
+        if (snapshot.ValueKind != JsonValueKind.Object ||
+            !snapshot.TryGetProperty("backupFormat", out var formatElement) ||
+            !string.Equals(formatElement.GetString(), "ITEquipment.JsonBackup.v1", StringComparison.Ordinal) ||
+            !snapshot.TryGetProperty("tables", out var tablesElement) ||
+            tablesElement.ValueKind != JsonValueKind.Object)
+        {
+            throw new InvalidOperationException("Invalid or unsupported IT Equipment backup file.");
+        }
+
+        await using var connection = connectionFactory.CreateConnection();
+        await connection.OpenAsync(cancellationToken);
+        await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+
+        var restoredCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+        try
+        {
+            foreach (var tableName in BackupTables)
+            {
+                if (!tablesElement.TryGetProperty(tableName, out var tableElement) ||
+                    !tableElement.TryGetProperty("rows", out var rowsElement) ||
+                    rowsElement.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                var restoredRows = 0;
+                foreach (var rowElement in rowsElement.EnumerateArray())
+                {
+                    if (rowElement.ValueKind != JsonValueKind.Object)
+                    {
+                        throw new InvalidOperationException($"Backup table '{tableName}' contains an invalid row.");
+                    }
+
+                    await UpsertBackupRowAsync(
+                        connection,
+                        transaction,
+                        tableName,
+                        rowElement,
+                        cancellationToken);
+                    restoredRows++;
+                }
+
+                restoredCounts[tableName] = restoredRows;
+            }
+
+            await transaction.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(CancellationToken.None);
+            throw;
+        }
+
+        return new BackupRestoreResponse(
+            TablesProcessed: restoredCounts.Count,
+            RowsRestored: restoredCounts.Values.Sum(),
+            TableRowCounts: restoredCounts,
+            Message: "Backup restored successfully. Existing records not present in the backup were preserved.");
+    }
+
+    private static async Task UpsertBackupRowAsync(
+        MySqlConnection connection,
+        MySqlTransaction transaction,
+        string tableName,
+        JsonElement rowElement,
+        CancellationToken cancellationToken)
+    {
+        var properties = rowElement.EnumerateObject().ToArray();
+        if (properties.Length == 0)
+        {
+            return;
+        }
+
+        var columns = properties.Select(property => $"`{property.Name.Replace("`", "``")}`").ToArray();
+        var parameters = properties.Select((_, index) => $"@Value{index}").ToArray();
+        var updates = columns.Select((column, index) => $"{column} = {parameters[index]}").ToArray();
+        var sql = $"INSERT INTO `{tableName}` ({string.Join(", ", columns)}) " +
+            $"VALUES ({string.Join(", ", parameters)}) " +
+            $"ON DUPLICATE KEY UPDATE {string.Join(", ", updates)};";
+
+        await using var command = new MySqlCommand(sql, connection, transaction);
+        for (var index = 0; index < properties.Length; index++)
+        {
+            command.Parameters.AddWithValue(parameters[index], ToDatabaseValue(properties[index].Value));
+        }
+
+        await command.ExecuteNonQueryAsync(cancellationToken);
+    }
+
+    private static object ToDatabaseValue(JsonElement value)
+    {
+        return value.ValueKind switch
+        {
+            JsonValueKind.Null or JsonValueKind.Undefined => DBNull.Value,
+            JsonValueKind.String => value.GetString() ?? string.Empty,
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Number when value.TryGetInt64(out var integer) => integer,
+            JsonValueKind.Number when value.TryGetDecimal(out var number) => number,
+            JsonValueKind.Number => value.GetDouble(),
+            _ => value.GetRawText()
+        };
     }
 
     private static async Task<ExportJobDto?> GetExportJobByIdAsync(

@@ -11,6 +11,7 @@ import {
   getBackupJobs,
   getEmailStatus,
   getReportBrandingSettings,
+  restoreBackupSnapshot,
   updateReportBrandingSettings,
 } from "@/lib/apiClient";
 import { getSessionToken, readSession } from "@/lib/authSession";
@@ -115,6 +116,9 @@ export default function SettingsPage() {
   const [backupJobs, setBackupJobs] = useState([]);
   const [isLoadingBackupJobs, setIsLoadingBackupJobs] = useState(true);
   const [backupJobsError, setBackupJobsError] = useState("");
+  const [restoreFile, setRestoreFile] = useState(null);
+  const [restoreConfirmation, setRestoreConfirmation] = useState("");
+  const [isRestoring, setIsRestoring] = useState(false);
   const [emailStatus, setEmailStatus] = useState({
     isConfigured: false,
     message: "Checking SMTP email status.",
@@ -216,6 +220,7 @@ export default function SettingsPage() {
   }, [loadBackupJobs, loadEmailStatus, loadReportBranding]);
 
   const canUseBackup = canUseBackupExport(currentUser);
+  const canRestoreBackup = currentUser?.roleCode === "SUPER_ADMIN";
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
@@ -326,6 +331,44 @@ export default function SettingsPage() {
     }
   }
 
+  async function handleRestoreBackupSnapshot() {
+    const token = getSessionToken();
+
+    if (!token || !canRestoreBackup) {
+      showToast("Only Super Admin can restore a backup.", "warning");
+      return;
+    }
+
+    if (!restoreFile) {
+      showToast("Select an IT Equipment JSON backup file.", "warning");
+      return;
+    }
+
+    if (restoreFile.size > 20 * 1024 * 1024) {
+      showToast("Backup file must be 20 MB or smaller.", "warning");
+      return;
+    }
+
+    if (restoreConfirmation !== "RESTORE BACKUP") {
+      showToast("Type RESTORE BACKUP exactly to confirm.", "warning");
+      return;
+    }
+
+    setIsRestoring(true);
+    try {
+      const snapshot = JSON.parse(await restoreFile.text());
+      const result = await restoreBackupSnapshot(snapshot, restoreConfirmation, token);
+      showToast(`${result.rowsRestored} rows restored successfully.`);
+      setRestoreFile(null);
+      setRestoreConfirmation("");
+      loadBackupJobs();
+    } catch (error) {
+      showToast(error.message || "Backup restore failed.", "warning");
+    } finally {
+      setIsRestoring(false);
+    }
+  }
+
   function openSettingsSection(tab) {
     setActiveSettingsTab(tab.label);
     document.getElementById(tab.target)?.scrollIntoView({
@@ -337,6 +380,7 @@ export default function SettingsPage() {
   const connectedBackupItems = [
     "MySQL backup job tracking",
     "Controlled JSON snapshot download",
+    "Super Admin controlled non-destructive restore",
     "Role-based backup access",
     "Activity log and report export tracking",
   ];
@@ -510,8 +554,8 @@ export default function SettingsPage() {
           </h2>
           <p className="mt-1 text-sm leading-6 text-[#8fa4c7]">
             Backup job tracking and JSON snapshot download are connected to the
-            backend and MySQL. Restore execution stays locked until an approved
-            maintenance process is defined.
+            backend and MySQL. Restore is restricted to Super Admin and requires
+            an explicit confirmation phrase.
           </p>
           <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
             {connectedBackupItems.map((item) => (
@@ -532,8 +576,8 @@ export default function SettingsPage() {
                 </h3>
                 <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
                   Records backup requests in MySQL and downloads a controlled
-                  JSON backup snapshot. Restore execution remains locked for a
-                  separately approved maintenance step.
+                  JSON backup snapshot. Restore inserts or updates backup rows
+                  without deleting newer records that are absent from the file.
                 </p>
                 {!canUseBackup && (
                   <p className="mt-2 text-xs font-semibold text-yellow-800">
@@ -580,9 +624,46 @@ export default function SettingsPage() {
               </div>
               <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
                 Backup files are generated as JSON snapshots from approved
-                tables only. Restore/import from backup is intentionally not
-                enabled yet.
+                tables only. Restore is non-destructive and Super Admin only.
               </div>
+            </div>
+
+            <div className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4">
+              <h3 className="text-sm font-bold text-amber-950">Restore JSON Backup</h3>
+              <p className="mt-1 text-sm leading-6 text-amber-900">
+                Select a downloaded IT Equipment backup, then type RESTORE BACKUP.
+                Matching records will be updated and missing records inserted.
+              </p>
+              <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+                <input
+                  type="file"
+                  accept="application/json,.json"
+                  onChange={(event) => setRestoreFile(event.target.files?.[0] || null)}
+                  disabled={!canRestoreBackup || isRestoring}
+                  className="h-11 rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm text-slate-900 disabled:cursor-not-allowed disabled:bg-slate-100"
+                />
+                <input
+                  type="text"
+                  value={restoreConfirmation}
+                  onChange={(event) => setRestoreConfirmation(event.target.value)}
+                  placeholder="Type RESTORE BACKUP"
+                  disabled={!canRestoreBackup || isRestoring}
+                  className="h-11 rounded-lg border border-amber-300 bg-white px-3 text-sm text-slate-900 outline-none focus:border-amber-600 disabled:cursor-not-allowed disabled:bg-slate-100"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleRestoreBackupSnapshot}
+                disabled={!canRestoreBackup || isRestoring}
+                className="mt-3 inline-flex min-h-10 items-center justify-center rounded-lg bg-amber-700 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+              >
+                {isRestoring ? "Restoring..." : "Restore Backup"}
+              </button>
+              {!canRestoreBackup && (
+                <p className="mt-2 text-xs font-semibold text-amber-900">
+                  Restore is available only to the Super Admin.
+                </p>
+              )}
             </div>
 
             <div className="mt-4">
