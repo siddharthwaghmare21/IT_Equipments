@@ -202,7 +202,9 @@ export default function ProfessionalPrintDocument({
             key={`${fileName}-page-${pageIndex}`}
             className="print-page border border-gray-200 bg-white shadow-sm"
           >
-            <ReportLetterhead title={title} branding={branding} />
+            {pageIndex === 0 && (
+              <ReportLetterhead title={title} branding={branding} />
+            )}
 
             <div className="report-body flex-1 px-5 py-5">
               <section className="report-section">
