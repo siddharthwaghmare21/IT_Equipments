@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS departments (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (department_id),
   UNIQUE KEY uq_departments_code (department_code),
-  UNIQUE KEY uq_departments_name (department_name),
+  UNIQUE KEY uq_departments_name_location (department_name, location),
   KEY idx_departments_active (is_active)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

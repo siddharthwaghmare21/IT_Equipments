@@ -5,7 +5,8 @@ param(
   [string]$HostName = "localhost",
   [int]$Port = 3306,
   [string]$Database = "it_equipment_management_smkc",
-  [string]$User = "Siddharth"
+  [string]$User = "Siddharth",
+  [switch]$ResetImported
 )
 
 $ErrorActionPreference = "Stop"
@@ -32,6 +33,10 @@ function Get-DepartmentShortBase([string]$Department) {
   $parts = @($slug -split "-" | Where-Object { $_ -and $_ -notin @("AND", "NO", "NUMBER", "DEPARTMENT", "DEPARMENT") })
   if ($parts.Count -eq 0) { return $slug }
   return $parts[0]
+}
+
+function ConvertTo-AssetTypeCode([string]$Category) {
+  return (ConvertTo-SlugPart $Category)
 }
 
 function Limit-Code([string]$Value, [int]$MaxLength = 50) {
@@ -62,8 +67,8 @@ function New-AssetRecord(
   [hashtable]$Type,
   [int]$Index
 ) {
-  $assetType = $Type.Category.ToUpperInvariant() -replace " ", "-"
-  $tag = "{0}-{1}-{2}-{3:D3}" -f (ConvertTo-SlugPart $Location), $DepartmentShort, $assetType, $Index
+  $assetType = ConvertTo-AssetTypeCode $Type.Category
+  $tag = "{0}-{1:D4}" -f $assetType, $Index
   $details = @(
     "Source column: $($Type.Column)",
     "Original department: $Department",
@@ -77,7 +82,7 @@ function New-AssetRecord(
     Category = $Type.Category
     Brand = $Type.Brand
     Model = $Type.Model
-    SerialNumber = "IMPORT-$tag"
+    SerialNumber = $tag
     Location = $Location
     Specifications = $Type.Specifications
     Remarks = $details
@@ -121,19 +126,27 @@ $sourceRows = @(
   }
 )
 
-$groups = $sourceRows | Group-Object {
-  ($_.Location.Trim() + "|" + $_.Department.Trim()).ToUpperInvariant()
+$groupMap = [ordered]@{}
+foreach ($row in $sourceRows) {
+  $key = ($row.Location.Trim() + "|" + $row.Department.Trim()).ToUpperInvariant()
+  if (-not $groupMap.Contains($key)) {
+    $groupMap[$key] = @()
+  }
+  $groupMap[$key] = @($groupMap[$key]) + $row
 }
 
 $departments = @()
-foreach ($group in $groups) {
-  $first = $group.Group[0]
+$departmentSequence = 0
+foreach ($key in $groupMap.Keys) {
+  $rows = @($groupMap[$key])
+  $first = $rows[0]
   $location = $first.Location.Trim()
   $department = $first.Department.Trim()
-  $departmentName = "$department - $location"
-  $departmentCode = Limit-Code ("{0}-{1}" -f (ConvertTo-SlugPart $location), (ConvertTo-SlugPart $department))
+  $departmentSequence++
+  $departmentName = $department
+  $departmentCode = "{0:D4}" -f $departmentSequence
   $demand = 0
-  foreach ($row in $group.Group) {
+  foreach ($row in $rows) {
     $demand += ConvertTo-Count $row.Demand
   }
 
@@ -143,7 +156,7 @@ foreach ($group in $groups) {
     Location = $location
     OriginalDepartment = $department
     Demand = $demand
-    Rows = $group.Group
+    Rows = $rows
     ShortBase = Get-DepartmentShortBase $department
   }
 }
@@ -162,7 +175,7 @@ foreach ($department in $departments) {
     }
 
     for ($i = 0; $i -lt $count; $i++) {
-      $categoryKey = "{0}|{1}|{2}" -f $department.Location.ToUpperInvariant(), $department.Short, $type.Category.ToUpperInvariant()
+      $categoryKey = $type.Category.ToUpperInvariant()
       if (-not $tagCounters.ContainsKey($categoryKey)) {
         $tagCounters[$categoryKey] = 0
       }
@@ -189,6 +202,7 @@ Write-Host "Departments to upsert: $($departments.Count)"
 Write-Host "Demand records to upsert: $($departments.Count)"
 Write-Host "Assets to upsert: $($assets.Count)"
 Write-Host "Apply mode: $($Apply.IsPresent)"
+Write-Host "Reset imported rows: $($ResetImported.IsPresent)"
 Write-Host ""
 Write-Host "Departments by location:"
 $locationSummary | Format-Table -AutoSize
@@ -200,6 +214,22 @@ $assets | Select-Object -First 12 AssetTag, AssetName, Category, Brand, Model | 
 $sql = New-Object System.Collections.Generic.List[string]
 $sql.Add("USE ``$Database``;")
 $sql.Add("START TRANSACTION;")
+
+if ($ResetImported) {
+  $sql.Add(@"
+DELETE FROM assets
+WHERE remarks LIKE '%Source column:%Original department:%Original location:%';
+
+DELETE dd
+FROM department_demands dd
+INNER JOIN departments d ON d.department_id = dd.department_id
+WHERE dd.source = 'Assets Data CSV'
+   OR d.description LIKE 'Imported from Assets Data CSV.%';
+
+DELETE FROM departments
+WHERE description LIKE 'Imported from Assets Data CSV.%';
+"@)
+}
 
 foreach ($department in $departments) {
   $sql.Add(@"

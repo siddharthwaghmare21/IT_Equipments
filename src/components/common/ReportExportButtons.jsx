@@ -3,6 +3,10 @@
 import { showToast } from "./ToastHost";
 import { createExportJob } from "@/lib/apiClient";
 import { getSessionToken } from "@/lib/authSession";
+import {
+  DEFAULT_REPORT_BRANDING,
+  readStoredReportBranding,
+} from "@/lib/reportBranding";
 
 function ExportIcon({ type }) {
   const commonProps = {
@@ -50,6 +54,7 @@ export default function ReportExportButtons({
   fileName = "report",
   showDataExports = true,
   columns = [],
+  branding = null,
 }) {
   const activeColumns =
     columns.length > 0
@@ -134,6 +139,9 @@ export default function ReportExportButtons({
       activeColumns.length > 0
         ? activeColumns.map((column) => column.key)
         : Object.keys(data[0]);
+    const reportBranding = branding || readStoredReportBranding() || DEFAULT_REPORT_BRANDING;
+    const generatedAt = new Date().toLocaleString("en-IN");
+    const columnCount = Math.max(headers.length, 1);
 
     const rows = data
       .map(
@@ -146,17 +154,46 @@ export default function ReportExportButtons({
 
     const table = `
       <html>
-        <head><meta charset="utf-8" /></head>
+        <head>
+          <meta charset="utf-8" />
+          <style>
+            .report-title { font-size: 18px; font-weight: 700; }
+            .report-meta { color: #475569; font-size: 12px; }
+            th { background: #e5e7eb; }
+          </style>
+        </head>
         <body>
           <table border="1">
-            <thead><tr>${headers
-              .map((header) => {
-                const matchedColumn = activeColumns.find(
-                  (column) => column.key === header
-                );
-                return `<th>${escapeHtml(matchedColumn?.label || header)}</th>`;
-              })
-              .join("")}</tr></thead>
+            <thead>
+              <tr>
+                <th colspan="${columnCount}" class="report-title">
+                  ${escapeHtml(reportBranding.companyName)}
+                </th>
+              </tr>
+              <tr>
+                <th colspan="${columnCount}" class="report-meta">
+                  ${escapeHtml(`${reportBranding.reportClassification} Report - ${fileName}`)}
+                </th>
+              </tr>
+              <tr>
+                <th colspan="${columnCount}" class="report-meta">
+                  ${escapeHtml([reportBranding.companyAddress, reportBranding.companyEmail, reportBranding.companyPhone].filter(Boolean).join(" | "))}
+                </th>
+              </tr>
+              <tr>
+                <th colspan="${columnCount}" class="report-meta">
+                  ${escapeHtml(`Generated: ${generatedAt}`)}
+                </th>
+              </tr>
+              <tr>${headers
+                .map((header) => {
+                  const matchedColumn = activeColumns.find(
+                    (column) => column.key === header
+                  );
+                  return `<th>${escapeHtml(matchedColumn?.label || header)}</th>`;
+                })
+                .join("")}</tr>
+            </thead>
             <tbody>${rows}</tbody>
           </table>
         </body>

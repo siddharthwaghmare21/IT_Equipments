@@ -1,6 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import {
+  DEFAULT_REPORT_BRANDING,
+  readStoredReportBranding,
+} from "@/lib/reportBranding";
 
 const hiddenColumns = new Set([
   "id",
@@ -35,6 +39,29 @@ function ReportFooter({ fileName, pageNumber, totalPages }) {
   );
 }
 
+function ReportLetterhead({ title, branding }) {
+  return (
+    <header className="report-letterhead border-b border-gray-300 bg-white px-5 py-4">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
+            {branding.reportClassification} Report
+          </p>
+          <h1 className="mt-1 text-2xl font-black text-gray-950">
+            {branding.companyName}
+          </h1>
+          <p className="mt-1 text-sm font-bold text-gray-800">{title}</p>
+        </div>
+        <div className="max-w-[240px] text-right text-xs font-semibold leading-5 text-gray-600">
+          <p>{branding.companyAddress}</p>
+          <p>{branding.companyEmail}</p>
+          <p>{branding.companyPhone}</p>
+        </div>
+      </div>
+    </header>
+  );
+}
+
 export default function ProfessionalPrintDocument({
   title,
   data = [],
@@ -42,7 +69,11 @@ export default function ProfessionalPrintDocument({
   labelCard = null,
   detailSections = null,
   fileName = "records",
+  branding: providedBranding = null,
 }) {
+  const [storedBranding] = useState(() => readStoredReportBranding());
+  const branding = providedBranding || storedBranding;
+
   const columns = useMemo(() => {
     if (providedColumns.length > 0) {
       return providedColumns.slice(0, 6);
@@ -80,9 +111,7 @@ export default function ProfessionalPrintDocument({
     >
       {(detailSections || labelCard) ? (
         <article className="print-page border border-gray-200 bg-white shadow-sm">
-          <header className="report-letterhead border-b border-gray-300 bg-white px-5 py-4">
-            <h1 className="text-2xl font-bold text-gray-950">{title}</h1>
-          </header>
+          <ReportLetterhead title={title} branding={branding} />
 
           <div className="report-body flex-1 px-5 py-5">
             <section className="report-section">
@@ -173,9 +202,7 @@ export default function ProfessionalPrintDocument({
             key={`${fileName}-page-${pageIndex}`}
             className="print-page border border-gray-200 bg-white shadow-sm"
           >
-            <header className="report-letterhead border-b border-gray-300 bg-white px-5 py-4">
-              <h1 className="text-2xl font-bold text-gray-950">{title}</h1>
-            </header>
+            <ReportLetterhead title={title} branding={branding} />
 
             <div className="report-body flex-1 px-5 py-5">
               <section className="report-section">

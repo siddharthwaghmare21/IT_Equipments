@@ -16,26 +16,15 @@ import {
 } from "@/lib/apiClient";
 import { getSessionToken, readSession } from "@/lib/authSession";
 import { canUseBackupExport } from "@/lib/rbac";
-
-const REPORT_BRANDING_KEY = "itReportBranding";
-const reportBrandingFieldMap = {
-  company_name: "companyName",
-  company_email: "companyEmail",
-  company_phone: "companyPhone",
-  company_address: "companyAddress",
-  report_logo_text: "reportLogoText",
-  report_prepared_by: "reportPreparedBy",
-  report_classification: "reportClassification",
-};
+import {
+  DEFAULT_REPORT_BRANDING,
+  REPORT_BRANDING_KEY,
+  mapReportBrandingFromApi,
+  mapReportBrandingToApi,
+} from "@/lib/reportBranding";
 
 const defaultSettings = {
-  companyName: "IT Assets Management",
-  companyEmail: "admin@company.com",
-  companyPhone: "+91 98765 43210",
-  companyAddress: "Main Office, Maharashtra, India",
-  reportLogoText: "IT",
-  reportPreparedBy: "IT Department",
-  reportClassification: "Internal",
+  ...DEFAULT_REPORT_BRANDING,
 
   adminName: "Admin",
   adminEmail: "itadmin@company.com",
@@ -73,27 +62,6 @@ const defaultSettings = {
   dateFormat: "DD-MM-YYYY",
   defaultReportView: "Summary",
 };
-
-function mapSettingsFromApi(apiSettings = []) {
-  return apiSettings.reduce((mappedSettings, setting) => {
-    const settingKey = setting.settingKey || setting.SettingKey;
-    const settingValue = setting.settingValue ?? setting.SettingValue ?? "";
-    const fieldName = reportBrandingFieldMap[settingKey];
-
-    if (fieldName) {
-      mappedSettings[fieldName] = settingValue;
-    }
-
-    return mappedSettings;
-  }, {});
-}
-
-function mapReportBrandingToApi(settings) {
-  return Object.entries(reportBrandingFieldMap).map(([settingKey, fieldName]) => ({
-    settingKey,
-    settingValue: settings[fieldName] || "",
-  }));
-}
 const settingsTabs = [
   { label: "General", target: "settings-general" },
   { label: "Roles", target: "settings-roles" },
@@ -170,7 +138,7 @@ export default function SettingsPage() {
   const loadReportBranding = useCallback(async () => {
     try {
       const apiSettings = await getReportBrandingSettings();
-      const mappedSettings = mapSettingsFromApi(apiSettings);
+      const mappedSettings = mapReportBrandingFromApi(apiSettings);
 
       setSettings((currentSettings) => ({
         ...currentSettings,

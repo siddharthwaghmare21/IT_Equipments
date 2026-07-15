@@ -78,11 +78,11 @@ INSERT IGNORE INTO system_settings (
   is_public
 )
 VALUES
-  ('company', 'company_name', 'IT Assets Management', 'String', 'Company or department name shown in reports.', TRUE),
-  ('company', 'company_email', 'admin@company.com', 'String', 'Company or IT department email shown in reports.', TRUE),
-  ('company', 'company_phone', '+91 98765 43210', 'String', 'Company or IT department phone shown in reports.', TRUE),
-  ('company', 'company_address', 'Main Office, Maharashtra, India', 'String', 'Company address shown in reports.', TRUE),
-  ('reports', 'report_logo_text', 'IT', 'String', 'Short text used in report letterhead logo.', TRUE),
+  ('company', 'company_name', 'Sangli Miraj Kupwad Municipal Corporation', 'String', 'Company or department name shown in reports.', TRUE),
+  ('company', 'company_email', 'it@smkc.gov.in', 'String', 'Company or IT department email shown in reports.', TRUE),
+  ('company', 'company_phone', '', 'String', 'Company or IT department phone shown in reports.', TRUE),
+  ('company', 'company_address', 'Sangli, Miraj and Kupwad, Maharashtra, India', 'String', 'Company address shown in reports.', TRUE),
+  ('reports', 'report_logo_text', 'SMKC', 'String', 'Short text used in report letterhead logo.', TRUE),
   ('reports', 'report_prepared_by', 'IT Department', 'String', 'Default prepared-by value for reports.', TRUE),
   ('reports', 'report_classification', 'Internal', 'String', 'Default report classification.', TRUE),
   ('assets', 'asset_tag_prefix', 'IT', 'String', 'Default asset tag prefix.', FALSE),
@@ -90,23 +90,23 @@ VALUES
   ('security', 'request_approval_required', 'true', 'Boolean', 'Require approval before new users can login.', FALSE);
 
 UPDATE system_settings
-SET setting_value = 'IT Assets Management', value_type = 'String', is_public = TRUE
+SET setting_value = 'Sangli Miraj Kupwad Municipal Corporation', value_type = 'String', is_public = TRUE
 WHERE setting_group = 'company' AND setting_key = 'company_name';
 
 UPDATE system_settings
-SET setting_value = 'admin@company.com', value_type = 'String', is_public = TRUE
+SET setting_value = 'it@smkc.gov.in', value_type = 'String', is_public = TRUE
 WHERE setting_group = 'company' AND setting_key = 'company_email';
 
 UPDATE system_settings
-SET setting_value = '+91 98765 43210', value_type = 'String', is_public = TRUE
+SET setting_value = '', value_type = 'String', is_public = TRUE
 WHERE setting_group = 'company' AND setting_key = 'company_phone';
 
 UPDATE system_settings
-SET setting_value = 'Main Office, Maharashtra, India', value_type = 'String', is_public = TRUE
+SET setting_value = 'Sangli, Miraj and Kupwad, Maharashtra, India', value_type = 'String', is_public = TRUE
 WHERE setting_group = 'company' AND setting_key = 'company_address';
 
 UPDATE system_settings
-SET setting_value = 'IT', value_type = 'String', is_public = TRUE
+SET setting_value = 'SMKC', value_type = 'String', is_public = TRUE
 WHERE setting_group = 'reports' AND setting_key = 'report_logo_text';
 
 UPDATE system_settings
