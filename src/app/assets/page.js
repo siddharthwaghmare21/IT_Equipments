@@ -38,6 +38,31 @@ const printColumns = [
   { key: "assetStatus", label: "Status" },
 ];
 
+function getAssetSortParts(assetTag) {
+  const match = String(assetTag || "").match(/^(.+)-(\d+)$/);
+
+  if (!match) {
+    return { prefix: String(assetTag || ""), number: Number.MAX_SAFE_INTEGER };
+  }
+
+  return {
+    prefix: match[1],
+    number: Number(match[2]),
+  };
+}
+
+function compareAssetTags(left, right) {
+  const leftParts = getAssetSortParts(left.assetTag);
+  const rightParts = getAssetSortParts(right.assetTag);
+  const prefixCompare = leftParts.prefix.localeCompare(rightParts.prefix);
+
+  if (prefixCompare !== 0) {
+    return prefixCompare;
+  }
+
+  return leftParts.number - rightParts.number;
+}
+
 export default function AssetsPage() {
   const [assets, setAssets] = useState([]);
   const [activeFilter, setActiveFilter] = useState("All");
@@ -56,15 +81,16 @@ export default function AssetsPage() {
 
     try {
       const response = await getAssets(getSessionToken());
-      setAssets(
-        response
-          .map(mapAssetFromApi)
-          .filter(
-            (asset) =>
-              asset.assetStatus !== "Archived" &&
-              asset.lifecycleStatus !== "Archived"
-          )
-      );
+      const activeAssets = response
+        .map(mapAssetFromApi)
+        .filter(
+          (asset) =>
+            asset.assetStatus !== "Archived" &&
+            asset.lifecycleStatus !== "Archived"
+        )
+        .sort(compareAssetTags);
+
+      setAssets(activeAssets);
     } catch (loadError) {
       setError(loadError.message || "Assets could not be loaded.");
     } finally {

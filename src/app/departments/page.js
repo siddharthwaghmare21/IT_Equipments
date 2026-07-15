@@ -28,6 +28,19 @@ const printColumns = [
   { key: "status", label: "Status" },
 ];
 
+function compareDepartmentCodes(left, right) {
+  const leftCode = String(left.departmentCode || "");
+  const rightCode = String(right.departmentCode || "");
+  const leftNumber = Number(leftCode);
+  const rightNumber = Number(rightCode);
+
+  if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber)) {
+    return leftNumber - rightNumber;
+  }
+
+  return leftCode.localeCompare(rightCode);
+}
+
 function DepartmentStatusBadge({ status }) {
   const statusStyles = {
     Active: "bg-emerald-100 text-emerald-700 border-emerald-200",
@@ -61,7 +74,7 @@ export default function DepartmentsPage() {
     try {
       const token = getSessionToken();
       const response = await getDepartments(token);
-      setDepartments(response.map(mapDepartmentFromApi));
+      setDepartments(response.map(mapDepartmentFromApi).sort(compareDepartmentCodes));
     } catch (loadError) {
       setError(loadError.message || "Departments could not be loaded.");
     } finally {
