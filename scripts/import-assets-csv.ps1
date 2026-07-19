@@ -39,6 +39,14 @@ function ConvertTo-AssetTypeCode([string]$Category) {
   return (ConvertTo-SlugPart $Category)
 }
 
+function Get-TagType([hashtable]$Type) {
+  if ($Type.ContainsKey("TagType") -and -not [string]::IsNullOrWhiteSpace([string]$Type.TagType)) {
+    return [string]$Type.TagType
+  }
+
+  return [string]$Type.Category
+}
+
 function Limit-Code([string]$Value, [int]$MaxLength = 50) {
   if ($Value.Length -le $MaxLength) { return $Value }
   $sha1 = [System.Security.Cryptography.SHA1]::Create()
@@ -67,7 +75,7 @@ function New-AssetRecord(
   [hashtable]$Type,
   [int]$Index
 ) {
-  $assetType = ConvertTo-AssetTypeCode $Type.Category
+  $assetType = ConvertTo-AssetTypeCode (Get-TagType $Type)
   $tag = "{0}-{1:D4}" -f $assetType, $Index
   $details = @(
     "Source column: $($Type.Column)",
@@ -94,27 +102,27 @@ if (-not (Test-Path $CsvPath)) {
 }
 
 $assetTypes = @(
-  @{ Column = "Dell"; Category = "Desktop"; Brand = "Dell"; Model = $null; AssetName = "Dell Desktop"; Specifications = "Desktop CPU from source summary" },
-  @{ Column = "Lenovo"; Category = "Desktop"; Brand = "Lenovo"; Model = $null; AssetName = "Lenovo Desktop"; Specifications = "Desktop CPU from source summary" },
-  @{ Column = "HP CPU"; Category = "Desktop"; Brand = "HP"; Model = "CPU"; AssetName = "HP Desktop"; Specifications = "CPU from source summary" },
-  @{ Column = "HP AIO"; Category = "Desktop"; Brand = "HP"; Model = "AIO"; AssetName = "HP AIO Desktop"; Specifications = "AIO desktop from source summary" },
-  @{ Column = "Laptop"; Category = "Laptop"; Brand = $null; Model = $null; AssetName = "Laptop"; Specifications = "Laptop from source summary" },
-  @{ Column = "Asus AIO"; Category = "Desktop"; Brand = "Asus"; Model = "AIO"; AssetName = "Asus AIO Desktop"; Specifications = "AIO desktop from source summary" },
-  @{ Column = "Dell AIO"; Category = "Desktop"; Brand = "Dell"; Model = "AIO"; AssetName = "Dell AIO Desktop"; Specifications = "AIO desktop from source summary" },
-  @{ Column = "Acer AIO"; Category = "Desktop"; Brand = "Acer"; Model = "AIO"; AssetName = "Acer AIO Desktop"; Specifications = "AIO desktop from source summary" },
-  @{ Column = "M-105"; Category = "Printer"; Brand = $null; Model = "M-105"; AssetName = "M-105 Printer"; Specifications = "Printer model from source summary" },
-  @{ Column = "M-205"; Category = "Printer"; Brand = $null; Model = "M-205"; AssetName = "M-205 Printer"; Specifications = "Printer model from source summary" },
-  @{ Column = "LX-310"; Category = "Printer"; Brand = $null; Model = "LX-310"; AssetName = "LX-310 Printer"; Specifications = "Printer model from source summary" },
-  @{ Column = "Epson M-50"; Category = "Printer"; Brand = "Epson"; Model = "M-50"; AssetName = "Epson M-50 Printer"; Specifications = "Printer model from source summary" },
-  @{ Column = "Epson Color "; Category = "Printer"; Brand = "Epson"; Model = "Color"; AssetName = "Epson Color Printer"; Specifications = "Printer model from source summary" },
-  @{ Column = "Xerox WorkCentre"; Category = "Printer"; Brand = "Xerox"; Model = "WorkCentre"; AssetName = "Xerox WorkCentre Printer"; Specifications = "Printer model from source summary" },
-  @{ Column = "Epson M-1120"; Category = "Printer"; Brand = "Epson"; Model = "M-1120"; AssetName = "Epson M-1120 Printer"; Specifications = "Printer model from source summary" },
-  @{ Column = "Epson M-200"; Category = "Printer"; Brand = "Epson"; Model = "M-200"; AssetName = "Epson M-200 Printer"; Specifications = "Printer model from source summary" },
-  @{ Column = "Epson L-6460"; Category = "Printer"; Brand = "Epson"; Model = "L-6460"; AssetName = "Epson L-6460 Printer"; Specifications = "Printer model from source summary" },
-  @{ Column = "Epson M-2170"; Category = "Printer"; Brand = "Epson"; Model = "M-2170"; AssetName = "Epson M-2170 Printer"; Specifications = "Printer model from source summary" },
-  @{ Column = "Cannon Printer"; Category = "Printer"; Brand = "Canon"; Model = $null; AssetName = "Canon Printer"; Specifications = "Printer from source summary; source column spells Canon as Cannon" },
-  @{ Column = "Projector"; Category = "Projector"; Brand = $null; Model = $null; AssetName = "Projector"; Specifications = "Projector from source summary" },
-  @{ Column = "Walky Talky"; Category = "Walky Talky"; Brand = $null; Model = $null; AssetName = "Walky Talky"; Specifications = "Walky Talky from source summary" }
+  @{ Column = "Dell"; Category = "Desktop"; TagType = "Desktop"; Brand = "Dell"; Model = $null; AssetName = "Dell Desktop"; Specifications = "Desktop CPU from source summary" },
+  @{ Column = "Lenovo"; Category = "Desktop"; TagType = "Desktop"; Brand = "Lenovo"; Model = $null; AssetName = "Lenovo Desktop"; Specifications = "Desktop CPU from source summary" },
+  @{ Column = "HP CPU"; Category = "Desktop"; TagType = "Desktop"; Brand = "HP"; Model = "CPU"; AssetName = "HP Desktop"; Specifications = "CPU from source summary" },
+  @{ Column = "HP AIO"; Category = "All In One"; TagType = "Desktop"; Brand = "HP"; Model = "AIO"; AssetName = "HP All In One"; Specifications = "All In One desktop from source summary" },
+  @{ Column = "Laptop"; Category = "Laptop"; TagType = "Laptop"; Brand = $null; Model = $null; AssetName = "Laptop"; Specifications = "Laptop from source summary" },
+  @{ Column = "Asus AIO"; Category = "All In One"; TagType = "Desktop"; Brand = "Asus"; Model = "AIO"; AssetName = "Asus All In One"; Specifications = "All In One desktop from source summary" },
+  @{ Column = "Dell AIO"; Category = "All In One"; TagType = "Desktop"; Brand = "Dell"; Model = "AIO"; AssetName = "Dell All In One"; Specifications = "All In One desktop from source summary" },
+  @{ Column = "Acer AIO"; Category = "All In One"; TagType = "Desktop"; Brand = "Acer"; Model = "AIO"; AssetName = "Acer All In One"; Specifications = "All In One desktop from source summary" },
+  @{ Column = "M-105"; Category = "Inkjet Printer"; TagType = "Printer"; Brand = $null; Model = "M-105"; AssetName = "M-105 Inkjet Printer"; Specifications = "Inkjet printer model from source summary" },
+  @{ Column = "M-205"; Category = "Inkjet Printer"; TagType = "Printer"; Brand = $null; Model = "M-205"; AssetName = "M-205 Inkjet Printer"; Specifications = "Inkjet printer model from source summary" },
+  @{ Column = "LX-310"; Category = "Dot Matrix Printer"; TagType = "Printer"; Brand = $null; Model = "LX-310"; AssetName = "LX-310 Dot Matrix Printer"; Specifications = "Dot Matrix printer model from source summary" },
+  @{ Column = "Epson M-50"; Category = "Inkjet Printer"; TagType = "Printer"; Brand = "Epson"; Model = "M-50"; AssetName = "Epson M-50 Inkjet Printer"; Specifications = "Inkjet printer model from source summary" },
+  @{ Column = "Epson Color "; Category = "Inkjet Printer"; TagType = "Printer"; Brand = "Epson"; Model = "Color"; AssetName = "Epson Color Inkjet Printer"; Specifications = "Inkjet printer model from source summary" },
+  @{ Column = "Xerox WorkCentre"; Category = "Xerox Machine"; TagType = "Printer"; Brand = "Xerox"; Model = "WorkCentre"; AssetName = "Xerox WorkCentre"; Specifications = "Xerox machine from source summary" },
+  @{ Column = "Epson M-1120"; Category = "Inkjet Printer"; TagType = "Printer"; Brand = "Epson"; Model = "M-1120"; AssetName = "Epson M-1120 Inkjet Printer"; Specifications = "Inkjet printer model from source summary" },
+  @{ Column = "Epson M-200"; Category = "Inkjet Printer"; TagType = "Printer"; Brand = "Epson"; Model = "M-200"; AssetName = "Epson M-200 Inkjet Printer"; Specifications = "Inkjet printer model from source summary" },
+  @{ Column = "Epson L-6460"; Category = "Inkjet Printer"; TagType = "Printer"; Brand = "Epson"; Model = "L-6460"; AssetName = "Epson L-6460 Inkjet Printer"; Specifications = "Inkjet printer model from source summary" },
+  @{ Column = "Epson M-2170"; Category = "Inkjet Printer"; TagType = "Printer"; Brand = "Epson"; Model = "M-2170"; AssetName = "Epson M-2170 Inkjet Printer"; Specifications = "Inkjet printer model from source summary" },
+  @{ Column = "Cannon Printer"; Category = "Laser Printer"; TagType = "Printer"; Brand = "Canon"; Model = $null; AssetName = "Canon Laser Printer"; Specifications = "Laser printer from source summary; source column spells Canon as Cannon" },
+  @{ Column = "Projector"; Category = "Projector"; TagType = "Projector"; Brand = $null; Model = $null; AssetName = "Projector"; Specifications = "Projector from source summary" },
+  @{ Column = "Walky Talky"; Category = "Walky Talky"; TagType = "Walky Talky"; Brand = $null; Model = $null; AssetName = "Walky Talky"; Specifications = "Walky Talky from source summary" }
 )
 
 $rawRows = Import-Csv -Path $CsvPath
@@ -175,7 +183,7 @@ foreach ($department in $departments) {
     }
 
     for ($i = 0; $i -lt $count; $i++) {
-      $categoryKey = $type.Category.ToUpperInvariant()
+      $categoryKey = (Get-TagType $type).ToUpperInvariant()
       if (-not $tagCounters.ContainsKey($categoryKey)) {
         $tagCounters[$categoryKey] = 0
       }
